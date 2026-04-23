@@ -16,7 +16,7 @@ export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8 pt-8 flex items-center justify-between">
         <div className="inline-flex items-center gap-2.5 rounded-full border border-primary/40 bg-primary/5 px-3.5 py-1.5">
           <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Powered by</span>
-          <BrandMark brand="prentix" height={16} />
+          <BrandMark brand="prentix" height={20} />
         </div>
         <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Virtual Internship · 2026</div>
       </div>
@@ -93,7 +93,7 @@ export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
           <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
             An internship experience by
           </span>
-          <BrandMark brand="prentix" height={14} />
+          <BrandMark brand="prentix" height={16} />
         </div>
       </footer>
     </div>

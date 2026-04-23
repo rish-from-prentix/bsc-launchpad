@@ -219,7 +219,7 @@ export function FinalResults({
       </div>
 
       <div className="mt-10 flex flex-col items-center gap-2 opacity-70">
-        <BrandMark brand="prentix" height={18} />
+        <BrandMark brand="prentix" height={20} />
         <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
           A Prentix virtual internship experience
         </span>

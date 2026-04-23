@@ -115,7 +115,7 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
       <div className="mt-10">
         <p className="text-[15px] text-foreground/90 leading-[1.7]">
           To look up the Z-score corresponding to your computed Critical Ratio during the simulation, use the Z-table
-          button pinned to the bottom-right corner of every screen.
+          button pinned to the bottom-right corner.
         </p>
         <div className="mt-5 flex justify-center">
           <div
@@ -127,7 +127,7 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
           </div>
         </div>
         <p className="mt-5 text-[15px] text-foreground/90 leading-[1.7]">
-          Click it any time you need a Z-value. It will always be there.
+          Don't worry, you will be able to access the table while making decisions on the job as well.
         </p>
       </div>
 

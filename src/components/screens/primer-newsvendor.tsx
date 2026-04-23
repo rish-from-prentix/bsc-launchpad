@@ -1,37 +1,19 @@
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, ChevronDown, Quote, Box, Warehouse } from "lucide-react";
-import {
-  Breadcrumb,
-  FormulaCard,
-  SectionLabel,
-  StepBar,
-} from "./primer-shared";
+import { Breadcrumb, FormulaCard, SectionLabel, StepBar } from "./primer-shared";
 
-export function PrimerNewsvendor({
-  onBack,
-  onQuiz,
-}: {
-  onBack: () => void;
-  onQuiz: () => void;
-}) {
+export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQuiz: () => void }) {
   const [zOpen, setZOpen] = useState(false);
 
   return (
-    <div
-      className="mx-auto max-w-2xl px-5 sm:px-8 py-10 sm:py-14"
-      style={{ animation: "fadeSlide 250ms ease-out" }}
-    >
+    <div className="mx-auto max-w-2xl px-5 sm:px-8 py-10 sm:py-14" style={{ animation: "fadeSlide 250ms ease-out" }}>
       <div className="flex items-center justify-between mb-6">
         <Breadcrumb>Primers / Newsvendor Analysis</Breadcrumb>
         <StepBar active={1} />
       </div>
 
-      <h1 className="text-[28px] sm:text-[32px] font-bold tracking-tight leading-tight">
-        Optimal Inventory Levels
-      </h1>
-      <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">
-        The Newsvendor Problem
-      </p>
+      <h1 className="text-[28px] sm:text-[32px] font-bold tracking-tight leading-tight">Optimal Inventory Levels</h1>
+      <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">The Newsvendor Problem</p>
 
       <div
         className="mt-10 rounded-xl border border-border bg-card p-7 sm:p-9 text-center"
@@ -39,8 +21,8 @@ export function PrimerNewsvendor({
       >
         <Quote className="h-6 w-6 text-primary mx-auto mb-4" />
         <p className="text-lg sm:text-xl text-foreground/95 leading-relaxed font-medium">
-          You're running a stall at a college fest. You decide in the morning
-          how many Razor Kits to bring. You can't restock mid-day.
+          Imagine you're running a stall selling BSC's Razor Kits at a college fest. You need to decide in the morning
+          how many kits to bring. You can't go back and restock mid-day.
         </p>
       </div>
 
@@ -48,48 +30,45 @@ export function PrimerNewsvendor({
         <div className="rounded-xl border border-[color:var(--danger)]/30 bg-[color:var(--danger)]/5 p-5">
           <Box className="h-5 w-5 text-[color:var(--danger)] mb-3" />
           <p className="text-sm text-foreground/90 leading-relaxed">
-            <span className="font-semibold">Too few</span> → You run out.
-            Customers leave. You lose the profit you could have made.
+            <span className="font-semibold">You get too few</span> → You run out. Customers leave. You lose the profit
+            you could have made.
           </p>
         </div>
         <div className="rounded-xl border border-[color:var(--warning)]/30 bg-[color:var(--warning)]/5 p-5">
           <Warehouse className="h-5 w-5 text-[color:var(--warning)] mb-3" />
           <p className="text-sm text-foreground/90 leading-relaxed">
-            <span className="font-semibold">Too many</span> → The fest ends.
-            You're stuck with unsold stock you paid for.
+            <span className="font-semibold">You get too many</span> → The fest ends. You're stuck with unsold stock you
+            paid for.
           </p>
         </div>
       </div>
 
       <p className="mt-8 text-[15px] text-foreground/90 leading-[1.7]">
-        This is exactly what BSC's supply chain team navigates every month —
-        across SKUs, cities, and channels.
+        This is exactly the problem BSC's supply chain team faces every month - except at a much larger scale, across
+        cities and channels.
       </p>
 
       <div className="mt-10">
-        <SectionLabel>The two costs</SectionLabel>
+        <SectionLabel>The two costs you're always balancing</SectionLabel>
         <FormulaCard>
           Cost of Understocking (CU) = Selling Price − Cost to Produce
           <div className="mt-2 text-xs text-muted-foreground">
-            Razor Kit: ₹349 − ₹140 = ₹209 lost per stockout
+            For example, if a Razor Kit sells for ₹349 and costs ₹140 to make: <br />
+            Razor Kit: ₹349 − ₹140 = ₹209 lost per stockout.
           </div>
         </FormulaCard>
         <FormulaCard>
           Cost of Overstocking (CO) = Holding Cost per Unsold Unit
-          <div className="mt-2 text-xs text-muted-foreground">
-            Razor Kit: ₹30 per unit sitting unsold
-          </div>
+          <div className="mt-2 text-xs text-muted-foreground">Razor Kit: ₹30 per unit sitting unsold</div>
         </FormulaCard>
       </div>
 
       <div className="mt-10">
         <SectionLabel>Critical Ratio</SectionLabel>
-        <FormulaCard large>
-          Critical Ratio = CU / (CU + CO) = 209 / (209 + 30) = 0.874
-        </FormulaCard>
+        <FormulaCard large>Critical Ratio = CU / (CU + CO) = 209 / (209 + 30) = 0.874</FormulaCard>
         <div className="rounded-lg bg-secondary/40 border border-border p-5 italic text-sm text-foreground/85 leading-relaxed">
-          This means: stock enough to meet demand in 87.4% of scenarios.
-          You're willing to accept a stockout only 12.6% of the time.
+          This means: stock enough to meet demand in 87.4% of scenarios. You're willing to accept a stockout only 12.6%
+          of the time.
         </div>
       </div>
 
@@ -98,18 +77,12 @@ export function PrimerNewsvendor({
         style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }}
       >
         <div className="p-6 sm:p-7">
-          <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-            Worked Example
-          </div>
-          <div className="text-lg font-semibold mt-1">
-            Razor Kit, Hyderabad
-          </div>
+          <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Worked Example</div>
+          <div className="text-lg font-semibold mt-1">Razor Kit, Hyderabad</div>
 
           <div className="mt-5 grid gap-6 sm:grid-cols-2">
             <div>
-              <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-3">
-                Inputs
-              </div>
+              <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-3">Inputs</div>
               <dl className="space-y-2 text-sm font-mono">
                 {[
                   ["Selling Price", "₹349"],
@@ -126,9 +99,7 @@ export function PrimerNewsvendor({
               </dl>
             </div>
             <div>
-              <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-3">
-                Steps
-              </div>
+              <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-3">Steps</div>
               <ol className="space-y-2 text-sm font-mono">
                 {[
                   "CU = ₹209",
@@ -154,11 +125,7 @@ export function PrimerNewsvendor({
           className="w-full flex items-center justify-between p-5 hover:bg-secondary/30 transition"
         >
           <span className="text-sm font-medium">Z-table reference</span>
-          <ChevronDown
-            className={`h-4 w-4 text-muted-foreground transition-transform ${
-              zOpen ? "rotate-180" : ""
-            }`}
-          />
+          <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${zOpen ? "rotate-180" : ""}`} />
         </button>
         {zOpen && (
           <div className="px-5 pb-5">

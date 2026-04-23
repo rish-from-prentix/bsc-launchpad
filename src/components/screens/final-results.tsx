@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
-import { Copy, ExternalLink, Check } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Copy, ExternalLink, Check, Download } from "lucide-react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { BrandMark } from "@/components/brand-mark";
 import { fmtINR, fmtINRShort, LINKEDIN_POST_BODY, type MonthData } from "@/lib/simulation";
 
@@ -54,6 +56,94 @@ export function FinalResults({
     const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent("https://prentix.ai")}&summary=${encodeURIComponent(LINKEDIN_POST_BODY)}`;
     window.open(url, "_blank", "noopener,noreferrer");
   }
+
+  // --- Certificate ---------------------------------------------------------
+  const certificateRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
+
+  // Stable verification codes for the session (template already shows static
+  // placeholders; kept here for potential future overlay use).
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const engagementCode = useMemo(
+    () => Math.random().toString(36).substring(2, 14).toUpperCase(),
+    [],
+  );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const userCode = useMemo(
+    () => Math.random().toString(36).substring(2, 14).toUpperCase(),
+    [],
+  );
+
+  // Inject Inter Bold font once
+  useEffect(() => {
+    const id = "inter-bold-font-link";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href = "https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap";
+    document.head.appendChild(link);
+  }, []);
+
+  const certName = name?.trim() || "Participant";
+  const nameFontSize =
+    certName.length > 18 ? Math.max(36, 64 - (certName.length - 18) * 2) : 64;
+
+  async function downloadCertificate() {
+    if (!certificateRef.current || downloading) return;
+    setDownloading(true);
+    try {
+      const canvas = await html2canvas(certificateRef.current, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: null,
+      });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "px",
+        format: [1200, 850],
+      });
+      pdf.addImage(imgData, "PNG", 0, 0, 1200, 850);
+      pdf.save(`BSC-Internship-Certificate-${certName}.pdf`);
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  const CertificateNode = ({ scale = 1 }: { scale?: number }) => (
+    <div
+      style={{
+        width: 1200,
+        height: 850,
+        position: "relative",
+        backgroundImage: "url(/assets/certificate-template.png)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        transform: scale !== 1 ? `scale(${scale})` : undefined,
+        transformOrigin: "top left",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          left: 178,
+          top: 310,
+          fontFamily: "'Inter', sans-serif",
+          fontWeight: 700,
+          fontSize: `${nameFontSize}px`,
+          color: "#0A1628",
+          lineHeight: 1,
+          letterSpacing: "-0.01em",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {certName}
+      </div>
+    </div>
+  );
 
   return (
     <div

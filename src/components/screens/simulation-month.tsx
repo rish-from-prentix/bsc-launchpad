@@ -5,13 +5,16 @@ import {
   MONTH_CONTEXT,
   MONTH_EVENTS,
   MONTH_0,
+  SHANTANU_WELCOME_BODY,
   computeElasticity,
   computeMonth,
+  carriedForMonth,
   additionalInventoryExpense,
   totalMarketing,
   sellingPriceFor,
   type ArrN,
   type MonthData,
+  type SourcingChoice,
 } from "@/lib/simulation";
 import { EventEmail } from "./sim/event-email";
 import { SimCell } from "./sim/sim-cell";
@@ -67,66 +70,65 @@ export function SimulationMonth({
   onExitReview?: () => void;
 }) {
   const elasticity = useMemo(() => computeElasticity(monthNumber, prev), [monthNumber, prev]);
-  const seed = initialData ?? prev;
-  const [inputs, setInputs] = useState<Inputs>(() => inputsFromMonth(seed));
-  const [sourcing, setSourcing] = useState(() =>
-    initialData?.sourcing ?? { nearbyUnits: 0, farUnits: (seed.inventory.iq[1] ?? 0) + (seed.inventory.id[1] ?? 0) }
+  const carried = useMemo(() => carriedForMonth(monthNumber, prev), [monthNumber, prev]);
+  // The pre-filled values shown to the student are: inventory = carried,
+  // marketing = previous month's marketing.
+  const seedInputs: Inputs = useMemo(() => {
+    if (initialData) return inputsFromMonth(initialData);
+    return {
+      iq: cloneArr(carried.iq),
+      id: cloneArr(carried.id),
+      mq: cloneArr(prev.marketing.mq),
+      md: cloneArr(prev.marketing.md),
+    };
+  }, [carried, prev, initialData]);
+
+  const [inputs, setInputs] = useState<Inputs>(seedInputs);
+  const [sourcing, setSourcing] = useState<SourcingChoice>(
+    () => initialData?.sourcing ?? null
   );
   const [reasoning, setReasoning] = useState(initialData?.reasoning ?? "");
   const [showReasoningHint, setShowReasoningHint] = useState(false);
   const [locked, setLocked] = useState<boolean>(!!initialLocked);
+  const [welcomeOpen, setWelcomeOpen] = useState(true);
 
   // If switching months, reseed
   const lastSeedKey = useRef(monthNumber + ":" + (initialData ? "review" : "fresh"));
   useEffect(() => {
     const key = monthNumber + ":" + (initialData ? "review" : "fresh");
     if (lastSeedKey.current !== key) {
-      setInputs(inputsFromMonth(seed));
-      setSourcing(
-        initialData?.sourcing ?? {
-          nearbyUnits: 0,
-          farUnits: (seed.inventory.iq[1] ?? 0) + (seed.inventory.id[1] ?? 0),
-        }
-      );
+      setInputs(seedInputs);
+      setSourcing(initialData?.sourcing ?? null);
       setReasoning(initialData?.reasoning ?? "");
       setLocked(!!initialLocked);
       lastSeedKey.current = key;
     }
-  }, [monthNumber, initialData, initialLocked, seed]);
+  }, [monthNumber, initialData, initialLocked, seedInputs]);
 
   const monthBudget = MONTHLY_BUDGET[monthNumber];
   const additional = additionalInventoryExpense(
     { iq: inputs.iq, id: inputs.id },
-    { iq: prev.inventory.iq, id: prev.inventory.id },
+    carried,
     sourcing
   );
   const mktTotal = totalMarketing({ mq: inputs.mq, md: inputs.md });
   const remaining = monthBudget - additional - mktTotal;
 
-  const totalInvCell1 = (inputs.iq[1] ?? 0) + (inputs.id[1] ?? 0);
-  const sourcingValid = sourcing.nearbyUnits + sourcing.farUnits === totalInvCell1;
-
+  const cell1Carried = (carried.iq[1] ?? 0) + (carried.id[1] ?? 0);
+  const cell1Total = (inputs.iq[1] ?? 0) + (inputs.id[1] ?? 0);
+  const cell1Additional = cell1Total - cell1Carried;
+  const sourcingValid = cell1Additional <= 0 || sourcing != null;
   const canSubmit = !locked && remaining >= 0 && sourcingValid;
 
   const event = MONTH_EVENTS[monthNumber];
+  const showWelcomeEmail = monthNumber === 1;
 
   function setInv(cell: number, ch: "iq" | "id", value: number) {
     setInputs((s) => {
       const next = { ...s, [ch]: cloneArr(s[ch]) };
       next[ch][cell] = value;
-      // If cell 1 changes, snap sourcing to all-far if previously invalid
       return next;
     });
-    if (cell === 1) {
-      // Auto-rebalance: if currently all-far, keep all-far at new total. If all-nearby keep all-nearby.
-      const newTotal =
-        ch === "iq" ? value + (inputs.id[1] ?? 0) : (inputs.iq[1] ?? 0) + value;
-      setSourcing((s) => {
-        if (s.farUnits === totalInvCell1 && s.nearbyUnits === 0) return { nearbyUnits: 0, farUnits: newTotal };
-        if (s.nearbyUnits === totalInvCell1 && s.farUnits === 0) return { nearbyUnits: newTotal, farUnits: 0 };
-        return s;
-      });
-    }
   }
 
   function setMkt(cell: number, ch: "mq" | "md", value: number) {
@@ -138,14 +140,8 @@ export function SimulationMonth({
   }
 
   function reset() {
-    const baseSeed = initialData ?? prev;
-    setInputs(inputsFromMonth(baseSeed));
-    setSourcing(
-      initialData?.sourcing ?? {
-        nearbyUnits: 0,
-        farUnits: (baseSeed.inventory.iq[1] ?? 0) + (baseSeed.inventory.id[1] ?? 0),
-      }
-    );
+    setInputs(seedInputs);
+    setSourcing(initialData?.sourcing ?? null);
     setReasoning(initialData?.reasoning ?? "");
   }
 
@@ -163,6 +159,7 @@ export function SimulationMonth({
         marketing: { mq: inputs.mq, md: inputs.md },
         sourcing,
         reasoning,
+        carried,
       },
       prev,
       elasticity

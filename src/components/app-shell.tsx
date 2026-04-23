@@ -27,15 +27,40 @@ export function AppShell({
         <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-md">
           <div className="mx-auto max-w-6xl px-5 sm:px-8">
             <div className="flex h-16 items-center justify-between gap-4">
-              <div className="flex items-center gap-4 min-w-0">
-                <BrandMark brand="bsc" height={26} />
-                {contextLabel && (
-                  <span className="hidden md:inline-flex items-center text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                    <span className="mr-3 h-3 w-px bg-border" />
-                    {contextLabel}
-                  </span>
-                )}
-              </div>
+                            <div className="flex items-center gap-3 min-w-0">
+                                {onBack && (
+                                    <button
+                                        onClick={onBack}
+                                        aria-label="Go back"
+                                        className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition"
+                                    >
+                                        <ChevronLeft className="h-4 w-4" />
+                                    </button>
+                                )}
+                                <BrandMark brand="bsc" height={26} />
+                                {crumbs && crumbs.length > 0 ? (
+                                    <span className="hidden md:inline-flex items-center text-xs uppercase tracking-[0.18em] text-muted-foreground gap-2">
+                                        <span className="mr-1 h-3 w-px bg-border" />
+                                        {crumbs.map((c, i) => (
+                                            <span key={i} className="inline-flex items-center gap-2">
+                                                {i > 0 && <span className="text-muted-foreground/40">/</span>}
+                                                {c.onClick ? (
+                                                    <button onClick={c.onClick} className="hover:text-foreground transition">
+                                                        {c.label}
+                                                    </button>
+                                                ) : (
+                                                    <span className="text-foreground/80">{c.label}</span>
+                                                )}
+                                            </span>
+                                        ))}
+                                    </span>
+                                ) : contextLabel ? (
+                                    <span className="hidden md:inline-flex items-center text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                                        <span className="mr-3 h-3 w-px bg-border" />
+                                        {contextLabel}
+                                    </span>
+                                ) : null}
+                            </div>
               <div className="flex items-center gap-2.5">
                 <span className="hidden sm:inline text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
                   Powered by
@@ -43,9 +68,9 @@ export function AppShell({
                 <BrandMark brand="prentix" height={18} />
               </div>
             </div>
-            {contextLabel && (
+            {(contextLabel || (crumbs && crumbs.length)) && (
               <div className="md:hidden pb-2 -mt-1 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                {contextLabel}
+                {crumbs && crumbs.length ? crumbs.map((c) => c.label).join(" / ") : contextLabel}
               </div>
             )}
           </div>

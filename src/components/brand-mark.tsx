@@ -8,7 +8,7 @@ type BrandMarkProps = {
 };
 
 export function BrandMark({ brand, className, height = 24 }: BrandMarkProps) {
-  const src = brand === "bsc" ? bscLogo : "https://drive.usercontent.google.com/download?id=1nVqOsuJxkXgf2cDde4BARfJgf8lIckyq&export=view&authuser=0";
+  const src = brand === "bsc" ? bscLogo : "https://i.postimg.cc/vTZZd43D/b7da5e58-f3dc-4a2b-8ea0-3796b5f42f4c.png";
   const alt = brand === "bsc" ? "Bombay Shaving Company" : "Prentix";
   return (
     <img

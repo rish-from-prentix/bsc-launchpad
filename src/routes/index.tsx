@@ -9,6 +9,11 @@ import { PrimerChannel } from "@/components/screens/primer-channel";
 import { Quiz, type QuizQuestion } from "@/components/screens/quiz";
 import { ResultsScreen } from "@/components/screens/results-screen";
 import { ZTableFloating } from "@/components/z-table";
+import { TaskIntro } from "@/components/screens/task-intro";
+import { SimulationMonth } from "@/components/screens/simulation-month";
+import { MonthFeedback } from "@/components/screens/month-feedback";
+import { FinalResults } from "@/components/screens/final-results";
+import { MONTH_0, type MonthData } from "@/lib/simulation";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,7 +38,19 @@ type Screen =
   | "quiz-2"
   | "primer-3"
   | "quiz-3"
-  | "results";
+  | "results"
+  | "task-intro"
+  | "sim-1"
+  | "feedback-1"
+  | "sim-2"
+  | "feedback-2"
+  | "sim-3"
+  | "feedback-3"
+  | "sim-4"
+  | "feedback-4"
+  | "sim-5"
+  | "feedback-5"
+  | "final";
 
 const PRIMER_META = [
   {
@@ -140,6 +157,9 @@ function Index() {
     false,
   ]);
   const [scores, setScores] = useState<[number, number, number]>([0, 0, 0]);
+  // months[0] = MONTH_0; months[1..5] populated as user submits
+  const [months, setMonths] = useState<MonthData[]>(() => [MONTH_0]);
+  const [reviewing, setReviewing] = useState<number | null>(null);
 
   const totalScore = scores[0] + scores[1] + scores[2];
 
@@ -173,6 +193,24 @@ function Index() {
     setScreen("primer-1");
   }
 
+  function submitMonth(n: number, data: MonthData) {
+    setMonths((m) => {
+      const next = [...m];
+      next[n] = data;
+      return next;
+    });
+    setScreen(`feedback-${n}` as Screen);
+  }
+
+  function nextAfterFeedback(n: number) {
+    if (n >= 5) setScreen("final");
+    else setScreen(`sim-${n + 1}` as Screen);
+  }
+
+  const cumulativeEbitda = months
+    .filter((m) => m && m.month >= 1)
+    .reduce((s, m) => s + (m.totalProfit ?? 0), 0);
+
   if (screen === "splash") {
     return <SplashScreen onBegin={startBeging} />;
   }
@@ -195,10 +233,29 @@ function Index() {
         return "Quiz 3 of 3 · Channel Strategy";
       case "results":
         return "Results";
+      case "task-intro":
+        return "Day One · Briefing";
+      case "sim-1":
+      case "sim-2":
+      case "sim-3":
+      case "sim-4":
+      case "sim-5":
+        return `Internship · Month ${screen.slice(-1)} of 5`;
+      case "feedback-1":
+      case "feedback-2":
+      case "feedback-3":
+      case "feedback-4":
+      case "feedback-5":
+        return `Month ${screen.slice(-1)} · Results`;
+      case "final":
+        return "Internship Complete";
     }
   })();
 
-  const showZ = screen.startsWith("primer-") || screen.startsWith("quiz-");
+  const showZ =
+    screen.startsWith("primer-") ||
+    screen.startsWith("quiz-") ||
+    screen.startsWith("sim-");
 
   return (
     <AppShell contextLabel={ctx}>
@@ -266,9 +323,54 @@ function Index() {
           score={totalScore}
           total={4}
           onRedo={redoAll}
-          onProceed={() => setScreen("results")}
+          onProceed={() => setScreen("task-intro")}
         />
       )}
+
+      {screen === "task-intro" && (
+        <TaskIntro name={name} onBegin={() => setScreen("sim-1")} />
+      )}
+
+      {(["sim-1", "sim-2", "sim-3", "sim-4", "sim-5"] as const).map((s) => {
+        if (screen !== s) return null;
+        const n = parseInt(s.slice(-1), 10);
+        const prev = months[n - 1] ?? MONTH_0;
+        const isReview = reviewing === n;
+        return (
+          <SimulationMonth
+            key={s + (isReview ? "-review" : "")}
+            monthNumber={n}
+            prev={prev}
+            name={name}
+            initialLocked={isReview}
+            initialData={isReview ? months[n] : undefined}
+            onExitReview={isReview ? () => { setReviewing(null); setScreen(`feedback-${n}` as Screen); } : undefined}
+            onSubmit={(d) => submitMonth(n, d)}
+          />
+        );
+      })}
+
+      {(["feedback-1", "feedback-2", "feedback-3", "feedback-4", "feedback-5"] as const).map((s) => {
+        if (screen !== s) return null;
+        const n = parseInt(s.slice(-1), 10);
+        const cur = months[n];
+        const prev = months[n - 1] ?? MONTH_0;
+        if (!cur) return null;
+        return (
+          <MonthFeedback
+            key={s}
+            monthNumber={n}
+            current={cur}
+            prev={prev}
+            cumulativeEbitda={cumulativeEbitda}
+            onReview={() => { setReviewing(n); setScreen(`sim-${n}` as Screen); }}
+            onNext={() => nextAfterFeedback(n)}
+            isLast={n === 5}
+          />
+        );
+      })}
+
+      {screen === "final" && <FinalResults name={name} months={months} />}
 
       {showZ && <ZTableFloating />}
     </AppShell>

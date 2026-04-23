@@ -197,6 +197,29 @@
     from { opacity: 0; max-height: 0; transform: translateY(-4px); }
     to { opacity: 1; max-height: 800px; transform: translateY(0); }
   }
+
+  @keyframes staggerIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes countUp {
+    from { opacity: 0.4; }
+    to { opacity: 1; }
+  }
+
+  .locked-field {
+    background-color: oklch(0.18 0 0);
+    color: oklch(0.62 0 0);
+    border: 1px dashed oklch(0.27 0 0);
+    cursor: default;
+  }
+
+  .budget-bar {
+    background-color: oklch(0.14 0 0);
+    border-top: 1px solid oklch(0.27 0 0);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+  }
 }
 
 /* Force this experience to be dark regardless of system theme */

@@ -30,12 +30,17 @@ export function TaskIntro({ name, onBegin }: { name: string; onBegin: () => void
         <ul className="space-y-2.5 text-[14px] text-foreground/85 leading-[1.65]">
           <li className="flex gap-2.5">
             <span className="text-primary mt-1.5 shrink-0">▸</span>
-            <span>Reallocate monthly marketing budgets between SKUs and geographies.</span>
+            <span>
+              Reallocate monthly <span className="font-mono text-primary">marketing budgets</span> between SKUs and
+              geographies.
+            </span>
           </li>
           <li className="flex gap-2.5">
             <span className="text-primary mt-1.5 shrink-0">▸</span>
             <div className="flex flex-col gap-2">
-              <span>Update inventory levels as per expected demand.</span>
+              <span>
+                Update <span className="font-mono text-primary">inventory levels</span> as per expected demand.
+              </span>
               <ul className="space-y-2 mt-1 ml-2 border-l border-primary/30 pl-4">
                 <li className="text-foreground/70">
                   In Hyderabad, you have a sourcing choice each month. A nearby manufacturer delivers in 2 weeks at a

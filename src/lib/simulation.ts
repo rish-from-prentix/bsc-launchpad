@@ -43,8 +43,8 @@ export const MONTHLY_BUDGET: Record<number, number> = {
   1: 930000,
   2: 1300000,
   3: 1350000,
-  4: 1050000,
-  5: 770000,
+  4: 1400000,
+  5: 1100000,
 };
 
 export type Sku = "razor" | "beard" | "hair";

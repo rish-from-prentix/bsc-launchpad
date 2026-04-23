@@ -129,7 +129,7 @@ export function FinalResults({
       <div
         style={{
           position: "absolute",
-          left: 178,
+          left: 210,
           top: 310,
           fontFamily: "'Inter', sans-serif",
           fontWeight: 700,

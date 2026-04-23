@@ -57,18 +57,14 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
 
       <FormulaCard>Cost of Understocking (CU) = Selling Price − Cost to Make the Product</FormulaCard>
       <p className="text-[14px] text-foreground/85 leading-[1.7]">
-        For example, if a Razor Kit sells for ₹349 and costs ₹140 to make:
-        <br />
-        CU = ₹349 − ₹140 = ₹209
+        For example, if a Razor Kit sells for ₹349 and costs ₹140 to make: CU = ₹349 − ₹140 = ₹209
         <br />
         Every time a customer wants a kit and you don't have one, you've lost ₹209.
       </p>
 
       <FormulaCard>Cost of Overstocking (CO) = Holding Cost per Unit (+ Discount Loss, if applicable)</FormulaCard>
       <p className="text-[14px] text-foreground/85 leading-[1.7]">
-        For example, if storing one unsold kit for a month costs ₹30:
-        <br />
-        CO = ₹30
+        For example, if storing one unsold kit for a month costs ₹30: CO = ₹30
       </p>
 
       <div className="mt-10">
@@ -82,9 +78,7 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
         </p>
         <FormulaCard large>Critical Ratio = CU / (CU + CO)</FormulaCard>
         <p className="text-[14px] text-foreground/85 leading-[1.7]">
-          Using our Razor Kit example:
-          <br />
-          Critical Ratio = 209 / (209 + 30) = 0.874
+          Using our Razor Kit example: Critical Ratio = 209 / (209 + 30) = 0.874
         </p>
         <div className="mt-6 rounded-lg bg-secondary/40 border border-border p-5 italic text-sm text-foreground/85 leading-relaxed">
           How to read this: You should stock enough inventory to meet the demand in about 87.4% of scenarios. In other
@@ -116,6 +110,25 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
           Then, identify optimal inventory levels using the following formula:
         </p>
         <FormulaCard>Optimal Stock = Expected Demand + (Z-score × Demand Uncertainty)</FormulaCard>
+      </div>
+
+      <div className="mt-10">
+        <p className="text-[15px] text-foreground/90 leading-[1.7]">
+          To look up the Z-score corresponding to your computed Critical Ratio during the simulation, use the Z-table
+          button pinned to the bottom-right corner of every screen.
+        </p>
+        <div className="mt-5 flex justify-center">
+          <div
+            aria-hidden="true"
+            className="inline-flex items-center gap-2 rounded-full border border-primary bg-primary px-4 py-2.5 text-xs font-medium text-primary-foreground shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
+          >
+            <Sigma className="h-3.5 w-3.5" />
+            Z-table
+          </div>
+        </div>
+        <p className="mt-5 text-[15px] text-foreground/90 leading-[1.7]">
+          Click it any time you need a Z-value. It will always be there.
+        </p>
       </div>
 
       <div
@@ -167,25 +180,6 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
             cover most demand scenarios without over-committing on inventory.
           </p>
         </div>
-      </div>
-
-      <div className="mt-10">
-        <p className="text-[15px] text-foreground/90 leading-[1.7]">
-          To look up the Z-score corresponding to your computed Critical Ratio during the simulation, use the Z-table
-          button pinned to the bottom-right corner of every screen.
-        </p>
-        <div className="mt-5 flex justify-center">
-          <div
-            aria-hidden="true"
-            className="inline-flex items-center gap-2 rounded-full border border-primary bg-primary px-4 py-2.5 text-xs font-medium text-primary-foreground shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
-          >
-            <Sigma className="h-3.5 w-3.5" />
-            Z-table
-          </div>
-        </div>
-        <p className="mt-5 text-[15px] text-foreground/90 leading-[1.7]">
-          Click it any time you need a Z-value. It will always be there.
-        </p>
       </div>
 
       <div className="mt-12 flex items-center gap-3">

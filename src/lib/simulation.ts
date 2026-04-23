@@ -162,16 +162,14 @@ export function carriedForMonth(monthNumber: number, prev: MonthData): { iq: Arr
 
 /**
  * Unit cost per cell. For cell 1 (Hyd Razor), uses weighted average of
- * sourcing split. For other cells, returns the flat base cost.
+ * the chosen single supplier. For other cells, returns the flat base cost.
  */
-export function unitCostFor(cell: number, sourcing?: { nearbyUnits: number; farUnits: number }): number {
+export function unitCostFor(cell: number, sourcing?: SourcingChoice): number {
   const meta = CELL_META[cell];
   if (!meta) return 0;
   if (cell === 1) {
-    const n = sourcing?.nearbyUnits ?? 0;
-    const f = sourcing?.farUnits ?? 0;
-    if (n + f === 0) return UNIT_COST_BASE.razor_hyd_far;
-    return (n * UNIT_COST_BASE.razor_hyd_nearby + f * UNIT_COST_BASE.razor_hyd_far) / (n + f);
+    if (sourcing === "nearby") return UNIT_COST_BASE.razor_hyd_nearby;
+    return UNIT_COST_BASE.razor_hyd_far; // default / 'far'
   }
   switch (meta.sku) {
     case "razor":
@@ -231,8 +229,9 @@ export function computeMonth(
   submission: {
     inventory: { iq: ArrN; id: ArrN };
     marketing: { mq: ArrN; md: ArrN };
-    sourcing: { nearbyUnits: number; farUnits: number };
+    sourcing: SourcingChoice;
     reasoning?: string;
+    carried: { iq: ArrN; id: ArrN };
   },
   prev: MonthData,
   elasticity: { qc: ArrN; d2c: ArrN }
@@ -306,6 +305,7 @@ export function computeMonth(
     sales: { sq: actualSq, sd: actualSd },
     projectedDemand: { sq: projectedSq, sd: projectedSd },
     sourcing: submission.sourcing,
+    carried: submission.carried,
     reasoning: submission.reasoning,
     totalProfit: Math.round(totalProfit),
     perCellProfit: { qc: profitQ, d2c: profitD },
@@ -314,19 +314,19 @@ export function computeMonth(
 }
 
 /**
- * Live additional inventory expense based on current input vs previous month.
+ * Live additional inventory expense based on current input vs CARRIED inventory.
  * Increases cost the budget. Returns refund (unit cost − ₹30) per unit returned.
  */
 export function additionalInventoryExpense(
   current: { iq: ArrN; id: ArrN },
-  prev: { iq: ArrN; id: ArrN },
-  sourcing: { nearbyUnits: number; farUnits: number }
+  carried: { iq: ArrN; id: ArrN },
+  sourcing: SourcingChoice
 ): number {
   let sum = 0;
   for (let i = 1; i <= 9; i++) {
     const uc = unitCostFor(i, sourcing);
     for (const ch of ["iq", "id"] as const) {
-      const p = prev[ch][i] ?? 0;
+      const p = carried[ch][i] ?? 0;
       const c = current[ch][i] ?? 0;
       const diff = c - p;
       if (diff >= 0) sum += diff * uc;

@@ -1,82 +1,77 @@
 
-# Prompt 2 — Internship Simulation, Feedback & Final Results
+# Cell Layout & Data Model Fixes
 
-Builds the entire post-quiz experience: task intro → 5 monthly simulation rounds (table + budget bar + reasoning + event emails) → per-month feedback screens → final EBITDA + LinkedIn share. Same dark/gold design system, persistent BSC + Prentix header, Inter / JetBrains Mono, 250ms ease-out transitions.
+Apply 7 targeted fixes to the simulation cell, the data model, and label copy. No other parts of the app change.
 
-## New screens
+## 1. Month 1 inventory pre-fill (hardcoded)
 
-1. **Task Introduction (`task-intro.tsx`)** — Headline + body, gold-bordered email card from Shantanu (avatar "SD" in gold, sender, subject, verbatim body with `[Name]` interpolated), gold small-caps "What you can do each month" bullet list, centered "Begin Month 1 →" CTA.
+In `src/lib/simulation.ts`:
+- Add a new constant `MONTH_1_DEFAULTS.inventory` matching the spec values (same as the existing `MONTH_0.inventory` arrays — these are the on-hand stock the student starts with).
+- Replace the existing `MONTH_1_CARRIED` with `MONTH_1_DEFAULTS.inventory`. The student now sees the full 310/590/680… numbers (not 20/0/0…) pre-filled in Month 1 inventory inputs.
+- `carriedForMonth(1, …)` returns `MONTH_1_DEFAULTS.inventory`.
+- Month-1 marketing pre-fill already comes from `MONTH_0.marketing` — no change needed (matches spec exactly).
 
-2. **Simulation Month (`simulation-month.tsx`)** — Reused for Months 1–5. Renders:
-   - Top: gold small-caps month label (`Month n of 5`) + muted context label.
-   - Optional event email panel (collapsible, expanded by default) — same card style as Shantanu email.
-   - 4×4 sticky-header grid (cities across the top in gold; SKUs down the side with price under in muted text). 9 cells, each a `#1C1C1C` card with: editable QC/D2C inventory inputs, locked prev-month sales, editable ₹ marketing inputs, locked elasticity (2 dp) + unit cost + holding cost. Cell 1 (Hyd Razor) gets an extra Nearby/Far sourcing pill selector with `Units from nearby` / `Units from far` inputs and inline red error if they don't sum to `iq[1]+id[1]`.
-   - Full-width "Your reasoning" textarea below the table.
-   - Fixed bottom budget bar (72px, `#141414`, top border): Monthly Budget · Additional Inventory (live, red+/green−) · Marketing (live sum) · Budget Remaining (large, green/red, with "Over budget" warning) · Reset (ghost) · Submit Month n (gold, disabled when remaining<0 or sourcing invalid).
-   - On submit: lock all fields with grayed wash + small lock icon, run sales/profit engine, route to feedback.
+## 2. Carry-forward from Month 2 onwards
 
-3. **Month Feedback (`month-feedback.tsx`)** — Centered, max-w-680. Header "Month n Results" gold small-caps, large profit number, cumulative EBITDA in muted. Stack of feedback cards (dark with colored left border: gold/amber/red, icon + headline + one-line body), animating in with 100ms stagger via `fadeSlide`. Buttons: "Review this month" (returns to locked simulation view) and "Begin Month n+1 →" (gold).
+`carriedFromMonth(prev) = max(0, submittedInventory − actualSales)` is already correct in the engine. Confirmed kept as-is. The budget delta is already computed against `carried` via `additionalInventoryExpense` — also correct after Fix 1.
 
-4. **Final Results (`final-results.tsx`)** — Animated count-up of cumulative EBITDA, total profit + average MoM growth in muted, personalized headline by tercile, LinkedIn-style preview card (white card, avatar placeholder, name, BSC + Prentix logos, verbatim post body), "Copy LinkedIn Post" (clipboard) and "Share on LinkedIn →" (opens `linkedin.com/sharing/share-offsite/?url=…&summary=…`) buttons, Prentix logo + micro caption.
+## 3. Remove the "Carried (QC/D2C)" display rows
 
-## Engine (`src/lib/simulation.ts`)
+In `src/components/screens/sim/sim-cell.tsx`, drop the two `LockedRow` lines that render `Carried (QC)` and `Carried (D2C)` from `ChannelBlock`. The pre-filled inventory input itself communicates carried stock.
 
-Pure-function module exporting all constants from the spec (`QC_COMMISSION_RATE`, `RETURN_PENALTY`, `UNIT_COST`, `SELLING_PRICE`, `HOLDING_COST`, `CITY_GROWTH`, `SEASONAL_FACTOR`, `MONTHLY_BUDGET`, `BASE_ELASTICITY`, `MONTH_0`, `CELL_META`) and computation helpers:
-- `unitCostFor(cell, sourcingSplit)` — handles cell 1 weighted average ₹160/₹140; falls back to flat `UNIT_COST` for others.
-- `computeElasticity(prevMonth, baseMonth0)` — applies the up/down/equal rules; Month 1 returns `BASE_ELASTICITY`.
-- `computeMonth(monthNumber, submission, prevMonth, elasticity)` — projected demand, actual sales (= min of demand & inventory), per-cell profit (revenue − QC commission − COGS − holding − marketing), total profit, cumulative EBITDA.
-- `additionalInventoryExpense(currentInputs, prevInventory, sourcing)` — live recompute incl. return penalty (₹30/unit when reducing).
-- `evaluateFeedback(monthNumber, currentMonthResult, prevMonth)` — returns ordered list of `{tone, icon, title, body}` cards. Implements all 9 rules (low-elasticity overspend, stockout ≥95%, excess >3×, missed/smart high-elasticity, Month-3 Hyd Beard sub-rules A/B/C, Month-3/-1/-2/-5 Hyd Razor sourcing, Month-4 Bombay Razor levers, Blr Beard D2C high-elasticity).
+## 4. Cell field order, exact labels, and bottom stat row
 
-All engine functions are pure; React state holds an array `months[1..5]` of `{ inventory, marketing, elasticity, sales, projectedDemand, sourcing, reasoning, totalProfit, locked }`.
+In `sim-cell.tsx`, render in this order per channel block:
 
-## State + routing changes
+```text
+PREV MONTH SALES (QC)        [locked, right-aligned]
+INVENTORY (QC)               [editable]
 
-`src/routes/index.tsx` extends the `Screen` union with `task-intro`, `sim-1..sim-5`, `feedback-1..feedback-5`, `final`. Adds top-level state:
+PREV MONTH SALES (D2C)       [locked, right-aligned]
+INVENTORY (D2C)              [editable]
+─────────────
+MARKETING ELASTICITY (QC)    [locked, color-coded with dot]
+MARKETING BUDGET (QC)        [editable, ₹ prefix]
 
-```ts
-const [sim, setSim] = useState<SimState>({ months: [/* index 0 = MONTH_0 */] });
-const [reviewing, setReviewing] = useState<number | null>(null);
+MARKETING ELASTICITY (D2C)   [locked, color-coded with dot]
+MARKETING BUDGET (D2C)       [editable, ₹ prefix]
+─────────────
+Unit cost ₹X    Holding /unit ₹Y    SP /unit ₹Z
 ```
 
-Wires `ResultsScreen` `onProceed` → `task-intro`. Each simulation submit advances to its feedback screen; "Begin next" advances to next sim screen with inputs pre-filled from the previous submission. Month 1 inputs pre-fill from `MONTH_0`. Reset restores current-month inputs to previous month values.
+Update the bottom stat row to a single 3-column line including `SP /unit` (currently only 2 columns — Unit cost and Holding /unit). Wire `sellingPriceFor(cell)` for the SP value.
 
-## Styling additions (`src/styles.css`)
+## 5. Hyderabad Razor sourcing UI (Cell 1)
 
-- Add `staggerIn` keyframe (slide-up + fade) used by feedback cards with inline `animation-delay`.
-- Add `.locked-field` utility (background tint, no border, cursor:default, lock icon overlay via `::after` is handled in the cell component using a small `Lock` lucide icon).
-- Add `.budget-bar` shadow + border-top utility for the fixed bottom strip.
-- No new color tokens needed — `success`, `warning`, `danger`, `gold` already defined.
+Rewrite `src/components/screens/sim/sourcing-selector.tsx`:
+- Compute `additionalUnits = totalInventory − carried` (already a prop).
+- If `additionalUnits > 0`: render the headline `You want to order N new units this month.` + `Where are you ordering the additional units from?` + two pill toggles labeled `Nearby supplier ₹160 · 1 week` and `Faraway supplier ₹140 · 3 weeks`. Submit-blocking validation already exists in `simulation-month.tsx` (kept).
+- If `additionalUnits ≤ 0`: hide selector entirely (no return-recovery message — spec says nothing rendered when not ordering).
+- Update the timing copy from "2 weeks / 1 month" → "1 week / 3 weeks".
 
-## New files
+## 6. Marketing Elasticity color coding
 
-```
-src/lib/simulation.ts
-src/components/screens/task-intro.tsx
-src/components/screens/simulation-month.tsx
-src/components/screens/sim/sim-cell.tsx          (single cell with all inputs)
-src/components/screens/sim/sourcing-selector.tsx (cell 1 only)
-src/components/screens/sim/budget-bar.tsx
-src/components/screens/sim/event-email.tsx       (reused by task intro + monthly events)
-src/components/screens/month-feedback.tsx
-src/components/screens/final-results.tsx
-```
+Already implemented in `ElasticityMarketing` with the correct thresholds (>1.1 green, 0.8–1.1 amber, <0.8 red) and a colored dot. Only the **label** needs to change in Fix 7. No threshold changes.
 
-## Edited files
+## 7. Label sweep across all months/screens
 
-- `src/routes/index.tsx` — extend screen state machine, mount new screens, pass simulation state.
-- `src/components/screens/results-screen.tsx` — `onProceed` now navigates forward (no other visual change).
-- `src/styles.css` — add `staggerIn` keyframe and small utilities.
+Search and replace the following label strings everywhere they appear (sim cells, budget bar, feedback cards, tooltips):
+- `Prev sales (QC)` / `Prev Sales (QC)` → `Prev Month Sales (QC)`
+- `Prev sales (D2C)` / `Prev Sales (D2C)` → `Prev Month Sales (D2C)`
+- `Elasticity (QC)` / `Elasticity QC` → `Marketing Elasticity (QC)`
+- `Elasticity (D2C)` / `Elasticity D2C` → `Marketing Elasticity (D2C)`
+- `Marketing (QC)` → `Marketing Budget (QC)`
+- `Marketing (D2C)` → `Marketing Budget (D2C)`
 
-## Behavior details locked in by the spec
+Primary surfaces touched: `sim-cell.tsx` (field labels), and a grep across `src/` to catch any lingering instances in `budget-bar.tsx`, `month-feedback.tsx`, and `simulation.ts` feedback strings (most feedback bodies already use full sku/city/channel names so should be unaffected, but the sweep guarantees consistency).
 
-- Live budget bar updates on every keystroke (no debounce).
-- Submit disabled when `budgetRemaining < 0` OR cell-1 sourcing split is invalid.
-- Inputs accept positive integers only; reductions are typed as a smaller number than prev (no negatives).
-- Empty reasoning on submit shows a 3-second muted toast "Adding reasoning helps you reflect on your decisions." but does not block.
-- All email bodies, feedback copy, and LinkedIn post text are rendered verbatim from the spec.
-- Z-table floating button stays visible on simulation screens (helpful for inventory decisions); hidden on feedback/final.
+## Files edited
 
-## Out of scope (will follow in next prompt)
+- `src/lib/simulation.ts` — replace `MONTH_1_CARRIED` with `MONTH_1_DEFAULTS.inventory` semantics; `carriedForMonth(1)` returns the new defaults.
+- `src/components/screens/sim/sim-cell.tsx` — remove carried rows, reorder fields, update labels, add SP /unit to bottom row.
+- `src/components/screens/sim/sourcing-selector.tsx` — new copy, conditional render based on `additionalUnits > 0`, updated timing strings.
+- Anywhere else the old labels appear (label sweep).
 
-Mobile polish for the simulation grid, edge-case validation passes, certificate generation.
+## Out of scope (untouched)
+
+Budget bar logic, feedback engine rules, email dropdowns, sticky headers, Z-table, back navigation, design system, color tokens, animations.

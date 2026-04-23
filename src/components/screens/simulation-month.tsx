@@ -85,9 +85,7 @@ export function SimulationMonth({
   }, [carried, prev, initialData]);
 
   const [inputs, setInputs] = useState<Inputs>(seedInputs);
-  const [sourcing, setSourcing] = useState<SourcingChoice>(
-    () => initialData?.sourcing ?? null
-  );
+  const [sourcing, setSourcing] = useState<SourcingChoice>(() => initialData?.sourcing ?? null);
   const [reasoning, setReasoning] = useState(initialData?.reasoning ?? "");
   const [showReasoningHint, setShowReasoningHint] = useState(false);
   const [locked, setLocked] = useState<boolean>(!!initialLocked);
@@ -107,11 +105,7 @@ export function SimulationMonth({
   }, [monthNumber, initialData, initialLocked, seedInputs]);
 
   const monthBudget = MONTHLY_BUDGET[monthNumber];
-  const additional = additionalInventoryExpense(
-    { iq: inputs.iq, id: inputs.id },
-    carried,
-    sourcing
-  );
+  const additional = additionalInventoryExpense({ iq: inputs.iq, id: inputs.id }, carried, sourcing);
   const mktTotal = totalMarketing({ mq: inputs.mq, md: inputs.md });
   const remaining = monthBudget - additional - mktTotal;
 
@@ -163,7 +157,7 @@ export function SimulationMonth({
         carried,
       },
       prev,
-      elasticity
+      elasticity,
     );
     onSubmit(result);
   }
@@ -179,9 +173,7 @@ export function SimulationMonth({
           <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
             Month {monthNumber} of 5
           </div>
-          <div className="mt-1 text-[15px] text-muted-foreground">
-            {MONTH_CONTEXT[monthNumber]}
-          </div>
+          <div className="mt-1 text-[15px] text-muted-foreground">{MONTH_CONTEXT[monthNumber]}</div>
         </div>
         {initialLocked && onExitReview && (
           <button
@@ -270,14 +262,12 @@ export function SimulationMonth({
       {/* Reasoning */}
       <div className="mt-6 max-w-3xl">
         <label className="block">
-          <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            Your reasoning
-          </span>
+          <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Your reasoning</span>
           <textarea
             value={reasoning}
             onChange={(e) => setReasoning(e.target.value)}
             disabled={locked}
-            placeholder="Explain the reasoning behind your decisions."
+            placeholder="Explain the reasoning behind your key decisions for review."
             rows={3}
             className="mt-2 w-full rounded-lg border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/60 disabled:opacity-60"
           />
@@ -359,9 +349,7 @@ function Row({
               sourcing={sourcing}
               onChangeInv={(ch, v) => setInv(cell, ch, v)}
               onChangeMkt={(ch, v) => setMkt(cell, ch, v)}
-              onChangeSourcing={
-                cell === 1 ? (c: SourcingChoice) => setSourcing(c) : undefined
-              }
+              onChangeSourcing={cell === 1 ? (c: SourcingChoice) => setSourcing(c) : undefined}
               locked={locked}
             />
           </div>

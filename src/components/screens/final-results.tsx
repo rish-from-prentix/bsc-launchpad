@@ -15,7 +15,7 @@ export function FinalResults({
   const profits = submitted.map((m) => m.totalProfit ?? 0);
 
   // Avg MoM growth
-  let growths: number[] = [];
+  const growths: number[] = [];
   for (let i = 1; i < profits.length; i++) {
     const prev = profits[i - 1];
     if (prev > 0) growths.push((profits[i] - prev) / prev);

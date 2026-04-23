@@ -39,10 +39,10 @@ export function PrimersOverview({
 
       <h1 className="text-3xl sm:text-[34px] font-bold tracking-tight leading-tight">Welcome, {name}.</h1>
       <p className="mt-3 text-[15px] text-muted-foreground max-w-[560px] leading-relaxed">
-        To be able to excel at your job, you will need to get a good grasp on 3 key concepts. <br />
-        Go through the primers thoroughly. They are designed to help you internalize the fundamentals required to
-        succeed as a Growth & Business Ops Intern. At the end of each primer, you’ll find a short knowledge-check quiz
-        to help you assess your understanding of the concept covered.
+        To excel at your job, you will need to get a good grasp on 3 key concepts. <br />
+        The following primers are designed to help you internalize the fundamentals required to succeed as a Growth &
+        Business Ops Intern. At the end of each primer, you’ll find a short knowledge-check quiz to help you assess your
+        understanding of the concept covered.
       </p>
 
       <div className="mt-10 grid gap-4 md:grid-cols-3">

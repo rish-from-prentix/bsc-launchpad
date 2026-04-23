@@ -27,8 +27,8 @@ export function PrimerMarketing({ onBack, onQuiz }: { onBack: () => void; onQuiz
       <div className="mt-10 rounded-xl border border-primary/20 bg-primary/5 p-6 sm:p-7">
         <SectionLabel>An example</SectionLabel>
         <p className="text-[15px] text-foreground/90 leading-[1.7]">
-          A team spends ₹10,000/month on marketing and sells products worth ₹1,00,000. Marketing elasticity ={" "}
-          <span className="font-mono text-primary">2</span>.
+          So when someone says they are selling products worth ₹1,00,000 on every ₹10,000 spent on marketing and that
+          the marketing elasticity is <span className="font-mono text-primary">2</span>, you infer:
         </p>
         <div className="mt-5 rounded-lg overflow-hidden border border-border bg-card/60">
           <table className="w-full text-sm font-mono">
@@ -59,8 +59,8 @@ export function PrimerMarketing({ onBack, onQuiz }: { onBack: () => void; onQuiz
       </div>
 
       <p className="mt-8 text-sm italic text-muted-foreground leading-relaxed">
-        Note: In reality, elasticity often declines as sales volume grows. For this internship, we assume it stays
-        constant — with one important exception you'll discover later.
+        Note: In reality, as the number of units sold increases, elasticity often declines. But for the sake of
+        simplicity, we’re assuming constant elasticity.
       </p>
 
       <div className="mt-12 flex items-center gap-3">

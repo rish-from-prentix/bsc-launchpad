@@ -2,6 +2,7 @@ import { Lock } from "lucide-react";
 import {
   CELL_META,
   holdingCostFor,
+  sellingPriceFor,
   unitCostFor,
   type ArrN,
   type SourcingChoice,

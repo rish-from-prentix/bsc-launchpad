@@ -39,8 +39,9 @@ export function PrimersOverview({
 
       <h1 className="text-3xl sm:text-[34px] font-bold tracking-tight leading-tight">Welcome, {name}.</h1>
       <p className="mt-3 text-[15px] text-muted-foreground max-w-[560px] leading-relaxed">
-        To excel in this role, you’ll need a strong grasp of three core concepts. These primers will help you
-        internalize the fundamentals. Each one ends with a short quiz to test your understanding.
+        To excel in this role, you’ll need a strong grasp of three core concepts. <br />
+        These primers will help you internalize the fundamentals. Each one ends with a short quiz to test your
+        understanding.
       </p>
 
       <div className="mt-10 grid gap-4 md:grid-cols-3">

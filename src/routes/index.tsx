@@ -323,9 +323,54 @@ function Index() {
           score={totalScore}
           total={4}
           onRedo={redoAll}
-          onProceed={() => setScreen("results")}
+          onProceed={() => setScreen("task-intro")}
         />
       )}
+
+      {screen === "task-intro" && (
+        <TaskIntro name={name} onBegin={() => setScreen("sim-1")} />
+      )}
+
+      {(["sim-1", "sim-2", "sim-3", "sim-4", "sim-5"] as const).map((s) => {
+        if (screen !== s) return null;
+        const n = parseInt(s.slice(-1), 10);
+        const prev = months[n - 1] ?? MONTH_0;
+        const isReview = reviewing === n;
+        return (
+          <SimulationMonth
+            key={s + (isReview ? "-review" : "")}
+            monthNumber={n}
+            prev={prev}
+            name={name}
+            initialLocked={isReview}
+            initialData={isReview ? months[n] : undefined}
+            onExitReview={isReview ? () => { setReviewing(null); setScreen(`feedback-${n}` as Screen); } : undefined}
+            onSubmit={(d) => submitMonth(n, d)}
+          />
+        );
+      })}
+
+      {(["feedback-1", "feedback-2", "feedback-3", "feedback-4", "feedback-5"] as const).map((s) => {
+        if (screen !== s) return null;
+        const n = parseInt(s.slice(-1), 10);
+        const cur = months[n];
+        const prev = months[n - 1] ?? MONTH_0;
+        if (!cur) return null;
+        return (
+          <MonthFeedback
+            key={s}
+            monthNumber={n}
+            current={cur}
+            prev={prev}
+            cumulativeEbitda={cumulativeEbitda}
+            onReview={() => { setReviewing(n); setScreen(`sim-${n}` as Screen); }}
+            onNext={() => nextAfterFeedback(n)}
+            isLast={n === 5}
+          />
+        );
+      })}
+
+      {screen === "final" && <FinalResults name={name} months={months} />}
 
       {showZ && <ZTableFloating />}
     </AppShell>

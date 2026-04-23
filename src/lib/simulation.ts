@@ -41,7 +41,7 @@ export const SEASONAL_FACTOR: Record<number, number> = {
 
 export const MONTHLY_BUDGET: Record<number, number> = {
   1: 930000,
-  2: 970000,
+  2: 1300000,
   3: 1010000,
   4: 1050000,
   5: 770000,
@@ -242,7 +242,7 @@ export function computeMonth(
     carried: { iq: ArrN; id: ArrN };
   },
   prev: MonthData,
-  elasticity: { qc: ArrN; d2c: ArrN }
+  elasticity: { qc: ArrN; d2c: ArrN },
 ): MonthData {
   const projectedSq: ArrN = [null];
   const projectedSd: ArrN = [null];
@@ -328,7 +328,7 @@ export function computeMonth(
 export function additionalInventoryExpense(
   current: { iq: ArrN; id: ArrN },
   carried: { iq: ArrN; id: ArrN },
-  sourcing: SourcingChoice
+  sourcing: SourcingChoice,
 ): number {
   let sum = 0;
   for (let i = 1; i <= 9; i++) {
@@ -388,14 +388,13 @@ export function evaluateFeedback(
   monthNumber: number,
   current: MonthData,
   prev: MonthData,
-  allMonths: MonthData[]
+  allMonths: MonthData[],
 ): FeedbackCard[] {
   const good: FeedbackCard[] = [];
   const warn: FeedbackCard[] = [];
   const bad: FeedbackCard[] = [];
 
-  const carried =
-    current.carried ?? carriedForMonth(monthNumber, prev);
+  const carried = current.carried ?? carriedForMonth(monthNumber, prev);
 
   // Per-cell, per-channel rules
   for (let i = 1; i <= 9; i++) {
@@ -649,11 +648,7 @@ export function evaluateFeedback(
   // P9 — Budget crunch handled well (Month 5)
   if (monthNumber === 5) {
     const totalMkt = totalMarketing(current.marketing);
-    const additional = additionalInventoryExpense(
-      current.inventory,
-      carried,
-      current.sourcing
-    );
+    const additional = additionalInventoryExpense(current.inventory, carried, current.sourcing);
     const remaining = MONTHLY_BUDGET[5] - additional - totalMkt;
     const profit5 = current.totalProfit ?? 0;
     const profit4 = allMonths[4]?.totalProfit ?? 0;

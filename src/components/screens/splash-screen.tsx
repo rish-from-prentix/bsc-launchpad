@@ -10,20 +10,15 @@ export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
     <div
       className="min-h-screen flex flex-col"
       style={{
-        background:
-          "linear-gradient(180deg, oklch(0.16 0 0) 0%, oklch(0.13 0 0) 60%)",
+        background: "linear-gradient(180deg, oklch(0.16 0 0) 0%, oklch(0.13 0 0) 60%)",
       }}
     >
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8 pt-8 flex items-center justify-between">
         <div className="inline-flex items-center gap-2.5 rounded-full border border-primary/40 bg-primary/5 px-3.5 py-1.5">
-          <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-            Powered by
-          </span>
+          <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Powered by</span>
           <BrandMark brand="prentix" height={16} />
         </div>
-        <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-          Virtual Internship · 2026
-        </div>
+        <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Virtual Internship · 2026</div>
       </div>
 
       <div className="flex-1 flex items-center justify-center px-5 sm:px-8 py-12">
@@ -35,12 +30,9 @@ export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
           <h1 className="text-3xl sm:text-[42px] font-bold tracking-tight leading-tight text-foreground">
             Bombay Shaving Company
           </h1>
-          <p className="mt-2 text-lg text-muted-foreground">
-            Virtual Internship Program
-          </p>
+          <p className="mt-2 text-lg text-muted-foreground">Virtual Internship Program</p>
           <p className="mt-6 text-[15px] text-muted-foreground max-w-[480px] mx-auto leading-relaxed">
-            Step into the role of a Growth & Business Operations Intern. Make
-            real decisions. See real consequences.
+            Step into the role of a Growth & Business Operations Intern. Make real decisions. See real consequences.
           </p>
 
           <div className="mt-10 mx-auto max-w-xl">
@@ -51,22 +43,18 @@ export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
               <div
                 className="absolute inset-0"
                 style={{
-                  background:
-                    "radial-gradient(ellipse at center, oklch(0.22 0 0) 0%, oklch(0.14 0 0) 100%)",
+                  background: "radial-gradient(ellipse at center, oklch(0.22 0 0) 0%, oklch(0.14 0 0) 100%)",
                 }}
               />
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
                 <div className="h-16 w-16 rounded-full bg-primary flex items-center justify-center transition-transform group-hover:scale-105">
                   <Play className="h-6 w-6 text-primary-foreground fill-current ml-0.5" />
                 </div>
-                <span className="text-sm text-foreground/90 font-medium">
-                  Watch Introduction
-                </span>
+                <span className="text-sm text-foreground/90 font-medium">Watch Introduction</span>
               </div>
             </div>
             <p className="mt-3 text-xs text-muted-foreground">
-              Welcome message from Shantanu Deshpande, Founder — Bombay Shaving
-              Company
+              Welcome message from Shantanu Deshpande, Founder — Bombay Shaving Company
             </p>
           </div>
 
@@ -93,9 +81,7 @@ export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
               Begin Internship
               <ArrowRight className="h-4 w-4" />
             </button>
-            <p className="mt-3 text-xs text-muted-foreground">
-              ~20 min to complete onboarding
-            </p>
+            <p className="mt-3 text-xs text-muted-foreground">~20 min to complete onboarding</p>
           </div>
         </div>
       </div>

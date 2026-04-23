@@ -2,9 +2,9 @@ import { Lock } from "lucide-react";
 import {
   CELL_META,
   holdingCostFor,
-  sellingPriceFor,
   unitCostFor,
   type ArrN,
+  type SourcingChoice,
 } from "@/lib/simulation";
 import { SourcingSelector } from "./sourcing-selector";
 
@@ -18,6 +18,7 @@ type Inputs = {
 export function SimCell({
   cell,
   inputs,
+  carried,
   prevSales,
   elasticityQc,
   elasticityD2c,
@@ -29,25 +30,25 @@ export function SimCell({
 }: {
   cell: number;
   inputs: Inputs;
+  carried: { iq: number; id: number };
   prevSales: { sq: number; sd: number };
   elasticityQc: number;
   elasticityD2c: number;
-  sourcing: { nearbyUnits: number; farUnits: number };
+  sourcing: SourcingChoice;
   onChangeInv: (channel: "iq" | "id", value: number) => void;
   onChangeMkt: (channel: "mq" | "md", value: number) => void;
-  onChangeSourcing?: (n: number, f: number) => void;
+  onChangeSourcing?: (c: SourcingChoice) => void;
   locked?: boolean;
 }) {
-  const meta = CELL_META[cell]!;
+  CELL_META[cell]!;
   const uc = unitCostFor(cell, sourcing);
   const hc = holdingCostFor(cell);
   const isCell1 = cell === 1;
   const totalInv = (inputs.iq[cell] ?? 0) + (inputs.id[cell] ?? 0);
 
-  const inputCls = (locked: boolean | undefined) =>
-    locked
-      ? "locked-field w-full rounded-md px-2 py-1.5 text-[13px] font-mono"
-      : "w-full rounded-md border border-border bg-background px-2 py-1.5 text-[13px] font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-primary/60";
+  const inputCls = locked
+    ? "locked-field w-full rounded-md px-2 py-1.5 text-[13px] font-mono"
+    : "w-full rounded-md border border-border bg-background px-2 py-1.5 text-[13px] font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-primary/60";
 
   return (
     <div className="rounded-xl border border-border bg-card p-3.5 relative">
@@ -56,88 +57,161 @@ export function SimCell({
           <Lock className="h-3 w-3" />
         </div>
       )}
-      {/* Inventory */}
-      <div className="space-y-1.5">
-        <Field label="Inventory (QC)">
-          <input
-            type="number"
-            min={0}
-            disabled={locked}
-            value={inputs.iq[cell] ?? 0}
-            onChange={(e) => onChangeInv("iq", Math.max(0, parseInt(e.target.value || "0", 10)))}
-            className={inputCls(locked)}
-          />
-        </Field>
-        <Field label="Inventory (D2C)">
-          <input
-            type="number"
-            min={0}
-            disabled={locked}
-            value={inputs.id[cell] ?? 0}
-            onChange={(e) => onChangeInv("id", Math.max(0, parseInt(e.target.value || "0", 10)))}
-            className={inputCls(locked)}
-          />
-        </Field>
+
+      {/* QC channel block */}
+      <ChannelBlock
+        chLabel="QC"
+        carried={carried.iq}
+        prevSales={prevSales.sq}
+        invValue={inputs.iq[cell] ?? 0}
+        onChangeInv={(v) => onChangeInv("iq", v)}
+        locked={!!locked}
+        inputCls={inputCls}
+      />
+
+      {/* D2C channel block */}
+      <div className="mt-2.5">
+        <ChannelBlock
+          chLabel="D2C"
+          carried={carried.id}
+          prevSales={prevSales.sd}
+          invValue={inputs.id[cell] ?? 0}
+          onChangeInv={(v) => onChangeInv("id", v)}
+          locked={!!locked}
+          inputCls={inputCls}
+        />
       </div>
 
       {isCell1 && onChangeSourcing && (
         <SourcingSelector
-          totalUnits={totalInv}
-          nearbyUnits={sourcing.nearbyUnits}
-          farUnits={sourcing.farUnits}
+          carried={carried.iq + carried.id}
+          totalInventory={totalInv}
+          choice={sourcing}
           onChange={onChangeSourcing}
           disabled={locked}
         />
       )}
 
-      {/* Prev month sales (locked) */}
-      <div className="mt-3 pt-3 border-t border-border/50 space-y-1">
-        <LockedRow label="Prev sales (QC)" value={prevSales.sq} />
-        <LockedRow label="Prev sales (D2C)" value={prevSales.sd} />
+      {/* Divider */}
+      <div className="mt-3 pt-3 border-t border-border/50 space-y-2">
+        <ElasticityMarketing
+          chLabel="QC"
+          elasticity={elasticityQc}
+          mktValue={inputs.mq[cell] ?? 0}
+          onChangeMkt={(v) => onChangeMkt("mq", v)}
+          locked={!!locked}
+          inputCls={inputCls}
+        />
+        <ElasticityMarketing
+          chLabel="D2C"
+          elasticity={elasticityD2c}
+          mktValue={inputs.md[cell] ?? 0}
+          onChangeMkt={(v) => onChangeMkt("md", v)}
+          locked={!!locked}
+          inputCls={inputCls}
+        />
       </div>
 
-      {/* Marketing */}
-      <div className="mt-3 pt-3 border-t border-border/50 space-y-1.5">
-        <Field label="Marketing (QC)">
-          <div className="relative">
-            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-[12px] font-mono">
-              ₹
-            </span>
-            <input
-              type="number"
-              min={0}
-              disabled={locked}
-              value={inputs.mq[cell] ?? 0}
-              onChange={(e) => onChangeMkt("mq", Math.max(0, parseInt(e.target.value || "0", 10)))}
-              className={`${inputCls(locked)} pl-5`}
-            />
-          </div>
-        </Field>
-        <Field label="Marketing (D2C)">
-          <div className="relative">
-            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-[12px] font-mono">
-              ₹
-            </span>
-            <input
-              type="number"
-              min={0}
-              disabled={locked}
-              value={inputs.md[cell] ?? 0}
-              onChange={(e) => onChangeMkt("md", Math.max(0, parseInt(e.target.value || "0", 10)))}
-              className={`${inputCls(locked)} pl-5`}
-            />
-          </div>
-        </Field>
-      </div>
-
-      {/* Context data */}
+      {/* Context */}
       <div className="mt-3 pt-3 border-t border-border/50 grid grid-cols-2 gap-x-2 gap-y-1 text-[10px]">
-        <Stat label="Elasticity QC" value={elasticityQc.toFixed(2)} />
-        <Stat label="Elasticity D2C" value={elasticityD2c.toFixed(2)} />
         <Stat label="Unit cost" value={`₹${Math.round(uc)}`} />
         <Stat label="Holding /unit" value={`₹${hc}`} />
-        <Stat label="SP /unit" value={`₹${sellingPriceFor(cell)}`} />
       </div>
+    </div>
+  );
+}
+
+function ChannelBlock({
+  chLabel,
+  carried,
+  prevSales,
+  invValue,
+  onChangeInv,
+  locked,
+  inputCls,
+}: {
+  chLabel: string;
+  carried: number;
+  prevSales: number;
+  invValue: number;
+  onChangeInv: (v: number) => void;
+  locked: boolean;
+  inputCls: string;
+}) {
+  return (
+    <div className="space-y-1">
+      <LockedRow label={`Carried (${chLabel})`} value={carried} />
+      <LockedRow label={`Prev sales (${chLabel})`} value={prevSales} />
+      <Field label={`Inventory (${chLabel})`}>
+        <input
+          type="number"
+          min={0}
+          disabled={locked}
+          value={invValue}
+          onChange={(e) => onChangeInv(Math.max(0, parseInt(e.target.value || "0", 10)))}
+          className={inputCls}
+        />
+      </Field>
+    </div>
+  );
+}
+
+function ElasticityMarketing({
+  chLabel,
+  elasticity,
+  mktValue,
+  onChangeMkt,
+  locked,
+  inputCls,
+}: {
+  chLabel: string;
+  elasticity: number;
+  mktValue: number;
+  onChangeMkt: (v: number) => void;
+  locked: boolean;
+  inputCls: string;
+}) {
+  const tone =
+    elasticity > 1.1 ? "good" : elasticity >= 0.8 ? "warn" : "bad";
+  const dotColor =
+    tone === "good"
+      ? "bg-[color:var(--success)]"
+      : tone === "warn"
+        ? "bg-[color:var(--warning)]"
+        : "bg-[color:var(--danger)]";
+  const textColor =
+    tone === "good"
+      ? "text-[color:var(--success)]"
+      : tone === "warn"
+        ? "text-[color:var(--warning)]"
+        : "text-[color:var(--danger)]";
+
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between text-[11px]">
+        <span className="text-muted-foreground uppercase tracking-[0.1em] text-[10px]">
+          Elasticity ({chLabel})
+        </span>
+        <span className={`flex items-center gap-1.5 font-mono ${textColor}`}>
+          <span className={`h-1.5 w-1.5 rounded-full ${dotColor}`} />
+          {elasticity.toFixed(2)}
+        </span>
+      </div>
+      <Field label={`Marketing (${chLabel})`}>
+        <div className="relative">
+          <span className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-[12px] font-mono">
+            ₹
+          </span>
+          <input
+            type="number"
+            min={0}
+            disabled={locked}
+            value={mktValue}
+            onChange={(e) => onChangeMkt(Math.max(0, parseInt(e.target.value || "0", 10)))}
+            className={`${inputCls} pl-5`}
+          />
+        </div>
+      </Field>
     </div>
   );
 }

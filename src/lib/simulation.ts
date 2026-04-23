@@ -314,7 +314,7 @@ export function fmtINR(n: number): string {
   const sign = n < 0 ? "-" : "";
   // Indian numbering grouping
   const s = abs.toString();
-  let last3 = s.slice(-3);
+  const last3 = s.slice(-3);
   const rest = s.slice(0, -3);
   if (rest.length === 0) return `${sign}₹${last3}`;
   const restFmt = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",");

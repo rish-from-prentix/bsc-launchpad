@@ -56,7 +56,7 @@ const PRIMER_META = [
   {
     id: 1,
     title: "Marketing Elasticity",
-    desc: "How marketing spend drives — or doesn't drive — sales.",
+    desc: "How marketing spend drives (or doesn't drive) sales.",
   },
   {
     id: 2,
@@ -81,15 +81,12 @@ const QUIZ_1: QuizQuestion[] = [
         <div>Spend increase = (34,000 − 33,000) / 33,000 = +3.03%</div>
         <div>Elasticity (midpoint of 1.8–1.9) = 1.85</div>
         <div>Sales increase = 3.03% × 1.85 = 5.61%</div>
-        <div className="text-primary">
-          New sales = ₹3,20,000 × 1.0561 = ₹3,37,952 ✓
-        </div>
+        <div className="text-primary">New sales = ₹3,20,000 × 1.0561 = ₹3,37,952 ✓</div>
       </>
     ),
   },
   {
-    prompt:
-      "If the budget drops to ₹32,000 instead, what will sales be?",
+    prompt: "If the budget drops to ₹32,000 instead, what will sales be?",
     options: ["₹2.92L", "₹3.02L", "₹3.20L", "₹2.32L"],
     correctIndex: 1,
     explanation: (
@@ -97,9 +94,7 @@ const QUIZ_1: QuizQuestion[] = [
         <div>Spend change = (32,000 − 33,000) / 33,000 = −3.03%</div>
         <div>Elasticity (midpoint) = 1.85</div>
         <div>Sales change = −3.03% × 1.85 = −5.61%</div>
-        <div className="text-primary">
-          New sales = ₹3,20,000 × 0.9439 ≈ ₹3.02L ✓
-        </div>
+        <div className="text-primary">New sales = ₹3,20,000 × 0.9439 ≈ ₹3.02L ✓</div>
       </>
     ),
   },
@@ -118,9 +113,7 @@ const QUIZ_2: QuizQuestion[] = [
         <div>CO = ₹25</div>
         <div>Critical Ratio = 389 / 414 = 0.94</div>
         <div>Z-score ≈ 1.65</div>
-        <div className="text-primary">
-          Optimal Stock = 320 + (1.65 × 80) = 452 ≈ 450 ✓
-        </div>
+        <div className="text-primary">Optimal Stock = 320 + (1.65 × 80) = 452 ≈ 450 ✓</div>
       </>
     ),
   },
@@ -139,10 +132,9 @@ const QUIZ_3: QuizQuestion[] = [
     correctIndex: 2,
     explanation: (
       <div className="font-sans">
-        Don't chase margin or volume in isolation. A channel with great margins
-        but no sales, or massive volume but razor-thin margins, both leave
-        money on the table. The question is always: where does one extra unit
-        earn the most profit after all costs?
+        Don't chase margin or volume in isolation. A channel with great margins but no sales, or massive volume but
+        razor-thin margins, both leave money on the table. The question is always: where does one extra unit earn the
+        most profit after all costs?
       </div>
     ),
   },
@@ -165,11 +157,7 @@ function Index() {
     });
   }
   const [name, setName] = useState("");
-  const [completed, setCompleted] = useState<[boolean, boolean, boolean]>([
-    false,
-    false,
-    false,
-  ]);
+  const [completed, setCompleted] = useState<[boolean, boolean, boolean]>([false, false, false]);
   const [scores, setScores] = useState<[number, number, number]>([0, 0, 0]);
   // months[0] = MONTH_0; months[1..5] populated as user submits
   const [months, setMonths] = useState<MonthData[]>(() => [MONTH_0]);
@@ -221,9 +209,7 @@ function Index() {
     else setScreen(`sim-${n + 1}` as Screen);
   }
 
-  const cumulativeEbitda = months
-    .filter((m) => m && m.month >= 1)
-    .reduce((s, m) => s + (m.totalProfit ?? 0), 0);
+  const cumulativeEbitda = months.filter((m) => m && m.month >= 1).reduce((s, m) => s + (m.totalProfit ?? 0), 0);
 
   if (screen === "splash") {
     return <SplashScreen onBegin={startBeging} />;
@@ -266,28 +252,19 @@ function Index() {
     }
   })();
 
-  const showZ =
-    screen.startsWith("primer-") ||
-    screen.startsWith("quiz-") ||
-    screen.startsWith("sim-");
+  const showZ = screen.startsWith("primer-") || screen.startsWith("quiz-") || screen.startsWith("sim-");
 
   const isSim = screen.startsWith("sim-") || screen.startsWith("feedback-");
-  const isPrimer = screen.startsWith("primer-") || screen.startsWith("quiz-") || screen === "overview" || screen === "results";
+  const isPrimer =
+    screen.startsWith("primer-") || screen.startsWith("quiz-") || screen === "overview" || screen === "results";
   const crumbs = isSim
-    ? [
-        { label: "Internship", onClick: () => jumpTo("task-intro") },
-        { label: ctx ?? "" },
-      ]
+    ? [{ label: "Internship", onClick: () => jumpTo("task-intro") }, { label: ctx ?? "" }]
     : isPrimer
       ? [{ label: "Primers", onClick: () => jumpTo("overview") }, { label: ctx ?? "" }]
       : undefined;
 
   return (
-    <AppShell
-      contextLabel={ctx}
-      onBack={history.length > 1 ? goBack : undefined}
-      crumbs={crumbs}
-    >
+    <AppShell contextLabel={ctx} onBack={history.length > 1 ? goBack : undefined} crumbs={crumbs}>
       {screen === "overview" && (
         <PrimersOverview
           name={name}
@@ -299,10 +276,7 @@ function Index() {
         />
       )}
       {screen === "primer-1" && (
-        <PrimerMarketing
-          onBack={() => setScreen("overview")}
-          onQuiz={() => setScreen("quiz-1")}
-        />
+        <PrimerMarketing onBack={() => setScreen("overview")} onQuiz={() => setScreen("quiz-1")} />
       )}
       {screen === "quiz-1" && (
         <Quiz
@@ -315,10 +289,7 @@ function Index() {
         />
       )}
       {screen === "primer-2" && (
-        <PrimerNewsvendor
-          onBack={() => setScreen("overview")}
-          onQuiz={() => setScreen("quiz-2")}
-        />
+        <PrimerNewsvendor onBack={() => setScreen("overview")} onQuiz={() => setScreen("quiz-2")} />
       )}
       {screen === "quiz-2" && (
         <Quiz
@@ -331,10 +302,7 @@ function Index() {
         />
       )}
       {screen === "primer-3" && (
-        <PrimerChannel
-          onBack={() => setScreen("overview")}
-          onQuiz={() => setScreen("quiz-3")}
-        />
+        <PrimerChannel onBack={() => setScreen("overview")} onQuiz={() => setScreen("quiz-3")} />
       )}
       {screen === "quiz-3" && (
         <Quiz
@@ -356,9 +324,7 @@ function Index() {
         />
       )}
 
-      {screen === "task-intro" && (
-        <TaskIntro name={name} onBegin={() => setScreen("sim-1")} />
-      )}
+      {screen === "task-intro" && <TaskIntro name={name} onBegin={() => setScreen("sim-1")} />}
 
       {(["sim-1", "sim-2", "sim-3", "sim-4", "sim-5"] as const).map((s) => {
         if (screen !== s) return null;
@@ -373,7 +339,14 @@ function Index() {
             name={name}
             initialLocked={isReview}
             initialData={isReview ? months[n] : undefined}
-            onExitReview={isReview ? () => { setReviewing(null); setScreen(`feedback-${n}` as Screen); } : undefined}
+            onExitReview={
+              isReview
+                ? () => {
+                    setReviewing(null);
+                    setScreen(`feedback-${n}` as Screen);
+                  }
+                : undefined
+            }
             onSubmit={(d) => submitMonth(n, d)}
           />
         );
@@ -393,7 +366,10 @@ function Index() {
             prev={prev}
             allMonths={months}
             cumulativeEbitda={cumulativeEbitda}
-            onReview={() => { setReviewing(n); setScreen(`sim-${n}` as Screen); }}
+            onReview={() => {
+              setReviewing(n);
+              setScreen(`sim-${n}` as Screen);
+            }}
             onNext={() => nextAfterFeedback(n)}
             isLast={n === 5}
           />

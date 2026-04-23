@@ -22,8 +22,8 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
       >
         <Quote className="h-6 w-6 text-primary mx-auto mb-4" />
         <p className="text-lg sm:text-xl text-foreground/95 leading-relaxed font-medium">
-          Imagine you're running a stall selling Bombay Shaving Company Razor Kits at a college fest. You need to decide
-          in the morning how many kits to bring. You can't go back and restock mid-day.
+          Imagine you're running a stall selling BSC's Razor Kits at a college fest. You need to decide in the morning
+          how many kits to bring. You can't go back and restock mid-day.
         </p>
       </div>
 
@@ -53,9 +53,7 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
         cities and channels.
       </p>
 
-      <p className="mt-4 text-[15px] text-foreground/90 leading-[1.7]">
-        There are 2 costs you're always balancing:
-      </p>
+      <p className="mt-4 text-[15px] text-foreground/90 leading-[1.7]">There are 2 costs you're always balancing:</p>
 
       <FormulaCard>Cost of Understocking (CU) = Selling Price − Cost to Make the Product</FormulaCard>
       <p className="text-[14px] text-foreground/85 leading-[1.7]">

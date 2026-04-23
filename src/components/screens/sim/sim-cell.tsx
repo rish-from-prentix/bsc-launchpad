@@ -63,7 +63,6 @@ export function SimCell({
       {/* QC channel block */}
       <ChannelBlock
         chLabel="QC"
-        carried={carried.iq}
         prevSales={prevSales.sq}
         invValue={inputs.iq[cell] ?? 0}
         onChangeInv={(v) => onChangeInv("iq", v)}
@@ -75,7 +74,6 @@ export function SimCell({
       <div className="mt-2.5">
         <ChannelBlock
           chLabel="D2C"
-          carried={carried.id}
           prevSales={prevSales.sd}
           invValue={inputs.id[cell] ?? 0}
           onChangeInv={(v) => onChangeInv("id", v)}

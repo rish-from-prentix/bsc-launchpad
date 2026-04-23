@@ -1,4 +1,5 @@
 import bscLogo from "@/assets/bsc-logo.png";
+import prentixLogo from "@/assets/prentix-logo.png";
 import { cn } from "@/lib/utils";
 
 type BrandMarkProps = {
@@ -8,7 +9,7 @@ type BrandMarkProps = {
 };
 
 export function BrandMark({ brand, className, height = 24 }: BrandMarkProps) {
-  const src = brand === "bsc" ? bscLogo : "https://drive.usercontent.google.com/download?id=1nVqOsuJxkXgf2cDde4BARfJgf8lIckyq&export=view&authuser=0";
+  const src = brand === "bsc" ? bscLogo : prentixLogo;
   const alt = brand === "bsc" ? "Bombay Shaving Company" : "Prentix";
   return (
     <img

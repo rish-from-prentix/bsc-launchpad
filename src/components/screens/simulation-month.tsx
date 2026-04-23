@@ -6,6 +6,7 @@ import {
   MONTH_EVENTS,
   MONTH_0,
   SHANTANU_WELCOME_BODY,
+  ANALYTICS_TEAM_BODY,
   computeElasticity,
   computeMonth,
   carriedForMonth,
@@ -203,6 +204,19 @@ export function SimulationMonth({
             collapsible
             defaultOpen={welcomeOpen}
             onToggle={setWelcomeOpen}
+          />
+        </div>
+      )}
+      {monthNumber === 1 && (
+        <div className="mb-5 max-w-3xl">
+          <EventEmail
+            sender="Analytics Team"
+            initials="AT"
+            subject="Demand estimates for your reference"
+            body={ANALYTICS_TEAM_BODY.replace("[Name]", name || "there")}
+            collapsible
+            defaultOpen={true}
+            accentClassName="h-12 w-12 rounded-full bg-teal-500/15 flex items-center justify-center text-teal-300 font-semibold text-sm shrink-0"
           />
         </div>
       )}

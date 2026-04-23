@@ -3,16 +3,29 @@ import { Sigma, X } from "lucide-react";
 
 const ROWS: Array<[string, string]> = [
   ["0.50", "0.00"],
+  ["0.55", "0.13"],
   ["0.60", "0.25"],
+  ["0.65", "0.39"],
   ["0.70", "0.52"],
   ["0.75", "0.67"],
+  ["0.78", "0.77"],
   ["0.80", "0.84"],
+  ["0.82", "0.92"],
+  ["0.84", "0.99"],
   ["0.85", "1.04"],
+  ["0.86", "1.08"],
   ["0.87", "1.13"],
+  ["0.88", "1.17"],
+  ["0.89", "1.23"],
   ["0.90", "1.28"],
+  ["0.91", "1.34"],
+  ["0.92", "1.41"],
+  ["0.93", "1.48"],
   ["0.94", "1.55"],
   ["0.95", "1.65"],
+  ["0.96", "1.75"],
   ["0.97", "1.88"],
+  ["0.98", "2.05"],
   ["0.99", "2.33"],
 ];
 
@@ -30,7 +43,7 @@ export function ZTableFloating() {
       </button>
       {open && (
         <div
-          className="fixed bottom-36 right-5 z-40 w-72 rounded-xl border border-border bg-card p-5 shadow-[0_12px_48px_rgba(0,0,0,0.6)]"
+          className="fixed bottom-36 right-5 z-40 w-72 max-h-[70vh] overflow-y-auto rounded-xl border border-border bg-card p-5 shadow-[0_12px_48px_rgba(0,0,0,0.6)]"
           style={{ animation: "fadeSlide 220ms ease-out" }}
         >
           <div className="flex items-center justify-between mb-3">
@@ -59,7 +72,7 @@ export function ZTableFloating() {
               {ROWS.map(([cr, z], i) => (
                 <tr
                   key={cr}
-                  className={i % 2 === 0 ? "bg-secondary/40" : ""}
+                  style={{ backgroundColor: i % 2 === 0 ? "#1C1C1C" : "#222222" }}
                 >
                   <td className="py-1.5 px-2">{cr}</td>
                   <td className="py-1.5 px-2 text-right">{z}</td>

@@ -9,6 +9,7 @@ export function EventEmail({
   collapsible = true,
   defaultOpen = true,
   onToggle,
+  accentClassName,
 }: {
   sender: string;
   initials: string;
@@ -17,12 +18,18 @@ export function EventEmail({
   collapsible?: boolean;
   defaultOpen?: boolean;
   onToggle?: (open: boolean) => void;
+  accentClassName?: string;
 }) {
   const [open, setOpen] = useState(defaultOpen);
 
   const Header: ReactNode = (
     <div className="flex items-center gap-3 p-4 sm:p-5">
-      <div className="h-12 w-12 rounded-full bg-secondary flex items-center justify-center text-primary font-semibold text-sm shrink-0">
+      <div
+        className={
+          accentClassName ??
+          "h-12 w-12 rounded-full bg-secondary flex items-center justify-center text-primary font-semibold text-sm shrink-0"
+        }
+      >
         {initials}
       </div>
       <div className="flex-1 min-w-0">

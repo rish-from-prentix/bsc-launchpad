@@ -32,8 +32,9 @@ export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
           </h1>
           <p className="mt-2 text-lg text-muted-foreground">Virtual Internship Program</p>
           <p className="mt-6 text-[15px] text-muted-foreground max-w-[480px] mx-auto leading-relaxed">
-            Step into the role of a Growth & Business Operations Intern. <br /> Make real decisions. See real
-            consequences.
+            Step into the role of a Growth & Business Operations Intern.
+            <br />
+            Make real decisions. See real consequences.
           </p>
 
           <div className="mt-10 mx-auto max-w-xl">

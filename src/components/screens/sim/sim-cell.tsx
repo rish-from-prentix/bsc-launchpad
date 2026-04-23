@@ -126,7 +126,6 @@ export function SimCell({
 
 function ChannelBlock({
   chLabel,
-  carried,
   prevSales,
   invValue,
   onChangeInv,
@@ -134,7 +133,6 @@ function ChannelBlock({
   inputCls,
 }: {
   chLabel: string;
-  carried: number;
   prevSales: number;
   invValue: number;
   onChangeInv: (v: number) => void;
@@ -143,8 +141,7 @@ function ChannelBlock({
 }) {
   return (
     <div className="space-y-1">
-      <LockedRow label={`Carried (${chLabel})`} value={carried} />
-      <LockedRow label={`Prev sales (${chLabel})`} value={prevSales} />
+      <LockedRow label={`Prev Month Sales (${chLabel})`} value={prevSales} />
       <Field label={`Inventory (${chLabel})`}>
         <input
           type="number"

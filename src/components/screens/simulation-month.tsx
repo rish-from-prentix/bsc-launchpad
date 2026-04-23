@@ -224,18 +224,18 @@ export function SimulationMonth({
       )}
 
       {/* Grid */}
-      <div className="rounded-xl border border-border bg-background/40 overflow-x-auto">
+      <div className="rounded-xl border border-border bg-background/40 overflow-x-auto overflow-y-visible">
         <div className="grid grid-cols-[140px_repeat(3,minmax(280px,1fr))] gap-px bg-border min-w-[1140px]">
           {/* Header row — sticky top */}
           <div
-            className="bg-background p-3 sticky top-16 left-0 z-30"
-            style={{ boxShadow: "2px 2px 8px rgba(0,0,0,0.4)" }}
+            className="p-3 sticky top-16 left-0 z-30"
+            style={{ background: "#0A0A0A", boxShadow: "0 2px 8px rgba(0,0,0,0.6)" }}
           />
           {CITIES.map((c) => (
             <div
               key={c.city}
-              className="bg-background p-3 text-[11px] uppercase tracking-[0.22em] text-primary font-semibold sticky top-16 z-20"
-              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.4)" }}
+              className="p-3 text-[11px] uppercase tracking-[0.22em] text-primary font-semibold sticky top-16 z-20"
+              style={{ background: "#0A0A0A", boxShadow: "0 2px 8px rgba(0,0,0,0.6)" }}
             >
               {c.label}
             </div>

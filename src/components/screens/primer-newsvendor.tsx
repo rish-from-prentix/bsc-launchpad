@@ -1,10 +1,7 @@
-import { useState } from "react";
-import { ArrowLeft, ArrowRight, ChevronDown, Quote, Box, Warehouse } from "lucide-react";
+import { ArrowLeft, ArrowRight, Quote, Box, Warehouse, Sigma } from "lucide-react";
 import { Breadcrumb, FormulaCard, SectionLabel, StepBar } from "./primer-shared";
 
 export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQuiz: () => void }) {
-  const [zOpen, setZOpen] = useState(false);
-
   return (
     <div className="mx-auto max-w-2xl px-5 sm:px-8 py-10 sm:py-14" style={{ animation: "fadeSlide 250ms ease-out" }}>
       <div className="flex items-center justify-between mb-6">
@@ -12,8 +9,12 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
         <StepBar active={1} />
       </div>
 
-      <h1 className="text-[28px] sm:text-[32px] font-bold tracking-tight leading-tight">Optimal Inventory Levels</h1>
-      <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">The Newsvendor Problem</p>
+      <h1 className="text-[28px] sm:text-[32px] font-bold tracking-tight leading-tight">
+        Optimal Inventory Levels (Newsvendor Analysis)
+      </h1>
+      <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">
+        Now, this one is slightly complex. But if you grasp this well, your internship will be a cakewalk.
+      </p>
 
       <div
         className="mt-10 rounded-xl border border-border bg-card p-7 sm:p-9 text-center"
@@ -21,65 +22,102 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
       >
         <Quote className="h-6 w-6 text-primary mx-auto mb-4" />
         <p className="text-lg sm:text-xl text-foreground/95 leading-relaxed font-medium">
-          Imagine you're running a stall selling BSC's Razor Kits at a college fest. You need to decide in the morning
-          how many kits to bring. You can't go back and restock mid-day.
+          Imagine you're running a stall selling Bombay Shaving Company Razor Kits at a college fest. You need to decide
+          in the morning how many kits to bring. You can't go back and restock mid-day.
         </p>
       </div>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         <div className="rounded-xl border border-[color:var(--danger)]/30 bg-[color:var(--danger)]/5 p-5">
           <Box className="h-5 w-5 text-[color:var(--danger)] mb-3" />
+          <div className="text-[13px] uppercase tracking-[0.18em] text-[color:var(--danger)] font-semibold mb-2">
+            Too few
+          </div>
           <p className="text-sm text-foreground/90 leading-relaxed">
-            <span className="font-semibold">You get too few</span> → You run out. Customers leave. You lose the profit
-            you could have made.
+            You run out early. Customers come, you have nothing to sell. You lose money you could have made.
           </p>
         </div>
         <div className="rounded-xl border border-[color:var(--warning)]/30 bg-[color:var(--warning)]/5 p-5">
           <Warehouse className="h-5 w-5 text-[color:var(--warning)] mb-3" />
+          <div className="text-[13px] uppercase tracking-[0.18em] text-[color:var(--warning)] font-semibold mb-2">
+            Too many
+          </div>
           <p className="text-sm text-foreground/90 leading-relaxed">
-            <span className="font-semibold">You get too many</span> → The fest ends. You're stuck with unsold stock you
-            paid for.
+            The fest ends and you're left with unsold kits. You paid for them, but made nothing back.
           </p>
         </div>
       </div>
 
       <p className="mt-8 text-[15px] text-foreground/90 leading-[1.7]">
-        This is exactly the problem BSC's supply chain team faces every month - except at a much larger scale, across
+        This is exactly the problem BSC's supply chain team faces every month — except at a much larger scale, across
         cities and channels.
       </p>
 
+      <p className="mt-4 text-[15px] text-foreground/90 leading-[1.7]">
+        There are 2 costs you're always balancing:
+      </p>
+
+      <FormulaCard>Cost of Understocking (CU) = Selling Price − Cost to Make the Product</FormulaCard>
+      <p className="text-[14px] text-foreground/85 leading-[1.7]">
+        For example, if a Razor Kit sells for ₹349 and costs ₹140 to make:
+        <br />
+        CU = ₹349 − ₹140 = ₹209
+        <br />
+        Every time a customer wants a kit and you don't have one, you've lost ₹209.
+      </p>
+
+      <FormulaCard>Cost of Overstocking (CO) = Holding Cost per Unit (+ Discount Loss, if applicable)</FormulaCard>
+      <p className="text-[14px] text-foreground/85 leading-[1.7]">
+        For example, if storing one unsold kit for a month costs ₹30:
+        <br />
+        CO = ₹30
+      </p>
+
       <div className="mt-10">
-        <SectionLabel>The two costs you're always balancing</SectionLabel>
-        <FormulaCard>
-          Cost of Understocking (CU) = Selling Price − Cost to Produce
-          <div className="mt-2 text-xs text-muted-foreground">
-            For example, if a Razor Kit sells for ₹349 and costs ₹140 to make: <br />
-            CU = ₹349 − ₹140 = ₹209 <br />
-            Every time a customer wants a kit and you don't have one, you've lost ₹209.
-          </div>
-        </FormulaCard>
-        <FormulaCard>
-          Cost of Overstocking (CO) = Holding Cost per Unsold Unit (+ Discount Loss, if applicable)
-          <div className="mt-2 text-xs text-muted-foreground">
-            For example, if storing one unsold kit for a month costs ₹30: <br />
-            CO = ₹30
-          </div>
-        </FormulaCard>
+        <SectionLabel>The Critical Ratio: Finding Your Sweet Spot</SectionLabel>
+        <p className="text-[15px] text-foreground/90 leading-[1.7]">
+          Now here's the key insight: you want to keep stocking more inventory as long as the profit from selling one
+          more unit outweighs the cost of holding it unsold.
+        </p>
+        <p className="mt-4 text-[15px] text-foreground/90 leading-[1.7]">
+          The Critical Ratio tells you how often you want to have enough inventory to meet demand:
+        </p>
+        <FormulaCard large>Critical Ratio = CU / (CU + CO)</FormulaCard>
+        <p className="text-[14px] text-foreground/85 leading-[1.7]">
+          Using our Razor Kit example:
+          <br />
+          Critical Ratio = 209 / (209 + 30) = 0.874
+        </p>
+        <div className="mt-6 rounded-lg bg-secondary/40 border border-border p-5 italic text-sm text-foreground/85 leading-relaxed">
+          How to read this: You should stock enough inventory to meet the demand in about 87.4% of scenarios. In other
+          words, you're willing to risk a stockout only 12.6% of the time — because your profit margin is high enough to
+          justify holding more stock. The higher your margin relative to holding cost, the more inventory you should
+          hold. Intuitively, that should make sense.
+        </div>
       </div>
 
       <div className="mt-10">
-        <SectionLabel>Critical Ratio</SectionLabel>
-        <p className="mt-8 text-[15px] text-foreground/90 leading-[1.7]">
-          {" "}
-          Now here's the key insight: you want to keep stocking more inventory as long as the profit from selling one
-          more unit outweighs the cost of holding it unsold. The Critical Ratio tells you how often you want to have
-          enough inventory to meet demand.
+        <SectionLabel>Turning the Ratio into an Actual Number</SectionLabel>
+        <p className="text-[15px] text-foreground/90 leading-[1.7]">
+          The Critical Ratio tells you how confident you want to be. To turn that into an actual stock number, you need
+          two more inputs:
         </p>
-        <FormulaCard large>Critical Ratio = CU / (CU + CO) = 209 / (209 + 30) = 0.874</FormulaCard>
-        <div className="rounded-lg bg-secondary/40 border border-border p-5 italic text-sm text-foreground/85 leading-relaxed">
-          This means: stock enough to meet demand in 87.4% of scenarios. You're willing to accept a stockout only 12.6%
-          of the time.
-        </div>
+        <ul className="mt-4 space-y-2 text-[15px] text-foreground/90 leading-[1.7] list-disc pl-5">
+          <li>
+            <span className="font-semibold">Expected Demand:</span> your best estimate of how many units will sell
+          </li>
+          <li>
+            <span className="font-semibold">Demand Uncertainty:</span> how much the actual demand might vary from that
+            estimate (measured as standard deviation)
+          </li>
+        </ul>
+        <p className="mt-4 text-[15px] text-foreground/90 leading-[1.7]">
+          First, look up the Z-score value corresponding to your Critical Ratio from the Z-table.
+        </p>
+        <p className="mt-4 text-[15px] text-foreground/90 leading-[1.7]">
+          Then, identify optimal inventory levels using the following formula:
+        </p>
+        <FormulaCard>Optimal Stock = Expected Demand + (Z-score × Demand Uncertainty)</FormulaCard>
       </div>
 
       <div
@@ -88,7 +126,7 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
       >
         <div className="p-6 sm:p-7">
           <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Worked Example</div>
-          <div className="text-lg font-semibold mt-1">Razor Kit, Hyderabad</div>
+          <div className="text-[18px] font-bold mt-1">Razor Kit in Hyderabad</div>
 
           <div className="mt-5 grid gap-6 sm:grid-cols-2">
             <div>
@@ -97,7 +135,7 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
                 {[
                   ["Selling Price", "₹349"],
                   ["Unit Cost", "₹140"],
-                  ["Holding Cost", "₹30"],
+                  ["Monthly Holding Cost", "₹30"],
                   ["Expected Demand", "800 units"],
                   ["Std Deviation", "150 units"],
                 ].map(([k, v]) => (
@@ -112,11 +150,11 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
               <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-3">Steps</div>
               <ol className="space-y-2 text-sm font-mono">
                 {[
-                  "CU = ₹209",
+                  "CU = ₹349 − ₹140 = ₹209",
                   "CO = ₹30",
-                  "Critical Ratio = 0.874",
-                  "Z-score = 1.15",
-                  "Optimal = 800 + (1.15 × 150) = 972",
+                  "Critical Ratio = 209 / (209 + 30) = 0.874",
+                  "Z-score (from Z-table, CR = 0.874) ≈ 1.15",
+                  "Optimal Stock = 800 + (1.15 × 150) = 800 + 172 = 972 units",
                 ].map((s, i) => (
                   <li key={i} className="flex gap-3">
                     <span className="text-primary">{i + 1}.</span>
@@ -126,44 +164,30 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
               </ol>
             </div>
           </div>
+          <p className="mt-6 text-[14px] text-foreground/85 leading-[1.7]">
+            So BSC's team would order approximately 972 Razor Kits for Hyderabad this month — enough to confidently
+            cover most demand scenarios without over-committing on inventory.
+          </p>
         </div>
       </div>
 
-      <div className="mt-6 rounded-xl border border-border bg-card overflow-hidden">
-        <button
-          onClick={() => setZOpen((o) => !o)}
-          className="w-full flex items-center justify-between p-5 hover:bg-secondary/30 transition"
-        >
-          <span className="text-sm font-medium">Z-table reference</span>
-          <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${zOpen ? "rotate-180" : ""}`} />
-        </button>
-        {zOpen && (
-          <div className="px-5 pb-5">
-            <table className="w-full text-sm font-mono">
-              <thead>
-                <tr className="text-primary text-[11px] uppercase tracking-[0.14em]">
-                  <th className="text-left font-medium py-2">Critical Ratio</th>
-                  <th className="text-right font-medium py-2">Z-Score</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  ["0.75", "0.67"],
-                  ["0.80", "0.84"],
-                  ["0.85", "1.04"],
-                  ["0.87", "1.13"],
-                  ["0.90", "1.28"],
-                  ["0.95", "1.65"],
-                ].map(([cr, z], i) => (
-                  <tr key={cr} className={i % 2 === 1 ? "bg-secondary/30" : ""}>
-                    <td className="py-1.5 px-2">{cr}</td>
-                    <td className="py-1.5 px-2 text-right">{z}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <div className="mt-10">
+        <p className="text-[15px] text-foreground/90 leading-[1.7]">
+          To look up the Z-score corresponding to your computed Critical Ratio during the simulation, use the Z-table
+          button pinned to the bottom-right corner of every screen.
+        </p>
+        <div className="mt-5 flex justify-center">
+          <div
+            aria-hidden="true"
+            className="inline-flex items-center gap-2 rounded-full border border-primary bg-primary px-4 py-2.5 text-xs font-medium text-primary-foreground shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
+          >
+            <Sigma className="h-3.5 w-3.5" />
+            Z-table
           </div>
-        )}
+        </div>
+        <p className="mt-5 text-[15px] text-foreground/90 leading-[1.7]">
+          Click it any time you need a Z-value. It will always be there.
+        </p>
       </div>
 
       <div className="mt-12 flex items-center gap-3">

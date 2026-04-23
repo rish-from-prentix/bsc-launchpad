@@ -767,3 +767,18 @@ One more thing to keep in mind. In Hyderabad, you may notice that sourcing costs
 
 All the best!
 Shantanu`;
+
+export const ANALYTICS_TEAM_BODY = `Hi [Name],
+
+As you start planning inventory, here's something useful to keep in mind.
+
+Our demand forecasts are estimates, not guarantees. When using Newsvendor analysis to determine optimal stock levels, we recommend assuming a standard deviation of 20% of the previous month's sales as your demand uncertainty.
+
+For example: if Razor Kit sold 290 units last month in a given city and channel, use a standard deviation of 58 units (290 × 0.20) when computing your optimal stock for that cell.
+
+You don't need to use Newsvendor analysis for every decision — you can also rely on your judgement and the data in front of you. But whenever you want to apply it, the 20% rule is a good starting point.
+
+The Z-table button in the bottom-right corner of every screen will help you look up Z-scores whenever you need them.
+
+Good luck!
+Analytics Team`;

@@ -125,12 +125,16 @@ export const MONTH_0: MonthData = {
 export const BASE_ELASTICITY = MONTH_0.elasticity;
 
 /**
- * Pre-seeded carried inventory at the start of Month 1.
- * = max(0, MONTH_0.inventory − MONTH_0.sales). Cells with 0 had a stockout in Month 0.
+ * Hardcoded Month 1 starting stock the student sees pre-filled in the
+ * inventory inputs. These are the on-hand units the company holds going
+ * into the internship. The budget delta for Month 1 is computed against
+ * these values.
  */
-export const MONTH_1_CARRIED: { iq: ArrN; id: ArrN } = {
-  iq: [null, 20, 0, 0, 30, 390, 320, 0, 20, 40],
-  id: [null, 40, 20, 0, 30, 280, 790, 0, 0, 30],
+export const MONTH_1_DEFAULTS: { inventory: { iq: ArrN; id: ArrN } } = {
+  inventory: {
+    iq: [null, 310, 590, 680, 140, 670, 660, 140, 410, 520],
+    id: [null, 220, 510, 390, 240, 890, 1100, 80, 350, 340],
+  },
 };
 
 /**
@@ -156,7 +160,11 @@ export function carriedFromMonth(m: MonthData): { iq: ArrN; id: ArrN } {
  * Month 1 → MONTH_1_CARRIED. Month n → carriedFromMonth(prev).
  */
 export function carriedForMonth(monthNumber: number, prev: MonthData): { iq: ArrN; id: ArrN } {
-  if (monthNumber <= 1) return { iq: [...MONTH_1_CARRIED.iq], id: [...MONTH_1_CARRIED.id] };
+  if (monthNumber <= 1)
+    return {
+      iq: [...MONTH_1_DEFAULTS.inventory.iq],
+      id: [...MONTH_1_DEFAULTS.inventory.id],
+    };
   return carriedFromMonth(prev);
 }
 

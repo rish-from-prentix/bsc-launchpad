@@ -2,6 +2,7 @@ import { Lock } from "lucide-react";
 import {
   CELL_META,
   holdingCostFor,
+  sellingPriceFor,
   unitCostFor,
   type ArrN,
   type SourcingChoice,
@@ -43,6 +44,7 @@ export function SimCell({
   CELL_META[cell]!;
   const uc = unitCostFor(cell, sourcing);
   const hc = holdingCostFor(cell);
+  const sp = sellingPriceFor(cell);
   const isCell1 = cell === 1;
   const totalInv = (inputs.iq[cell] ?? 0) + (inputs.id[cell] ?? 0);
 
@@ -61,7 +63,6 @@ export function SimCell({
       {/* QC channel block */}
       <ChannelBlock
         chLabel="QC"
-        carried={carried.iq}
         prevSales={prevSales.sq}
         invValue={inputs.iq[cell] ?? 0}
         onChangeInv={(v) => onChangeInv("iq", v)}
@@ -73,7 +74,6 @@ export function SimCell({
       <div className="mt-2.5">
         <ChannelBlock
           chLabel="D2C"
-          carried={carried.id}
           prevSales={prevSales.sd}
           invValue={inputs.id[cell] ?? 0}
           onChangeInv={(v) => onChangeInv("id", v)}
@@ -113,9 +113,10 @@ export function SimCell({
       </div>
 
       {/* Context */}
-      <div className="mt-3 pt-3 border-t border-border/50 grid grid-cols-2 gap-x-2 gap-y-1 text-[10px]">
+      <div className="mt-3 pt-3 border-t border-border/50 grid grid-cols-3 gap-x-2 gap-y-1 text-[10px]">
         <Stat label="Unit cost" value={`₹${Math.round(uc)}`} />
         <Stat label="Holding /unit" value={`₹${hc}`} />
+        <Stat label="SP /unit" value={`₹${sp}`} />
       </div>
     </div>
   );
@@ -123,7 +124,6 @@ export function SimCell({
 
 function ChannelBlock({
   chLabel,
-  carried,
   prevSales,
   invValue,
   onChangeInv,
@@ -131,7 +131,6 @@ function ChannelBlock({
   inputCls,
 }: {
   chLabel: string;
-  carried: number;
   prevSales: number;
   invValue: number;
   onChangeInv: (v: number) => void;
@@ -140,8 +139,7 @@ function ChannelBlock({
 }) {
   return (
     <div className="space-y-1">
-      <LockedRow label={`Carried (${chLabel})`} value={carried} />
-      <LockedRow label={`Prev sales (${chLabel})`} value={prevSales} />
+      <LockedRow label={`Prev Month Sales (${chLabel})`} value={prevSales} />
       <Field label={`Inventory (${chLabel})`}>
         <input
           type="number"
@@ -190,14 +188,14 @@ function ElasticityMarketing({
     <div className="space-y-1">
       <div className="flex items-center justify-between text-[11px]">
         <span className="text-muted-foreground uppercase tracking-[0.1em] text-[10px]">
-          Elasticity ({chLabel})
+          Marketing Elasticity ({chLabel})
         </span>
         <span className={`flex items-center gap-1.5 font-mono ${textColor}`}>
           <span className={`h-1.5 w-1.5 rounded-full ${dotColor}`} />
           {elasticity.toFixed(2)}
         </span>
       </div>
-      <Field label={`Marketing (${chLabel})`}>
+      <Field label={`Marketing Budget (${chLabel})`}>
         <div className="relative">
           <span className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-[12px] font-mono">
             ₹

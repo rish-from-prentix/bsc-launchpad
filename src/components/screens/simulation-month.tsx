@@ -5,13 +5,16 @@ import {
   MONTH_CONTEXT,
   MONTH_EVENTS,
   MONTH_0,
+  SHANTANU_WELCOME_BODY,
   computeElasticity,
   computeMonth,
+  carriedForMonth,
   additionalInventoryExpense,
   totalMarketing,
   sellingPriceFor,
   type ArrN,
   type MonthData,
+  type SourcingChoice,
 } from "@/lib/simulation";
 import { EventEmail } from "./sim/event-email";
 import { SimCell } from "./sim/sim-cell";
@@ -67,66 +70,65 @@ export function SimulationMonth({
   onExitReview?: () => void;
 }) {
   const elasticity = useMemo(() => computeElasticity(monthNumber, prev), [monthNumber, prev]);
-  const seed = initialData ?? prev;
-  const [inputs, setInputs] = useState<Inputs>(() => inputsFromMonth(seed));
-  const [sourcing, setSourcing] = useState(() =>
-    initialData?.sourcing ?? { nearbyUnits: 0, farUnits: (seed.inventory.iq[1] ?? 0) + (seed.inventory.id[1] ?? 0) }
+  const carried = useMemo(() => carriedForMonth(monthNumber, prev), [monthNumber, prev]);
+  // The pre-filled values shown to the student are: inventory = carried,
+  // marketing = previous month's marketing.
+  const seedInputs: Inputs = useMemo(() => {
+    if (initialData) return inputsFromMonth(initialData);
+    return {
+      iq: cloneArr(carried.iq),
+      id: cloneArr(carried.id),
+      mq: cloneArr(prev.marketing.mq),
+      md: cloneArr(prev.marketing.md),
+    };
+  }, [carried, prev, initialData]);
+
+  const [inputs, setInputs] = useState<Inputs>(seedInputs);
+  const [sourcing, setSourcing] = useState<SourcingChoice>(
+    () => initialData?.sourcing ?? null
   );
   const [reasoning, setReasoning] = useState(initialData?.reasoning ?? "");
   const [showReasoningHint, setShowReasoningHint] = useState(false);
   const [locked, setLocked] = useState<boolean>(!!initialLocked);
+  const [welcomeOpen, setWelcomeOpen] = useState(true);
 
   // If switching months, reseed
   const lastSeedKey = useRef(monthNumber + ":" + (initialData ? "review" : "fresh"));
   useEffect(() => {
     const key = monthNumber + ":" + (initialData ? "review" : "fresh");
     if (lastSeedKey.current !== key) {
-      setInputs(inputsFromMonth(seed));
-      setSourcing(
-        initialData?.sourcing ?? {
-          nearbyUnits: 0,
-          farUnits: (seed.inventory.iq[1] ?? 0) + (seed.inventory.id[1] ?? 0),
-        }
-      );
+      setInputs(seedInputs);
+      setSourcing(initialData?.sourcing ?? null);
       setReasoning(initialData?.reasoning ?? "");
       setLocked(!!initialLocked);
       lastSeedKey.current = key;
     }
-  }, [monthNumber, initialData, initialLocked, seed]);
+  }, [monthNumber, initialData, initialLocked, seedInputs]);
 
   const monthBudget = MONTHLY_BUDGET[monthNumber];
   const additional = additionalInventoryExpense(
     { iq: inputs.iq, id: inputs.id },
-    { iq: prev.inventory.iq, id: prev.inventory.id },
+    carried,
     sourcing
   );
   const mktTotal = totalMarketing({ mq: inputs.mq, md: inputs.md });
   const remaining = monthBudget - additional - mktTotal;
 
-  const totalInvCell1 = (inputs.iq[1] ?? 0) + (inputs.id[1] ?? 0);
-  const sourcingValid = sourcing.nearbyUnits + sourcing.farUnits === totalInvCell1;
-
+  const cell1Carried = (carried.iq[1] ?? 0) + (carried.id[1] ?? 0);
+  const cell1Total = (inputs.iq[1] ?? 0) + (inputs.id[1] ?? 0);
+  const cell1Additional = cell1Total - cell1Carried;
+  const sourcingValid = cell1Additional <= 0 || sourcing != null;
   const canSubmit = !locked && remaining >= 0 && sourcingValid;
 
   const event = MONTH_EVENTS[monthNumber];
+  const showWelcomeEmail = monthNumber === 1;
 
   function setInv(cell: number, ch: "iq" | "id", value: number) {
     setInputs((s) => {
       const next = { ...s, [ch]: cloneArr(s[ch]) };
       next[ch][cell] = value;
-      // If cell 1 changes, snap sourcing to all-far if previously invalid
       return next;
     });
-    if (cell === 1) {
-      // Auto-rebalance: if currently all-far, keep all-far at new total. If all-nearby keep all-nearby.
-      const newTotal =
-        ch === "iq" ? value + (inputs.id[1] ?? 0) : (inputs.iq[1] ?? 0) + value;
-      setSourcing((s) => {
-        if (s.farUnits === totalInvCell1 && s.nearbyUnits === 0) return { nearbyUnits: 0, farUnits: newTotal };
-        if (s.nearbyUnits === totalInvCell1 && s.farUnits === 0) return { nearbyUnits: newTotal, farUnits: 0 };
-        return s;
-      });
-    }
   }
 
   function setMkt(cell: number, ch: "mq" | "md", value: number) {
@@ -138,14 +140,8 @@ export function SimulationMonth({
   }
 
   function reset() {
-    const baseSeed = initialData ?? prev;
-    setInputs(inputsFromMonth(baseSeed));
-    setSourcing(
-      initialData?.sourcing ?? {
-        nearbyUnits: 0,
-        farUnits: (baseSeed.inventory.iq[1] ?? 0) + (baseSeed.inventory.id[1] ?? 0),
-      }
-    );
+    setInputs(seedInputs);
+    setSourcing(initialData?.sourcing ?? null);
     setReasoning(initialData?.reasoning ?? "");
   }
 
@@ -163,6 +159,7 @@ export function SimulationMonth({
         marketing: { mq: inputs.mq, md: inputs.md },
         sourcing,
         reasoning,
+        carried,
       },
       prev,
       elasticity
@@ -195,9 +192,22 @@ export function SimulationMonth({
         )}
       </div>
 
-      {/* Event email */}
+      {/* Welcome / Event email */}
+      {showWelcomeEmail && (
+        <div className="mb-5 max-w-3xl">
+          <EventEmail
+            sender="Shantanu Deshpande"
+            initials="SD"
+            subject="Welcome to the team"
+            body={SHANTANU_WELCOME_BODY.replace("[Name]", name || "there")}
+            collapsible
+            defaultOpen={welcomeOpen}
+            onToggle={setWelcomeOpen}
+          />
+        </div>
+      )}
       {event && (
-        <div className="mb-6 max-w-3xl">
+        <div className="mb-5 max-w-3xl">
           <EventEmail
             sender={event.sender}
             initials={event.initials}
@@ -208,14 +218,18 @@ export function SimulationMonth({
       )}
 
       {/* Grid */}
-      <div className="rounded-xl border border-border bg-background/40 overflow-hidden">
-        <div className="grid grid-cols-[140px_repeat(3,minmax(260px,1fr))] gap-px bg-border">
-          {/* Header row */}
-          <div className="bg-background p-3" />
+      <div className="rounded-xl border border-border bg-background/40 overflow-x-auto">
+        <div className="grid grid-cols-[140px_repeat(3,minmax(280px,1fr))] gap-px bg-border min-w-[1140px]">
+          {/* Header row — sticky top */}
+          <div
+            className="bg-background p-3 sticky top-16 left-0 z-30"
+            style={{ boxShadow: "2px 2px 8px rgba(0,0,0,0.4)" }}
+          />
           {CITIES.map((c) => (
             <div
               key={c.city}
-              className="bg-background p-3 text-[11px] uppercase tracking-[0.22em] text-primary font-semibold"
+              className="bg-background p-3 text-[11px] uppercase tracking-[0.22em] text-primary font-semibold sticky top-16 z-20"
+              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.4)" }}
             >
               {c.label}
             </div>
@@ -226,6 +240,7 @@ export function SimulationMonth({
               key={row.sku}
               row={row}
               inputs={inputs}
+              carried={carried}
               prev={prev}
               elasticity={elasticity}
               sourcing={sourcing}
@@ -280,6 +295,7 @@ export function SimulationMonth({
 function Row({
   row,
   inputs,
+  carried,
   prev,
   elasticity,
   sourcing,
@@ -290,10 +306,11 @@ function Row({
 }: {
   row: { sku: string; label: string; cells: readonly number[] };
   inputs: Inputs;
+  carried: { iq: ArrN; id: ArrN };
   prev: MonthData;
   elasticity: { qc: ArrN; d2c: ArrN };
-  sourcing: { nearbyUnits: number; farUnits: number };
-  setSourcing: React.Dispatch<React.SetStateAction<{ nearbyUnits: number; farUnits: number }>>;
+  sourcing: SourcingChoice;
+  setSourcing: React.Dispatch<React.SetStateAction<SourcingChoice>>;
   setInv: (cell: number, ch: "iq" | "id", v: number) => void;
   setMkt: (cell: number, ch: "mq" | "md", v: number) => void;
   locked: boolean;
@@ -301,17 +318,24 @@ function Row({
   const sp = sellingPriceFor(row.cells[0]);
   return (
     <>
-      <div className="bg-background p-3 flex flex-col justify-center">
+      <div
+        className="bg-background p-3 flex flex-col justify-center sticky left-0 z-10"
+        style={{ boxShadow: "2px 0 8px rgba(0,0,0,0.4)" }}
+      >
         <div className="text-[13px] font-semibold text-foreground">{row.label}</div>
         <div className="text-[11px] text-muted-foreground font-mono">₹{sp}</div>
       </div>
       {row.cells.map((cell) => {
-        const meta = CELL_META[cell]!;
+        CELL_META[cell]!;
         return (
           <div key={cell} className="bg-background p-2.5">
             <SimCell
               cell={cell}
               inputs={inputs}
+              carried={{
+                iq: carried.iq[cell] ?? 0,
+                id: carried.id[cell] ?? 0,
+              }}
               prevSales={{
                 sq: prev.sales.sq[cell] ?? MONTH_0.sales.sq[cell] ?? 0,
                 sd: prev.sales.sd[cell] ?? MONTH_0.sales.sd[cell] ?? 0,
@@ -322,11 +346,10 @@ function Row({
               onChangeInv={(ch, v) => setInv(cell, ch, v)}
               onChangeMkt={(ch, v) => setMkt(cell, ch, v)}
               onChangeSourcing={
-                cell === 1 ? (n, f) => setSourcing({ nearbyUnits: n, farUnits: f }) : undefined
+                cell === 1 ? (c: SourcingChoice) => setSourcing(c) : undefined
               }
               locked={locked}
             />
-            <div className="mt-1 text-[10px] text-muted-foreground/70 px-1">{meta.cityLabel}</div>
           </div>
         );
       })}

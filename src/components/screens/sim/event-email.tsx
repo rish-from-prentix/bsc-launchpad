@@ -8,6 +8,7 @@ export function EventEmail({
   body,
   collapsible = true,
   defaultOpen = true,
+  onToggle,
 }: {
   sender: string;
   initials: string;
@@ -15,6 +16,7 @@ export function EventEmail({
   body: string;
   collapsible?: boolean;
   defaultOpen?: boolean;
+  onToggle?: (open: boolean) => void;
 }) {
   const [open, setOpen] = useState(defaultOpen);
 
@@ -29,7 +31,13 @@ export function EventEmail({
       </div>
       {collapsible && (
         <button
-          onClick={() => setOpen((o) => !o)}
+          onClick={() => {
+            setOpen((o) => {
+              const next = !o;
+              onToggle?.(next);
+              return next;
+            });
+          }}
           className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground transition"
           aria-label={open ? "Collapse email" : "Expand email"}
         >

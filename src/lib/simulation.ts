@@ -40,17 +40,18 @@ export const SEASONAL_FACTOR: Record<number, number> = {
 };
 
 export const MONTHLY_BUDGET: Record<number, number> = {
-  1: 1260000,
-  2: 1300000,
-  3: 1340000,
-  4: 1380000,
-  5: 1100000,
+  1: 930000,
+  2: 970000,
+  3: 1010000,
+  4: 1050000,
+  5: 770000,
 };
 
 export type Sku = "razor" | "beard" | "hair";
 export type City = "hyd" | "blr" | "bom";
 export type Channel = "qc" | "d2c";
 export type Sourcing = "nearby" | "far";
+export type SourcingChoice = Sourcing | null;
 
 export type CellMeta = {
   cell: number;
@@ -87,7 +88,8 @@ export type MonthData = {
   elasticity: { qc: ArrN; d2c: ArrN };
   sales: { sq: ArrN; sd: ArrN }; // actual sales
   projectedDemand: { sq: ArrN; sd: ArrN };
-  sourcing: { nearbyUnits: number; farUnits: number };
+  sourcing: SourcingChoice; // 'nearby' | 'far' | null  (cell 1, Hyd Razor, this month)
+  carried?: { iq: ArrN; id: ArrN }; // carried inventory at start of month n
   reasoning?: string;
   totalProfit?: number;
   perCellProfit?: { qc: ArrN; d2c: ArrN };
@@ -116,24 +118,58 @@ export const MONTH_0: MonthData = {
     sq: [null, 290, 610, 820, 110, 280, 340, 160, 390, 480],
     sd: [null, 180, 490, 410, 210, 610, 310, 140, 350, 310],
   },
-  sourcing: { nearbyUnits: 0, farUnits: 0 },
+  sourcing: null,
   locked: true,
 };
 
 export const BASE_ELASTICITY = MONTH_0.elasticity;
 
 /**
- * Unit cost per cell. For cell 1 (Hyd Razor), uses weighted average of
- * sourcing split. For other cells, returns the flat base cost.
+ * Pre-seeded carried inventory at the start of Month 1.
+ * = max(0, MONTH_0.inventory − MONTH_0.sales). Cells with 0 had a stockout in Month 0.
  */
-export function unitCostFor(cell: number, sourcing?: { nearbyUnits: number; farUnits: number }): number {
+export const MONTH_1_CARRIED: { iq: ArrN; id: ArrN } = {
+  iq: [null, 20, 0, 0, 30, 390, 320, 0, 20, 40],
+  id: [null, 40, 20, 0, 30, 280, 790, 0, 0, 30],
+};
+
+/**
+ * Computes physically-leftover inventory at the start of month n+1 from
+ * month n's submitted inventory and computed sales.
+ */
+export function carriedFromMonth(m: MonthData): { iq: ArrN; id: ArrN } {
+  const iq: ArrN = [null];
+  const id: ArrN = [null];
+  for (let i = 1; i <= 9; i++) {
+    const invQ = m.inventory.iq[i] ?? 0;
+    const invD = m.inventory.id[i] ?? 0;
+    const sQ = m.sales.sq[i] ?? 0;
+    const sD = m.sales.sd[i] ?? 0;
+    iq[i] = Math.max(0, invQ - sQ);
+    id[i] = Math.max(0, invD - sD);
+  }
+  return { iq, id };
+}
+
+/**
+ * Returns the carried inventory the student SEES at the start of month n.
+ * Month 1 → MONTH_1_CARRIED. Month n → carriedFromMonth(prev).
+ */
+export function carriedForMonth(monthNumber: number, prev: MonthData): { iq: ArrN; id: ArrN } {
+  if (monthNumber <= 1) return { iq: [...MONTH_1_CARRIED.iq], id: [...MONTH_1_CARRIED.id] };
+  return carriedFromMonth(prev);
+}
+
+/**
+ * Unit cost per cell. For cell 1 (Hyd Razor), uses weighted average of
+ * the chosen single supplier. For other cells, returns the flat base cost.
+ */
+export function unitCostFor(cell: number, sourcing?: SourcingChoice): number {
   const meta = CELL_META[cell];
   if (!meta) return 0;
   if (cell === 1) {
-    const n = sourcing?.nearbyUnits ?? 0;
-    const f = sourcing?.farUnits ?? 0;
-    if (n + f === 0) return UNIT_COST_BASE.razor_hyd_far;
-    return (n * UNIT_COST_BASE.razor_hyd_nearby + f * UNIT_COST_BASE.razor_hyd_far) / (n + f);
+    if (sourcing === "nearby") return UNIT_COST_BASE.razor_hyd_nearby;
+    return UNIT_COST_BASE.razor_hyd_far; // default / 'far'
   }
   switch (meta.sku) {
     case "razor":
@@ -193,8 +229,9 @@ export function computeMonth(
   submission: {
     inventory: { iq: ArrN; id: ArrN };
     marketing: { mq: ArrN; md: ArrN };
-    sourcing: { nearbyUnits: number; farUnits: number };
+    sourcing: SourcingChoice;
     reasoning?: string;
+    carried: { iq: ArrN; id: ArrN };
   },
   prev: MonthData,
   elasticity: { qc: ArrN; d2c: ArrN }
@@ -268,6 +305,7 @@ export function computeMonth(
     sales: { sq: actualSq, sd: actualSd },
     projectedDemand: { sq: projectedSq, sd: projectedSd },
     sourcing: submission.sourcing,
+    carried: submission.carried,
     reasoning: submission.reasoning,
     totalProfit: Math.round(totalProfit),
     perCellProfit: { qc: profitQ, d2c: profitD },
@@ -276,19 +314,19 @@ export function computeMonth(
 }
 
 /**
- * Live additional inventory expense based on current input vs previous month.
+ * Live additional inventory expense based on current input vs CARRIED inventory.
  * Increases cost the budget. Returns refund (unit cost − ₹30) per unit returned.
  */
 export function additionalInventoryExpense(
   current: { iq: ArrN; id: ArrN },
-  prev: { iq: ArrN; id: ArrN },
-  sourcing: { nearbyUnits: number; farUnits: number }
+  carried: { iq: ArrN; id: ArrN },
+  sourcing: SourcingChoice
 ): number {
   let sum = 0;
   for (let i = 1; i <= 9; i++) {
     const uc = unitCostFor(i, sourcing);
     for (const ch of ["iq", "id"] as const) {
-      const p = prev[ch][i] ?? 0;
+      const p = carried[ch][i] ?? 0;
       const c = current[ch][i] ?? 0;
       const diff = c - p;
       if (diff >= 0) sum += diff * uc;
@@ -341,10 +379,17 @@ export type FeedbackCard = {
 export function evaluateFeedback(
   monthNumber: number,
   current: MonthData,
-  prev: MonthData
+  prev: MonthData,
+  allMonths: MonthData[]
 ): FeedbackCard[] {
-  const cards: FeedbackCard[] = [];
+  const good: FeedbackCard[] = [];
+  const warn: FeedbackCard[] = [];
+  const bad: FeedbackCard[] = [];
 
+  const carried =
+    current.carried ?? carriedForMonth(monthNumber, prev);
+
+  // Per-cell, per-channel rules
   for (let i = 1; i <= 9; i++) {
     const meta = CELL_META[i]!;
     for (const ch of ["qc", "d2c"] as const) {
@@ -353,147 +398,268 @@ export function evaluateFeedback(
       const prevMkt = ch === "qc" ? prev.marketing.mq[i] : prev.marketing.md[i];
       const inv = ch === "qc" ? current.inventory.iq[i] : current.inventory.id[i];
       const sales = ch === "qc" ? current.sales.sq[i] : current.sales.sd[i];
+      const carriedHere = ch === "qc" ? (carried.iq[i] ?? 0) : (carried.id[i] ?? 0);
       if (e == null || curMkt == null || prevMkt == null || inv == null || sales == null) continue;
       const chLabel = ch === "qc" ? "Quick Commerce" : "D2C";
+      const hc = holdingCostFor(i);
 
-      // Rule 1 — low elasticity overspend
-      if (e < 1 && curMkt > prevMkt) {
-        cards.push({
+      const sellThrough = inv > 0 ? sales / inv : 0;
+
+      // N1 — Full stockout (sold 100%)
+      if (inv > 0 && sales >= inv) {
+        bad.push({
           tone: "bad",
-          title: "Low-elasticity ad spend",
-          body: `You increased spend on ${meta.skuLabel}, ${chLabel} in ${meta.cityLabel} where elasticity is ${e.toFixed(2)}. That's a low-performing ad channel. Every extra rupee there is working against you.`,
+          title: `Stockout — ${meta.skuLabel}, ${meta.cityLabel}, ${chLabel}`,
+          body: `You ran out of ${meta.skuLabel} in ${meta.cityLabel} via ${chLabel} before the month ended. Every customer who came after that walked away empty-handed — and likely went to a competitor. Stockouts don't just hurt this month's revenue. They erode the market you're trying to build.`,
         });
-      }
-
-      // Rule 2 — Stockout risk
-      if (inv > 0 && sales >= inv * 0.95) {
-        cards.push({
+      } else if (inv > 0 && sellThrough >= 0.95) {
+        // W1 — Near stockout (95-99%)
+        warn.push({
           tone: "warn",
-          title: "Stockout risk",
-          body: `We nearly ran out of ${meta.skuLabel} in ${meta.cityLabel} via ${chLabel}. Unless this was a calculated move, revisit the inventory strategy for next month.`,
+          title: `Cutting it close — ${meta.skuLabel}, ${meta.cityLabel}, ${chLabel}`,
+          body: `You sold ${Math.round(sellThrough * 100)}% of your inventory here. That's efficient but risky — a small demand uptick would have caused a stockout. Consider whether a small buffer makes sense next month.`,
+        });
+      } else if (inv > 0 && sellThrough >= 0.85) {
+        // P1 — Tight inventory (85-94%)
+        good.push({
+          tone: "good",
+          title: "Tight inventory management",
+          body: `You sold ${Math.round(sellThrough * 100)}% of your ${meta.skuLabel} inventory in ${meta.cityLabel} via ${chLabel} this month. That's efficient capital deployment — you're not leaving money sitting in a warehouse.`,
         });
       }
 
-      // Rule 3 — Excess inventory
-      if (sales > 0 && inv > sales * 3) {
-        cards.push({
+      // W3 — Severe excess (>=3x sales), W2 — excess (2x-3x)
+      if (sales > 0 && inv >= sales * 3) {
+        const idle = inv - sales;
+        warn.push({
           tone: "warn",
-          title: "Excess inventory",
-          body: `You have significantly more ${meta.skuLabel} inventory in ${meta.cityLabel} than you're selling. Consider trimming next month to free up budget.`,
+          title: `Significant overstock — ${meta.skuLabel}, ${meta.cityLabel}, ${chLabel}`,
+          body: `You're holding ${inv} units but only sold ${sales}. That's ${idle} units tied up in working capital, each costing ₹${hc}/month to hold. This is a pattern worth breaking early.`,
         });
-      }
-
-      // Rule 4 — Missed high-elasticity
-      if (e > 1.1 && curMkt <= prevMkt) {
-        cards.push({
+      } else if (sales > 0 && inv >= sales * 2) {
+        const idle = inv - sales;
+        warn.push({
           tone: "warn",
-          title: "Missed opportunity",
-          body: `${meta.skuLabel} in ${meta.cityLabel} via ${chLabel} has strong elasticity (${e.toFixed(2)}). You didn't increase spend there. That's budget that could have worked harder.`,
+          title: "Inventory running ahead of demand",
+          body: `You have ${inv} units of ${meta.skuLabel} in ${meta.cityLabel} via ${chLabel} but only sold ${sales}. That's ${idle} units sitting idle, each costing ₹${hc} to hold. Consider trimming next month.`,
         });
       }
 
-      // Rule 5 — Smart high-elasticity
+      // P2 / W4 — high elasticity
       if (e > 1.1 && curMkt > prevMkt) {
-        cards.push({
+        good.push({
           tone: "good",
-          title: "Smart allocation",
-          body: `Good call increasing spend on ${meta.skuLabel} in ${meta.cityLabel} via ${chLabel}. With elasticity at ${e.toFixed(2)}, that extra budget is earning its keep.`,
+          title: "Smart spend on a high-elasticity channel",
+          body: `You increased marketing for ${meta.skuLabel} in ${meta.cityLabel} via ${chLabel} where elasticity is ${e.toFixed(2)}. Every extra rupee there is pulling more than its weight. Good call.`,
         });
-      }
-    }
-  }
-
-  // Rule 6 — Month 3 only: Hyd Beard Oil response
-  if (monthNumber === 3) {
-    for (const ch of ["qc", "d2c"] as const) {
-      const proj = ch === "qc" ? current.projectedDemand.sq[4] : current.projectedDemand.sd[4];
-      const sales = ch === "qc" ? current.sales.sq[4] : current.sales.sd[4];
-      if (proj == null || sales == null || proj === 0) continue;
-      const ratio = sales / proj;
-      if (ratio >= 0.9) {
-        cards.push({
-          tone: "good",
-          title: "Strong response to the spike",
-          body: `Well done responding to the updates and increasing inventory in Hyderabad. We would have lost out on many sales had we not moved quickly.`,
-        });
-        break;
-      } else if (ratio >= 0.7) {
-        cards.push({
+      } else if (e > 1.1 && curMkt <= prevMkt) {
+        warn.push({
           tone: "warn",
-          title: "Partial response",
-          body: `Well done responding to the updates and increasing inventory in Hyderabad. However, the chosen inventory levels were insufficient, still leading to lost sales.`,
+          title: `Missed opportunity — ${meta.skuLabel}, ${meta.cityLabel}, ${chLabel}`,
+          body: `Elasticity here is ${e.toFixed(2)} — that means every 1% increase in spend drives ${e.toFixed(2)}% more sales. You kept the budget flat. That's a high-yield channel left underutilized.`,
         });
-        break;
-      } else {
-        cards.push({
+      }
+
+      // P10 / W5 — low elasticity
+      if (e < 0.8 && curMkt <= prevMkt) {
+        good.push({
+          tone: "good",
+          title: "Disciplined restraint",
+          body: `You held back marketing for ${meta.skuLabel} in ${meta.cityLabel} via ${chLabel} where elasticity is only ${e.toFixed(2)}. Not every channel deserves more spend. Knowing where to hold is as valuable as knowing where to push.`,
+        });
+      } else if (e < 0.8 && curMkt > prevMkt) {
+        warn.push({
+          tone: "warn",
+          title: `Low-yield ad spend — ${meta.skuLabel}, ${meta.cityLabel}, ${chLabel}`,
+          body: `You increased marketing in a channel where elasticity is only ${e.toFixed(2)}. Each 1% extra spend only returns ${e.toFixed(2)}% in sales. That budget would have worked harder elsewhere.`,
+        });
+      }
+
+      // N5 — Returned stock you needed
+      if (carriedHere > inv && sales >= inv && inv > 0) {
+        bad.push({
           tone: "bad",
-          title: "Missed the spike",
-          body: `By not responding to the updates and increasing inventory in Hyderabad, we lost out on all sales in the last 2 weeks, hurting both total profit and brand trust.`,
+          title: "Returned stock you needed",
+          body: `You returned ${meta.skuLabel} inventory in ${meta.cityLabel} via ${chLabel} to free up budget, then ran out of stock mid-month. The ₹30 return cost per unit plus the lost sales made this a double loss. Returning inventory only makes sense when you have clear evidence demand won't materialize.`,
         });
-        break;
+      }
+    }
+
+    // P6 — Hyderabad growth capture (cells 1, 4, 7)
+    if ([1, 4, 7].includes(i)) {
+      for (const ch of ["iq", "id"] as const) {
+        const inv = current.inventory[ch][i] ?? 0;
+        const c = carried[ch][i] ?? 0;
+        if (c > 0 && inv >= c * 1.3) {
+          good.push({
+            tone: "good",
+            title: "Investing in a growing market",
+            body: `You added significant inventory in Hyderabad. With 20% projected MoM growth there, building supply ahead of demand is exactly the right instinct for a new market.`,
+          });
+          break;
+        }
       }
     }
   }
 
-  // Rule 7 — Months 1, 2, 3, 5: Hyd Razor sourcing
-  if ([1, 2, 3, 5].includes(monthNumber)) {
-    const { nearbyUnits, farUnits } = current.sourcing;
-    if (nearbyUnits > farUnits) {
-      cards.push({
+  // Sourcing rules — Hyd Razor (cell 1)
+  const sourcing = current.sourcing;
+  const hydBeardStockedOut =
+    ((current.inventory.iq[4] ?? 0) > 0 && (current.sales.sq[4] ?? 0) >= (current.inventory.iq[4] ?? 0)) ||
+    ((current.inventory.id[4] ?? 0) > 0 && (current.sales.sd[4] ?? 0) >= (current.inventory.id[4] ?? 0));
+
+  if (monthNumber === 3) {
+    if (sourcing === "nearby") {
+      good.push({
+        tone: "good",
+        title: "Right call under pressure",
+        body: `With inventory running out in Hyderabad, you prioritized speed over cost. The nearby supplier costs more but the alternative was two weeks of lost sales. Well played.`,
+      });
+      if (hydBeardStockedOut) {
+        bad.push({
+          tone: "bad",
+          title: "Right instinct, wrong SKU",
+          body: `You ordered from the nearby supplier — good instinct for speed. But the spike was in Beard Oil, and inventory there still ran short. Next time, trace the signal all the way to the specific SKU before placing the order.`,
+        });
+      }
+    } else if (sourcing === "far" && hydBeardStockedOut) {
+      bad.push({
+        tone: "bad",
+        title: "Speed mattered here — wrong supplier",
+        body: `You ordered from the faraway supplier to save ₹20 per unit, but the inventory was needed urgently. It arrived too late. The margin saving was wiped out by the sales you missed while waiting.`,
+      });
+    }
+  } else {
+    // Non-Month-3 sourcing
+    if (sourcing === "far") {
+      good.push({
+        tone: "good",
+        title: "Margin-conscious sourcing",
+        body: `You ordered Hyderabad Razor Kits from the faraway supplier. That's ₹20 saved per unit. If you didn't need inventory urgently, this was exactly the right call.`,
+      });
+    } else if (sourcing === "nearby") {
+      warn.push({
         tone: "warn",
         title: "Sourcing cost note",
-        body: `You ordered from the nearby manufacturer. That's the right call if you needed inventory fast. But it cost you ₹20 more per unit than the far supplier.`,
-      });
-    } else if (farUnits > 0) {
-      cards.push({
-        tone: "good",
-        title: "Smart sourcing",
-        body: `Smart move ordering from the faraway supplier. You saved ₹20 per unit and didn't need the inventory urgently.`,
+        body: `You ordered Hyderabad Razor Kits from the nearby supplier at ₹160/unit. The faraway option is ₹140. Unless you needed inventory urgently, that's ₹20 per unit left on the table.`,
       });
     }
   }
 
-  // Rule 8 — Month 4: Bombay Razor levers
+  // N2/N3 — Hyd Beard Oil spike (Month 3)
+  if (monthNumber === 3) {
+    for (const ch of ["sq", "sd"] as const) {
+      const proj = current.projectedDemand[ch][4] ?? 0;
+      const sales = current.sales[ch][4] ?? 0;
+      if (proj <= 0) continue;
+      const ratio = sales / proj;
+      if (ratio < 0.7) {
+        bad.push({
+          tone: "bad",
+          title: "Missed the Hyderabad spike",
+          body: `The influencer reel drove a surge in Beard Oil demand in Hyderabad. By not increasing inventory, we ran out in roughly two weeks. The last half of the month was dead sales — and every customer who couldn't find the product found someone else who had it.`,
+        });
+        break;
+      } else if (ratio >= 0.7 && ratio < 0.9) {
+        bad.push({
+          tone: "bad",
+          title: "Partially missed the Hyderabad spike",
+          body: `You increased Beard Oil inventory in Hyderabad, but not enough. We still ran short before the month was out. Partial preparation is better than none, but demand outpaced your stock in the final stretch.`,
+        });
+        break;
+      }
+    }
+  }
+
+  // P5 / W6 — Festival season prep (Month 2)
+  if (monthNumber === 2) {
+    let increases = 0;
+    for (let i = 1; i <= 9; i++) {
+      const cQ = carried.iq[i] ?? 0;
+      const cD = carried.id[i] ?? 0;
+      const iQ = current.inventory.iq[i] ?? 0;
+      const iD = current.inventory.id[i] ?? 0;
+      if (iQ > cQ) increases++;
+      if (iD > cD) increases++;
+    }
+    if (increases >= 4) {
+      good.push({
+        tone: "good",
+        title: "Festival season — well prepared",
+        body: `You stocked up ahead of the demand spike. Brands that don't prepare for festival season leave their best sales window understocked. You didn't make that mistake.`,
+      });
+    } else if (increases < 3) {
+      warn.push({
+        tone: "warn",
+        title: "Festival season — underweight",
+        body: `You didn't materially increase inventory heading into festival season. Demand spikes 20-30% this period. If demand came in at the high end, you likely left sales on the table.`,
+      });
+    }
+  }
+
+  // P7 / W7 — Bombay Razor (Month 4)
   if (monthNumber === 4) {
-    const prevMq3 = prev.marketing.mq[3] ?? 0;
-    const prevMd3 = prev.marketing.md[3] ?? 0;
-    const curMq3 = current.marketing.mq[3] ?? 0;
-    const curMd3 = current.marketing.md[3] ?? 0;
-    const mktUp = curMq3 > prevMq3 || curMd3 > prevMd3;
-    const prevInvQ = prev.inventory.iq[3] ?? 0;
-    const prevInvD = prev.inventory.id[3] ?? 0;
+    const prevMq = prev.marketing.mq[3] ?? 0;
+    const prevMd = prev.marketing.md[3] ?? 0;
+    const curMq = current.marketing.mq[3] ?? 0;
+    const curMd = current.marketing.md[3] ?? 0;
+    const mktUp = curMq > prevMq || curMd > prevMd;
+    const carriedQ = carried.iq[3] ?? 0;
+    const carriedD = carried.id[3] ?? 0;
     const curInvQ = current.inventory.iq[3] ?? 0;
     const curInvD = current.inventory.id[3] ?? 0;
-    const invDown = curInvQ < prevInvQ || curInvD < prevInvD;
+    const invDown = curInvQ < carriedQ || curInvD < carriedD;
     if (mktUp) {
-      cards.push({
+      good.push({
         tone: "good",
-        title: "Visibility recovered",
-        body: `Well done increasing marketing budget for Razor Kits in Bombay. Our visibility has recovered and sales are back on track.`,
+        title: "Right diagnosis, right response",
+        body: `You increased marketing for Razor Kits in Bombay instead of cutting inventory. That's the correct read — this was a visibility problem, not a demand problem. Reducing inventory would have made it worse.`,
       });
-    } else if (invDown) {
-      cards.push({
-        tone: "bad",
-        title: "Wrong lever",
-        body: `Reducing inventory didn't address the visibility problem in Bombay. Customers still want the product — they just couldn't find us. Sales likely dipped further.`,
+    } else if (invDown && !mktUp) {
+      warn.push({
+        tone: "warn",
+        title: "Wrong lever in Bombay",
+        body: `You reduced inventory for Razor Kits in Bombay but didn't increase marketing. The problem was visibility — customers couldn't find the product. Cutting supply made the symptom worse, not better.`,
       });
     }
   }
 
-  // Rule 9 — All months: D2C Bangalore Beard Oil (cell 5 D2C)
+  // P8 — D2C Bangalore Beard Oil high elasticity
   {
     const cur = current.marketing.md[5] ?? 0;
     const p = prev.marketing.md[5] ?? 0;
-    if (cur > p) {
-      cards.push({
+    const e = current.elasticity.d2c[5] ?? 0;
+    if (cur > p && e > 1.1) {
+      good.push({
         tone: "good",
         title: "High-elasticity D2C play",
-        body: `You shifted budget toward D2C in Bangalore — smart. The high elasticity there (1.4) means every extra rupee works harder.`,
+        body: `You shifted budget toward D2C Beard Oil in Bangalore. With elasticity at ${e.toFixed(2)}, that is one of the best-returning channels in your portfolio. Every extra rupee there compounds.`,
       });
     }
   }
 
-  return cards;
+  // P9 — Budget crunch handled well (Month 5)
+  if (monthNumber === 5) {
+    const totalMkt = totalMarketing(current.marketing);
+    const additional = additionalInventoryExpense(
+      current.inventory,
+      carried,
+      current.sourcing
+    );
+    const remaining = MONTHLY_BUDGET[5] - additional - totalMkt;
+    const profit5 = current.totalProfit ?? 0;
+    const profit4 = allMonths[4]?.totalProfit ?? 0;
+    if (remaining >= 0 && profit5 >= profit4 * 0.8) {
+      good.push({
+        tone: "good",
+        title: "Clean budget crunch management",
+        body: `Tighter budget, but you protected your profit. You found the cuts that mattered least and held the line on what drives real returns. That's disciplined operations.`,
+      });
+    }
+  }
+
+  // Render: positive → warning → negative
+  return [...good, ...warn, ...bad];
 }
 
 // Pre-event budget remaining baseline (Month 1, no edits): 1260000 - 0 (additional) - sum of prev marketing

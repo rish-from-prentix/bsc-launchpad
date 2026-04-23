@@ -149,7 +149,21 @@ const QUIZ_3: QuizQuestion[] = [
 ];
 
 function Index() {
-  const [screen, setScreen] = useState<Screen>("splash");
+  const [history, setHistory] = useState<Screen[]>(["splash"]);
+  const screen = history[history.length - 1];
+  function setScreen(s: Screen) {
+    setHistory((h) => (h[h.length - 1] === s ? h : [...h, s]));
+  }
+  function goBack() {
+    setHistory((h) => (h.length > 1 ? h.slice(0, -1) : h));
+  }
+  function jumpTo(s: Screen) {
+    setHistory((h) => {
+      const idx = h.lastIndexOf(s);
+      if (idx >= 0) return h.slice(0, idx + 1);
+      return [...h, s];
+    });
+  }
   const [name, setName] = useState("");
   const [completed, setCompleted] = useState<[boolean, boolean, boolean]>([
     false,
@@ -257,8 +271,23 @@ function Index() {
     screen.startsWith("quiz-") ||
     screen.startsWith("sim-");
 
+  const isSim = screen.startsWith("sim-") || screen.startsWith("feedback-");
+  const isPrimer = screen.startsWith("primer-") || screen.startsWith("quiz-") || screen === "overview" || screen === "results";
+  const crumbs = isSim
+    ? [
+        { label: "Internship", onClick: () => jumpTo("task-intro") },
+        { label: ctx ?? "" },
+      ]
+    : isPrimer
+      ? [{ label: "Primers", onClick: () => jumpTo("overview") }, { label: ctx ?? "" }]
+      : undefined;
+
   return (
-    <AppShell contextLabel={ctx}>
+    <AppShell
+      contextLabel={ctx}
+      onBack={history.length > 1 ? goBack : undefined}
+      crumbs={crumbs}
+    >
       {screen === "overview" && (
         <PrimersOverview
           name={name}
@@ -362,6 +391,7 @@ function Index() {
             monthNumber={n}
             current={cur}
             prev={prev}
+            allMonths={months}
             cumulativeEbitda={cumulativeEbitda}
             onReview={() => { setReviewing(n); setScreen(`sim-${n}` as Screen); }}
             onNext={() => nextAfterFeedback(n)}

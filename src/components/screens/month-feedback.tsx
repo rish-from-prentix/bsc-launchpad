@@ -11,6 +11,7 @@ export function MonthFeedback({
   monthNumber,
   current,
   prev,
+  allMonths,
   cumulativeEbitda,
   onReview,
   onNext,
@@ -19,13 +20,18 @@ export function MonthFeedback({
   monthNumber: number;
   current: MonthData;
   prev: MonthData;
+  allMonths: MonthData[];
   cumulativeEbitda: number;
   onReview: () => void;
   onNext: () => void;
   isLast?: boolean;
 }) {
-  const cards: FeedbackCard[] = evaluateFeedback(monthNumber, current, prev);
+  const cards: FeedbackCard[] = evaluateFeedback(monthNumber, current, prev, allMonths);
   const profit = current.totalProfit ?? 0;
+
+  const good = cards.filter((c) => c.tone === "good");
+  const warn = cards.filter((c) => c.tone === "warn");
+  const bad = cards.filter((c) => c.tone === "bad");
 
   return (
     <div
@@ -47,15 +53,36 @@ export function MonthFeedback({
         </div>
       </div>
 
-      <div className="mt-10 space-y-3">
+      <div className="mt-10 space-y-8">
         {cards.length === 0 && (
           <div className="text-center text-sm text-muted-foreground py-8">
             No specific notes this month — solid steady-state run.
           </div>
         )}
-        {cards.map((c, i) => (
-          <FeedbackCardView key={i} card={c} index={i} />
-        ))}
+        {good.length > 0 && (
+          <Section
+            label="What you did well"
+            color="text-primary"
+            startIndex={0}
+            cards={good}
+          />
+        )}
+        {warn.length > 0 && (
+          <Section
+            label="Watch these"
+            color="text-[color:var(--warning)]"
+            startIndex={good.length}
+            cards={warn}
+          />
+        )}
+        {bad.length > 0 && (
+          <Section
+            label="What hurt you"
+            color="text-[color:var(--danger)]"
+            startIndex={good.length + warn.length}
+            cards={bad}
+          />
+        )}
       </div>
 
       <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
@@ -108,6 +135,31 @@ function FeedbackCardView({ card, index }: { card: FeedbackCard; index: number }
       <div className="min-w-0">
         <div className="text-[13px] font-semibold text-foreground">{card.title}</div>
         <div className="mt-1 text-[13px] text-muted-foreground leading-[1.6]">{card.body}</div>
+      </div>
+    </div>
+  );
+}
+
+function Section({
+  label,
+  color,
+  cards,
+  startIndex,
+}: {
+  label: string;
+  color: string;
+  cards: FeedbackCard[];
+  startIndex: number;
+}) {
+  return (
+    <div>
+      <div className={`text-[10px] uppercase tracking-[0.22em] font-semibold mb-3 ${color}`}>
+        {label}
+      </div>
+      <div className="space-y-2.5">
+        {cards.map((c, i) => (
+          <FeedbackCardView key={i} card={c} index={startIndex + i} />
+        ))}
       </div>
     </div>
   );

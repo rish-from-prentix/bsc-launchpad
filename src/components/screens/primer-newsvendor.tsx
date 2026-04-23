@@ -61,13 +61,20 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
         <FormulaCard>
           Cost of Overstocking (CO) = Holding Cost per Unsold Unit (+ Discount Loss, if applicable)
           <div className="mt-2 text-xs text-muted-foreground">
-            For example, if storing one unsold kit for a month costs ₹30: <br /> CO = ₹30
+            For example, if storing one unsold kit for a month costs ₹30: <br />
+            CO = ₹30
           </div>
         </FormulaCard>
       </div>
 
       <div className="mt-10">
         <SectionLabel>Critical Ratio</SectionLabel>
+        <p className="mt-8 text-[15px] text-foreground/90 leading-[1.7]">
+          {" "}
+          Now here's the key insight: you want to keep stocking more inventory as long as the profit from selling one
+          more unit outweighs the cost of holding it unsold. The Critical Ratio tells you how often you want to have
+          enough inventory to meet demand.
+        </p>
         <FormulaCard large>Critical Ratio = CU / (CU + CO) = 209 / (209 + 30) = 0.874</FormulaCard>
         <div className="rounded-lg bg-secondary/40 border border-border p-5 italic text-sm text-foreground/85 leading-relaxed">
           This means: stock enough to meet demand in 87.4% of scenarios. You're willing to accept a stockout only 12.6%

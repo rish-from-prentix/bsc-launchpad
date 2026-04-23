@@ -192,9 +192,22 @@ export function SimulationMonth({
         )}
       </div>
 
-      {/* Event email */}
+      {/* Welcome / Event email */}
+      {showWelcomeEmail && (
+        <div className="mb-5 max-w-3xl">
+          <EventEmail
+            sender="Shantanu Deshpande"
+            initials="SD"
+            subject="Welcome to the team"
+            body={SHANTANU_WELCOME_BODY.replace("[Name]", name || "there")}
+            collapsible
+            defaultOpen={welcomeOpen}
+            onToggle={setWelcomeOpen}
+          />
+        </div>
+      )}
       {event && (
-        <div className="mb-6 max-w-3xl">
+        <div className="mb-5 max-w-3xl">
           <EventEmail
             sender={event.sender}
             initials={event.initials}
@@ -205,14 +218,18 @@ export function SimulationMonth({
       )}
 
       {/* Grid */}
-      <div className="rounded-xl border border-border bg-background/40 overflow-hidden">
-        <div className="grid grid-cols-[140px_repeat(3,minmax(260px,1fr))] gap-px bg-border">
-          {/* Header row */}
-          <div className="bg-background p-3" />
+      <div className="rounded-xl border border-border bg-background/40 overflow-x-auto">
+        <div className="grid grid-cols-[140px_repeat(3,minmax(280px,1fr))] gap-px bg-border min-w-[1140px]">
+          {/* Header row — sticky top */}
+          <div
+            className="bg-background p-3 sticky top-16 left-0 z-30"
+            style={{ boxShadow: "2px 2px 8px rgba(0,0,0,0.4)" }}
+          />
           {CITIES.map((c) => (
             <div
               key={c.city}
-              className="bg-background p-3 text-[11px] uppercase tracking-[0.22em] text-primary font-semibold"
+              className="bg-background p-3 text-[11px] uppercase tracking-[0.22em] text-primary font-semibold sticky top-16 z-20"
+              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.4)" }}
             >
               {c.label}
             </div>
@@ -223,6 +240,7 @@ export function SimulationMonth({
               key={row.sku}
               row={row}
               inputs={inputs}
+              carried={carried}
               prev={prev}
               elasticity={elasticity}
               sourcing={sourcing}
@@ -277,6 +295,7 @@ export function SimulationMonth({
 function Row({
   row,
   inputs,
+  carried,
   prev,
   elasticity,
   sourcing,
@@ -287,10 +306,11 @@ function Row({
 }: {
   row: { sku: string; label: string; cells: readonly number[] };
   inputs: Inputs;
+  carried: { iq: ArrN; id: ArrN };
   prev: MonthData;
   elasticity: { qc: ArrN; d2c: ArrN };
-  sourcing: { nearbyUnits: number; farUnits: number };
-  setSourcing: React.Dispatch<React.SetStateAction<{ nearbyUnits: number; farUnits: number }>>;
+  sourcing: SourcingChoice;
+  setSourcing: React.Dispatch<React.SetStateAction<SourcingChoice>>;
   setInv: (cell: number, ch: "iq" | "id", v: number) => void;
   setMkt: (cell: number, ch: "mq" | "md", v: number) => void;
   locked: boolean;
@@ -298,17 +318,24 @@ function Row({
   const sp = sellingPriceFor(row.cells[0]);
   return (
     <>
-      <div className="bg-background p-3 flex flex-col justify-center">
+      <div
+        className="bg-background p-3 flex flex-col justify-center sticky left-0 z-10"
+        style={{ boxShadow: "2px 0 8px rgba(0,0,0,0.4)" }}
+      >
         <div className="text-[13px] font-semibold text-foreground">{row.label}</div>
         <div className="text-[11px] text-muted-foreground font-mono">₹{sp}</div>
       </div>
       {row.cells.map((cell) => {
-        const meta = CELL_META[cell]!;
+        CELL_META[cell]!;
         return (
           <div key={cell} className="bg-background p-2.5">
             <SimCell
               cell={cell}
               inputs={inputs}
+              carried={{
+                iq: carried.iq[cell] ?? 0,
+                id: carried.id[cell] ?? 0,
+              }}
               prevSales={{
                 sq: prev.sales.sq[cell] ?? MONTH_0.sales.sq[cell] ?? 0,
                 sd: prev.sales.sd[cell] ?? MONTH_0.sales.sd[cell] ?? 0,
@@ -319,11 +346,10 @@ function Row({
               onChangeInv={(ch, v) => setInv(cell, ch, v)}
               onChangeMkt={(ch, v) => setMkt(cell, ch, v)}
               onChangeSourcing={
-                cell === 1 ? (n, f) => setSourcing({ nearbyUnits: n, farUnits: f }) : undefined
+                cell === 1 ? (c: SourcingChoice) => setSourcing(c) : undefined
               }
               locked={locked}
             />
-            <div className="mt-1 text-[10px] text-muted-foreground/70 px-1">{meta.cityLabel}</div>
           </div>
         );
       })}

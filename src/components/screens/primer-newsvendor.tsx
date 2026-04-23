@@ -54,12 +54,15 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
           Cost of Understocking (CU) = Selling Price − Cost to Produce
           <div className="mt-2 text-xs text-muted-foreground">
             For example, if a Razor Kit sells for ₹349 and costs ₹140 to make: <br />
-            Razor Kit: ₹349 − ₹140 = ₹209 lost per stockout.
+            CU = ₹349 − ₹140 = ₹209 <br />
+            Every time a customer wants a kit and you don't have one, you've lost ₹209.
           </div>
         </FormulaCard>
         <FormulaCard>
-          Cost of Overstocking (CO) = Holding Cost per Unsold Unit
-          <div className="mt-2 text-xs text-muted-foreground">Razor Kit: ₹30 per unit sitting unsold</div>
+          Cost of Overstocking (CO) = Holding Cost per Unsold Unit (+ Discount Loss, if applicable)
+          <div className="mt-2 text-xs text-muted-foreground">
+            For example, if storing one unsold kit for a month costs ₹30: <br /> CO = ₹30
+          </div>
         </FormulaCard>
       </div>
 

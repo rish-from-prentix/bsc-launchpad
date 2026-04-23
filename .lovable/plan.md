@@ -1,77 +1,85 @@
 
-# Cell Layout & Data Model Fixes
 
-Apply 7 targeted fixes to the simulation cell, the data model, and label copy. No other parts of the app change.
+# Primer 2 + Primer 3 Content Rebuild & Month 1 Analytics Email
 
-## 1. Month 1 inventory pre-fill (hardcoded)
+Three content-only changes. No design system, simulation logic, or screen-flow changes.
 
-In `src/lib/simulation.ts`:
-- Add a new constant `MONTH_1_DEFAULTS.inventory` matching the spec values (same as the existing `MONTH_0.inventory` arrays — these are the on-hand stock the student starts with).
-- Replace the existing `MONTH_1_CARRIED` with `MONTH_1_DEFAULTS.inventory`. The student now sees the full 310/590/680… numbers (not 20/0/0…) pre-filled in Month 1 inventory inputs.
-- `carriedForMonth(1, …)` returns `MONTH_1_DEFAULTS.inventory`.
-- Month-1 marketing pre-fill already comes from `MONTH_0.marketing` — no change needed (matches spec exactly).
+## 1. Primer 2 — Newsvendor Analysis (full rewrite)
 
-## 2. Carry-forward from Month 2 onwards
+Rewrite `src/components/screens/primer-newsvendor.tsx` body verbatim per spec, keeping the existing dark/gold visual system.
 
-`carriedFromMonth(prev) = max(0, submittedInventory − actualSales)` is already correct in the engine. Confirmed kept as-is. The budget delta is already computed against `carried` via `additionalInventoryExpense` — also correct after Fix 1.
+Sections in order:
+- Headline: `Optimal Inventory Levels (Newsvendor Analysis)`
+- Subheadline: `Now, this one is slightly complex. But if you grasp this well, your internship will be a cakewalk.`
+- Pull-quote card (gold quote icon, larger font) — college fest stall paragraph verbatim.
+- Two scenario cards (red "Too few" / amber "Too many") — new copy verbatim.
+- Body: "This is exactly the problem BSC's supply chain team faces… 2 costs you're always balancing".
+- FormulaCard 1: `Cost of Understocking (CU) = Selling Price − Cost to Make the Product` + ₹349/₹140/₹209 explanation block verbatim.
+- FormulaCard 2: `Cost of Overstocking (CO) = Holding Cost per Unit (+ Discount Loss, if applicable)` + ₹30 example verbatim.
+- SectionLabel: `THE CRITICAL RATIO: FINDING YOUR SWEET SPOT` + intro paragraph + `Critical Ratio = CU / (CU + CO)` formula card + `Using our Razor Kit example: 209 / (209 + 30) = 0.874`.
+- Italic muted "How to read this" interpretation block verbatim.
+- SectionLabel: `TURNING THE RATIO INTO AN ACTUAL NUMBER` + intro + 2 bullets (Expected Demand, Demand Uncertainty) + Z-table lookup intro + `Optimal Stock = Expected Demand + (Z-score × Demand Uncertainty)` formula card.
+- Worked Example card titled `Razor Kit in Hyderabad` with 5-row INPUTS column (Selling Price ₹349 / Unit Cost ₹140 / Monthly Holding Cost ₹30 / Expected Demand 800 units / Std Deviation 150 units) and 5-step STEPS column (CU=₹209 → CO=₹30 → CR=0.874 → Z≈1.15 → Optimal=972 units), each verbatim.
+- Closing paragraph: "So BSC's team would order approximately 972 Razor Kits…".
+- Z-table access section — **remove the existing collapsible Z-table dropdown**. Replace with the verbatim block:
+  > To look up the Z-score corresponding to your computed Critical Ratio during the simulation, use the Z-table button pinned to the bottom-right corner of every screen.
+- Inline non-clickable replica of the floating Z-table button (gold pill, Σ icon, "Z-table" label) styled to match the live button — built in JSX, not a screenshot.
+- Closing line: "Click it any time you need a Z-value. It will always be there."
+- Nav buttons: `← Back` (ghost) and `Take the Quiz →` (gold).
 
-## 3. Remove the "Carried (QC/D2C)" display rows
+Demand-uncertainty note removed from this primer (moves into the new Month 1 email — see §3).
 
-In `src/components/screens/sim/sim-cell.tsx`, drop the two `LockedRow` lines that render `Carried (QC)` and `Carried (D2C)` from `ChannelBlock`. The pre-filled inventory input itself communicates carried stock.
+## 2. Z-table floating panel — full table
 
-## 4. Cell field order, exact labels, and bottom stat row
+Update `ROWS` in `src/components/z-table.tsx` to the complete 25-row table:
 
-In `sim-cell.tsx`, render in this order per channel block:
-
-```text
-PREV MONTH SALES (QC)        [locked, right-aligned]
-INVENTORY (QC)               [editable]
-
-PREV MONTH SALES (D2C)       [locked, right-aligned]
-INVENTORY (D2C)              [editable]
-─────────────
-MARKETING ELASTICITY (QC)    [locked, color-coded with dot]
-MARKETING BUDGET (QC)        [editable, ₹ prefix]
-
-MARKETING ELASTICITY (D2C)   [locked, color-coded with dot]
-MARKETING BUDGET (D2C)       [editable, ₹ prefix]
-─────────────
-Unit cost ₹X    Holding /unit ₹Y    SP /unit ₹Z
+```
+0.50→0.00  0.55→0.13  0.60→0.25  0.65→0.39  0.70→0.52
+0.75→0.67  0.78→0.77  0.80→0.84  0.82→0.92  0.84→0.99
+0.85→1.04  0.86→1.08  0.87→1.13  0.88→1.17  0.89→1.23
+0.90→1.28  0.91→1.34  0.92→1.41  0.93→1.48  0.94→1.55
+0.95→1.65  0.96→1.75  0.97→1.88  0.98→2.05  0.99→2.33
 ```
 
-Update the bottom stat row to a single 3-column line including `SP /unit` (currently only 2 columns — Unit cost and Holding /unit). Wire `sellingPriceFor(cell)` for the SP value.
+Style polish: alternating row backgrounds `#1C1C1C` / `#222222`, header in gold, JetBrains Mono throughout, no heavy borders. Panel becomes scrollable (max-height + overflow-y) so the longer table fits on screen.
 
-## 5. Hyderabad Razor sourcing UI (Cell 1)
+## 3. Month 1 — Analytics Team email
 
-Rewrite `src/components/screens/sim/sourcing-selector.tsx`:
-- Compute `additionalUnits = totalInventory − carried` (already a prop).
-- If `additionalUnits > 0`: render the headline `You want to order N new units this month.` + `Where are you ordering the additional units from?` + two pill toggles labeled `Nearby supplier ₹160 · 1 week` and `Faraway supplier ₹140 · 3 weeks`. Submit-blocking validation already exists in `simulation-month.tsx` (kept).
-- If `additionalUnits ≤ 0`: hide selector entirely (no return-recovery message — spec says nothing rendered when not ordering).
-- Update the timing copy from "2 weeks / 1 month" → "1 week / 3 weeks".
+In `src/components/screens/simulation-month.tsx`, render a **second** `EventEmail` directly under the Shantanu welcome email, only when `monthNumber === 1`. Default expanded, collapsible.
 
-## 6. Marketing Elasticity color coding
+- Sender: `Analytics Team`
+- Initials: `AT` (avatar uses muted teal tint — pass an optional `accent="teal"` prop to `EventEmail`, or wrap with a small style override; see Technical Notes)
+- Subject: `Demand estimates for your reference`
+- Body verbatim (the 6-paragraph note about 20% std-dev rule, ending with `Good luck! Analytics Team`), with `[Name]` substituted from `name`.
 
-Already implemented in `ElasticityMarketing` with the correct thresholds (>1.1 green, 0.8–1.1 amber, <0.8 red) and a colored dot. Only the **label** needs to change in Fix 7. No threshold changes.
+Body string lives in `src/lib/simulation.ts` as `ANALYTICS_TEAM_BODY` (sibling to `SHANTANU_WELCOME_BODY`) and is imported into the simulation screen.
 
-## 7. Label sweep across all months/screens
+## 4. Primer 3 — Channel Strategy (full rewrite)
 
-Search and replace the following label strings everywhere they appear (sim cells, budget bar, feedback cards, tooltips):
-- `Prev sales (QC)` / `Prev Sales (QC)` → `Prev Month Sales (QC)`
-- `Prev sales (D2C)` / `Prev Sales (D2C)` → `Prev Month Sales (D2C)`
-- `Elasticity (QC)` / `Elasticity QC` → `Marketing Elasticity (QC)`
-- `Elasticity (D2C)` / `Elasticity D2C` → `Marketing Elasticity (D2C)`
-- `Marketing (QC)` → `Marketing Budget (QC)`
-- `Marketing (D2C)` → `Marketing Budget (D2C)`
+Rewrite `src/components/screens/primer-channel.tsx` body verbatim per spec.
 
-Primary surfaces touched: `sim-cell.tsx` (field labels), and a grep across `src/` to catch any lingering instances in `budget-bar.tsx`, `month-feedback.tsx`, and `simulation.ts` feedback strings (most feedback bodies already use full sku/city/channel names so should be unaffected, but the sweep guarantees consistency).
+- Headline: `Channel Strategy`
+- Subheadline: `Quick Commerce vs D2C. The eternal trade-off.`
+- Body: `We sell through 2 key channels and it is important for you to understand the distinction:`
+- Two comparison cards:
+  - **Quick Commerce** (amber tint, lightning icon, subtitle `PLATFORMS LIKE ZEPTO AND BLINKIT`) with the verbatim paragraph about 20–30% commission, lower margins, higher volumes.
+  - **D2C** (blue tint, globe icon, subtitle `OUR OWN BOMBAY SHAVING COMPANY WEBSITE`) with the verbatim paragraph about no intermediary, higher margins, marketing investment.
+- Body line: `The core trade-off here is Margins vs Volume.`
+- Comparison table (Factor / Quick Commerce / D2C — Margin / Volume / Control rows): alternating `#1C1C1C` / `#222222`, gold header, no heavy borders.
+- Key insight block (full width, thin gold top line, white bold centered):
+  > Key Insight: We use both channels. The goal is not to choose one, but to balance them to maximize total profit.
+- Nav buttons: `← Back` and `Take the Quiz →`.
 
 ## Files edited
 
-- `src/lib/simulation.ts` — replace `MONTH_1_CARRIED` with `MONTH_1_DEFAULTS.inventory` semantics; `carriedForMonth(1)` returns the new defaults.
-- `src/components/screens/sim/sim-cell.tsx` — remove carried rows, reorder fields, update labels, add SP /unit to bottom row.
-- `src/components/screens/sim/sourcing-selector.tsx` — new copy, conditional render based on `additionalUnits > 0`, updated timing strings.
-- Anywhere else the old labels appear (label sweep).
+- `src/components/screens/primer-newsvendor.tsx` — full body rewrite, drop collapsible Z-table, add inline floating-button replica.
+- `src/components/screens/primer-channel.tsx` — full body rewrite per spec.
+- `src/components/z-table.tsx` — replace `ROWS` with 25-row table, add scroll, alt-row palette.
+- `src/lib/simulation.ts` — add `ANALYTICS_TEAM_BODY` constant.
+- `src/components/screens/simulation-month.tsx` — render second `EventEmail` for Month 1 only.
+- `src/components/screens/sim/event-email.tsx` — add optional `accentClassName` prop on the avatar so the Analytics email can render in muted teal while Shantanu stays gold (default unchanged).
 
 ## Out of scope (untouched)
 
-Budget bar logic, feedback engine rules, email dropdowns, sticky headers, Z-table, back navigation, design system, color tokens, animations.
+Simulation engine, budget bar, feedback engine, sticky headers, navigation, design tokens, animations, all other screens, Months 2–5 emails, the Z-table button position/behavior.
+

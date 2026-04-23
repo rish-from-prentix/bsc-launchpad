@@ -112,8 +112,8 @@ const QUIZ_2: QuizQuestion[] = [
         <div>CU = ₹599 − ₹210 = ₹389</div>
         <div>CO = ₹25</div>
         <div>Critical Ratio = 389 / 414 = 0.94</div>
-        <div>Z-score ≈ 1.65</div>
-        <div className="text-primary">Optimal Stock = 320 + (1.65 × 80) = 452 ≈ 450 ✓</div>
+        <div>Z-score ≈ 1.55</div>
+        <div className="text-primary">Optimal Stock = 320 + (1.55 × 80) = 444 ≈ 450 ✓</div>
       </>
     ),
   },

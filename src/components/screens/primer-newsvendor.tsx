@@ -13,7 +13,7 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
         Optimal Inventory Levels (Newsvendor Analysis)
       </h1>
       <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">
-        Now, this one is slightly complex. But if you grasp this well, your internship will be a cakewalk.
+        Now, this one is slightly complex. <br /> But if you grasp this well, your internship will be a cakewalk.
       </p>
 
       <div

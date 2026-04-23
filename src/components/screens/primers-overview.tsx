@@ -21,20 +21,14 @@ export function PrimersOverview({
   const allDone = primers.every((p) => p.completed);
 
   return (
-    <div
-      className="mx-auto max-w-4xl px-5 sm:px-8 py-12 sm:py-16"
-      style={{ animation: "fadeSlide 250ms ease-out" }}
-    >
+    <div className="mx-auto max-w-4xl px-5 sm:px-8 py-12 sm:py-16" style={{ animation: "fadeSlide 250ms ease-out" }}>
       <div className="flex items-center gap-2 mb-8">
         {[0, 1, 2].map((i) => (
           <div
             key={i}
             className="h-1 flex-1 max-w-[40px] rounded-full transition-colors"
             style={{
-              backgroundColor:
-                i <= activeIdx
-                  ? "var(--primary)"
-                  : "var(--border)",
+              backgroundColor: i <= activeIdx ? "var(--primary)" : "var(--border)",
             }}
           />
         ))}
@@ -43,12 +37,10 @@ export function PrimersOverview({
         </span>
       </div>
 
-      <h1 className="text-3xl sm:text-[34px] font-bold tracking-tight leading-tight">
-        Welcome, {name}.
-      </h1>
+      <h1 className="text-3xl sm:text-[34px] font-bold tracking-tight leading-tight">Welcome, {name}.</h1>
       <p className="mt-3 text-[15px] text-muted-foreground max-w-[560px] leading-relaxed">
-        To excel at your job, you'll need to understand 3 key concepts. Work
-        through each primer carefully. Each one ends with a short quiz.
+        To excel in this role, you’ll need a strong grasp of three core concepts. These primers will help you
+        internalize the fundamentals. Each one ends with a short quiz to test your understanding.
       </p>
 
       <div className="mt-10 grid gap-4 md:grid-cols-3">
@@ -88,17 +80,11 @@ export function PrimersOverview({
                     <Lock className="h-3 w-3" /> Locked
                   </span>
                 ) : (
-                  <span className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                    Not started
-                  </span>
+                  <span className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Not started</span>
                 )}
               </div>
-              <h3 className="text-[17px] font-semibold leading-snug">
-                {p.title}
-              </h3>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                {p.desc}
-              </p>
+              <h3 className="text-[17px] font-semibold leading-snug">{p.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
             </button>
           );
         })}
@@ -109,9 +95,7 @@ export function PrimersOverview({
           onClick={() => onStart(allDone ? 0 : nextIdx)}
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
         >
-          {allDone
-            ? "Review primers"
-            : `Start Primer ${Math.min(activeIdx + 1, 3)}`}
+          {allDone ? "Review primers" : `Start Primer ${Math.min(activeIdx + 1, 3)}`}
           <ArrowRight className="h-4 w-4" />
         </button>
       </div>

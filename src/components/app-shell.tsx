@@ -65,7 +65,7 @@ export function AppShell({
                 <span className="hidden sm:inline text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
                   Powered by
                 </span>
-                <BrandMark brand="prentix" height={18} />
+                <BrandMark brand="prentix" height={20} />
               </div>
             </div>
             {(contextLabel || (crumbs && crumbs.length)) && (
@@ -85,7 +85,7 @@ export function AppShell({
             <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
               An internship experience by
             </span>
-            <BrandMark brand="prentix" height={14} />
+            <BrandMark brand="prentix" height={16} />
           </div>
         </footer>
       )}

@@ -99,7 +99,7 @@ export function ResultsScreen({
           <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
             Your progress is tracked by
           </span>
-          <BrandMark brand="prentix" height={16} />
+          <BrandMark brand="prentix" height={18} />
         </div>
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
           <button

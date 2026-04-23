@@ -1,18 +1,25 @@
 import { ReactNode } from "react";
+import { ChevronLeft } from "lucide-react";
 import { BrandMark } from "./brand-mark";
 
+export type Crumb = { label: string; onClick?: () => void };
+
 type AppShellProps = {
-  children: ReactNode;
-  contextLabel?: string;
-  showHeader?: boolean;
-  showFooter?: boolean;
+    children: ReactNode;
+    contextLabel?: string;
+    showHeader?: boolean;
+    showFooter?: boolean;
+    onBack?: () => void;
+    crumbs?: Crumb[];
 };
 
 export function AppShell({
-  children,
-  contextLabel,
-  showHeader = true,
-  showFooter = true,
+    children,
+    contextLabel,
+    showHeader = true,
+    showFooter = true,
+    onBack,
+    crumbs,
 }: AppShellProps) {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">

@@ -43,8 +43,7 @@ export function FinalResults({
 
   let headline = `Solid internship, ${name}. You made smart calls and learned from the tough ones.`;
   if (totalProfit >= 5000000) headline = `You're a natural, ${name}. Shantanu would be proud.`;
-  else if (totalProfit < 2500000)
-    headline = `Tough run, ${name}. But that's how you learn. Every decision taught you something.`;
+  else if (totalProfit < 2500000) headline = `Tough run, ${name}. But that's how you learn. Every decision taught you something.`;
 
   const [copied, setCopied] = useState(false);
   function copyPost() {
@@ -65,9 +64,15 @@ export function FinalResults({
   // Stable verification codes for the session (template already shows static
   // placeholders; kept here for potential future overlay use).
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const engagementCode = useMemo(() => Math.random().toString(36).substring(2, 14).toUpperCase(), []);
+  const engagementCode = useMemo(
+    () => Math.random().toString(36).substring(2, 14).toUpperCase(),
+    [],
+  );
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const userCode = useMemo(() => Math.random().toString(36).substring(2, 14).toUpperCase(), []);
+  const userCode = useMemo(
+    () => Math.random().toString(36).substring(2, 14).toUpperCase(),
+    [],
+  );
 
   // Inject Inter Bold font once
   useEffect(() => {
@@ -81,7 +86,8 @@ export function FinalResults({
   }, []);
 
   const certName = name?.trim() || "Participant";
-  const nameFontSize = certName.length > 18 ? Math.max(36, 64 - (certName.length - 18) * 2) : 64;
+  const nameFontSize =
+    certName.length > 18 ? Math.max(36, 64 - (certName.length - 18) * 2) : 64;
 
   async function downloadCertificate() {
     if (!certificateRef.current || downloading) return;
@@ -123,7 +129,7 @@ export function FinalResults({
       <div
         style={{
           position: "absolute",
-          left: 195,
+          left: 178,
           top: 310,
           fontFamily: "'Inter', sans-serif",
           fontWeight: 700,
@@ -145,22 +151,25 @@ export function FinalResults({
       style={{ animation: "fadeSlide 280ms ease-out" }}
     >
       <div className="text-center">
-        <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Internship Wrap</div>
+        <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+          Internship Wrap
+        </div>
         <div className="mt-4 text-[44px] sm:text-[56px] font-bold tracking-tight font-mono text-foreground">
           {fmtINRShort(shown)}
         </div>
-        <div className="text-sm text-muted-foreground mt-1">Total EBITDA across 5 months ({fmtINR(totalProfit)})</div>
+        <div className="text-sm text-muted-foreground mt-1">
+          Total EBITDA across 5 months ({fmtINR(totalProfit)})
+        </div>
         <div className="mt-1 text-[12px] text-muted-foreground">
           Average month-on-month growth:{" "}
-          <span
-            className={`font-mono ${avgGrowth >= 0 ? "text-[color:var(--success)]" : "text-[color:var(--danger)]"}`}
-          >
-            {avgGrowth >= 0 ? "+" : ""}
-            {avgGrowth.toFixed(1)}%
+          <span className={`font-mono ${avgGrowth >= 0 ? "text-[color:var(--success)]" : "text-[color:var(--danger)]"}`}>
+            {avgGrowth >= 0 ? "+" : ""}{avgGrowth.toFixed(1)}%
           </span>
         </div>
 
-        <h1 className="mt-8 text-[22px] sm:text-[26px] font-semibold text-foreground leading-snug">{headline}</h1>
+        <h1 className="mt-8 text-[22px] sm:text-[26px] font-semibold text-foreground leading-snug">
+          {headline}
+        </h1>
       </div>
 
       {/* LinkedIn preview card */}
@@ -175,9 +184,13 @@ export function FinalResults({
               Growth & Business Ops Intern · Just now
             </div>
           </div>
-          <div className="text-[10px] uppercase tracking-[0.18em] text-neutral-400">LinkedIn</div>
+          <div className="text-[10px] uppercase tracking-[0.18em] text-neutral-400">
+            LinkedIn
+          </div>
         </div>
-        <div className="p-4 text-[13.5px] leading-[1.6] text-neutral-800 whitespace-pre-wrap">{LINKEDIN_POST_BODY}</div>
+        <div className="p-4 text-[13.5px] leading-[1.6] text-neutral-800 whitespace-pre-wrap">
+          {LINKEDIN_POST_BODY}
+        </div>
         <div className="px-4 pb-4 pt-1 border-t border-neutral-100 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-neutral-500">
             <span>Featured</span>
@@ -215,8 +228,12 @@ export function FinalResults({
       {/* Certificate Section */}
       <div className="mt-16">
         <div className="text-center">
-          <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Your Certificate</div>
-          <h2 className="mt-3 text-[20px] sm:text-[24px] font-semibold text-foreground">Certificate of Completion</h2>
+          <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+            Your Certificate
+          </div>
+          <h2 className="mt-3 text-[20px] sm:text-[24px] font-semibold text-foreground">
+            Certificate of Completion
+          </h2>
         </div>
 
         {/* On-screen scaled preview */}
@@ -235,7 +252,9 @@ export function FinalResults({
           </div>
         </div>
 
-        <p className="mt-3 text-center text-[12px] text-muted-foreground">Your certificate is ready to download.</p>
+        <p className="mt-3 text-center text-[12px] text-muted-foreground">
+          Your certificate is ready to download.
+        </p>
 
         <div className="mt-5 flex justify-center">
           <button

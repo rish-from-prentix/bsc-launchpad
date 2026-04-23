@@ -157,6 +157,9 @@ function Index() {
     false,
   ]);
   const [scores, setScores] = useState<[number, number, number]>([0, 0, 0]);
+  // months[0] = MONTH_0; months[1..5] populated as user submits
+  const [months, setMonths] = useState<MonthData[]>(() => [MONTH_0]);
+  const [reviewing, setReviewing] = useState<number | null>(null);
 
   const totalScore = scores[0] + scores[1] + scores[2];
 
@@ -190,6 +193,24 @@ function Index() {
     setScreen("primer-1");
   }
 
+  function submitMonth(n: number, data: MonthData) {
+    setMonths((m) => {
+      const next = [...m];
+      next[n] = data;
+      return next;
+    });
+    setScreen(`feedback-${n}` as Screen);
+  }
+
+  function nextAfterFeedback(n: number) {
+    if (n >= 5) setScreen("final");
+    else setScreen(`sim-${n + 1}` as Screen);
+  }
+
+  const cumulativeEbitda = months
+    .filter((m) => m && m.month >= 1)
+    .reduce((s, m) => s + (m.totalProfit ?? 0), 0);
+
   if (screen === "splash") {
     return <SplashScreen onBegin={startBeging} />;
   }
@@ -212,10 +233,29 @@ function Index() {
         return "Quiz 3 of 3 · Channel Strategy";
       case "results":
         return "Results";
+      case "task-intro":
+        return "Day One · Briefing";
+      case "sim-1":
+      case "sim-2":
+      case "sim-3":
+      case "sim-4":
+      case "sim-5":
+        return `Internship · Month ${screen.slice(-1)} of 5`;
+      case "feedback-1":
+      case "feedback-2":
+      case "feedback-3":
+      case "feedback-4":
+      case "feedback-5":
+        return `Month ${screen.slice(-1)} · Results`;
+      case "final":
+        return "Internship Complete";
     }
   })();
 
-  const showZ = screen.startsWith("primer-") || screen.startsWith("quiz-");
+  const showZ =
+    screen.startsWith("primer-") ||
+    screen.startsWith("quiz-") ||
+    screen.startsWith("sim-");
 
   return (
     <AppShell contextLabel={ctx}>

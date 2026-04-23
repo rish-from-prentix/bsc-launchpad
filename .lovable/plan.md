@@ -1,85 +1,59 @@
 
 
-# Primer 2 + Primer 3 Content Rebuild & Month 1 Analytics Email
+# Certificate Generation on Final Results Screen
 
-Three content-only changes. No design system, simulation logic, or screen-flow changes.
+Add a downloadable PDF certificate to the end of the final results screen, using the blank certificate template image as the visual base and overlaying only the participant's name dynamically.
 
-## 1. Primer 2 — Newsvendor Analysis (full rewrite)
+## What you'll see
 
-Rewrite `src/components/screens/primer-newsvendor.tsx` body verbatim per spec, keeping the existing dark/gold visual system.
+After the LinkedIn share card on the final results screen, a new section appears:
 
-Sections in order:
-- Headline: `Optimal Inventory Levels (Newsvendor Analysis)`
-- Subheadline: `Now, this one is slightly complex. But if you grasp this well, your internship will be a cakewalk.`
-- Pull-quote card (gold quote icon, larger font) — college fest stall paragraph verbatim.
-- Two scenario cards (red "Too few" / amber "Too many") — new copy verbatim.
-- Body: "This is exactly the problem BSC's supply chain team faces… 2 costs you're always balancing".
-- FormulaCard 1: `Cost of Understocking (CU) = Selling Price − Cost to Make the Product` + ₹349/₹140/₹209 explanation block verbatim.
-- FormulaCard 2: `Cost of Overstocking (CO) = Holding Cost per Unit (+ Discount Loss, if applicable)` + ₹30 example verbatim.
-- SectionLabel: `THE CRITICAL RATIO: FINDING YOUR SWEET SPOT` + intro paragraph + `Critical Ratio = CU / (CU + CO)` formula card + `Using our Razor Kit example: 209 / (209 + 30) = 0.874`.
-- Italic muted "How to read this" interpretation block verbatim.
-- SectionLabel: `TURNING THE RATIO INTO AN ACTUAL NUMBER` + intro + 2 bullets (Expected Demand, Demand Uncertainty) + Z-table lookup intro + `Optimal Stock = Expected Demand + (Z-score × Demand Uncertainty)` formula card.
-- Worked Example card titled `Razor Kit in Hyderabad` with 5-row INPUTS column (Selling Price ₹349 / Unit Cost ₹140 / Monthly Holding Cost ₹30 / Expected Demand 800 units / Std Deviation 150 units) and 5-step STEPS column (CU=₹209 → CO=₹30 → CR=0.874 → Z≈1.15 → Optimal=972 units), each verbatim.
-- Closing paragraph: "So BSC's team would order approximately 972 Razor Kits…".
-- Z-table access section — **remove the existing collapsible Z-table dropdown**. Replace with the verbatim block:
-  > To look up the Z-score corresponding to your computed Critical Ratio during the simulation, use the Z-table button pinned to the bottom-right corner of every screen.
-- Inline non-clickable replica of the floating Z-table button (gold pill, Σ icon, "Z-table" label) styled to match the live button — built in JSX, not a screenshot.
-- Closing line: "Click it any time you need a Z-value. It will always be there."
-- Nav buttons: `← Back` (ghost) and `Take the Quiz →` (gold).
+- A scaled-down on-screen preview of the certificate (blank template + your name overlaid in the correct position).
+- A muted caption: *"Your certificate is ready to download."*
+- A gold button: **Download Certificate (PDF) →**
 
-Demand-uncertainty note removed from this primer (moves into the new Month 1 email — see §3).
+Clicking the button generates a 1200×850 landscape PDF using the full-resolution template image with your name baked in, named `BSC-Internship-Certificate-{YourName}.pdf`.
 
-## 2. Z-table floating panel — full table
+## How it works
 
-Update `ROWS` in `src/components/z-table.tsx` to the complete 25-row table:
+1. **Template asset**: The blank certificate template image (the second uploaded image, `dc8dcbea-87d7-4a83-bdd3-e6783a447bd1.png`) is copied into `public/assets/certificate-template.png` so it can be loaded by `html2canvas` without CORS issues.
+2. **Off-screen full-size canvas**: A hidden `1200×850px` div is rendered with the template as its background and the user's name absolutely positioned over the name zone (matching the position from the filled example).
+3. **On-screen preview**: The same markup is rendered visibly at a scaled-down size (~600px wide) using CSS `transform: scale(...)` so the proportions are pixel-identical to the export.
+4. **PDF generation**: `html2canvas` captures the hidden full-size node at `scale: 2`, then `jspdf` writes it to a 1200×850 landscape PDF and triggers download.
 
-```
-0.50→0.00  0.55→0.13  0.60→0.25  0.65→0.39  0.70→0.52
-0.75→0.67  0.78→0.77  0.80→0.84  0.82→0.92  0.84→0.99
-0.85→1.04  0.86→1.08  0.87→1.13  0.88→1.17  0.89→1.23
-0.90→1.28  0.91→1.34  0.92→1.41  0.93→1.48  0.94→1.55
-0.95→1.65  0.96→1.75  0.97→1.88  0.98→2.05  0.99→2.33
-```
+## Name overlay specifics
 
-Style polish: alternating row backgrounds `#1C1C1C` / `#222222`, header in gold, JetBrains Mono throughout, no heavy borders. Panel becomes scrollable (max-height + overflow-y) so the longer table fits on screen.
-
-## 3. Month 1 — Analytics Team email
-
-In `src/components/screens/simulation-month.tsx`, render a **second** `EventEmail` directly under the Shantanu welcome email, only when `monthNumber === 1`. Default expanded, collapsible.
-
-- Sender: `Analytics Team`
-- Initials: `AT` (avatar uses muted teal tint — pass an optional `accent="teal"` prop to `EventEmail`, or wrap with a small style override; see Technical Notes)
-- Subject: `Demand estimates for your reference`
-- Body verbatim (the 6-paragraph note about 20% std-dev rule, ending with `Good luck! Analytics Team`), with `[Name]` substituted from `name`.
-
-Body string lives in `src/lib/simulation.ts` as `ANALYTICS_TEAM_BODY` (sibling to `SHANTANU_WELCOME_BODY`) and is imported into the simulation screen.
-
-## 4. Primer 3 — Channel Strategy (full rewrite)
-
-Rewrite `src/components/screens/primer-channel.tsx` body verbatim per spec.
-
-- Headline: `Channel Strategy`
-- Subheadline: `Quick Commerce vs D2C. The eternal trade-off.`
-- Body: `We sell through 2 key channels and it is important for you to understand the distinction:`
-- Two comparison cards:
-  - **Quick Commerce** (amber tint, lightning icon, subtitle `PLATFORMS LIKE ZEPTO AND BLINKIT`) with the verbatim paragraph about 20–30% commission, lower margins, higher volumes.
-  - **D2C** (blue tint, globe icon, subtitle `OUR OWN BOMBAY SHAVING COMPANY WEBSITE`) with the verbatim paragraph about no intermediary, higher margins, marketing investment.
-- Body line: `The core trade-off here is Margins vs Volume.`
-- Comparison table (Factor / Quick Commerce / D2C — Margin / Volume / Control rows): alternating `#1C1C1C` / `#222222`, gold header, no heavy borders.
-- Key insight block (full width, thin gold top line, white bold centered):
-  > Key Insight: We use both channels. The goal is not to choose one, but to balance them to maximize total profit.
-- Nav buttons: `← Back` and `Take the Quiz →`.
-
-## Files edited
-
-- `src/components/screens/primer-newsvendor.tsx` — full body rewrite, drop collapsible Z-table, add inline floating-button replica.
-- `src/components/screens/primer-channel.tsx` — full body rewrite per spec.
-- `src/components/z-table.tsx` — replace `ROWS` with 25-row table, add scroll, alt-row palette.
-- `src/lib/simulation.ts` — add `ANALYTICS_TEAM_BODY` constant.
-- `src/components/screens/simulation-month.tsx` — render second `EventEmail` for Month 1 only.
-- `src/components/screens/sim/event-email.tsx` — add optional `accentClassName` prop on the avatar so the Analytics email can render in muted teal while Shantanu stays gold (default unchanged).
+- **Font**: Inter Bold, loaded from Google Fonts via a `<link>` injected into the document `<head>` (added once on mount of the final results screen).
+- **Color**: `#0A1628` (dark navy).
+- **Position**: absolutely positioned to match the filled reference — left edge ~`290px`, top edge ~`520px` from the 1200×850 canvas origin (the name zone above "Virtual Internship: Growth & Business Ops").
+- **Size scaling**: starts at `64px`. For names longer than 18 characters, scales down using `Math.max(36, 64 - (name.length - 18) * 2)` so it never overflows the zone.
+- **Fallback**: if `name` is empty, displays "Participant".
 
 ## Out of scope (untouched)
 
-Simulation engine, budget bar, feedback engine, sticky headers, navigation, design tokens, animations, all other screens, Months 2–5 emails, the Z-table button position/behavior.
+The LinkedIn card, EBITDA count-up, headline, footer brand mark, and every other screen, color token, animation, and piece of simulation logic remain exactly as-is.
+
+## Technical notes
+
+**Files edited / created**:
+- `public/assets/certificate-template.png` — copied from the uploaded blank template (`user-uploads://dc8dcbea-87d7-4a83-bdd3-e6783a447bd1.png`).
+- `src/components/screens/final-results.tsx` — adds the certificate section (preview + hidden full-size capture node + download handler), the Google Fonts `<link>` injection inside a `useEffect`, and the verification-code memos (kept stable per session, even though the template already shows static placeholder codes — they aren't rendered as overlays, just held in state for potential future use).
+- `package.json` — adds `html2canvas` and `jspdf` dependencies.
+
+**Capture flow**:
+```ts
+const canvas = await html2canvas(certificateRef.current!, {
+  scale: 2,
+  useCORS: true,
+  allowTaint: false,
+  backgroundColor: null,
+});
+const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [1200, 850] });
+pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, 1200, 850);
+pdf.save(`BSC-Internship-Certificate-${name || "Participant"}.pdf`);
+```
+
+**Why `public/` and not `src/assets/`**: `html2canvas` fetches background images at runtime; `src/assets` files go through Vite's hashed bundler pipeline, while `public/` files are served at predictable URLs without CORS friction.
+
+**Hidden node positioning**: rendered with `position: fixed; left: -10000px; top: 0;` (rather than `display: none`) so layout/fonts compute correctly for the capture.
 

@@ -40,17 +40,18 @@ export const SEASONAL_FACTOR: Record<number, number> = {
 };
 
 export const MONTHLY_BUDGET: Record<number, number> = {
-  1: 1260000,
-  2: 1300000,
-  3: 1340000,
-  4: 1380000,
-  5: 1100000,
+  1: 930000,
+  2: 970000,
+  3: 1010000,
+  4: 1050000,
+  5: 770000,
 };
 
 export type Sku = "razor" | "beard" | "hair";
 export type City = "hyd" | "blr" | "bom";
 export type Channel = "qc" | "d2c";
 export type Sourcing = "nearby" | "far";
+export type SourcingChoice = Sourcing | null;
 
 export type CellMeta = {
   cell: number;
@@ -87,7 +88,8 @@ export type MonthData = {
   elasticity: { qc: ArrN; d2c: ArrN };
   sales: { sq: ArrN; sd: ArrN }; // actual sales
   projectedDemand: { sq: ArrN; sd: ArrN };
-  sourcing: { nearbyUnits: number; farUnits: number };
+  sourcing: SourcingChoice; // 'nearby' | 'far' | null  (cell 1, Hyd Razor, this month)
+  carried?: { iq: ArrN; id: ArrN }; // carried inventory at start of month n
   reasoning?: string;
   totalProfit?: number;
   perCellProfit?: { qc: ArrN; d2c: ArrN };
@@ -116,11 +118,47 @@ export const MONTH_0: MonthData = {
     sq: [null, 290, 610, 820, 110, 280, 340, 160, 390, 480],
     sd: [null, 180, 490, 410, 210, 610, 310, 140, 350, 310],
   },
-  sourcing: { nearbyUnits: 0, farUnits: 0 },
+  sourcing: null,
   locked: true,
 };
 
 export const BASE_ELASTICITY = MONTH_0.elasticity;
+
+/**
+ * Pre-seeded carried inventory at the start of Month 1.
+ * = max(0, MONTH_0.inventory − MONTH_0.sales). Cells with 0 had a stockout in Month 0.
+ */
+export const MONTH_1_CARRIED: { iq: ArrN; id: ArrN } = {
+  iq: [null, 20, 0, 0, 30, 390, 320, 0, 20, 40],
+  id: [null, 40, 20, 0, 30, 280, 790, 0, 0, 30],
+};
+
+/**
+ * Computes physically-leftover inventory at the start of month n+1 from
+ * month n's submitted inventory and computed sales.
+ */
+export function carriedFromMonth(m: MonthData): { iq: ArrN; id: ArrN } {
+  const iq: ArrN = [null];
+  const id: ArrN = [null];
+  for (let i = 1; i <= 9; i++) {
+    const invQ = m.inventory.iq[i] ?? 0;
+    const invD = m.inventory.id[i] ?? 0;
+    const sQ = m.sales.sq[i] ?? 0;
+    const sD = m.sales.sd[i] ?? 0;
+    iq[i] = Math.max(0, invQ - sQ);
+    id[i] = Math.max(0, invD - sD);
+  }
+  return { iq, id };
+}
+
+/**
+ * Returns the carried inventory the student SEES at the start of month n.
+ * Month 1 → MONTH_1_CARRIED. Month n → carriedFromMonth(prev).
+ */
+export function carriedForMonth(monthNumber: number, prev: MonthData): { iq: ArrN; id: ArrN } {
+  if (monthNumber <= 1) return { iq: [...MONTH_1_CARRIED.iq], id: [...MONTH_1_CARRIED.id] };
+  return carriedFromMonth(prev);
+}
 
 /**
  * Unit cost per cell. For cell 1 (Hyd Razor), uses weighted average of

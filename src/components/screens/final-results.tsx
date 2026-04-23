@@ -224,6 +224,65 @@ export function FinalResults({
           A Prentix virtual internship experience
         </span>
       </div>
+
+      {/* Certificate Section */}
+      <div className="mt-16">
+        <div className="text-center">
+          <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+            Your Certificate
+          </div>
+          <h2 className="mt-3 text-[20px] sm:text-[24px] font-semibold text-foreground">
+            Certificate of Completion
+          </h2>
+        </div>
+
+        {/* On-screen scaled preview */}
+        <div className="mt-6 flex justify-center">
+          <div
+            style={{
+              width: 600,
+              height: 425,
+              maxWidth: "100%",
+              overflow: "hidden",
+              borderRadius: 8,
+              boxShadow: "0 10px 40px rgba(0,0,0,0.4)",
+            }}
+          >
+            <CertificateNode scale={0.5} />
+          </div>
+        </div>
+
+        <p className="mt-3 text-center text-[12px] text-muted-foreground">
+          Your certificate is ready to download.
+        </p>
+
+        <div className="mt-5 flex justify-center">
+          <button
+            onClick={downloadCertificate}
+            disabled={downloading}
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 transition justify-center disabled:opacity-60"
+          >
+            <Download className="h-4 w-4" />
+            {downloading ? "Generating PDF…" : "Download Certificate (PDF) →"}
+          </button>
+        </div>
+      </div>
+
+      {/* Hidden full-size capture node */}
+      <div
+        style={{
+          position: "fixed",
+          left: -10000,
+          top: 0,
+          pointerEvents: "none",
+          opacity: 1,
+        }}
+        aria-hidden="true"
+      >
+        <div ref={certificateRef}>
+          <CertificateNode />
+        </div>
+      </div>
     </div>
   );
 }

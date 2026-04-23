@@ -176,8 +176,8 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
             </div>
           </div>
           <p className="mt-6 text-[14px] text-foreground/85 leading-[1.7]">
-            So BSC's team would order approximately 972 Razor Kits for Hyderabad this month — enough to confidently
-            cover most demand scenarios without over-committing on inventory.
+            So BSC's team would order approximately 972 Razor Kits for Hyderabad this month: enough to confidently cover
+            most demand scenarios without over-committing on inventory.
           </p>
         </div>
       </div>

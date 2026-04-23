@@ -42,7 +42,7 @@ export const SEASONAL_FACTOR: Record<number, number> = {
 export const MONTHLY_BUDGET: Record<number, number> = {
   1: 930000,
   2: 1300000,
-  3: 1010000,
+  3: 1350000,
   4: 1050000,
   5: 770000,
 };

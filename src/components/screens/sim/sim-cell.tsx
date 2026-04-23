@@ -188,14 +188,14 @@ function ElasticityMarketing({
     <div className="space-y-1">
       <div className="flex items-center justify-between text-[11px]">
         <span className="text-muted-foreground uppercase tracking-[0.1em] text-[10px]">
-          Elasticity ({chLabel})
+          Marketing Elasticity ({chLabel})
         </span>
         <span className={`flex items-center gap-1.5 font-mono ${textColor}`}>
           <span className={`h-1.5 w-1.5 rounded-full ${dotColor}`} />
           {elasticity.toFixed(2)}
         </span>
       </div>
-      <Field label={`Marketing (${chLabel})`}>
+      <Field label={`Marketing Budget (${chLabel})`}>
         <div className="relative">
           <span className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-[12px] font-mono">
             ₹

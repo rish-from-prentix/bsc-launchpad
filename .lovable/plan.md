@@ -1,63 +1,82 @@
 
-# BSC Virtual Internship — Onboarding Flow (Updated with Logos)
+# Prompt 2 — Internship Simulation, Feedback & Final Results
 
-Same premium dark/gold onboarding flow as previously approved, with the two uploaded brand marks (Bombay Shaving Company wordmark + Prentix wordmark) integrated throughout instead of text placeholders.
+Builds the entire post-quiz experience: task intro → 5 monthly simulation rounds (table + budget bar + reasoning + event emails) → per-month feedback screens → final EBITDA + LinkedIn share. Same dark/gold design system, persistent BSC + Prentix header, Inter / JetBrains Mono, 250ms ease-out transitions.
 
-## Logo integration
+## New screens
 
-- **Assets**: Copy both uploads into `src/assets/`:
-  - `src/assets/bsc-logo.png` (Bombay Shaving Company stacked wordmark)
-  - `src/assets/prentix-logo.png` (Prentix wordmark)
-- Both logos are black-on-transparent — render them on dark surfaces with a CSS `invert()` filter (or `brightness(0) invert(1)`) so they appear crisp white against `#0A0A0A`. Import as ES6 modules from `@/assets/...`.
+1. **Task Introduction (`task-intro.tsx`)** — Headline + body, gold-bordered email card from Shantanu (avatar "SD" in gold, sender, subject, verbatim body with `[Name]` interpolated), gold small-caps "What you can do each month" bullet list, centered "Begin Month 1 →" CTA.
 
-### Where each logo appears
+2. **Simulation Month (`simulation-month.tsx`)** — Reused for Months 1–5. Renders:
+   - Top: gold small-caps month label (`Month n of 5`) + muted context label.
+   - Optional event email panel (collapsible, expanded by default) — same card style as Shantanu email.
+   - 4×4 sticky-header grid (cities across the top in gold; SKUs down the side with price under in muted text). 9 cells, each a `#1C1C1C` card with: editable QC/D2C inventory inputs, locked prev-month sales, editable ₹ marketing inputs, locked elasticity (2 dp) + unit cost + holding cost. Cell 1 (Hyd Razor) gets an extra Nearby/Far sourcing pill selector with `Units from nearby` / `Units from far` inputs and inline red error if they don't sum to `iq[1]+id[1]`.
+   - Full-width "Your reasoning" textarea below the table.
+   - Fixed bottom budget bar (72px, `#141414`, top border): Monthly Budget · Additional Inventory (live, red+/green−) · Marketing (live sum) · Budget Remaining (large, green/red, with "Over budget" warning) · Reset (ghost) · Submit Month n (gold, disabled when remaining<0 or sourcing invalid).
+   - On submit: lock all fields with grayed wash + small lock icon, run sales/profit engine, route to feedback.
 
-**Bombay Shaving Company logo**
-- **Splash (Screen 1)**: Large centered BSC stacked wordmark (max-width ~280px) replacing the "BSC" text placeholder, sitting above the headline. Rendered in white (inverted).
-- **Persistent top-left**: Small BSC wordmark (~28px tall) in the header on every screen after the splash, replacing the text wordmark.
+3. **Month Feedback (`month-feedback.tsx`)** — Centered, max-w-680. Header "Month n Results" gold small-caps, large profit number, cumulative EBITDA in muted. Stack of feedback cards (dark with colored left border: gold/amber/red, icon + headline + one-line body), animating in with 100ms stagger via `fadeSlide`. Buttons: "Review this month" (returns to locked simulation view) and "Begin Month n+1 →" (gold).
 
-**Prentix logo (visible throughout the simulation)**
-- **Splash**: Top of screen — a slim header bar with "Powered by" muted micro-label + the Prentix logo (~22px tall, white) as a clickable-feeling pill, replacing the gold text-only "Powered by Prentix" pill.
-- **Persistent top-right**: On every screen (primers, quizzes, results), a small "Powered by Prentix" cluster in the top-right of the header — muted micro-label + Prentix logo (~18–20px tall, white). This keeps Prentix visible throughout the entire flow as requested.
-- **Footer strip**: A thin, low-contrast footer on every screen with "An internship experience by" + Prentix logo (~16px), centered, muted opacity ~60%. Reinforces brand presence without competing with content.
-- **Results screen**: Prentix logo (~24px) above the "Proceed to Internship" CTA with micro-text "Your progress is tracked by Prentix" — gives the moment a branded sign-off.
+4. **Final Results (`final-results.tsx`)** — Animated count-up of cumulative EBITDA, total profit + average MoM growth in muted, personalized headline by tercile, LinkedIn-style preview card (white card, avatar placeholder, name, BSC + Prentix logos, verbatim post body), "Copy LinkedIn Post" (clipboard) and "Share on LinkedIn →" (opens `linkedin.com/sharing/share-offsite/?url=…&summary=…`) buttons, Prentix logo + micro caption.
 
-### Header layout (persistent across all post-splash screens)
+## Engine (`src/lib/simulation.ts`)
 
-```text
-┌─────────────────────────────────────────────────────────────┐
-│  [BSC logo]      Primer 2 of 3 · Newsvendor    Powered by   │
-│                                                  [Prentix]  │
-└─────────────────────────────────────────────────────────────┘
+Pure-function module exporting all constants from the spec (`QC_COMMISSION_RATE`, `RETURN_PENALTY`, `UNIT_COST`, `SELLING_PRICE`, `HOLDING_COST`, `CITY_GROWTH`, `SEASONAL_FACTOR`, `MONTHLY_BUDGET`, `BASE_ELASTICITY`, `MONTH_0`, `CELL_META`) and computation helpers:
+- `unitCostFor(cell, sourcingSplit)` — handles cell 1 weighted average ₹160/₹140; falls back to flat `UNIT_COST` for others.
+- `computeElasticity(prevMonth, baseMonth0)` — applies the up/down/equal rules; Month 1 returns `BASE_ELASTICITY`.
+- `computeMonth(monthNumber, submission, prevMonth, elasticity)` — projected demand, actual sales (= min of demand & inventory), per-cell profit (revenue − QC commission − COGS − holding − marketing), total profit, cumulative EBITDA.
+- `additionalInventoryExpense(currentInputs, prevInventory, sourcing)` — live recompute incl. return penalty (₹30/unit when reducing).
+- `evaluateFeedback(monthNumber, currentMonthResult, prevMonth)` — returns ordered list of `{tone, icon, title, body}` cards. Implements all 9 rules (low-elasticity overspend, stockout ≥95%, excess >3×, missed/smart high-elasticity, Month-3 Hyd Beard sub-rules A/B/C, Month-3/-1/-2/-5 Hyd Razor sourcing, Month-4 Bombay Razor levers, Blr Beard D2C high-elasticity).
+
+All engine functions are pure; React state holds an array `months[1..5]` of `{ inventory, marketing, elasticity, sales, projectedDemand, sourcing, reasoning, totalProfit, locked }`.
+
+## State + routing changes
+
+`src/routes/index.tsx` extends the `Screen` union with `task-intro`, `sim-1..sim-5`, `feedback-1..feedback-5`, `final`. Adds top-level state:
+
+```ts
+const [sim, setSim] = useState<SimState>({ months: [/* index 0 = MONTH_0 */] });
+const [reviewing, setReviewing] = useState<number | null>(null);
 ```
 
-- Height ~64px, border-bottom `#2A2A2A`, background `#0A0A0A` with subtle blur on scroll.
-- Mobile: BSC left, Prentix right, breadcrumb/step text moves to a second row below.
+Wires `ResultsScreen` `onProceed` → `task-intro`. Each simulation submit advances to its feedback screen; "Begin next" advances to next sim screen with inputs pre-filled from the previous submission. Month 1 inputs pre-fill from `MONTH_0`. Reset restores current-month inputs to previous month values.
 
-### Footer (persistent)
+## Styling additions (`src/styles.css`)
 
-```text
-┌─────────────────────────────────────────────────────────────┐
-│            An internship experience by  [Prentix]            │
-└─────────────────────────────────────────────────────────────┘
+- Add `staggerIn` keyframe (slide-up + fade) used by feedback cards with inline `animation-delay`.
+- Add `.locked-field` utility (background tint, no border, cursor:default, lock icon overlay via `::after` is handled in the cell component using a small `Lock` lucide icon).
+- Add `.budget-bar` shadow + border-top utility for the fixed bottom strip.
+- No new color tokens needed — `success`, `warning`, `danger`, `gold` already defined.
+
+## New files
+
+```
+src/lib/simulation.ts
+src/components/screens/task-intro.tsx
+src/components/screens/simulation-month.tsx
+src/components/screens/sim/sim-cell.tsx          (single cell with all inputs)
+src/components/screens/sim/sourcing-selector.tsx (cell 1 only)
+src/components/screens/sim/budget-bar.tsx
+src/components/screens/sim/event-email.tsx       (reused by task intro + monthly events)
+src/components/screens/month-feedback.tsx
+src/components/screens/final-results.tsx
 ```
 
-- 48px tall, muted text `#888`, logo at ~60% opacity, hairline top border.
+## Edited files
 
-## Everything else unchanged
+- `src/routes/index.tsx` — extend screen state machine, mount new screens, pass simulation state.
+- `src/components/screens/results-screen.tsx` — `onProceed` now navigates forward (no other visual change).
+- `src/styles.css` — add `staggerIn` keyframe and small utilities.
 
-All previously approved screens, copy, formulas, quizzes, scoring, transitions, Z-table panel, color palette, typography, and motion remain exactly as planned:
+## Behavior details locked in by the spec
 
-1. Splash + name capture
-2. Primers Overview (3 cards, lock/complete states)
-3. Primer 1 — Marketing Elasticity + 2-question quiz
-4. Primer 2 — Newsvendor Analysis + 1-question quiz (with collapsible Z-table)
-5. Primer 3 — Channel Strategy + 1-question quiz
-6. Results screen — animated gold ring, personalized message, pulsing "Proceed to Internship" CTA
+- Live budget bar updates on every keystroke (no debounce).
+- Submit disabled when `budgetRemaining < 0` OR cell-1 sourcing split is invalid.
+- Inputs accept positive integers only; reductions are typed as a smaller number than prev (no negatives).
+- Empty reasoning on submit shows a 3-second muted toast "Adding reasoning helps you reflect on your decisions." but does not block.
+- All email bodies, feedback copy, and LinkedIn post text are rendered verbatim from the spec.
+- Z-table floating button stays visible on simulation screens (helpful for inventory decisions); hidden on feedback/final.
 
-## Technical notes
+## Out of scope (will follow in next prompt)
 
-- Single TanStack route (`/`) driving an in-memory screen state machine for buttery 250ms fade/slide transitions.
-- Logos imported via `@/assets/bsc-logo.png` and `@/assets/prentix-logo.png`, rendered through a small `<BrandMark />` component that handles the white-invert filter and sizing variants (`sm` / `md` / `lg`).
-- Persistent `<AppHeader />` and `<AppFooter />` mounted in the page shell, hidden only on the splash screen (which has its own hero treatment of both logos).
-- Floating Z-table button bottom-right stays clear of the footer on all viewports.
+Mobile polish for the simulation grid, edge-case validation passes, certificate generation.

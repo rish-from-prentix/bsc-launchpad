@@ -124,8 +124,8 @@ const QUIZ_3: QuizQuestion[] = [
     prompt:
       "BSC is deciding how to allocate additional inventory across D2C and Quick Commerce. Which approach best maximizes overall profitability?",
     options: [
-      "Allocate more to D2C — higher margins.",
-      "Allocate more to QC — higher volume.",
+      "Allocate more to D2C (higher margins).",
+      "Allocate more to QC (higher volume).",
       "Allocate based on which channel delivers more total profit per unit of effort.",
       "Split equally to balance risk.",
     ],

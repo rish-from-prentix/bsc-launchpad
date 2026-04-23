@@ -9,6 +9,11 @@ import { PrimerChannel } from "@/components/screens/primer-channel";
 import { Quiz, type QuizQuestion } from "@/components/screens/quiz";
 import { ResultsScreen } from "@/components/screens/results-screen";
 import { ZTableFloating } from "@/components/z-table";
+import { TaskIntro } from "@/components/screens/task-intro";
+import { SimulationMonth } from "@/components/screens/simulation-month";
+import { MonthFeedback } from "@/components/screens/month-feedback";
+import { FinalResults } from "@/components/screens/final-results";
+import { MONTH_0, type MonthData } from "@/lib/simulation";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,7 +38,19 @@ type Screen =
   | "quiz-2"
   | "primer-3"
   | "quiz-3"
-  | "results";
+  | "results"
+  | "task-intro"
+  | "sim-1"
+  | "feedback-1"
+  | "sim-2"
+  | "feedback-2"
+  | "sim-3"
+  | "feedback-3"
+  | "sim-4"
+  | "feedback-4"
+  | "sim-5"
+  | "feedback-5"
+  | "final";
 
 const PRIMER_META = [
   {

@@ -44,6 +44,7 @@ export function SimCell({
   CELL_META[cell]!;
   const uc = unitCostFor(cell, sourcing);
   const hc = holdingCostFor(cell);
+  const sp = sellingPriceFor(cell);
   const isCell1 = cell === 1;
   const totalInv = (inputs.iq[cell] ?? 0) + (inputs.id[cell] ?? 0);
 
@@ -114,9 +115,10 @@ export function SimCell({
       </div>
 
       {/* Context */}
-      <div className="mt-3 pt-3 border-t border-border/50 grid grid-cols-2 gap-x-2 gap-y-1 text-[10px]">
+      <div className="mt-3 pt-3 border-t border-border/50 grid grid-cols-3 gap-x-2 gap-y-1 text-[10px]">
         <Stat label="Unit cost" value={`₹${Math.round(uc)}`} />
         <Stat label="Holding /unit" value={`₹${hc}`} />
+        <Stat label="SP /unit" value={`₹${sp}`} />
       </div>
     </div>
   );

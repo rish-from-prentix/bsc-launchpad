@@ -6,8 +6,6 @@ import { BrandMark } from "@/components/brand-mark";
 import type { MonthData } from "@/lib/simulation";
 import { SKILLS, buildPost, buildResumeLine, ebitdaInCr, getPerformanceTier, selectPostVariant } from "./final-shared";
 
-const LINKEDIN_SHARE_URL = "https://www.linkedin.com/sharing/share-offsite/?url=https://prentix.ai";
-
 export function FinalProof({
   name,
   months,
@@ -65,7 +63,7 @@ export function FinalProof({
   }
 
   function shareCertOnLinkedIn() {
-    window.open(LINKEDIN_SHARE_URL, "_blank", "noopener,noreferrer");
+    window.open("https://www.linkedin.com/sharing/share-offsite/?url=https://prentix.ai", "_blank", "noopener,noreferrer");
   }
 
   const CertificateNode = ({ scale = 1 }: { scale?: number }) => (
@@ -122,15 +120,9 @@ export function FinalProof({
   }
 
   // --- Post copy + share ---------------------------------------------------
-  const [postCopied, setPostCopied] = useState(false);
-  function copyPost() {
-    navigator.clipboard.writeText(postText).then(() => {
-      setPostCopied(true);
-      window.setTimeout(() => setPostCopied(false), 2000);
-    });
-  }
-  function postToLinkedIn() {
-    window.open(LINKEDIN_SHARE_URL, "_blank", "noopener,noreferrer");
+  function handleLinkedIn() {
+    navigator.clipboard.writeText(postText);
+    window.open("https://www.linkedin.com/feed/", "_blank");
   }
 
   return (
@@ -201,34 +193,17 @@ export function FinalProof({
           <div className="p-4 text-[13.5px] leading-[1.65] text-neutral-100 whitespace-pre-wrap">{postText}</div>
         </div>
 
-        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="mt-6 flex justify-center">
           <button
-            onClick={copyPost}
-            className="inline-flex items-center gap-2 rounded-lg border border-border bg-transparent px-5 py-3 text-sm font-medium hover:bg-card transition justify-center"
-          >
-            {postCopied ? (
-              <>
-                <Check className="h-4 w-4 text-[color:var(--success)]" />
-                <span className="text-[color:var(--success)]">Copied ✓</span>
-              </>
-            ) : (
-              <>
-                <Copy className="h-4 w-4" />
-                <span>Copy Post</span>
-              </>
-            )}
-          </button>
-          <button
-            onClick={postToLinkedIn}
+            onClick={handleLinkedIn}
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 transition justify-center"
           >
-            Post to LinkedIn <ExternalLink className="h-4 w-4" />
+            Open LinkedIn <ExternalLink className="h-4 w-4" />
           </button>
         </div>
 
         <p className="mt-4 text-center text-[13px] text-muted-foreground">
-          LinkedIn will open with a share dialog. Paste your copied post text and attach your downloaded certificate as
-          an image for maximum visibility.
+          Your post is copied to clipboard. Open LinkedIn, start a new post, and paste.
         </p>
       </section>
 

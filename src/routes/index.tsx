@@ -12,7 +12,8 @@ import { ZTableFloating } from "@/components/z-table";
 import { TaskIntro } from "@/components/screens/task-intro";
 import { SimulationMonth } from "@/components/screens/simulation-month";
 import { MonthFeedback } from "@/components/screens/month-feedback";
-import { FinalResults } from "@/components/screens/final-results";
+import { FinalMoment } from "@/components/screens/final-moment";
+import { FinalProof } from "@/components/screens/final-proof";
 import { MONTH_0, type MonthData } from "@/lib/simulation";
 
 export const Route = createFileRoute("/")({
@@ -50,7 +51,8 @@ type Screen =
   | "feedback-4"
   | "sim-5"
   | "feedback-5"
-  | "final";
+  | "final-moment"
+  | "final-proof";
 
 const PRIMER_META = [
   {
@@ -162,6 +164,9 @@ function Index() {
   // months[0] = MONTH_0; months[1..5] populated as user submits
   const [months, setMonths] = useState<MonthData[]>(() => [MONTH_0]);
   const [reviewing, setReviewing] = useState<number | null>(null);
+  // Stable seed for LinkedIn post variant selection — fixed for the session
+  // so navigating back/forward doesn't re-roll the variant.
+  const [postVariantSeed] = useState<number>(() => Math.random());
 
   const totalScore = scores[0] + scores[1] + scores[2];
 
@@ -205,7 +210,7 @@ function Index() {
   }
 
   function nextAfterFeedback(n: number) {
-    if (n >= 5) setScreen("final");
+    if (n >= 5) setScreen("final-moment");
     else setScreen(`sim-${n + 1}` as Screen);
   }
 
@@ -247,7 +252,8 @@ function Index() {
       case "feedback-4":
       case "feedback-5":
         return `Month ${screen.slice(-1)} · Results`;
-      case "final":
+      case "final-moment":
+      case "final-proof":
         return "Internship Complete";
     }
   })();
@@ -376,7 +382,16 @@ function Index() {
         );
       })}
 
-      {screen === "final" && <FinalResults name={name} months={months} />}
+      {screen === "final-moment" && (
+        <FinalMoment
+          name={name}
+          months={months}
+          onContinue={() => setScreen("final-proof")}
+        />
+      )}
+      {screen === "final-proof" && (
+        <FinalProof name={name} months={months} postVariantSeed={postVariantSeed} />
+      )}
 
       {showZ && <ZTableFloating />}
     </AppShell>

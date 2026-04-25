@@ -11,9 +11,9 @@ export function getPerformanceTier(ebitda: number): PerfTier {
 
 export function buildHeadline(name: string, tier: PerfTier): string {
   const n = name?.trim() || "there";
-  if (tier === "high") return `You think like an operator, ${n}. That's rare.`;
-  if (tier === "mid") return `Strong run, ${n}. You made the calls that mattered.`;
-  return `You played the full game, ${n}. That's already more than most.`;
+  if (tier === "high") return `Not everyone figures out the channel trade-off. You nailed it, ${n}!`;
+  if (tier === "mid") return `You made the hard calls & came out on top, ${n}. Well done!`;
+  return `Good run, ${n}. The best operators learned exactly the way you just did. Well done!`;
 }
 
 export function buildSubtext(tier: PerfTier): string {

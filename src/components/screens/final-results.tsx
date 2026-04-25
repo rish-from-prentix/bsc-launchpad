@@ -16,13 +16,21 @@ export function FinalResults({
   const totalProfit = submitted.reduce((s, m) => s + (m.totalProfit ?? 0), 0);
   const profits = submitted.map((m) => m.totalProfit ?? 0);
 
-  // Avg MoM growth
-  const growths: number[] = [];
+  // Avg MoM growth — only compute when prior month profit is meaningfully
+  // positive (>10,000) to avoid absurd percentages from near-zero divisors.
+  const momGrowthRates: number[] = [];
   for (let i = 1; i < profits.length; i++) {
     const prev = profits[i - 1];
-    if (prev > 0) growths.push((profits[i] - prev) / prev);
+    const curr = profits[i];
+    if (prev > 10000) {
+      momGrowthRates.push(((curr - prev) / prev) * 100);
+    }
   }
-  const avgGrowth = growths.length ? (growths.reduce((a, b) => a + b, 0) / growths.length) * 100 : 0;
+  const avgMoMGrowth = momGrowthRates.length
+    ? momGrowthRates.reduce((a, b) => a + b, 0) / momGrowthRates.length
+    : 0;
+  // Clamp to a realistic range to prevent display-breaking values.
+  const avgGrowth = Math.max(-50, Math.min(100, avgMoMGrowth));
 
   // Animate count-up
   const [shown, setShown] = useState(0);

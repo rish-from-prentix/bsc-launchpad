@@ -1,4 +1,3 @@
-
 # Final Results Redesign — Two-Screen Split
 
 Replace the single `final` screen with **two sequential screens** (A → B) inside the existing state machine, with a 250ms fade transition. Reuse existing certificate generation, brand mark, and design tokens. No simulation logic, formulas, or other screens change.
@@ -25,6 +24,7 @@ The existing `final-results.tsx` is deleted; `index.tsx` no longer imports it.
 ### Stable random state
 
 To preserve "post variant fixed on Screen A mount" across navigation back/forward without losing it, **lift state into `Index`**:
+
 - `const [postVariantSeed] = useState(() => Math.random())` declared in `Index` once on mount.
 - Pass `postVariantSeed` into `<FinalProof />`. Variant is then deterministically selected from `(ebitda tier, seed)`:
   - `>= ₹50L`: variant A if `seed < 0.5` else B.
@@ -48,11 +48,11 @@ Sections (all centered):
 
 2. **Personalized headline + subtext** (driven by `cumulativeEbitda`):
 
-   | Tier | Headline | Subtext |
-   |---|---|---|
-   | `>= 5_000_000` | `You think like an operator, ${name}. That's rare.` | `Five months. Eighteen SKU-city combinations. Budget crunches, demand spikes, festival seasons. You navigated all of it and came out ahead.` |
-   | `>= 3_500_000` and `< 5_000_000` | `Strong run, ${name}. You made the calls that mattered.` | `Not every month went perfectly — and that's the point. You adjusted, you learned, and you finished strong.` |
-   | `< 3_500_000` | `You played the full game, ${name}. That's already more than most.` | `The best operators in the world made their worst mistakes early. What matters is that you made real decisions and understood why they worked or didn't.` |
+   | Tier                             | Headline                                                            | Subtext                                                                                                                                                   |
+   | -------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | `>= 5_000_000`                   | `You think like an operator, ${name}. That's rare.`                 | `Five months. Eighteen SKU-city combinations. Budget crunches, demand spikes, festival seasons. You navigated all of it and came out ahead.`              |
+   | `>= 3_500_000` and `< 5_000_000` | `Strong run, ${name}. You made the calls that mattered.`            | `Not every month went perfectly — and that's the point. You adjusted, you learned, and you finished strong.`                                              |
+   | `< 3_500_000`                    | `You played the full game, ${name}. That's already more than most.` | `The best operators in the world made their worst mistakes early. What matters is that you made real decisions and understood why they worked or didn't.` |
 
    Headline: `mt-10 text-[24px] sm:text-[28px] font-semibold leading-snug`. Subtext: `mt-4 text-[15px] text-muted-foreground leading-relaxed`.
 
@@ -74,6 +74,7 @@ Layout: `mx-auto max-w-[720px] px-5 sm:px-8 py-12 sm:py-16 space-y-16`, with fad
 Port the existing certificate logic (Inter Bold injection, hidden 1200×850 capture node, scaled preview, html2canvas + jsPDF download) into `FinalProof`. **No changes to template URL or overlay coordinates.**
 
 Layout:
+
 - Scaled preview at top (same 600×425 wrapper, gold 1px border `border border-primary/40` to match "gold bordered preview").
 - `mt-6 flex flex-col sm:flex-row gap-3 justify-center`:
   - **Download Certificate (PDF) →** — gold primary button (existing `downloadCertificate` handler).
@@ -102,9 +103,8 @@ State: `const [copiedSkill, setCopiedSkill] = useState<string | null>(null)`; to
   ```
   Growth & Business Ops Intern — Bombay Shaving Company (Virtual, via Prentix)
   Managed inventory and marketing budgets across 3 SKUs and 3 cities over 5 months.
-  Applied demand planning, Newsvendor analysis, and channel strategy (D2C and Quick
-  Commerce) to optimise EBITDA. Navigated demand spikes, budget constraints, and
-  competitive market shifts to deliver ₹{EBITDA}Cr in cumulative profit.
+  Applied demand planning, Newsvendor analysis, and channel strategy (D2C and Quick Commerce) to optimise EBITDA.
+  Navigated demand spikes, budget constraints, and competitive market shifts to deliver ₹{EBITDA}Cr in cumulative profit.
   ```
 
   `{EBITDA}` = `(totalProfit / 10_000_000).toFixed(2)`.
@@ -135,6 +135,7 @@ State: `const [copiedSkill, setCopiedSkill] = useState<string | null>(null)`; to
 ### Section 5 — Footer Close
 
 Centered:
+
 - `<BrandMark brand="prentix" height={20} />` (existing component, will use the same logo source already wired up).
 - Muted 14px: `An internship experience by Prentix. Built with Bombay Shaving Company.`
 - Gold link: `Explore more internships at prentix.ai →` → external link to `https://prentix.ai`, `target="_blank" rel="noopener noreferrer"`, classes `text-primary hover:underline`.
@@ -142,6 +143,7 @@ Centered:
 ## `final-shared.ts` (pure module — no React)
 
 Exports:
+
 - `SKILLS: string[]` — the 12 skills above, exact order.
 - `getPerformanceTier(ebitda: number): "high" | "mid" | "low"`.
 - `POST_TEMPLATES: { A: string; B: string; C: string; D: string }` — all four variants verbatim, with literal `{EBITDA}` placeholder.

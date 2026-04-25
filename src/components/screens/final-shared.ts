@@ -115,9 +115,8 @@ prentix.ai`,
 
 const RESUME_TEMPLATE = `Growth & Business Ops Intern — Bombay Shaving Company (Virtual, via Prentix)
 Managed inventory and marketing budgets across 3 SKUs and 3 cities over 5 months.
-Applied demand planning, Newsvendor analysis, and channel strategy (D2C and Quick
-Commerce) to optimise EBITDA. Navigated demand spikes, budget constraints, and
-competitive market shifts to deliver ₹{EBITDA}Cr in cumulative profit.`;
+Applied demand planning, Newsvendor analysis, and channel strategy (D2C and Quick Commerce) to optimise EBITDA.
+Navigated demand spikes, budget constraints, and competitive market shifts to deliver ₹{EBITDA}Cr in cumulative profit.`;
 
 export function ebitdaInCr(ebitda: number): string {
   return (ebitda / 10_000_000).toFixed(2);

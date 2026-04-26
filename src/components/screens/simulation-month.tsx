@@ -228,7 +228,7 @@ export function SimulationMonth({
         <div className="grid grid-cols-[140px_repeat(3,minmax(280px,1fr))] gap-px bg-border min-w-[1140px]">
           {/* Header row — sticky top */}
           <div
-            className="p-3 sticky top-16 left-0 z-30"
+            className="p-3 sticky top-0 left-0 z-30"
             style={{ background: "#0A0A0A", boxShadow: "0 2px 8px rgba(0,0,0,0.6)" }}
           />
           {CITIES.map((c) => (

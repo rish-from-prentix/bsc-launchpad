@@ -74,7 +74,7 @@ export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
                     <div className="h-16 w-16 rounded-full bg-primary flex items-center justify-center transition-transform group-hover:scale-105">
                       <Play className="h-6 w-6 text-primary-foreground fill-current ml-0.5" />
                     </div>
-                    <span className="text-sm text-foreground/90 font-medium">Shantanu's message</span>
+                    <span className="text-sm text-foreground/90 font-medium">Message from Shantanu</span>
                   </div>
                 </div>
               )}

@@ -40,7 +40,7 @@ export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
 
           <div className="mt-10 mx-auto max-w-xl">
             <div
-              className="relative aspect-video rounded-xl bg-card overflow-hidden group outline-none ring-0"
+              className="relative aspect-video rounded-xl border border-border bg-card overflow-hidden ${!playing ? "group" : ""}"
               onClick={() => !playing && setPlaying(true)}
               role={!playing ? "button" : undefined}
               tabIndex={!playing ? 0 : undefined}
@@ -60,7 +60,7 @@ export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
                   autoPlay
                   playsInline
                   preload="metadata"
-                  className="absolute inset-0 w-full h-full object-cover bg-black block border-0 outline-none focus:outline-none"
+                  className="absolute inset-0 w-full h-full object-cover bg-black"
                 />
               ) : (
                 <div className="absolute inset-0 cursor-pointer">

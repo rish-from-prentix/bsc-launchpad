@@ -67,8 +67,7 @@ export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
                   <div
                     className="absolute inset-0"
                     style={{
-                      background:
-                        "radial-gradient(ellipse at center, oklch(0.22 0 0) 0%, oklch(0.14 0 0) 100%)",
+                      background: "radial-gradient(ellipse at center, oklch(0.22 0 0) 0%, oklch(0.14 0 0) 100%)",
                     }}
                   />
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
@@ -80,11 +79,11 @@ export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
                 </div>
               )}
             </div>
-            {!playing && (
+            {
               <p className="mt-3 text-xs text-muted-foreground">
                 Welcome message from Shantanu Deshpande, Founder — Bombay Shaving Company
               </p>
-            )}
+            }
           </div>
 
           <div className="mt-10 mx-auto max-w-sm">

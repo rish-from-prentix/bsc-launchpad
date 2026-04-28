@@ -4,6 +4,7 @@ import { BrandMark } from "@/components/brand-mark";
 
 export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
   const [name, setName] = useState("");
+  const [playing, setPlaying] = useState(false);
   const canStart = name.trim().length >= 2;
 
   return (
@@ -39,25 +40,51 @@ export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
 
           <div className="mt-10 mx-auto max-w-xl">
             <div
-              className="relative aspect-video rounded-xl border border-border bg-card overflow-hidden group cursor-pointer"
+              className="relative aspect-video rounded-xl border border-border bg-card overflow-hidden group"
+              onClick={() => !playing && setPlaying(true)}
+              role={!playing ? "button" : undefined}
+              tabIndex={!playing ? 0 : undefined}
+              onKeyDown={(e) => {
+                if (!playing && (e.key === "Enter" || e.key === " ")) {
+                  e.preventDefault();
+                  setPlaying(true);
+                }
+              }}
               style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }}
             >
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: "radial-gradient(ellipse at center, oklch(0.22 0 0) 0%, oklch(0.14 0 0) 100%)",
-                }}
-              />
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                <div className="h-16 w-16 rounded-full bg-primary flex items-center justify-center transition-transform group-hover:scale-105">
-                  <Play className="h-6 w-6 text-primary-foreground fill-current ml-0.5" />
+              {playing ? (
+                <video
+                  src="/videos/shantanu-onboarding.mp4"
+                  poster="/videos/shantanu-onboarding-poster.jpg"
+                  controls
+                  autoPlay
+                  playsInline
+                  preload="metadata"
+                  className="absolute inset-0 w-full h-full object-cover bg-black"
+                />
+              ) : (
+                <div className="absolute inset-0 cursor-pointer">
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        "radial-gradient(ellipse at center, oklch(0.22 0 0) 0%, oklch(0.14 0 0) 100%)",
+                    }}
+                  />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                    <div className="h-16 w-16 rounded-full bg-primary flex items-center justify-center transition-transform group-hover:scale-105">
+                      <Play className="h-6 w-6 text-primary-foreground fill-current ml-0.5" />
+                    </div>
+                    <span className="text-sm text-foreground/90 font-medium">Watch Introduction</span>
+                  </div>
                 </div>
-                <span className="text-sm text-foreground/90 font-medium">Watch Introduction</span>
-              </div>
+              )}
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">
-              Welcome message from Shantanu Deshpande, Founder — Bombay Shaving Company
-            </p>
+            {!playing && (
+              <p className="mt-3 text-xs text-muted-foreground">
+                Welcome message from Shantanu Deshpande, Founder — Bombay Shaving Company
+              </p>
+            )}
           </div>
 
           <div className="mt-10 mx-auto max-w-sm">

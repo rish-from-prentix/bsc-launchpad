@@ -40,7 +40,7 @@ export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
 
           <div className="mt-10 mx-auto max-w-xl">
             <div
-              className="relative aspect-video rounded-xl border border-border bg-card overflow-hidden ${!playing ? "group" : ""}"
+              className={`relative aspect-video rounded-xl bg-card overflow-hidden outline-none ring-0 ${!playing ? "group" : ""}`}
               onClick={() => !playing && setPlaying(true)}
               role={!playing ? "button" : undefined}
               tabIndex={!playing ? 0 : undefined}

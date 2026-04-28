@@ -243,3 +243,8 @@
   --input: oklch(0.27 0 0);
   --ring: oklch(0.78 0.09 80);
 }
+
+/* Tint native HTML5 video controls to match the dark/gold theme. */
+video::-webkit-media-controls-panel {
+  background-color: rgba(15, 15, 15, 0.85);
+}

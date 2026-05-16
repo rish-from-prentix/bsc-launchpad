@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SimulationsBscRouteImport } from './routes/simulations.bsc'
+import { Route as SimulationsAicIsbRouteImport } from './routes/simulations.aic-isb'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -40,12 +41,18 @@ const SimulationsBscRoute = SimulationsBscRouteImport.update({
   path: '/simulations/bsc',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SimulationsAicIsbRoute = SimulationsAicIsbRouteImport.update({
+  id: '/simulations/aic-isb',
+  path: '/simulations/aic-isb',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/simulations/aic-isb': typeof SimulationsAicIsbRoute
   '/simulations/bsc': typeof SimulationsBscRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/simulations/aic-isb': typeof SimulationsAicIsbRoute
   '/simulations/bsc': typeof SimulationsBscRoute
 }
 export interface FileRoutesById {
@@ -61,14 +69,34 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/simulations/aic-isb': typeof SimulationsAicIsbRoute
   '/simulations/bsc': typeof SimulationsBscRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/login' | '/signup' | '/simulations/bsc'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/login'
+    | '/signup'
+    | '/simulations/aic-isb'
+    | '/simulations/bsc'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/login' | '/signup' | '/simulations/bsc'
-  id: '__root__' | '/' | '/about' | '/login' | '/signup' | '/simulations/bsc'
+  to:
+    | '/'
+    | '/about'
+    | '/login'
+    | '/signup'
+    | '/simulations/aic-isb'
+    | '/simulations/bsc'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/login'
+    | '/signup'
+    | '/simulations/aic-isb'
+    | '/simulations/bsc'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +104,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  SimulationsAicIsbRoute: typeof SimulationsAicIsbRoute
   SimulationsBscRoute: typeof SimulationsBscRoute
 }
 
@@ -116,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SimulationsBscRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/simulations/aic-isb': {
+      id: '/simulations/aic-isb'
+      path: '/simulations/aic-isb'
+      fullPath: '/simulations/aic-isb'
+      preLoaderRoute: typeof SimulationsAicIsbRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -124,6 +160,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  SimulationsAicIsbRoute: SimulationsAicIsbRoute,
   SimulationsBscRoute: SimulationsBscRoute,
 }
 export const routeTree = rootRouteImport

@@ -15,11 +15,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Lock,
-  Lightbulb,
   CheckCircle2,
-  Wand2,
-  TrendingUp,
-  Gauge,
   CircleCheck,
 } from "lucide-react";
 import { AicIsbLogo } from "./aic-logo";
@@ -188,19 +184,10 @@ export function AicIsbTaskOne({
   const greetingName = candidateName || "there";
   const todayLabel = useMemo(() => "Today · 9:30 AM", []);
 
-  const filledCount = Object.values(answers).filter((a) => a.trim().length > 0)
-    .length;
-  const completion =
-    Math.round(
-      ((sector ? 1 : 0) + filledCount) / (SECTIONS.length + 1) * 100,
-    );
-
   const canSubmit =
     !!sector &&
     SECTIONS.every((s) => answers[s.id].trim().length >= 40) &&
     !submitted;
-
-  const selectedSector = SECTORS.find((s) => s.id === sector) ?? null;
 
   function handleAnswer(id: SectionId, value: string) {
     setAnswers((prev) => ({ ...prev, [id]: value }));
@@ -239,7 +226,7 @@ export function AicIsbTaskOne({
         }}
       />
 
-      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-10">
+      <div className="mx-auto max-w-3xl">
         <div className="min-w-0">
           {/* Title block */}
           <div className="mb-8">
@@ -407,16 +394,6 @@ export function AicIsbTaskOne({
           )}
         </div>
 
-        {/* Right sidebar (desktop) */}
-        {revealAssignment && (
-          <aside className="hidden lg:block">
-            <SidePanel
-              completion={completion}
-              sector={selectedSector}
-              saveState={saveState}
-            />
-          </aside>
-        )}
       </div>
 
       {/* Bottom action bar */}
@@ -692,153 +669,6 @@ function ResponseField({
           <span className="text-muted-foreground font-mono">{count} chars</span>
         </div>
       </div>
-    </div>
-  );
-}
-
-/* ---------------- Side panel ---------------- */
-
-function SidePanel({
-  completion,
-  sector,
-  saveState,
-}: {
-  completion: number;
-  sector: (typeof SECTORS)[number] | null;
-  saveState: "idle" | "saving" | "saved";
-}) {
-  return (
-    <div className="sticky top-32 space-y-4">
-      {/* Progress */}
-      <Panel>
-        <PanelHeader icon={<Gauge className="h-4 w-4" />} title="Task Progress" />
-        <div className="px-5 pb-5">
-          <div className="flex items-baseline justify-between">
-            <span className="text-3xl font-bold tracking-tight text-foreground">
-              {completion}%
-            </span>
-            <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              {saveState === "saving" ? "Saving…" : "Auto-saved"}
-            </span>
-          </div>
-          <div className="mt-3 h-1.5 w-full rounded-full bg-border overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${completion}%`,
-                background:
-                  "linear-gradient(90deg, oklch(0.78 0.09 80), oklch(0.72 0.14 155))",
-              }}
-            />
-          </div>
-          <div className="mt-4 text-xs text-muted-foreground">
-            <span className="text-foreground/90 font-medium">Selected sector: </span>
-            {sector ? (
-              <span className="text-primary">{sector.name}</span>
-            ) : (
-              <span>None yet</span>
-            )}
-          </div>
-        </div>
-      </Panel>
-
-      {/* Mentor tips */}
-      <Panel>
-        <PanelHeader
-          icon={<Lightbulb className="h-4 w-4" />}
-          title="Tips from mentors"
-        />
-        <ul className="px-5 pb-5 space-y-3 text-[13px] text-foreground/85 leading-relaxed">
-          {[
-            "Anchor each claim with a number, name, or recent deal.",
-            "Prioritise sub-themes; resist the urge to cover everything.",
-            "Tie risks to mitigations — show you’ve thought it through.",
-          ].map((t) => (
-            <li key={t} className="flex gap-2.5">
-              <TrendingUp className="h-3.5 w-3.5 text-primary mt-1 shrink-0" />
-              <span>{t}</span>
-            </li>
-          ))}
-        </ul>
-      </Panel>
-
-      {/* What good submissions include */}
-      <Panel>
-        <PanelHeader
-          icon={<CheckCircle2 className="h-4 w-4" />}
-          title="What good submissions include"
-        />
-        <ul className="px-5 pb-5 space-y-2.5 text-[13px] text-foreground/85">
-          {[
-            "A crisp thesis sentence",
-            "Named founders, funds, and rounds",
-            "Honest risks and mitigations",
-            "2–3 prioritised sub-themes",
-          ].map((t) => (
-            <li key={t} className="flex items-center gap-2">
-              <span
-                className="h-1.5 w-1.5 rounded-full"
-                style={{ background: "oklch(0.72 0.14 155)" }}
-              />
-              {t}
-            </li>
-          ))}
-        </ul>
-      </Panel>
-
-      {/* AI hints */}
-      <button
-        type="button"
-        className="group w-full rounded-2xl border border-primary/40 bg-primary/5 px-5 py-4 text-left hover:bg-primary/10 transition-all hover:-translate-y-0.5"
-        style={{
-          boxShadow: "0 10px 28px -14px oklch(0.78 0.09 80 / 0.5)",
-        }}
-      >
-        <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center">
-            <Wand2 className="h-4 w-4" />
-          </div>
-          <div>
-            <div className="text-sm font-semibold text-foreground">
-              AI-powered hints
-            </div>
-            <div className="text-[11px] text-muted-foreground">
-              Get nudges tailored to your sector
-            </div>
-          </div>
-        </div>
-      </button>
-    </div>
-  );
-}
-
-function Panel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      className="rounded-2xl border border-border bg-card/70 overflow-hidden"
-      style={{
-        boxShadow: "0 8px 28px rgba(0,0,0,0.35)",
-        backdropFilter: "blur(18px)",
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function PanelHeader({
-  icon,
-  title,
-}: {
-  icon: React.ReactNode;
-  title: string;
-}) {
-  return (
-    <div className="flex items-center gap-2 px-5 pt-5 pb-3">
-      <span className="text-primary">{icon}</span>
-      <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground font-semibold">
-        {title}
-      </span>
     </div>
   );
 }

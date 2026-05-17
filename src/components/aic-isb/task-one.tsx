@@ -239,7 +239,7 @@ export function AicIsbTaskOne({
         }}
       />
 
-      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-10">
+      <div className="mx-auto max-w-3xl">
         <div className="min-w-0">
           {/* Title block */}
           <div className="mb-8">
@@ -407,16 +407,6 @@ export function AicIsbTaskOne({
           )}
         </div>
 
-        {/* Right sidebar (desktop) */}
-        {revealAssignment && (
-          <aside className="hidden lg:block">
-            <SidePanel
-              completion={completion}
-              sector={selectedSector}
-              saveState={saveState}
-            />
-          </aside>
-        )}
       </div>
 
       {/* Bottom action bar */}

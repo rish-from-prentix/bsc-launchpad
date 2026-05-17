@@ -673,23 +673,6 @@ function ResponseField({
   );
 }
 
-function PanelHeader({
-  icon,
-  title,
-}: {
-  icon: React.ReactNode;
-  title: string;
-}) {
-  return (
-    <div className="flex items-center gap-2 px-5 pt-5 pb-3">
-      <span className="text-primary">{icon}</span>
-      <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground font-semibold">
-        {title}
-      </span>
-    </div>
-  );
-}
-
 /* ---------------- Bottom action bar ---------------- */
 
 function BottomBar({

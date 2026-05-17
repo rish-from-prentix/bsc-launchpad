@@ -15,11 +15,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Lock,
-  Lightbulb,
   CheckCircle2,
-  Wand2,
-  TrendingUp,
-  Gauge,
   CircleCheck,
 } from "lucide-react";
 import { AicIsbLogo } from "./aic-logo";
@@ -188,19 +184,10 @@ export function AicIsbTaskOne({
   const greetingName = candidateName || "there";
   const todayLabel = useMemo(() => "Today · 9:30 AM", []);
 
-  const filledCount = Object.values(answers).filter((a) => a.trim().length > 0)
-    .length;
-  const completion =
-    Math.round(
-      ((sector ? 1 : 0) + filledCount) / (SECTIONS.length + 1) * 100,
-    );
-
   const canSubmit =
     !!sector &&
     SECTIONS.every((s) => answers[s.id].trim().length >= 40) &&
     !submitted;
-
-  const selectedSector = SECTORS.find((s) => s.id === sector) ?? null;
 
   function handleAnswer(id: SectionId, value: string) {
     setAnswers((prev) => ({ ...prev, [id]: value }));

@@ -18,26 +18,42 @@ export const Route = createFileRoute("/simulations/aic-isb")({
   component: AicIsbPage,
 });
 
-const TASKS: ProgressTask[] = [
-  { index: 1, title: "Thesis: The Basics", state: "active" },
-  { index: 2, title: "Startup Evaluation", state: "locked" },
-  { index: 3, title: "Mentor Matching", state: "locked" },
-  { index: 4, title: "Demo Day Prep", state: "locked" },
-  { index: 5, title: "Investor Readout", state: "locked" },
+const TASK_TITLES = [
+  "Thesis: The Basics",
+  "Startup Evaluation",
+  "Mentor Matching",
+  "Demo Day Prep",
+  "Investor Readout",
 ];
+
+function buildTasks(completed: number): ProgressTask[] {
+  return TASK_TITLES.map((title, i) => {
+    const index = i + 1;
+    let state: ProgressTask["state"] = "locked";
+    if (i < completed) state = "done";
+    else if (i === completed) state = "active";
+    return { index, title, state };
+  });
+}
 
 function AicIsbPage() {
   const [name, setName] = useState<string | null>(null);
+  const [completed, setCompleted] = useState(0);
 
   if (!name) {
     return <AicIsbIntroScreen onStart={(n) => setName(n)} />;
   }
 
+  const tasks = buildTasks(completed);
+
   return (
     <div className="min-h-screen bg-background">
-      <AicIsbProgressBar candidateName={name} tasks={TASKS} />
+      <AicIsbProgressBar candidateName={name} tasks={tasks} />
       <main>
-        <AicIsbTaskOne candidateName={name} />
+        <AicIsbTaskOne
+          candidateName={name}
+          onComplete={() => setCompleted((c) => Math.max(c, 1))}
+        />
       </main>
     </div>
   );

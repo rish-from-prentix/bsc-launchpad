@@ -1,39 +1,44 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { LandingNav } from "@/components/landing/landing-nav";
-import { LandingFooter } from "@/components/landing/landing-footer";
-import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { AicIsbIntroScreen } from "@/components/aic-isb/intro-screen";
+import { AicIsbProgressBar, type ProgressTask } from "@/components/aic-isb/progress-bar";
+import { AicIsbTaskOne } from "@/components/aic-isb/task-one";
 
 export const Route = createFileRoute("/simulations/aic-isb")({
   head: () => ({
     meta: [
       { title: "Program Manager Simulation — AIC × ISB" },
-      { name: "description", content: "AIC × ISB Program Manager virtual internship simulation. Coming soon." },
+      {
+        name: "description",
+        content:
+          "Step into the role of a Program Manager Intern in the AIC × ISB accelerator ecosystem.",
+      },
     ],
   }),
   component: AicIsbPage,
 });
 
+const TASKS: ProgressTask[] = [
+  { index: 1, title: "Thesis: The Basics", state: "active" },
+  { index: 2, title: "Startup Evaluation", state: "locked" },
+  { index: 3, title: "Mentor Matching", state: "locked" },
+  { index: 4, title: "Demo Day Prep", state: "locked" },
+  { index: 5, title: "Investor Readout", state: "locked" },
+];
+
 function AicIsbPage() {
+  const [name, setName] = useState<string | null>(null);
+
+  if (!name) {
+    return <AicIsbIntroScreen onStart={(n) => setName(n)} />;
+  }
+
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <LandingNav />
-      <main className="flex-1 flex items-center justify-center px-5 py-24 text-center">
-        <div className="max-w-lg">
-          <span className="text-[10px] uppercase tracking-[0.22em] text-primary border border-primary/40 bg-primary/5 rounded-full px-2.5 py-1">
-            Coming Soon
-          </span>
-          <h1 className="mt-6 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
-            Program Manager Simulation
-          </h1>
-          <p className="mt-4 text-muted-foreground">
-            We’re putting the finishing touches on this AIC × ISB experience. Check back soon.
-          </p>
-          <Link to="/" className="mt-8 inline-flex items-center gap-2 text-sm text-primary hover:underline">
-            <ArrowLeft className="h-4 w-4" /> Back to home
-          </Link>
-        </div>
+    <div className="min-h-screen bg-background">
+      <AicIsbProgressBar candidateName={name} tasks={TASKS} />
+      <main>
+        <AicIsbTaskOne candidateName={name} />
       </main>
-      <LandingFooter />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { BrandMark } from "@/components/brand-mark";
+import { AicIsbLogo } from "@/components/aic-isb/aic-logo";
 import { SimulationCard } from "./simulation-card";
 
 export function SimulationsSection() {
@@ -25,17 +26,10 @@ export function SimulationsSection() {
             to="/simulations/bsc"
           />
           <SimulationCard
-            logo={
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold tracking-tight text-foreground">AIC</span>
-                <span className="text-muted-foreground">×</span>
-                <span className="text-2xl font-bold tracking-tight text-foreground">ISB</span>
-              </div>
-            }
+            logo={<AicIsbLogo height={36} />}
             company="AIC × ISB"
             role="Program Manager Simulation"
             to="/simulations/aic-isb"
-            comingSoon
           />
         </div>
       </div>

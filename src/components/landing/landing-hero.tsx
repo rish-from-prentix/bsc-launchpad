@@ -7,7 +7,7 @@ export function LandingHero() {
         className="absolute inset-0 -z-10 opacity-70"
         style={{
           background:
-            "radial-gradient(ellipse 60% 50% at 50% 0%, oklch(0.78 0.09 80 / 0.12) 0%, transparent 70%)",
+            "radial-gradient(ellipse 60% 50% at 50% 0%, rgba(93, 196, 254, 0.18) 0%, transparent 70%)",
         }}
       />
       <div className="mx-auto max-w-4xl px-5 sm:px-8 pt-24 sm:pt-32 pb-20 sm:pb-28 text-center">

@@ -224,24 +224,87 @@
 /* Force this experience to be dark regardless of system theme */
 :root {
   color-scheme: dark;
-  --background: oklch(0.13 0 0);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.18 0 0);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.18 0 0);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.78 0.09 80);
-  --primary-foreground: oklch(0.13 0 0);
-  --secondary: oklch(0.21 0 0);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.21 0 0);
-  --muted-foreground: oklch(0.62 0 0);
-  --accent: oklch(0.21 0 0);
-  --accent-foreground: oklch(0.98 0 0);
-  --border: oklch(0.27 0 0);
-  --input: oklch(0.27 0 0);
-  --ring: oklch(0.78 0.09 80);
+  /* Prentix.ai blue/cyan theme */
+  --bg-0: #0b1026;
+  --bg-1: #111c5a;
+  --bg-2: #1c1f7a;
+  --bg-3: #2e43ff;
+  --bg-4: #4f46e5;
+  --cyan: #5dc4fe;
+
+  --background: #070a1c;
+  --foreground: oklch(0.985 0.005 240);
+  --card: oklch(0.22 0.08 265 / 0.55);
+  --card-foreground: oklch(0.985 0.005 240);
+  --popover: #0f172a;
+  --popover-foreground: oklch(0.985 0.005 240);
+  --primary: #5dc4fe;
+  --primary-foreground: #07112a;
+  --secondary: oklch(0.28 0.09 265 / 0.6);
+  --secondary-foreground: oklch(0.985 0.005 240);
+  --muted: oklch(0.25 0.06 265 / 0.5);
+  --muted-foreground: oklch(0.74 0.04 240);
+  --accent: #5dc4fe;
+  --accent-foreground: #07112a;
+  --border: rgba(93, 196, 254, 0.15);
+  --input: rgba(93, 196, 254, 0.2);
+  --ring: #5dc4fe;
+
+  --gradient-primary: linear-gradient(135deg, #5dc4fe, #4f46e5);
+  --gradient-bg: radial-gradient(ellipse 80% 60% at 70% 20%, rgba(93,196,254,0.18), transparent 60%),
+                 radial-gradient(ellipse 70% 60% at 20% 80%, rgba(79,70,229,0.22), transparent 60%),
+                 linear-gradient(160deg, #0b1026 0%, #111c5a 45%, #1c1f7a 100%);
+  --shadow-glow: 0 10px 40px -10px rgba(93, 196, 254, 0.45);
 }
+
+/* Global immersive background */
+body {
+  background: var(--gradient-bg) fixed;
+  min-height: 100vh;
+}
+
+/* Animated gradient blobs */
+@keyframes blobFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, -30px) scale(1.08); }
+  66% { transform: translate(-30px, 20px) scale(0.95); }
+}
+
+.glow-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.55;
+  pointer-events: none;
+  animation: blobFloat 14s ease-in-out infinite;
+}
+
+.glass {
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(93, 196, 254, 0.15);
+}
+
+.glass:hover {
+  border-color: rgba(93, 196, 254, 0.35);
+  box-shadow: 0 12px 50px -12px rgba(93, 196, 254, 0.35);
+}
+
+.btn-primary-glow {
+  background: linear-gradient(135deg, #5dc4fe, #4f46e5);
+  color: #07112a;
+  box-shadow: 0 8px 30px -8px rgba(93, 196, 254, 0.55);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.btn-primary-glow:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 40px -10px rgba(93, 196, 254, 0.7);
+  filter: brightness(1.05);
+}
+
+.text-accent-cyan { color: #5dc4fe; }
 
 /* Tint native HTML5 video controls to match the dark/gold theme. */
 video::-webkit-media-controls-panel {

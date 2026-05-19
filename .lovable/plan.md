@@ -1,92 +1,36 @@
-## Prentix Landing Page
+# Task 2 — Accelerator Cohort Evaluation
 
-Build a new marketing landing page for Prentix using the existing dark + gold design system (`oklch(0.13 0 0)` background, gold `oklch(0.78 0.09 80)` primary, Inter typography). Inspiration: Forage — clean, professional, card-based, lots of breathing room.
+Build the next step of the AIC × ISB simulation: after the student submits their Task 1 thesis, they receive a congratulatory email and evaluate 8 startups (filtered by their selected sector), shortlist 2, and get a board verdict.
 
-### Routing changes
-The current `/` route hosts the entire BSC simulation flow. To make room for the landing page without breaking the simulation:
+## Scope
 
-- Move the current simulation flow (everything inside `src/routes/index.tsx`'s `Index` component) into a new route `src/routes/simulations.bsc.tsx`. No logic changes — just relocate.
-- Rewrite `src/routes/index.tsx` to render the new landing page.
-- Add a thin placeholder route `src/routes/simulations.aic-isb.tsx` whose "Start Simulation" goes to a "Coming soon" state (the AIC × ISB simulation isn't built yet).
-- Add `src/routes/about.tsx`, `src/routes/login.tsx`, `src/routes/signup.tsx` as minimal placeholder pages so navbar links resolve (TanStack requires real route files for type-safe `<Link>`s).
+Frontend-only. Reuses existing dark/cyan theme tokens (`glass`, `btn-primary-glow`, `--primary`, `--bg-*`). No backend, no new packages.
 
-### Components (new)
+## Files
 
-Create under `src/components/landing/`:
+- **New** `src/components/aic-isb/startups-data.ts` — typed dataset for all 24 startups across the 3 themes (AI & SaaS, ClimateTech, HealthTech), with `boardScore`, strengths, weaknesses, metrics, plus per-theme `bestIds` / `weakIds` for verdict logic.
+- **New** `src/components/aic-isb/task-two.tsx` — the full Task 2 experience with 3 internal phases:
+  1. `email` — Animesh's "Next Evaluation Task" mail (reuses `EventEmail`-style card pattern from `src/components/screens/sim/event-email.tsx`) with the exact subject/body from the brief, `{{student_name}}` and `{{selected_theme}}` interpolated. CTA: **Start Startup Evaluation**.
+  2. `dashboard` — heading, subheading, instruction box, then 8 startup cards (in a single column, ~`max-w-4xl`) for the chosen sector. Each card shows: name, tagline, founders, stage, funding, MRR, growth, customers, market size, burn, runway, strengths, risks, competitor landscape, accelerator goal. Each card has a 1–10 rating slider (native `<input type="range">` styled), an "Evaluation reason" textarea, and an "Add to shortlist" toggle button (cyan glow when active). Submit is disabled until every startup has a rating + reason and exactly **2** are shortlisted.
+  3. `loading` → `result` — "Board reviewing your recommendations…" with a 1.5s spinner, then the verdict screen.
+- **Edit** `src/components/aic-isb/task-one.tsx` — on submit, persist `selectedSector` (already in localStorage) and call `onComplete`. No UI changes besides ensuring the sector id is exposed to the parent (pass it through `onComplete(sector)`).
+- **Edit** `src/routes/simulations.aic-isb.tsx` — after Task 1 completes, capture the sector and render `<AicIsbTaskTwo candidateName sector onComplete />`. Bump progress bar to Task 2 active when Task 1 done, Task 2 done when student finishes evaluation.
 
-- `landing-nav.tsx` — sticky top nav.
-  - Left: "Powered by" pill + `<BrandMark brand="prentix" />` (reuse existing).
-  - Right: `<Link>`s to Home, Simulations (anchors to `#simulations`), About, Login, and a gold "Sign Up" CTA button.
-- `landing-hero.tsx` — centered hero.
-  - H1 (display, ~56px): "From classroom to career."
-  - Sub-headline (gold accent line): "Develop skills employers actually look for through virtual work simulations."
-  - Supporting paragraph (muted): "Gain hands-on experience, build confidence, and prepare for real-world roles through immersive internship simulations created with top companies."
-  - Primary CTA: "Get Started" → scrolls to `#simulations`.
-  - Subtle radial gradient backdrop matching splash screen.
-- `simulation-card.tsx` — reusable card.
-  - Props: `logo` (ReactNode), `company`, `role`, `tags` (icon+label list), `ctaLabel`, `to` route, `comingSoon?`.
-  - Rounded `rounded-2xl`, `bg-card`, `border-border`, soft shadow `0 4px 24px rgba(0,0,0,0.4)`.
-  - Hover: `-translate-y-1`, border becomes `border-primary/40`, shadow deepens (Tailwind transition).
-  - Tags rendered as pills with Lucide icons: `BarChart3` (Intermediate), `Clock` (4–5 Hours), `Award` (Certificate Included).
-- `simulations-section.tsx` — anchor `#simulations`.
-  - Heading "Explore Our Internship Simulations" + short intro line.
-  - Two `SimulationCard`s side-by-side (stack on mobile):
-    1. BSC — `BrandMark brand="bsc"`, role "Growth & Business Operations Intern", CTA → `/simulations/bsc`.
-    2. AIC × ISB — text logo placeholder ("AIC × ISB"), role "Program Manager Simulation", CTA → `/simulations/aic-isb` (Coming Soon badge).
-- `how-it-works.tsx`
-  - Heading "How Prentix Works", sub-heading, description paragraph.
-  - 4 step cards in a responsive grid connected by a horizontal dotted line on `md+` (decorative SVG line behind the cards; vertical line on mobile).
-  - Each card: numbered gold circle, title, body. Icons: `UserPlus`, `Briefcase`, `GraduationCap`, `Rocket`.
-- `landing-footer.tsx`
-  - Three columns: Prentix brand + tagline, Company links (About, Contact, Privacy Policy), Social (LinkedIn, Instagram with Lucide icons).
-  - Bottom row: © Prentix 2026.
+## Verdict logic (in task-two.tsx)
 
-### Landing page composition
+After submit, compute per the brief:
+- For each shortlisted startup: classify as **strong** (in `bestIds`), **weak** (in `weakIds`), or **neutral**. Show the matching board comment (positive validation / warning / neutral note) verbatim from the spec.
+- For each non-shortlisted strong startup the student rated low (< 7): show "investment committee identified stronger long-term defensibility…".
+- For each weak startup the student rated high (> 7): show "you may have overweighted short-term traction…".
+- Compute **Evaluation Accuracy %**: `1 - mean(|studentRating - boardScore|) / 10`, rounded.
+- Render: heading "Evaluation Approved" (or "Evaluation Noted" if any weak in shortlist), summary message, the 2 selected startup cards with their score + board comment, accuracy %, 3 analyst skill badges (Investment Judgment, Scalability Read, Risk Analysis), and a **Continue Simulation** CTA that calls `onComplete`.
 
-`src/routes/index.tsx` becomes:
+## Design notes
 
-```tsx
-<div className="min-h-screen flex flex-col bg-background">
-  <LandingNav />
-  <main>
-    <LandingHero />
-    <SimulationsSection />
-    <HowItWorks />
-  </main>
-  <LandingFooter />
-</div>
-```
+Use the existing cyan glass aesthetic — `glass` cards, cyan accent borders on selected/shortlisted state, `btn-primary-glow` for primary CTAs, muted blue-gray for secondary text. Strengths render with a green dot, risks with a soft red dot, neutral metrics in a 2-col grid. Rating slider track uses cyan gradient fill proportional to value. Loading uses a subtle pulsing cyan orb. No layout/typography changes to existing components.
 
-Update `head()` to:
-- title: "Prentix — From classroom to career"
-- description: hero supporting paragraph
-- og:title / og:description matching.
+## Out of scope
 
-### Design tokens / styling
-- Reuse existing tokens from `src/styles.css` — no new colors. Use `bg-card`, `border-border`, `text-primary` (gold), `text-muted-foreground`.
-- Section spacing: `py-24 sm:py-32`, max width `max-w-6xl mx-auto px-5 sm:px-8`.
-- Buttons: gold primary (`bg-primary text-primary-foreground`), ghost secondary (`border border-border hover:border-primary/40`).
-- Animations: subtle fade-in on scroll using existing `fadeSlide` keyframe in `styles.css` (already defined).
-
-### Files
-
-New:
-- `src/routes/simulations.bsc.tsx` (relocated current Index)
-- `src/routes/simulations.aic-isb.tsx` (Coming Soon)
-- `src/routes/about.tsx`, `src/routes/login.tsx`, `src/routes/signup.tsx` (placeholders)
-- `src/components/landing/landing-nav.tsx`
-- `src/components/landing/landing-hero.tsx`
-- `src/components/landing/simulation-card.tsx`
-- `src/components/landing/simulations-section.tsx`
-- `src/components/landing/how-it-works.tsx`
-- `src/components/landing/landing-footer.tsx`
-
-Modified:
-- `src/routes/index.tsx` — replaced with landing page composition.
-
-### Out of scope
-- No real auth — Login/Sign Up are placeholder pages.
-- No CMS or backend changes.
-- BSC simulation flow is moved verbatim, no functional changes.
-
-Please confirm and I'll implement.
+- Persisting Task 2 answers across reload (Task 1 already does this; Task 2 will be session-only to keep scope tight).
+- Task 3+ (CTA at the end just calls `onComplete`; Task 3 remains locked).
+- Backend / database.

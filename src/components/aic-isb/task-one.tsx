@@ -130,7 +130,7 @@ export function AicIsbTaskOne({
   onComplete,
 }: {
   candidateName: string;
-  onComplete?: () => void;
+  onComplete?: (sector: Sector) => void;
 }) {
   const [phase, setPhase] = useState<"loading" | "ready">("loading");
   const [emailOpen, setEmailOpen] = useState(true);
@@ -210,7 +210,7 @@ export function AicIsbTaskOne({
     if (!canSubmit) return;
     setSubmitted(true);
     setShowSuccess(true);
-    onComplete?.();
+    if (sector) onComplete?.(sector);
     window.setTimeout(() => setShowSuccess(false), 2600);
   }
 

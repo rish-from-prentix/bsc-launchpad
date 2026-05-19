@@ -3,6 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AicIsbIntroScreen } from "@/components/aic-isb/intro-screen";
 import { AicIsbProgressBar, type ProgressTask } from "@/components/aic-isb/progress-bar";
 import { AicIsbTaskOne } from "@/components/aic-isb/task-one";
+import { AicIsbTaskTwo } from "@/components/aic-isb/task-two";
+import type { ThemeId } from "@/components/aic-isb/startups-data";
 
 export const Route = createFileRoute("/simulations/aic-isb")({
   head: () => ({
@@ -39,6 +41,7 @@ function buildTasks(completed: number): ProgressTask[] {
 function AicIsbPage() {
   const [name, setName] = useState<string | null>(null);
   const [completed, setCompleted] = useState(0);
+  const [sector, setSector] = useState<ThemeId | null>(null);
 
   if (!name) {
     return <AicIsbIntroScreen onStart={(n) => setName(n)} />;
@@ -50,10 +53,22 @@ function AicIsbPage() {
     <div className="min-h-screen bg-background">
       <AicIsbProgressBar candidateName={name} tasks={tasks} />
       <main>
-        <AicIsbTaskOne
-          candidateName={name}
-          onComplete={() => setCompleted((c) => Math.max(c, 1))}
-        />
+        {completed < 1 && (
+          <AicIsbTaskOne
+            candidateName={name}
+            onComplete={(s) => {
+              setSector(s);
+              setCompleted((c) => Math.max(c, 1));
+            }}
+          />
+        )}
+        {completed >= 1 && sector && (
+          <AicIsbTaskTwo
+            candidateName={name}
+            sector={sector}
+            onComplete={() => setCompleted((c) => Math.max(c, 2))}
+          />
+        )}
       </main>
     </div>
   );

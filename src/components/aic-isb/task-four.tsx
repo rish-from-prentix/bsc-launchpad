@@ -380,18 +380,15 @@ function FormField({
   label,
   value,
   rows,
-  min,
   placeholder,
   onChange,
 }: {
   label: string;
   value: string;
   rows: number;
-  min: number;
   placeholder: string;
   onChange: (v: string) => void;
 }) {
-  const remaining = min - value.trim().length;
   return (
     <div>
       <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">{label}</label>
@@ -402,9 +399,6 @@ function FormField({
         placeholder={placeholder}
         className="mt-2 w-full rounded-xl border border-border bg-background/40 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/60 resize-y"
       />
-      <div className="mt-1 text-[11px] text-muted-foreground">
-        {remaining > 0 ? `${remaining} more characters required` : "Looks good."}
-      </div>
     </div>
   );
 }

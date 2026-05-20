@@ -6,6 +6,7 @@ import { AicIsbTaskOne } from "@/components/aic-isb/task-one";
 import { AicIsbTaskTwo } from "@/components/aic-isb/task-two";
 import { AicIsbTaskThree } from "@/components/aic-isb/task-three";
 import { AicIsbTaskFour } from "@/components/aic-isb/task-four";
+import { AicIsbTaskFive } from "@/components/aic-isb/task-five";
 import type { ThemeId } from "@/components/aic-isb/startups-data";
 
 export const Route = createFileRoute("/simulations/aic-isb")({
@@ -26,8 +27,8 @@ const TASK_TITLES = [
   "Thesis: The Basics",
   "Startup Evaluation",
   "Mentor Matching",
-  "Demo Day Prep",
-  "Investor Readout",
+  "Operational Review",
+  "Investment Memo",
 ];
 
 function buildTasks(completed: number): ProgressTask[] {
@@ -85,12 +86,20 @@ function AicIsbPage() {
             onComplete={() => setCompleted((c) => Math.max(c, 3))}
           />
         )}
-        {completed >= 3 && sector && shortlistedIds.length > 0 && (
+        {completed >= 3 && completed < 4 && sector && shortlistedIds.length > 0 && (
           <AicIsbTaskFour
             candidateName={name}
             sector={sector}
             shortlistedIds={shortlistedIds}
             onComplete={() => setCompleted((c) => Math.max(c, 4))}
+          />
+        )}
+        {completed >= 4 && sector && shortlistedIds.length > 0 && (
+          <AicIsbTaskFive
+            candidateName={name}
+            sector={sector}
+            shortlistedIds={shortlistedIds}
+            onComplete={() => setCompleted((c) => Math.max(c, 5))}
           />
         )}
       </main>

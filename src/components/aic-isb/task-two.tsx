@@ -132,6 +132,8 @@ export function AicIsbTaskTwo({
       onUpdate={updateEval}
       onToggleShortlist={toggleShortlist}
       onSubmit={handleSubmit}
+      saveState={saveState}
+      onSaveDraft={handleSaveDraft}
     />
   );
 }
@@ -239,6 +241,8 @@ function Dashboard({
   onUpdate,
   onToggleShortlist,
   onSubmit,
+  saveState,
+  onSaveDraft,
 }: {
   themeLabel: string;
   startups: Startup[];
@@ -249,6 +253,8 @@ function Dashboard({
   onUpdate: (id: string, patch: Partial<Evaluation>) => void;
   onToggleShortlist: (id: string) => void;
   onSubmit: () => void;
+  saveState: "idle" | "saved";
+  onSaveDraft: () => void;
 }) {
   return (
     <div className="mx-auto max-w-4xl px-5 sm:px-8 py-10 sm:py-14 pb-40 relative">

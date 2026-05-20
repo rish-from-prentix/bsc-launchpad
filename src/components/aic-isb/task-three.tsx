@@ -511,8 +511,8 @@ function ResultPhase({
 }) {
   const evaluations = selectedStartups.map((s) => {
     const a = assignments[s.id];
-    const primary = a.primaryId ? getMentor(sector, a.primaryId) : null;
-    const secondary = a.secondaryId ? getMentor(sector, a.secondaryId) : null;
+    const primary = (a.primaryId ? getMentor(sector, a.primaryId) : null) ?? null;
+    const secondary = (a.secondaryId ? getMentor(sector, a.secondaryId) : null) ?? null;
     const pFit = primary ? mentorFit(primary, s.id) : "weak";
     const sFit = secondary ? mentorFit(secondary, s.id) : "weak";
     const score = (pFit === "strong" ? 60 : 20) + (sFit === "strong" ? 40 : 10);

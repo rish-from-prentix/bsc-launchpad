@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Mail,
   ArrowRight,
@@ -13,6 +13,7 @@ import {
   Star,
   Briefcase,
   Quote,
+  Save,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { THEMES, type ThemeId, type Startup } from "./startups-data";
@@ -43,20 +44,48 @@ export function AicIsbTaskThree({
     [bundle, shortlistedIds],
   );
   const mentors = mentorsForSector(sector);
+  const storageKey = `aic-isb:task3:${sector}:${shortlistedIds.join(",")}`;
 
   const [phase, setPhase] = useState<Phase>("email");
-  const [assignments, setAssignments] = useState<Record<string, Assignment>>(() =>
-    Object.fromEntries(selectedStartups.map((s) => [s.id, { primaryId: null, secondaryId: null, reason: "" }])),
-  );
+  const [assignments, setAssignments] = useState<Record<string, Assignment>>(() => {
+    const empty = Object.fromEntries(
+      selectedStartups.map((s) => [s.id, { primaryId: null, secondaryId: null, reason: "" }]),
+    ) as Record<string, Assignment>;
+    if (typeof window === "undefined") return empty;
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      if (!raw) return empty;
+      const parsed = JSON.parse(raw) as Record<string, Assignment>;
+      return { ...empty, ...parsed };
+    } catch {
+      return empty;
+    }
+  });
+  const [saveState, setSaveState] = useState<"idle" | "saved">("idle");
+  const savedTimer = useRef<number | null>(null);
 
   const allComplete = selectedStartups.every((s) => {
     const a = assignments[s.id];
-    return a.primaryId && a.secondaryId && a.primaryId !== a.secondaryId && a.reason.trim().length >= 30;
+    return a.primaryId && a.secondaryId && a.primaryId !== a.secondaryId && a.reason.trim().length > 0;
   });
 
   function update(id: string, patch: Partial<Assignment>) {
     setAssignments((p) => ({ ...p, [id]: { ...p[id], ...patch } }));
   }
+
+  function handleSaveDraft() {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(storageKey, JSON.stringify(assignments));
+      setSaveState("saved");
+      if (savedTimer.current) window.clearTimeout(savedTimer.current);
+      savedTimer.current = window.setTimeout(() => setSaveState("idle"), 2200);
+    } catch {
+      /* noop */
+    }
+  }
+
+  useEffect(() => () => { if (savedTimer.current) window.clearTimeout(savedTimer.current); }, []);
 
   function submit() {
     if (!allComplete) return;
@@ -87,6 +116,8 @@ export function AicIsbTaskThree({
       allComplete={allComplete}
       onUpdate={update}
       onSubmit={submit}
+      saveState={saveState}
+      onSaveDraft={handleSaveDraft}
     />
   );
 }
@@ -150,6 +181,8 @@ function Dashboard({
   allComplete,
   onUpdate,
   onSubmit,
+  saveState,
+  onSaveDraft,
 }: {
   mentors: Mentor[];
   selectedStartups: Startup[];
@@ -157,6 +190,8 @@ function Dashboard({
   allComplete: boolean;
   onUpdate: (id: string, patch: Partial<Assignment>) => void;
   onSubmit: () => void;
+  saveState: "idle" | "saved";
+  onSaveDraft: () => void;
 }) {
   return (
     <div className="mx-auto max-w-5xl px-5 sm:px-8 py-10 sm:py-14 pb-40">
@@ -191,20 +226,32 @@ function Dashboard({
             <span className={cn(allComplete && "text-primary")}>
               {selectedStartups.filter((s) => {
                 const a = assignments[s.id];
-                return a.primaryId && a.secondaryId && a.primaryId !== a.secondaryId && a.reason.trim().length >= 30;
+                return a.primaryId && a.secondaryId && a.primaryId !== a.secondaryId && a.reason.trim().length > 0;
               }).length}/{selectedStartups.length} startups assigned
             </span>
-          </div>
-          <button
-            onClick={onSubmit}
-            disabled={!allComplete}
-            className={cn(
-              "btn-primary-glow inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold",
-              !allComplete && "opacity-40 pointer-events-none",
+            {saveState === "saved" && (
+              <span className="ml-3 text-primary">Draft saved</span>
             )}
-          >
-            Submit Mentor Map <ArrowRight className="h-4 w-4" />
-          </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onSaveDraft}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card hover:bg-secondary px-3.5 py-2.5 text-xs font-medium text-foreground/90 transition"
+            >
+              <Save className="h-3.5 w-3.5" /> Save Draft
+            </button>
+            <button
+              onClick={onSubmit}
+              disabled={!allComplete}
+              className={cn(
+                "btn-primary-glow inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold",
+                !allComplete && "opacity-40 pointer-events-none",
+              )}
+            >
+              Submit Mentor Map <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -310,11 +357,6 @@ function StartupAssignmentBlock({
           rows={3}
           className="mt-2 w-full rounded-xl border border-border bg-background/40 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/60 resize-y"
         />
-        <div className="mt-1 text-[11px] text-muted-foreground">
-          {assignment.reason.trim().length < 30
-            ? `${30 - assignment.reason.trim().length} more characters required`
-            : "Looks good."}
-        </div>
       </div>
     </section>
   );

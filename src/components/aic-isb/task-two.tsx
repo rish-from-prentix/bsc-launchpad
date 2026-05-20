@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Mail,
   Paperclip,
@@ -14,6 +14,7 @@ import {
   DollarSign,
   Flame,
   Target,
+  Save,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { THEMES, type ThemeId, type Startup } from "./startups-data";
@@ -36,22 +37,52 @@ export function AicIsbTaskTwo({
   onComplete?: (shortlistedIds: string[]) => void;
 }) {
   const bundle = THEMES[sector];
+  const storageKey = `aic-isb:task2:${sector}`;
   const [phase, setPhase] = useState<Phase>("email");
-  const [evals, setEvals] = useState<Record<string, Evaluation>>(() =>
-    Object.fromEntries(
+  const [evals, setEvals] = useState<Record<string, Evaluation>>(() => {
+    const empty = Object.fromEntries(
       bundle.startups.map((s) => [s.id, { rating: 0, reason: "", shortlisted: false }]),
-    ),
-  );
+    ) as Record<string, Evaluation>;
+    if (typeof window === "undefined") return empty;
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      if (!raw) return empty;
+      const parsed = JSON.parse(raw) as Record<string, Evaluation>;
+      return { ...empty, ...parsed };
+    } catch {
+      return empty;
+    }
+  });
+  const [saveState, setSaveState] = useState<"idle" | "saved">("idle");
+  const savedTimer = useRef<number | null>(null);
 
   const shortlistCount = Object.values(evals).filter((e) => e.shortlisted).length;
   const allRated = bundle.startups.every(
-    (s) => evals[s.id].rating > 0 && evals[s.id].reason.trim().length >= 20,
+    (s) => evals[s.id].rating > 0 && evals[s.id].reason.trim().length > 0,
   );
   const canSubmit = allRated && shortlistCount === 2;
 
   function updateEval(id: string, patch: Partial<Evaluation>) {
     setEvals((prev) => ({ ...prev, [id]: { ...prev[id], ...patch } }));
   }
+
+  function handleSaveDraft() {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(storageKey, JSON.stringify(evals));
+      setSaveState("saved");
+      if (savedTimer.current) window.clearTimeout(savedTimer.current);
+      savedTimer.current = window.setTimeout(() => setSaveState("idle"), 2200);
+    } catch {
+      /* noop */
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      if (savedTimer.current) window.clearTimeout(savedTimer.current);
+    };
+  }, []);
 
   function toggleShortlist(id: string) {
     setEvals((prev) => {
@@ -101,6 +132,8 @@ export function AicIsbTaskTwo({
       onUpdate={updateEval}
       onToggleShortlist={toggleShortlist}
       onSubmit={handleSubmit}
+      saveState={saveState}
+      onSaveDraft={handleSaveDraft}
     />
   );
 }
@@ -208,6 +241,8 @@ function Dashboard({
   onUpdate,
   onToggleShortlist,
   onSubmit,
+  saveState,
+  onSaveDraft,
 }: {
   themeLabel: string;
   startups: Startup[];
@@ -218,6 +253,8 @@ function Dashboard({
   onUpdate: (id: string, patch: Partial<Evaluation>) => void;
   onToggleShortlist: (id: string) => void;
   onSubmit: () => void;
+  saveState: "idle" | "saved";
+  onSaveDraft: () => void;
 }) {
   return (
     <div className="mx-auto max-w-4xl px-5 sm:px-8 py-10 sm:py-14 pb-40 relative">
@@ -259,23 +296,35 @@ function Dashboard({
         <div className="mx-auto max-w-4xl px-5 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
           <div className="text-xs text-muted-foreground">
             <span className={cn(allRated ? "text-primary" : "")}>
-              {Object.values(evals).filter((e) => e.rating > 0 && e.reason.trim().length >= 20).length}/8 evaluated
+              {Object.values(evals).filter((e) => e.rating > 0 && e.reason.trim().length > 0).length}/8 evaluated
             </span>
             <span className="mx-2 text-border">·</span>
             <span className={cn(shortlistCount === 2 ? "text-primary" : "")}>
               {shortlistCount}/2 shortlisted
             </span>
-          </div>
-          <button
-            onClick={onSubmit}
-            disabled={!canSubmit}
-            className={cn(
-              "btn-primary-glow inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold",
-              !canSubmit && "opacity-40 pointer-events-none",
+            {saveState === "saved" && (
+              <span className="ml-3 text-primary">Draft saved</span>
             )}
-          >
-            Submit Recommendations <ArrowRight className="h-4 w-4" />
-          </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onSaveDraft}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card hover:bg-secondary px-3.5 py-2.5 text-xs font-medium text-foreground/90 transition"
+            >
+              <Save className="h-3.5 w-3.5" /> Save Draft
+            </button>
+            <button
+              onClick={onSubmit}
+              disabled={!canSubmit}
+              className={cn(
+                "btn-primary-glow inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold",
+                !canSubmit && "opacity-40 pointer-events-none",
+              )}
+            >
+              Submit Recommendations <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -423,11 +472,6 @@ function StartupCard({
             rows={3}
             className="mt-2 w-full rounded-xl border border-border bg-background/40 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/60 resize-y"
           />
-          <div className="mt-1 text-[11px] text-muted-foreground">
-            {evaluation.reason.trim().length < 20
-              ? `${20 - evaluation.reason.trim().length} more characters required`
-              : "Looks good."}
-          </div>
         </div>
 
         <button

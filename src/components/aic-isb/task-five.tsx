@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Mail,
   ArrowRight,
@@ -14,6 +14,7 @@ import {
   Download,
   Share2,
   Building2,
+  Save,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { THEMES, type ThemeId, type Startup } from "./startups-data";
@@ -63,10 +64,33 @@ export function AicIsbTaskFive({
     () => bundle.startups.filter((s) => shortlistedIds.includes(s.id)),
     [bundle, shortlistedIds],
   );
+  const storageKey = `aic-isb:task5:${sector}:${shortlistedIds.join(",")}`;
 
   const [phase, setPhase] = useState<Phase>("email");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [answers, setAnswers] = useState<Answers>(emptyAnswers);
+  const [selectedId, setSelectedId] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as { selectedId?: string | null };
+      return parsed.selectedId ?? null;
+    } catch {
+      return null;
+    }
+  });
+  const [answers, setAnswers] = useState<Answers>(() => {
+    if (typeof window === "undefined") return emptyAnswers;
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      if (!raw) return emptyAnswers;
+      const parsed = JSON.parse(raw) as { answers?: Partial<Answers> };
+      return { ...emptyAnswers, ...(parsed.answers ?? {}) };
+    } catch {
+      return emptyAnswers;
+    }
+  });
+  const [saveState, setSaveState] = useState<"idle" | "saved">("idle");
+  const savedTimer = useRef<number | null>(null);
 
   const selected = cohortStartups.find((s) => s.id === selectedId) ?? null;
   const benchmark = selected ? getValuation(selected) : null;
@@ -80,17 +104,34 @@ export function AicIsbTaskFive({
     multNum > 0 &&
     !Number.isNaN(valNum) &&
     valNum > 0 &&
-    answers.rationale.trim().length >= 40 &&
-    answers.strengths.trim().length >= 30 &&
-    answers.risks.trim().length >= 30 &&
+    answers.rationale.trim().length > 0 &&
+    answers.strengths.trim().length > 0 &&
+    answers.risks.trim().length > 0 &&
     answers.recommendation !== "" &&
-    answers.recReason.trim().length >= 30;
+    answers.recReason.trim().length > 0;
 
   function submit() {
     if (!complete) return;
     setPhase("loading");
     window.setTimeout(() => setPhase("result"), 1800);
   }
+
+  function handleSaveDraft() {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(
+        storageKey,
+        JSON.stringify({ selectedId, answers }),
+      );
+      setSaveState("saved");
+      if (savedTimer.current) window.clearTimeout(savedTimer.current);
+      savedTimer.current = window.setTimeout(() => setSaveState("idle"), 2200);
+    } catch {
+      /* noop */
+    }
+  }
+
+  useEffect(() => () => { if (savedTimer.current) window.clearTimeout(savedTimer.current); }, []);
 
   if (phase === "email")
     return <EmailPhase name={candidateName} onStart={() => setPhase("select")} />;
@@ -132,6 +173,8 @@ export function AicIsbTaskFive({
       complete={complete}
       onUpdate={(p) => setAnswers((prev) => ({ ...prev, ...p }))}
       onSubmit={submit}
+      saveState={saveState}
+      onSaveDraft={handleSaveDraft}
     />
   );
 }
@@ -267,6 +310,8 @@ function Workspace({
   complete,
   onUpdate,
   onSubmit,
+  saveState,
+  onSaveDraft,
 }: {
   sector: ThemeId;
   cohort: Startup[];
@@ -276,6 +321,8 @@ function Workspace({
   complete: boolean;
   onUpdate: (p: Partial<Answers>) => void;
   onSubmit: () => void;
+  saveState: "idle" | "saved";
+  onSaveDraft: () => void;
 }) {
   const rca = getRcaCase(startup);
   const examples = THEMES[sector].startups
@@ -330,7 +377,7 @@ function Workspace({
                 label="Why does this valuation make sense?"
                 value={answers.rationale}
                 rows={3}
-                min={40}
+
                 placeholder="Reference ARR, growth, retention, and risk."
                 onChange={(v) => onUpdate({ rationale: v })}
               />
@@ -338,7 +385,7 @@ function Workspace({
                 label="Strengths of the startup"
                 value={answers.strengths}
                 rows={2}
-                min={30}
+
                 placeholder="Moat, retention, market, founder quality…"
                 onChange={(v) => onUpdate({ strengths: v })}
               />
@@ -346,7 +393,7 @@ function Workspace({
                 label="Biggest investment risks"
                 value={answers.risks}
                 rows={2}
-                min={30}
+
                 placeholder="Burn, churn, regulation, competition…"
                 onChange={(v) => onUpdate({ risks: v })}
               />
@@ -372,7 +419,7 @@ function Workspace({
                 label="Why this recommendation?"
                 value={answers.recReason}
                 rows={2}
-                min={30}
+
                 placeholder="Brief rationale tied to fundamentals."
                 onChange={(v) => onUpdate({ recReason: v })}
               />
@@ -385,17 +432,29 @@ function Workspace({
         <div className="mx-auto max-w-6xl px-5 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
           <div className="text-xs text-muted-foreground">
             Complete every field to submit your investment memo.
-          </div>
-          <button
-            onClick={onSubmit}
-            disabled={!complete}
-            className={cn(
-              "btn-primary-glow inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold",
-              !complete && "opacity-40 pointer-events-none",
+            {saveState === "saved" && (
+              <span className="ml-3 text-primary">Draft saved</span>
             )}
-          >
-            Submit to Investment Committee <ArrowRight className="h-4 w-4" />
-          </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onSaveDraft}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card hover:bg-secondary px-3.5 py-2.5 text-xs font-medium text-foreground/90 transition"
+            >
+              <Save className="h-3.5 w-3.5" /> Save Draft
+            </button>
+            <button
+              onClick={onSubmit}
+              disabled={!complete}
+              className={cn(
+                "btn-primary-glow inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold",
+                !complete && "opacity-40 pointer-events-none",
+              )}
+            >
+              Submit to Investment Committee <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -681,18 +740,15 @@ function TextArea({
   label,
   value,
   rows,
-  min,
   placeholder,
   onChange,
 }: {
   label: string;
   value: string;
   rows: number;
-  min: number;
   placeholder: string;
   onChange: (v: string) => void;
 }) {
-  const remaining = min - value.trim().length;
   return (
     <div>
       <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
@@ -705,9 +761,6 @@ function TextArea({
         placeholder={placeholder}
         className="mt-2 w-full rounded-xl border border-border bg-background/40 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/60 resize-y"
       />
-      <div className="mt-1 text-[11px] text-muted-foreground">
-        {remaining > 0 ? `${remaining} more characters required` : "Looks good."}
-      </div>
     </div>
   );
 }

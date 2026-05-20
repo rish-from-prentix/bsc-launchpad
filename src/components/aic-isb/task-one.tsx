@@ -186,7 +186,7 @@ export function AicIsbTaskOne({
 
   const canSubmit =
     !!sector &&
-    SECTIONS.every((s) => answers[s.id].trim().length >= 40) &&
+    SECTIONS.every((s) => answers[s.id].trim().length > 0) &&
     !submitted;
 
   function handleAnswer(id: SectionId, value: string) {

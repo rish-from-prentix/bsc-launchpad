@@ -4,6 +4,8 @@ import { AicIsbIntroScreen } from "@/components/aic-isb/intro-screen";
 import { AicIsbProgressBar, type ProgressTask } from "@/components/aic-isb/progress-bar";
 import { AicIsbTaskOne } from "@/components/aic-isb/task-one";
 import { AicIsbTaskTwo } from "@/components/aic-isb/task-two";
+import { AicIsbTaskThree } from "@/components/aic-isb/task-three";
+import { AicIsbTaskFour } from "@/components/aic-isb/task-four";
 import type { ThemeId } from "@/components/aic-isb/startups-data";
 
 export const Route = createFileRoute("/simulations/aic-isb")({
@@ -42,6 +44,7 @@ function AicIsbPage() {
   const [name, setName] = useState<string | null>(null);
   const [completed, setCompleted] = useState(0);
   const [sector, setSector] = useState<ThemeId | null>(null);
+  const [shortlistedIds, setShortlistedIds] = useState<string[]>([]);
 
   if (!name) {
     return <AicIsbIntroScreen onStart={(n) => setName(n)} />;
@@ -63,10 +66,31 @@ function AicIsbPage() {
           />
         )}
         {completed >= 1 && sector && (
+          completed < 2 ? (
           <AicIsbTaskTwo
             candidateName={name}
             sector={sector}
-            onComplete={() => setCompleted((c) => Math.max(c, 2))}
+            onComplete={(ids) => {
+              setShortlistedIds(ids);
+              setCompleted((c) => Math.max(c, 2));
+            }}
+          />
+          ) : null
+        )}
+        {completed >= 2 && completed < 3 && sector && shortlistedIds.length > 0 && (
+          <AicIsbTaskThree
+            candidateName={name}
+            sector={sector}
+            shortlistedIds={shortlistedIds}
+            onComplete={() => setCompleted((c) => Math.max(c, 3))}
+          />
+        )}
+        {completed >= 3 && sector && shortlistedIds.length > 0 && (
+          <AicIsbTaskFour
+            candidateName={name}
+            sector={sector}
+            shortlistedIds={shortlistedIds}
+            onComplete={() => setCompleted((c) => Math.max(c, 4))}
           />
         )}
       </main>

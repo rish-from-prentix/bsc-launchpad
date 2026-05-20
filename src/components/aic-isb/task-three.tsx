@@ -357,11 +357,6 @@ function StartupAssignmentBlock({
           rows={3}
           className="mt-2 w-full rounded-xl border border-border bg-background/40 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/60 resize-y"
         />
-        <div className="mt-1 text-[11px] text-muted-foreground">
-          {assignment.reason.trim().length < 30
-            ? `${30 - assignment.reason.trim().length} more characters required`
-            : "Looks good."}
-        </div>
       </div>
     </section>
   );

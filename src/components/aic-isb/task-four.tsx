@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Mail,
   ArrowRight,
@@ -13,6 +13,7 @@ import {
   Quote,
   MessageSquare,
   Users,
+  Save,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { THEMES, type ThemeId, type Startup } from "./startups-data";
@@ -52,26 +53,54 @@ export function AicIsbTaskFour({
     () => bundle.startups.filter((s) => shortlistedIds.includes(s.id)),
     [bundle, shortlistedIds],
   );
+  const storageKey = `aic-isb:task4:${sector}:${shortlistedIds.join(",")}`;
 
   const [phase, setPhase] = useState<Phase>("email");
-  const [answers, setAnswers] = useState<Record<string, Answer>>(() =>
-    Object.fromEntries(startups.map((s) => [s.id, { ...emptyAnswer }])),
-  );
+  const [answers, setAnswers] = useState<Record<string, Answer>>(() => {
+    const empty = Object.fromEntries(
+      startups.map((s) => [s.id, { ...emptyAnswer }]),
+    ) as Record<string, Answer>;
+    if (typeof window === "undefined") return empty;
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      if (!raw) return empty;
+      const parsed = JSON.parse(raw) as Record<string, Answer>;
+      return { ...empty, ...parsed };
+    } catch {
+      return empty;
+    }
+  });
+  const [saveState, setSaveState] = useState<"idle" | "saved">("idle");
+  const savedTimer = useRef<number | null>(null);
 
   const complete = startups.every((s) => {
     const a = answers[s.id];
     return (
-      a.rootCause.trim().length >= 40 &&
-      a.supportingMetrics.trim().length >= 20 &&
-      a.priority.trim().length >= 20 &&
-      a.actionPlan.trim().length >= 30 &&
-      a.expectedOutcome.trim().length >= 20
+      a.rootCause.trim().length > 0 &&
+      a.supportingMetrics.trim().length > 0 &&
+      a.priority.trim().length > 0 &&
+      a.actionPlan.trim().length > 0 &&
+      a.expectedOutcome.trim().length > 0
     );
   });
 
   function update(id: string, patch: Partial<Answer>) {
     setAnswers((p) => ({ ...p, [id]: { ...p[id], ...patch } }));
   }
+
+  function handleSaveDraft() {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(storageKey, JSON.stringify(answers));
+      setSaveState("saved");
+      if (savedTimer.current) window.clearTimeout(savedTimer.current);
+      savedTimer.current = window.setTimeout(() => setSaveState("idle"), 2200);
+    } catch {
+      /* noop */
+    }
+  }
+
+  useEffect(() => () => { if (savedTimer.current) window.clearTimeout(savedTimer.current); }, []);
 
   function submit() {
     if (!complete) return;
@@ -92,6 +121,8 @@ export function AicIsbTaskFour({
       complete={complete}
       onUpdate={update}
       onSubmit={submit}
+      saveState={saveState}
+      onSaveDraft={handleSaveDraft}
     />
   );
 }
@@ -150,12 +181,16 @@ function Dashboard({
   complete,
   onUpdate,
   onSubmit,
+  saveState,
+  onSaveDraft,
 }: {
   startups: Startup[];
   answers: Record<string, Answer>;
   complete: boolean;
   onUpdate: (id: string, patch: Partial<Answer>) => void;
   onSubmit: () => void;
+  saveState: "idle" | "saved";
+  onSaveDraft: () => void;
 }) {
   return (
     <div className="mx-auto max-w-5xl px-5 sm:px-8 py-10 sm:py-14 pb-40">
@@ -181,24 +216,36 @@ function Dashboard({
             {startups.filter((s) => {
               const a = answers[s.id];
               return (
-                a.rootCause.trim().length >= 40 &&
-                a.supportingMetrics.trim().length >= 20 &&
-                a.priority.trim().length >= 20 &&
-                a.actionPlan.trim().length >= 30 &&
-                a.expectedOutcome.trim().length >= 20
+                a.rootCause.trim().length > 0 &&
+                a.supportingMetrics.trim().length > 0 &&
+                a.priority.trim().length > 0 &&
+                a.actionPlan.trim().length > 0 &&
+                a.expectedOutcome.trim().length > 0
               );
             }).length}/{startups.length} RCAs complete
-          </div>
-          <button
-            onClick={onSubmit}
-            disabled={!complete}
-            className={cn(
-              "btn-primary-glow inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold",
-              !complete && "opacity-40 pointer-events-none",
+            {saveState === "saved" && (
+              <span className="ml-3 text-primary">Draft saved</span>
             )}
-          >
-            Submit RCA <ArrowRight className="h-4 w-4" />
-          </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onSaveDraft}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card hover:bg-secondary px-3.5 py-2.5 text-xs font-medium text-foreground/90 transition"
+            >
+              <Save className="h-3.5 w-3.5" /> Save Draft
+            </button>
+            <button
+              onClick={onSubmit}
+              disabled={!complete}
+              className={cn(
+                "btn-primary-glow inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold",
+                !complete && "opacity-40 pointer-events-none",
+              )}
+            >
+              Submit RCA <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

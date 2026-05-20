@@ -23,7 +23,6 @@ type Phase = "email" | "dashboard" | "loading" | "result";
 
 type Evaluation = {
   rating: number; // 1–10, 0 = unset
-  reason: string;
   shortlisted: boolean;
 };
 
@@ -41,7 +40,7 @@ export function AicIsbTaskTwo({
   const [phase, setPhase] = useState<Phase>("email");
   const [evals, setEvals] = useState<Record<string, Evaluation>>(() => {
     const empty = Object.fromEntries(
-      bundle.startups.map((s) => [s.id, { rating: 0, reason: "", shortlisted: false }]),
+      bundle.startups.map((s) => [s.id, { rating: 0, shortlisted: false }]),
     ) as Record<string, Evaluation>;
     if (typeof window === "undefined") return empty;
     try {
@@ -57,9 +56,7 @@ export function AicIsbTaskTwo({
   const savedTimer = useRef<number | null>(null);
 
   const shortlistCount = Object.values(evals).filter((e) => e.shortlisted).length;
-  const allRated = bundle.startups.every(
-    (s) => evals[s.id].rating > 0 && evals[s.id].reason.trim().length > 0,
-  );
+  const allRated = bundle.startups.every((s) => evals[s.id].rating > 0);
   const canSubmit = allRated && shortlistCount === 2;
 
   function updateEval(id: string, patch: Partial<Evaluation>) {
@@ -296,7 +293,7 @@ function Dashboard({
         <div className="mx-auto max-w-4xl px-5 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
           <div className="text-xs text-muted-foreground">
             <span className={cn(allRated ? "text-primary" : "")}>
-              {Object.values(evals).filter((e) => e.rating > 0 && e.reason.trim().length > 0).length}/8 evaluated
+              {Object.values(evals).filter((e) => e.rating > 0).length}/8 evaluated
             </span>
             <span className="mx-2 text-border">·</span>
             <span className={cn(shortlistCount === 2 ? "text-primary" : "")}>
@@ -458,19 +455,6 @@ function StartupCard({
             value={rating}
             onChange={(e) => onUpdate({ rating: Number(e.target.value) })}
             className="w-full accent-[#5dc4fe] cursor-pointer"
-          />
-        </div>
-
-        <div>
-          <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
-            Your evaluation reason
-          </label>
-          <textarea
-            value={evaluation.reason}
-            onChange={(e) => onUpdate({ reason: e.target.value })}
-            placeholder="Explain your investment reasoning — what tips the balance for or against this startup."
-            rows={3}
-            className="mt-2 w-full rounded-xl border border-border bg-background/40 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/60 resize-y"
           />
         </div>
 

@@ -330,7 +330,7 @@ function Workspace({
                 label="Why does this valuation make sense?"
                 value={answers.rationale}
                 rows={3}
-                min={40}
+
                 placeholder="Reference ARR, growth, retention, and risk."
                 onChange={(v) => onUpdate({ rationale: v })}
               />
@@ -338,7 +338,7 @@ function Workspace({
                 label="Strengths of the startup"
                 value={answers.strengths}
                 rows={2}
-                min={30}
+
                 placeholder="Moat, retention, market, founder quality…"
                 onChange={(v) => onUpdate({ strengths: v })}
               />
@@ -346,7 +346,7 @@ function Workspace({
                 label="Biggest investment risks"
                 value={answers.risks}
                 rows={2}
-                min={30}
+
                 placeholder="Burn, churn, regulation, competition…"
                 onChange={(v) => onUpdate({ risks: v })}
               />
@@ -372,7 +372,7 @@ function Workspace({
                 label="Why this recommendation?"
                 value={answers.recReason}
                 rows={2}
-                min={30}
+
                 placeholder="Brief rationale tied to fundamentals."
                 onChange={(v) => onUpdate({ recReason: v })}
               />

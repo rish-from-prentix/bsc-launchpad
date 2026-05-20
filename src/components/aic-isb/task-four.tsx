@@ -335,7 +335,7 @@ function RcaBlock({
           label="1. What is the root cause?"
           value={answer.rootCause}
           rows={3}
-          min={40}
+
           placeholder="State the underlying issue, not the surface symptom."
           onChange={(v) => onUpdate({ rootCause: v })}
         />
@@ -343,7 +343,7 @@ function RcaBlock({
           label="2. Which metrics support your conclusion?"
           value={answer.supportingMetrics}
           rows={2}
-          min={20}
+
           placeholder="Reference the operational metrics, trends, and signals above."
           onChange={(v) => onUpdate({ supportingMetrics: v })}
         />
@@ -351,7 +351,7 @@ function RcaBlock({
           label="3. What should the startup prioritize?"
           value={answer.priority}
           rows={2}
-          min={20}
+
           placeholder="What's the single most important focus over the next 60 days?"
           onChange={(v) => onUpdate({ priority: v })}
         />
@@ -359,7 +359,7 @@ function RcaBlock({
           label="4. Recommended action plan"
           value={answer.actionPlan}
           rows={3}
-          min={30}
+
           placeholder="Concrete operational moves — what, who, by when."
           onChange={(v) => onUpdate({ actionPlan: v })}
         />
@@ -367,7 +367,7 @@ function RcaBlock({
           label="5. Expected outcome if solved"
           value={answer.expectedOutcome}
           rows={2}
-          min={20}
+
           placeholder="What metric improves, by how much, and on what timeline?"
           onChange={(v) => onUpdate({ expectedOutcome: v })}
         />

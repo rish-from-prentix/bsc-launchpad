@@ -190,7 +190,6 @@ As part of this process, you will:
 • Analyze market potential and scalability
 • Assess founder strength and differentiation
 • Rate each startup based on investment potential
-• Provide reasoning behind your evaluation
 • Select the top 2 startups for the accelerator cohort
 
 Please note:

@@ -33,7 +33,7 @@ export function AicIsbTaskTwo({
 }: {
   candidateName: string;
   sector: ThemeId;
-  onComplete?: () => void;
+  onComplete?: (shortlistedIds: string[]) => void;
 }) {
   const bundle = THEMES[sector];
   const [phase, setPhase] = useState<Phase>("email");
@@ -81,7 +81,11 @@ export function AicIsbTaskTwo({
       <ResultPhase
         bundle={bundle}
         evals={evals}
-        onContinue={() => onComplete?.()}
+        onContinue={() =>
+          onComplete?.(
+            bundle.startups.filter((s) => evals[s.id].shortlisted).map((s) => s.id),
+          )
+        }
       />
     );
   }

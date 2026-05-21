@@ -843,12 +843,12 @@ function ResultPhase({
         : "Memo Returned for Revision";
 
   function downloadCertificate() {
-    const html = certificateHtml(candidateName, finalScore, startup.name);
+    const html = certificateHtml(getFirstName(candidateName), finalScore, startup.name);
     const blob = new Blob([html], { type: "text/html" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `AIC-ISB-Accelerator-Certificate-${candidateName.replace(/\s+/g, "-")}.html`;
+    a.download = `AIC-ISB-Accelerator-Certificate-${getFirstName(candidateName)}.html`;
     document.body.appendChild(a);
     a.click();
     a.remove();

@@ -1009,7 +1009,7 @@ function ResultPhase({
           onClick={onContinue}
           className="inline-flex items-center gap-2 rounded-xl border border-border bg-background/40 px-5 py-2.5 text-sm font-medium text-foreground/80 hover:text-foreground transition"
         >
-          Continue Simulation <ArrowRight className="h-4 w-4" />
+          Continue Internship <ArrowRight className="h-4 w-4" />
         </button>
       </div>
     </div>

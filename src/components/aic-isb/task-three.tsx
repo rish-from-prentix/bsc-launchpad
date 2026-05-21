@@ -152,7 +152,7 @@ Great work on completing the startup evaluation process.
 
 Your selected startups are now entering the accelerator phase, where founder support and strategic guidance become critical.
 
-Your next task is to assign mentors to the startups based on their operational gaps, growth stage, and scaling challenges.
+Your next phase is to assign mentors to the startups based on their operational gaps, growth stage, and scaling challenges.
 
 You'll be evaluated on:
 • Mentor-founder fit
@@ -648,7 +648,7 @@ function ResultPhase({
 
       <div className="mt-10 flex justify-end">
         <button onClick={onContinue} className="btn-primary-glow inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold">
-          Continue Simulation <ArrowRight className="h-4 w-4" />
+          Continue Internship <ArrowRight className="h-4 w-4" />
         </button>
       </div>
     </div>

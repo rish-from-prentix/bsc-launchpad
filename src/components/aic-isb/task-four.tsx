@@ -153,7 +153,7 @@ function EmailPhase({ name, onStart }: { name: string; onStart: () => void }) {
 
 As the accelerator cohort progresses, several startups have started facing operational and growth challenges despite early traction.
 
-Your next task is to conduct a Root Cause Analysis for the startups you selected and identify:
+Your next phase is to conduct a Root Cause Analysis for the startups you selected and identify:
 • The underlying issue
 • Supporting operational indicators
 • Strategic bottlenecks
@@ -580,7 +580,7 @@ function ResultPhase({
 
       <div className="mt-10 flex justify-end">
         <button onClick={onContinue} className="btn-primary-glow inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold">
-          Continue Simulation <ArrowRight className="h-4 w-4" />
+          Continue Internship <ArrowRight className="h-4 w-4" />
         </button>
       </div>
     </div>

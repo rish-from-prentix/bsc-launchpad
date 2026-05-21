@@ -183,7 +183,7 @@ Your analysis demonstrated strong strategic thinking, clear understanding of mar
 
 Based on your selected theme — ${themeLabel} — we would now like you to move to the next stage of the accelerator selection process.
 
-Your next task is to evaluate 8 early-stage startups operating within the ${themeLabel} sector and identify the 2 startups you believe should be selected for the upcoming AIC × ISB accelerator cohort.
+Your next phase is to evaluate 8 early-stage startups operating within the ${themeLabel} sector and identify the 2 startups you believe should be selected for the upcoming AIC × ISB accelerator cohort.
 
 As part of this process, you will:
 • Review startup profiles and traction metrics
@@ -695,7 +695,7 @@ function ResultPhase({
           onClick={onContinue}
           className="btn-primary-glow inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold"
         >
-          Continue Simulation <ArrowRight className="h-4 w-4" />
+          Continue Internship <ArrowRight className="h-4 w-4" />
         </button>
       </div>
     </div>

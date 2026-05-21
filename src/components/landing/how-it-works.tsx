@@ -38,7 +38,7 @@ export function HowItWorks() {
             Prentix bridges the gap between education and career success.
           </p>
           <p className="mt-4 text-[15px] text-muted-foreground leading-relaxed">
-            Our virtual job simulations help students gain real-world exposure by solving tasks
+            Our virtual internships help students gain real-world exposure by solving tasks
             inspired by actual workplace challenges. Explore career paths, build practical skills,
             and experience what it’s like to work in leading companies before landing your first
             job.

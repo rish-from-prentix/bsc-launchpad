@@ -15,7 +15,7 @@ export function SimulationCard({
   company,
   role,
   to,
-  ctaLabel = "Start Simulation",
+  ctaLabel = "Start Internship",
   comingSoon = false,
 }: {
   logo: ReactNode;

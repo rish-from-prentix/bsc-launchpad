@@ -9,7 +9,7 @@ export function LandingFooter() {
         <div>
           <BrandMark brand="prentix" height={24} />
           <p className="mt-4 text-sm text-muted-foreground max-w-xs leading-relaxed">
-            Virtual internship simulations that bridge the gap between classroom and career.
+            Virtual virtual internships that bridge the gap between classroom and career.
           </p>
         </div>
         <div>

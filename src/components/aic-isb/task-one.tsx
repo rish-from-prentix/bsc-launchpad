@@ -214,9 +214,9 @@ export function AicIsbTaskOne({
         <div className="min-w-0">
           {/* Title block */}
           <div className="mb-8">
-            <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Task 1 of 5</div>
+            <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Phase 1 of 5</div>
             <h1 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-              Task 1 — Thesis: The Basics
+              Phase 1 — Thesis: The Basics
             </h1>
             <div className="mt-2 inline-flex items-center gap-2 text-xs text-muted-foreground">
               <Clock className="h-3.5 w-3.5" />
@@ -241,7 +241,7 @@ export function AicIsbTaskOne({
                 through mentorship, market access, strategic guidance, and investor readiness.
               </p>
               <p>
-                In this simulation, you will step into the role of a{" "}
+                In this internship, you will step into the role of a{" "}
                 <span className="text-primary font-medium">Program Manager Intern</span> working in the accelerator
                 ecosystem of{" "}
                 <span className="text-foreground font-medium">Indian School of Business × Atal Incubation Centre</span>.
@@ -665,7 +665,7 @@ function BottomBar({
             }}
           >
             <Send className="h-3.5 w-3.5" />
-            {submitted ? "Submitted" : "Submit Task"}
+            {submitted ? "Submitted" : "Submit Phase"}
           </button>
           <button
             type="button"
@@ -676,10 +676,10 @@ function BottomBar({
                 ? "border border-primary/50 bg-primary/10 text-primary hover:bg-primary/15"
                 : "border border-border bg-card text-muted-foreground/60 cursor-not-allowed",
             )}
-            title={submitted ? "Continue to Task 2" : "Locked until submission"}
+            title={submitted ? "Continue to Phase 2" : "Locked until submission"}
           >
             {submitted ? null : <Lock className="h-3 w-3" />}
-            Next Task
+            Next Phase
             {submitted && <ArrowRight className="h-3.5 w-3.5" />}
           </button>
         </div>
@@ -718,7 +718,7 @@ function SuccessOverlay() {
           <CheckCircle2 className="h-8 w-8" style={{ color: "oklch(0.78 0.14 155)" }} />
         </div>
         <h3 className="mt-5 text-lg font-semibold text-foreground">Thesis submitted</h3>
-        <p className="mt-1.5 text-sm text-muted-foreground">Animesh will review your work. Task 2 is now unlocked.</p>
+        <p className="mt-1.5 text-sm text-muted-foreground">Animesh will review your work. Phase 2 is now unlocked.</p>
       </div>
     </div>
   );

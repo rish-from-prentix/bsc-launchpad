@@ -406,11 +406,13 @@ function Dot({ delay }: { delay: string }) {
 
 function EmailCard({
   open,
+  hasBeenOpened,
   onToggle,
   candidateName,
   timestamp,
 }: {
   open: boolean;
+  hasBeenOpened: boolean;
   onToggle: () => void;
   candidateName: string;
   timestamp: string;

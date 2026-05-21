@@ -409,19 +409,11 @@ function StartupCard({
             <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
               Your rating
             </label>
-            <span className="text-sm font-mono text-foreground">
-              {rating > 0 ? `${rating}/10` : "—"}
+            <span className="text-sm font-mono text-muted-foreground">
+              {rating > 0 ? `${rating.toFixed(1)} / 10` : "—"}
             </span>
           </div>
-          <input
-            type="range"
-            min={0}
-            max={10}
-            step={1}
-            value={rating}
-            onChange={(e) => onUpdate({ rating: Number(e.target.value) })}
-            className="w-full accent-[#5dc4fe] cursor-pointer"
-          />
+          <RatingControl value={rating} onChange={(v) => onUpdate({ rating: v })} />
         </div>
 
         <button

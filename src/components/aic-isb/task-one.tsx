@@ -450,7 +450,14 @@ function EmailCard({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className={cn("text-sm truncate", hasBeenOpened ? "font-medium text-foreground/90" : "font-semibold text-foreground")}>Animesh</span>
+            <span
+              className={cn(
+                "text-sm truncate",
+                hasBeenOpened ? "font-medium text-foreground/90" : "font-semibold text-foreground",
+              )}
+            >
+              Animesh
+            </span>
             <span className="text-xs text-muted-foreground">·</span>
             <span className="text-xs text-muted-foreground">CEO, AIC × ISB</span>
             <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-primary border border-primary/40 bg-primary/5 rounded-full px-1.5 py-0.5">
@@ -463,7 +470,12 @@ function EmailCard({
             )}
             <AicIsbLogo height={14} className="ml-1 opacity-80" />
           </div>
-          <div className={cn("mt-1 text-[13px] truncate", hasBeenOpened ? "text-muted-foreground" : "text-foreground font-medium")}>
+          <div
+            className={cn(
+              "mt-1 text-[13px] truncate",
+              hasBeenOpened ? "text-muted-foreground" : "text-foreground font-medium",
+            )}
+          >
             Research Assignment — Accelerator Thesis for Upcoming Cohort
           </div>
           {!open && (
@@ -482,9 +494,9 @@ function EmailCard({
 
       {open && (
         <div className="px-6 sm:px-8 py-6 text-[14.5px] leading-[1.8] text-foreground/90">
-          <p className="text-foreground font-semibold mb-3">Welcome to Your First Assignment</p>
+          <p className="text-foreground font-semibold mb-3"></p>
           <p>Hi {getFirstName(candidateName)},</p>
-          <p className="mt-3">Welcome to the AIC × ISB accelerator ecosystem.</p>
+          <p className="mt-3">I’m glad to have you joining the AIC × ISB accelerator initiative.</p>
           <p className="mt-3">
             As we prepare for the next accelerator cohort, we’re evaluating sectors with the strongest potential for
             scalable innovation and long-term venture growth.

@@ -15,7 +15,7 @@ import {
   Users,
   Save,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getFirstName } from "@/lib/utils";
 import { THEMES, type ThemeId, type Startup } from "./startups-data";
 import { getRcaCase, type RcaCase } from "./rca-data";
 
@@ -108,7 +108,7 @@ export function AicIsbTaskFour({
     window.setTimeout(() => setPhase("result"), 1800);
   }
 
-  if (phase === "email") return <EmailPhase name={candidateName} onStart={() => setPhase("dashboard")} />;
+  if (phase === "email") return <EmailPhase name={getFirstName(candidateName)} onStart={() => setPhase("dashboard")} />;
   if (phase === "loading") return <Loading text="Board running structured RCA review…" />;
   if (phase === "result") {
     return <ResultPhase startups={startups} answers={answers} onContinue={() => onComplete?.()} />;

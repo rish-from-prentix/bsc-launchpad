@@ -16,7 +16,7 @@ import {
   Target,
   Save,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getFirstName } from "@/lib/utils";
 import { THEMES, type ThemeId, type Startup } from "./startups-data";
 
 type Phase = "email" | "dashboard" | "loading" | "result";
@@ -97,7 +97,7 @@ export function AicIsbTaskTwo({
   }
 
   if (phase === "email") {
-    return <EmailPhase name={candidateName} themeLabel={bundle.label} onStart={() => setPhase("dashboard")} />;
+    return <EmailPhase name={getFirstName(candidateName)} themeLabel={bundle.label} onStart={() => setPhase("dashboard")} />;
   }
 
   if (phase === "loading") {

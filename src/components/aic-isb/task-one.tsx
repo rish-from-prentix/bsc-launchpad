@@ -19,7 +19,7 @@ import {
   CircleCheck,
 } from "lucide-react";
 import { AicIsbLogo } from "./aic-logo";
-import { cn } from "@/lib/utils";
+import { cn, getFirstName } from "@/lib/utils";
 
 type Sector = "ai" | "climate" | "health";
 
@@ -171,7 +171,7 @@ export function AicIsbTaskOne({
     };
   }, [sector, answers]);
 
-  const greetingName = candidateName || "there";
+  const greetingName = getFirstName(candidateName) || "there";
   const todayLabel = useMemo(() => "Today · 9:30 AM", []);
 
   const canSubmit = !!sector && SECTIONS.every((s) => answers[s.id].trim().length > 0) && !submitted;
@@ -436,7 +436,7 @@ function EmailCard({
             Research Assignment — Accelerator Thesis for Upcoming Cohort
           </div>
           <div className="mt-1 text-[11px] text-muted-foreground">
-            To: {candidateName} · {timestamp}
+            To: {getFirstName(candidateName)} · {timestamp}
           </div>
         </div>
         <div className="flex items-center gap-1 shrink-0">
@@ -459,7 +459,7 @@ function EmailCard({
       {open && (
         <div className="px-6 sm:px-8 py-6 text-[14.5px] leading-[1.8] text-foreground/90">
           <p className="text-foreground font-semibold mb-3">Welcome to Your First Assignment</p>
-          <p>Hi {candidateName},</p>
+          <p>Hi {getFirstName(candidateName)},</p>
           <p className="mt-3">Welcome to the AIC × ISB accelerator ecosystem.</p>
           <p className="mt-3">
             As we prepare for the next accelerator cohort, we’re evaluating sectors with the strongest potential for

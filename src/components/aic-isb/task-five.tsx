@@ -16,7 +16,7 @@ import {
   Building2,
   Save,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getFirstName } from "@/lib/utils";
 import { THEMES, type ThemeId, type Startup } from "./startups-data";
 import { getRcaCase } from "./rca-data";
 import {
@@ -134,7 +134,7 @@ export function AicIsbTaskFive({
   useEffect(() => () => { if (savedTimer.current) window.clearTimeout(savedTimer.current); }, []);
 
   if (phase === "email")
-    return <EmailPhase name={candidateName} onStart={() => setPhase("select")} />;
+    return <EmailPhase name={getFirstName(candidateName)} onStart={() => setPhase("select")} />;
 
   if (phase === "select")
     return (
@@ -980,7 +980,7 @@ function ResultPhase({
 
       <div className="mt-10 glass rounded-2xl p-6 text-center">
         <Trophy className="mx-auto h-10 w-10 text-primary" />
-        <h3 className="mt-3 text-2xl font-semibold text-foreground">Congratulations, {candidateName}.</h3>
+        <h3 className="mt-3 text-2xl font-semibold text-foreground">Congratulations, {getFirstName(candidateName)}.</h3>
         <p className="mt-3 text-sm text-foreground/85 leading-relaxed">
           You have successfully completed the AIC × ISB Accelerator Internship. Throughout this
           experience, you demonstrated investment analysis, startup evaluation, mentor mapping,

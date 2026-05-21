@@ -15,7 +15,7 @@ import {
   Quote,
   Save,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getFirstName } from "@/lib/utils";
 import { THEMES, type ThemeId, type Startup } from "./startups-data";
 import { mentorsForSector, mentorFit, getMentor, type Mentor } from "./mentors-data";
 
@@ -94,7 +94,7 @@ export function AicIsbTaskThree({
   }
 
   if (phase === "email") {
-    return <EmailPhase name={candidateName} onStart={() => setPhase("dashboard")} />;
+    return <EmailPhase name={getFirstName(candidateName)} onStart={() => setPhase("dashboard")} />;
   }
   if (phase === "loading") return <Loading text="Accelerator board reviewing mentor assignments…" />;
   if (phase === "result") {

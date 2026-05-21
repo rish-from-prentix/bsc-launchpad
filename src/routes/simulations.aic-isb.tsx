@@ -31,16 +31,6 @@ const TASK_TITLES = [
   "Investment Memo",
 ];
 
-function buildTasks(completed: number): ProgressTask[] {
-  return TASK_TITLES.map((title, i) => {
-    const index = i + 1;
-    let state: ProgressTask["state"] = "locked";
-    if (i < completed) state = "done";
-    else if (i === completed) state = "active";
-    return { index, title, state };
-  });
-}
-
 function AicIsbPage() {
   const [name, setName] = useState<string | null>(null);
   // Furthest phase the student has unlocked (0 = none, 5 = all done)
@@ -90,8 +80,6 @@ function AicIsbPage() {
         {currentPhase === 1 && (
           <AicIsbTaskOne
             candidateName={name}
-            initialSector={sector}
-            alreadyCompleted={maxReached >= 1}
             onComplete={(s) => {
               setSector(s);
               advance(1);
@@ -102,8 +90,6 @@ function AicIsbPage() {
           <AicIsbTaskTwo
             candidateName={name}
             sector={sector}
-            initialShortlisted={shortlistedIds}
-            alreadyCompleted={maxReached >= 2}
             onComplete={(ids) => {
               setShortlistedIds(ids);
               advance(2);

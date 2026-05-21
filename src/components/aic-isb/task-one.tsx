@@ -126,7 +126,8 @@ export function AicIsbTaskOne({
   onComplete?: (sector: Sector) => void;
 }) {
   const [phase, setPhase] = useState<"loading" | "ready">("loading");
-  const [emailOpen, setEmailOpen] = useState(true);
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [emailHasBeenOpened, setEmailHasBeenOpened] = useState(false);
   const [revealAssignment, setRevealAssignment] = useState(false);
   const [sector, setSector] = useState<Sector | null>(null);
   const [answers, setAnswers] = useState<Answers>(EMPTY_ANSWERS);
@@ -148,10 +149,10 @@ export function AicIsbTaskOne({
   }, []);
 
   useEffect(() => {
-    if (phase !== "ready") return;
-    const t = window.setTimeout(() => setRevealAssignment(true), 1200);
+    if (!emailHasBeenOpened) return;
+    const t = window.setTimeout(() => setRevealAssignment(true), 400);
     return () => window.clearTimeout(t);
-  }, [phase]);
+  }, [emailHasBeenOpened]);
 
   // Autosave (debounced)
   useEffect(() => {
@@ -264,7 +265,11 @@ export function AicIsbTaskOne({
 
               <EmailCard
                 open={emailOpen}
-                onToggle={() => setEmailOpen((o) => !o)}
+                hasBeenOpened={emailHasBeenOpened}
+                onToggle={() => {
+                  setEmailOpen((o) => !o);
+                  setEmailHasBeenOpened(true);
+                }}
                 candidateName={greetingName}
                 timestamp={todayLabel}
               />

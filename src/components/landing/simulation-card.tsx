@@ -1,12 +1,11 @@
 import { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Award, BarChart3, Clock } from "lucide-react";
+import { ArrowRight, Award, BarChart3 } from "lucide-react";
 
 type Tag = { icon: ReactNode; label: string };
 
 const DEFAULT_TAGS: Tag[] = [
   { icon: <BarChart3 className="h-3.5 w-3.5" />, label: "Intermediate Level" },
-  { icon: <Clock className="h-3.5 w-3.5" />, label: "4–5 Hours" },
   { icon: <Award className="h-3.5 w-3.5" />, label: "Certificate Included" },
 ];
 

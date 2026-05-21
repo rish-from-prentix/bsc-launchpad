@@ -9,12 +9,12 @@ const STEPS = [
   {
     icon: Briefcase,
     title: "Complete Real-World Tasks",
-    body: "Enroll in a simulation and work on practical tasks designed to mirror real job responsibilities.",
+    body: "Enroll in a virtual internship and work on practical phases designed to mirror real job responsibilities.",
   },
   {
     icon: GraduationCap,
     title: "Learn & Get Certified",
-    body: "Compare your submissions with model answers, gain insights, and earn a verified completion certificate.",
+    body: "Gain Insights and earn a verified completion certificate",
   },
   {
     icon: Rocket,

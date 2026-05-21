@@ -857,7 +857,7 @@ function ResultPhase({
 
   function shareLinkedIn() {
     const text = encodeURIComponent(
-      `I just completed the AIC × ISB Virtual Accelerator Simulation by Prentix — scoring ${finalScore}/100 on my final investment memo for ${startup.name}.`,
+      `I just completed the AIC × ISB Virtual Accelerator Internship by Prentix — scoring ${finalScore}/100 on my final investment memo for ${startup.name}.`,
     );
     const url = encodeURIComponent("https://prentix-bsc.lovable.app");
     window.open(
@@ -982,7 +982,7 @@ function ResultPhase({
         <Trophy className="mx-auto h-10 w-10 text-primary" />
         <h3 className="mt-3 text-2xl font-semibold text-foreground">Congratulations, {candidateName}.</h3>
         <p className="mt-3 text-sm text-foreground/85 leading-relaxed">
-          You have successfully completed the AIC × ISB Accelerator Simulation. Throughout this
+          You have successfully completed the AIC × ISB Accelerator Internship. Throughout this
           experience, you demonstrated investment analysis, startup evaluation, mentor mapping,
           operational reasoning, root cause analysis, and strategic decision making — the type of
           analytical thinking expected in startup accelerators, venture capital, and strategic
@@ -1068,7 +1068,7 @@ function certificateHtml(name: string, score: number, startupName: string): stri
  <h2>Certificate of Completion</h2>
  <p>This certifies that</p>
  <div class="name">${escapeHtml(name)}</div>
- <p>has successfully completed the AIC × ISB Virtual Accelerator Simulation by Prentix, demonstrating investment analysis, startup evaluation, mentor mapping, operational reasoning, root cause analysis, and strategic decision making.</p>
+ <p>has successfully completed the AIC × ISB Virtual Accelerator Internship by Prentix, demonstrating investment analysis, startup evaluation, mentor mapping, operational reasoning, root cause analysis, and strategic decision making.</p>
  <p>Final investment memo evaluated <strong>${escapeHtml(startupName)}</strong>.</p>
  <div class="score">Final Score · ${score}/100</div>
  <div class="meta">Issued by Prentix · Program Director, Animesh Sharma</div>

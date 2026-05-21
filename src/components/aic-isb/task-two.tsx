@@ -152,7 +152,7 @@ function EmailPhase({
         <Mail className="h-3.5 w-3.5" /> New message · Inbox
       </div>
       <h1 className="mt-2 text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-        Task 2 · Accelerator Cohort Selection
+        Phase 2 · Accelerator Cohort Selection
       </h1>
 
       <div
@@ -255,7 +255,7 @@ function Dashboard({
   return (
     <div className="mx-auto max-w-4xl px-5 sm:px-8 py-10 sm:py-14 pb-40 relative">
       <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-        Task 2 · {themeLabel}
+        Phase 2 · {themeLabel}
       </div>
       <h1 className="mt-2 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
         Accelerator Cohort Evaluation

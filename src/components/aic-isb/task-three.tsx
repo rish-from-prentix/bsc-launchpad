@@ -130,7 +130,7 @@ function EmailPhase({ name, onStart }: { name: string; onStart: () => void }) {
         <Mail className="h-3.5 w-3.5" /> New message · Inbox
       </div>
       <h1 className="mt-2 text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-        Task 3 · Mentor Mapping & Accelerator Planning
+        Phase 3 · Mentor Mapping & Accelerator Planning
       </h1>
       <div className="mt-8 glass rounded-2xl overflow-hidden" style={{ boxShadow: "0 8px 40px rgba(11,16,38,0.55)" }}>
         <div className="flex items-center gap-3 p-5 border-b border-border">
@@ -195,7 +195,7 @@ function Dashboard({
 }) {
   return (
     <div className="mx-auto max-w-5xl px-5 sm:px-8 py-10 sm:py-14 pb-40">
-      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Task 3 · Accelerator Operations</div>
+      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Phase 3 · Accelerator Operations</div>
       <h1 className="mt-2 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">Accelerator Mentor Assignment</h1>
       <p className="mt-3 text-[15px] text-muted-foreground">Assign the most suitable mentors to support each startup's growth.</p>
 

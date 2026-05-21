@@ -187,7 +187,7 @@ function EmailPhase({ name, onStart }: { name: string; onStart: () => void }) {
         <Mail className="h-3.5 w-3.5" /> New message · Inbox
       </div>
       <h1 className="mt-2 text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-        Task 5 · Final Investment Evaluation
+        Phase 5 · Final Investment Evaluation
       </h1>
       <div
         className="mt-8 glass rounded-2xl overflow-hidden"
@@ -249,7 +249,7 @@ function SelectPhase({
   return (
     <div className="mx-auto max-w-4xl px-5 sm:px-8 py-12 sm:py-16">
       <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-        Task 5 · Investment Evaluation
+        Phase 5 · Investment Evaluation
       </div>
       <h1 className="mt-2 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
         Investment Evaluation
@@ -332,7 +332,7 @@ function Workspace({
   return (
     <div className="mx-auto max-w-6xl px-5 sm:px-8 py-10 sm:py-14 pb-40">
       <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-        Task 5 · Investment Memo
+        Phase 5 · Investment Memo
       </div>
       <h1 className="mt-2 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
         Startup Investment Recommendation

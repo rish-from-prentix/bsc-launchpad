@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Mail,
-  Paperclip,
   ArrowRight,
   Star,
   CheckCircle2,
@@ -16,8 +14,9 @@ import {
   Target,
   Save,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getFirstName } from "@/lib/utils";
 import { THEMES, type ThemeId, type Startup } from "./startups-data";
+import { InboxEmail } from "./inbox-email";
 
 type Phase = "email" | "dashboard" | "loading" | "result";
 
@@ -97,7 +96,7 @@ export function AicIsbTaskTwo({
   }
 
   if (phase === "email") {
-    return <EmailPhase name={candidateName} themeLabel={bundle.label} onStart={() => setPhase("dashboard")} />;
+    return <EmailPhase name={getFirstName(candidateName)} themeLabel={bundle.label} onStart={() => setPhase("dashboard")} />;
   }
 
   if (phase === "loading") {
@@ -147,43 +146,27 @@ function EmailPhase({
   onStart: () => void;
 }) {
   return (
-    <div className="mx-auto max-w-3xl px-5 sm:px-8 py-12 sm:py-16">
-      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold flex items-center gap-2">
-        <Mail className="h-3.5 w-3.5" /> New message · Inbox
-      </div>
-      <h1 className="mt-2 text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-        Task 2 · Accelerator Cohort Selection
-      </h1>
+    <InboxEmail
+      badge="Phase 2 · Accelerator Cohort Selection"
+      senderName="Animesh Sharma"
+      senderRole="Program Director, AIC × ISB"
+      senderInitials="AS"
+      subject="Next Evaluation Phase – Accelerator Cohort Selection"
+      preview={`Hi ${name}, congratulations on completing your investment thesis — your next phase is to evaluate 8 startups in ${themeLabel}…`}
+      timestamp="Today · 11:04 AM"
+      attachmentLabel="Cohort Evaluation Brief.pdf"
+      ctaLabel="Continue Evaluation"
+      onCta={onStart}
+    >
+      <div className="whitespace-pre-wrap">{`Hi ${name},
 
-      <div
-        className="mt-8 glass rounded-2xl overflow-hidden"
-        style={{ boxShadow: "0 8px 40px rgba(11,16,38,0.55)" }}
-      >
-        <div className="flex items-center gap-3 p-5 border-b border-border">
-          <div className="h-11 w-11 rounded-full bg-primary/15 text-primary flex items-center justify-center font-semibold text-sm shrink-0 border border-primary/40">
-            AS
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-semibold text-foreground">
-              Animesh Sharma <span className="text-muted-foreground font-normal">· Program Director, AIC × ISB</span>
-            </div>
-            <div className="text-xs text-muted-foreground truncate">
-              Next Evaluation Task – Accelerator Cohort Selection
-            </div>
-          </div>
-          <div className="text-[11px] text-muted-foreground">Today · 11:04 AM</div>
-        </div>
-
-        <div className="px-6 sm:px-7 py-6 text-[14.5px] text-foreground/90 leading-[1.75] whitespace-pre-wrap">
-{`Hi ${name},
-
-Congratulations on successfully completing your investment thesis task.
+Congratulations on successfully completing your investment thesis phase.
 
 Your analysis demonstrated strong strategic thinking, clear understanding of market opportunities, and thoughtful evaluation of sector trends. The board reviewed your recommendations and appreciated your ability to identify scalable startup opportunities aligned with the accelerator's vision.
 
 Based on your selected theme — ${themeLabel} — we would now like you to move to the next stage of the accelerator selection process.
 
-Your next task is to evaluate 8 early-stage startups operating within the ${themeLabel} sector and identify the 2 startups you believe should be selected for the upcoming AIC × ISB accelerator cohort.
+Your next phase is to evaluate 8 early-stage startups operating within the ${themeLabel} sector and identify the 2 startups you believe should be selected for the upcoming AIC × ISB accelerator cohort.
 
 As part of this process, you will:
 • Review startup profiles and traction metrics
@@ -202,26 +185,8 @@ Best of luck.
 Regards,
 Animesh Sharma
 Program Director
-AIC × ISB`}
-        </div>
-
-        <div className="px-6 sm:px-7 pb-6 flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/40 px-3 py-1.5 text-xs text-muted-foreground">
-            <Paperclip className="h-3.5 w-3.5" /> Cohort Evaluation Brief.pdf
-          </span>
-        </div>
-
-        <div className="px-6 sm:px-7 pb-7">
-          <button
-            onClick={onStart}
-            className="btn-primary-glow inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold w-full sm:w-auto"
-          >
-            Start Startup Evaluation
-            <ArrowRight className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-    </div>
+AIC × ISB`}</div>
+    </InboxEmail>
   );
 }
 
@@ -255,7 +220,7 @@ function Dashboard({
   return (
     <div className="mx-auto max-w-4xl px-5 sm:px-8 py-10 sm:py-14 pb-40 relative">
       <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-        Task 2 · {themeLabel}
+        Phase 2 · {themeLabel}
       </div>
       <h1 className="mt-2 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
         Accelerator Cohort Evaluation
@@ -442,19 +407,11 @@ function StartupCard({
             <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
               Your rating
             </label>
-            <span className="text-sm font-mono text-foreground">
-              {rating > 0 ? `${rating}/10` : "—"}
+            <span className="text-sm font-mono text-muted-foreground">
+              {rating > 0 ? `${rating.toFixed(1)} / 10` : "—"}
             </span>
           </div>
-          <input
-            type="range"
-            min={0}
-            max={10}
-            step={1}
-            value={rating}
-            onChange={(e) => onUpdate({ rating: Number(e.target.value) })}
-            className="w-full accent-[#5dc4fe] cursor-pointer"
-          />
+          <RatingControl value={rating} onChange={(v) => onUpdate({ rating: v })} />
         </div>
 
         <button
@@ -617,7 +574,7 @@ function ResultPhase({
                     Your rating
                   </div>
                   <div className="text-base font-mono text-foreground">
-                    {evals[s.id].rating}/10
+                    {evals[s.id].rating.toFixed(1)} / 10
                   </div>
                 </div>
               </div>
@@ -695,7 +652,7 @@ function ResultPhase({
           onClick={onContinue}
           className="btn-primary-glow inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold"
         >
-          Continue Simulation <ArrowRight className="h-4 w-4" />
+          Continue Internship <ArrowRight className="h-4 w-4" />
         </button>
       </div>
     </div>
@@ -707,6 +664,81 @@ function StatCard({ label, value }: { label: string; value: string }) {
     <div className="glass rounded-xl p-4">
       <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{label}</div>
       <div className="mt-1 text-2xl font-semibold text-foreground">{value}</div>
+    </div>
+  );
+}
+function RatingControl({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  const [text, setText] = useState<string>(value > 0 ? value.toFixed(1) : "");
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    setText(value > 0 ? value.toFixed(1) : "");
+  }, [value]);
+
+  const commit = (raw: string) => {
+    setText(raw);
+    if (raw.trim() === "") {
+      setError(false);
+      onChange(0);
+      return;
+    }
+    const n = Number(raw);
+    if (Number.isNaN(n)) {
+      setError(true);
+      return;
+    }
+    const clamped = Math.max(1, Math.min(10, n));
+    const rounded = Math.round(clamped * 10) / 10;
+    setError(n < 1 || n > 10);
+    onChange(rounded);
+  };
+
+  return (
+    <div className="flex items-center gap-3">
+      <input
+        type="range"
+        min={1}
+        max={10}
+        step={0.1}
+        value={value > 0 ? value : 1}
+        onChange={(e) => {
+          const v = Math.round(Number(e.target.value) * 10) / 10;
+          onChange(v);
+          setError(false);
+        }}
+        className="flex-1 accent-[#5dc4fe] cursor-pointer"
+        style={{ filter: value > 0 ? "drop-shadow(0 0 6px rgba(93,196,254,0.5))" : "none" }}
+      />
+      <div
+        className={cn(
+          "flex items-center gap-1 rounded-xl border bg-background/40 backdrop-blur px-3 py-1.5 transition",
+          error ? "border-destructive/60 ring-1 ring-destructive/40" : "border-border focus-within:border-primary/60 focus-within:ring-1 focus-within:ring-primary/40",
+        )}
+      >
+        <input
+          type="number"
+          min={1}
+          max={10}
+          step={0.1}
+          inputMode="decimal"
+          value={text}
+          placeholder="—"
+          onChange={(e) => commit(e.target.value)}
+          onBlur={(e) => {
+            if (e.target.value.trim() === "") return;
+            const n = Number(e.target.value);
+            if (!Number.isNaN(n)) {
+              const clamped = Math.max(1, Math.min(10, n));
+              const rounded = Math.round(clamped * 10) / 10;
+              setText(rounded.toFixed(1));
+              setError(false);
+              onChange(rounded);
+            }
+          }}
+          className="w-12 bg-transparent text-right text-sm font-mono text-foreground outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        />
+        <span className="text-xs text-muted-foreground font-mono">/ 10</span>
+      </div>
     </div>
   );
 }

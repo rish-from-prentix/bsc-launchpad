@@ -21,11 +21,11 @@ export function LandingHero() {
           From classroom to career.
         </h1>
         <p className="mt-6 text-lg sm:text-xl text-primary font-medium max-w-2xl mx-auto leading-snug">
-          Develop skills employers actually look for through virtual work simulations.
+          Develop skills employers actually look for through virtual internships.
         </p>
         <p className="mt-6 text-[15px] sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
           Gain hands-on experience, build confidence, and prepare for real-world roles through
-          immersive internship simulations created with top companies.
+          immersive virtual internships created with top companies.
         </p>
         <div className="mt-10 flex items-center justify-center">
           <a

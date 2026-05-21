@@ -1,36 +1,74 @@
-# Task 2 — Accelerator Cohort Evaluation
+# Platform Update Plan
 
-Build the next step of the AIC × ISB simulation: after the student submits their Task 1 thesis, they receive a congratulatory email and evaluate 8 startups (filtered by their selected sector), shortlist 2, and get a board verdict.
+A coordinated pass across the AIC × ISB internship experience covering copy, navigation, email UX, and the rating control.
 
-## Scope
+## 1. Global terminology + copy
 
-Frontend-only. Reuses existing dark/cyan theme tokens (`glass`, `btn-primary-glow`, `--primary`, `--bg-*`). No backend, no new packages.
+- Replace "Virtual Simulations" → "Virtual Internships" everywhere (landing nav, hero, section headings, footer, meta titles/descriptions).
+- Remove the word "simulation/simulations" from user-facing UI (headings, buttons, labels, descriptions, route head meta). Internal route paths (`/simulations/aic-isb`) stay unchanged to avoid breaking links; only visible text changes.
+- Rename "Program Manager Simulation" → "Program Manager Internship" (simulation card, intro screen, page titles).
+- Remove the "4–5 hours" duration pill from the internship card and any other surface that shows it.
+- Update certification block copy to:
+  - "Learn & Get Certified"
+  - "Gain Insights and earn a verified completion certificate"
+- Replace "Task" → "Phase" across the whole platform: progress bar ("Task 1" → "Phase 1", `TASK_TITLES`), email subjects/bodies, CTA buttons ("Start Task" → "Start Phase"), results screens ("Task Completed" → "Phase Completed"), Continue Simulation → Continue Internship.
 
-## Files
+## 2. First-name only personalization
 
-- **New** `src/components/aic-isb/startups-data.ts` — typed dataset for all 24 startups across the 3 themes (AI & SaaS, ClimateTech, HealthTech), with `boardScore`, strengths, weaknesses, metrics, plus per-theme `bestIds` / `weakIds` for verdict logic.
-- **New** `src/components/aic-isb/task-two.tsx` — the full Task 2 experience with 3 internal phases:
-  1. `email` — Animesh's "Next Evaluation Task" mail (reuses `EventEmail`-style card pattern from `src/components/screens/sim/event-email.tsx`) with the exact subject/body from the brief, `{{student_name}}` and `{{selected_theme}}` interpolated. CTA: **Start Startup Evaluation**.
-  2. `dashboard` — heading, subheading, instruction box, then 8 startup cards (in a single column, ~`max-w-4xl`) for the chosen sector. Each card shows: name, tagline, founders, stage, funding, MRR, growth, customers, market size, burn, runway, strengths, risks, competitor landscape, accelerator goal. Each card has a 1–10 rating slider (native `<input type="range">` styled), an "Evaluation reason" textarea, and an "Add to shortlist" toggle button (cyan glow when active). Submit is disabled until every startup has a rating + reason and exactly **2** are shortlisted.
-  3. `loading` → `result` — "Board reviewing your recommendations…" with a 1.5s spinner, then the verdict screen.
-- **Edit** `src/components/aic-isb/task-one.tsx` — on submit, persist `selectedSector` (already in localStorage) and call `onComplete`. No UI changes besides ensuring the sector id is exposed to the parent (pass it through `onComplete(sector)`).
-- **Edit** `src/routes/simulations.aic-isb.tsx` — after Task 1 completes, capture the sector and render `<AicIsbTaskTwo candidateName sector onComplete />`. Bump progress bar to Task 2 active when Task 1 done, Task 2 done when student finishes evaluation.
+- Add a small helper (`getFirstName(fullName)`) that splits on whitespace and returns the first token.
+- Apply it everywhere the candidate name is rendered: progress bar greeting, email salutations, dashboards, results, certificate HTML, mentor interaction copy, completion messages.
+- Keep the full name captured at intro (for certificate metadata if needed) but render only the first name in greetings.
 
-## Verdict logic (in task-two.tsx)
+## 3. Inbox-style email experience
 
-After submit, compute per the brief:
-- For each shortlisted startup: classify as **strong** (in `bestIds`), **weak** (in `weakIds`), or **neutral**. Show the matching board comment (positive validation / warning / neutral note) verbatim from the spec.
-- For each non-shortlisted strong startup the student rated low (< 7): show "investment committee identified stronger long-term defensibility…".
-- For each weak startup the student rated high (> 7): show "you may have overweighted short-term traction…".
-- Compute **Evaluation Accuracy %**: `1 - mean(|studentRating - boardScore|) / 10`, rounded.
-- Render: heading "Evaluation Approved" (or "Evaluation Noted" if any weak in shortlist), summary message, the 2 selected startup cards with their score + board comment, accuracy %, 3 analyst skill badges (Investment Judgment, Scalability Read, Risk Analysis), and a **Continue Simulation** CTA that calls `onComplete`.
+Today each phase opens directly into a full mail body. New flow:
 
-## Design notes
+- Introduce a reusable `<EmailInbox />` component used by every phase (Tasks 1–5).
+- Initial state: collapsed unread card with sender avatar/initials, sender name, subject, preview text, timestamp, unread dot, soft glow.
+- Click → smooth expand animation (height + fade) into full email: sender details, subject, timestamp, body, signature, CTA button (Start Phase / Continue Evaluation / Start Mentor Mapping / Start Root Cause Analysis / Start Investment Evaluation).
+- After opening, unread dot disappears and card shows "Read" state.
+- A side **Inbox history panel** lists all phase emails received so far; current phase email is pinned at top; previous ones collapse to "Read".
+- Subtle notification ping animation when a new email appears on phase transition.
+- Styling: dark premium glassmorphism consistent with current theme; Gmail/Linear-like transitions using Framer Motion (already in deps if available; otherwise CSS transitions).
 
-Use the existing cyan glass aesthetic — `glass` cards, cyan accent borders on selected/shortlisted state, `btn-primary-glow` for primary CTAs, muted blue-gray for secondary text. Strengths render with a green dot, risks with a soft red dot, neutral metrics in a 2-col grid. Rating slider track uses cyan gradient fill proportional to value. Loading uses a subtle pulsing cyan orb. No layout/typography changes to existing components.
+## 4. Functional Previous button
 
-## Out of scope
+- Lift phase navigation state into the page route (`simulations.aic-isb.tsx`) so we can move both forward and backward without losing data.
+- Replace single `completed` counter with `{ currentPhase, maxReached, payloads }`:
+  - `currentPhase` controls what renders.
+  - `maxReached` tracks furthest phase unlocked.
+  - `payloads` keeps each phase's submitted data (sector, ratings, shortlist, mentor assignments, RCA, memo) in state + localStorage so revisiting restores everything.
+- Each task component accepts optional `initialValue` and emits incremental changes via an `onChange` (or we keep drafts via existing localStorage keys and just re-mount with restored state).
+- Add a persistent top-nav "Previous" button (in `AicIsbProgressBar` or a thin sub-header):
+  - Disabled on Phase 1 / intro.
+  - On click: `currentPhase -= 1`, restores stored payload, smooth fade/slide transition.
+- "Next/Continue" remains gated by completion of the active phase but, if `currentPhase < maxReached`, it just advances without re-submitting.
+- Wrap phase content in a Framer Motion `AnimatePresence` for slide/fade transitions; no hard reloads.
 
-- Persisting Task 2 answers across reload (Task 1 already does this; Task 2 will be session-only to keep scope tight).
-- Task 3+ (CTA at the end just calls `onComplete`; Task 3 remains locked).
-- Backend / database.
+## 5. Rating control: slider + numeric input
+
+In `task-two.tsx` the per-startup rating row gets a synced dual control:
+
+- Slider (range 1–10, step 0.1) on the left.
+- Compact glassmorphism numeric input on the right showing `X.X / 10`.
+- Bi-directional sync: slider change → input value; input typing → slider position.
+- Validation: clamp to [1, 10]; reject non-numeric; show subtle red ring + helper text when out of range; allow one decimal.
+- Visual: gold/yellow active track, soft glow pulse on change, smooth transitions.
+- Ratings persist through Previous/Next via the lifted state (see §4) and existing draft storage.
+
+## 6. Files to touch (technical)
+
+- `src/routes/index.tsx`, `src/components/landing/*` — terminology, duration pill removal, certification copy.
+- `src/routes/simulations.aic-isb.tsx` — phase state machine, Previous wiring, payload persistence, AnimatePresence wrapper, Task→Phase titles.
+- `src/components/aic-isb/progress-bar.tsx` — "Phase N" labels, first-name greeting, Previous button slot.
+- New `src/components/aic-isb/email-inbox.tsx` — collapsed/expanded email card + history panel.
+- `src/components/aic-isb/task-one.tsx` … `task-five.tsx` — replace inline mail blocks with `<EmailInbox />`, accept `initialValue`, emit state for parent persistence, rename Task→Phase strings, first-name salutations.
+- `src/components/aic-isb/task-two.tsx` — new dual slider+input rating component.
+- `src/lib/utils.ts` (or new `src/lib/name.ts`) — `getFirstName` helper.
+- Meta tags in route `head()` blocks — update titles/descriptions.
+
+## 7. Out of scope
+
+- No backend, schema, or auth changes.
+- No route path renames (only visible copy).
+- No redesign of phase-internal workspaces beyond the rating control and email entry point.

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { InboxEmail } from "./inbox-email";
 import {
-  Mail,
   ArrowRight,
   CheckCircle2,
   AlertTriangle,
@@ -16,7 +16,7 @@ import {
   Building2,
   Save,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getFirstName } from "@/lib/utils";
 import { THEMES, type ThemeId, type Startup } from "./startups-data";
 import { getRcaCase } from "./rca-data";
 import {
@@ -134,7 +134,7 @@ export function AicIsbTaskFive({
   useEffect(() => () => { if (savedTimer.current) window.clearTimeout(savedTimer.current); }, []);
 
   if (phase === "email")
-    return <EmailPhase name={candidateName} onStart={() => setPhase("select")} />;
+    return <EmailPhase name={getFirstName(candidateName)} onStart={() => setPhase("select")} />;
 
   if (phase === "select")
     return (
@@ -182,40 +182,22 @@ export function AicIsbTaskFive({
 /* ============= Email ============= */
 function EmailPhase({ name, onStart }: { name: string; onStart: () => void }) {
   return (
-    <div className="mx-auto max-w-3xl px-5 sm:px-8 py-12 sm:py-16">
-      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold flex items-center gap-2">
-        <Mail className="h-3.5 w-3.5" /> New message · Inbox
-      </div>
-      <h1 className="mt-2 text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-        Task 5 · Final Investment Evaluation
-      </h1>
-      <div
-        className="mt-8 glass rounded-2xl overflow-hidden"
-        style={{ boxShadow: "0 8px 40px rgba(11,16,38,0.55)" }}
-      >
-        <div className="flex items-center gap-3 p-5 border-b border-border">
-          <div className="h-11 w-11 rounded-full bg-primary/15 text-primary flex items-center justify-center font-semibold text-sm shrink-0 border border-primary/40">
-            AS
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-semibold text-foreground">
-              Animesh Sharma{" "}
-              <span className="text-muted-foreground font-normal">
-                · Program Director, AIC × ISB
-              </span>
-            </div>
-            <div className="text-xs text-muted-foreground truncate">
-              Final Investment Evaluation
-            </div>
-          </div>
-          <div className="text-[11px] text-muted-foreground">Today · 04:42 PM</div>
-        </div>
-        <div className="px-6 sm:px-7 py-6 text-[14.5px] text-foreground/90 leading-[1.75] whitespace-pre-wrap">
-{`Hi ${name},
+    <InboxEmail
+      badge="Phase 5 · Final Investment Evaluation"
+      senderName="Animesh Sharma"
+      senderRole="Program Director, AIC × ISB"
+      senderInitials="AS"
+      subject="Final Investment Evaluation"
+      preview={`Hi ${name}, for the final phase you'll value one portfolio startup and make the investment call…`}
+      timestamp="Today · 04:42 PM"
+      ctaLabel="Start Investment Evaluation"
+      onCta={onStart}
+    >
+      <div className="whitespace-pre-wrap">{`Hi ${name},
 
 You've now completed multiple stages of the accelerator process.
 
-For the final task, you'll evaluate one startup from your selected cohort and recommend:
+For the final phase, you'll evaluate one startup from your selected cohort and recommend:
 • A realistic valuation
 • Whether the accelerator should invest
 • Key strengths and investment risks
@@ -223,18 +205,8 @@ For the final task, you'll evaluate one startup from your selected cohort and re
 Focus on balancing growth potential with operational sustainability.
 
 Best,
-Animesh Sharma`}
-        </div>
-        <div className="px-6 sm:px-7 pb-7">
-          <button
-            onClick={onStart}
-            className="btn-primary-glow inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold w-full sm:w-auto"
-          >
-            Start Investment Evaluation <ArrowRight className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-    </div>
+Animesh Sharma`}</div>
+    </InboxEmail>
   );
 }
 
@@ -249,7 +221,7 @@ function SelectPhase({
   return (
     <div className="mx-auto max-w-4xl px-5 sm:px-8 py-12 sm:py-16">
       <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-        Task 5 · Investment Evaluation
+        Phase 5 · Investment Evaluation
       </div>
       <h1 className="mt-2 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
         Investment Evaluation
@@ -332,7 +304,7 @@ function Workspace({
   return (
     <div className="mx-auto max-w-6xl px-5 sm:px-8 py-10 sm:py-14 pb-40">
       <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-        Task 5 · Investment Memo
+        Phase 5 · Investment Memo
       </div>
       <h1 className="mt-2 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
         Startup Investment Recommendation
@@ -843,12 +815,12 @@ function ResultPhase({
         : "Memo Returned for Revision";
 
   function downloadCertificate() {
-    const html = certificateHtml(candidateName, finalScore, startup.name);
+    const html = certificateHtml(getFirstName(candidateName), finalScore, startup.name);
     const blob = new Blob([html], { type: "text/html" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `AIC-ISB-Accelerator-Certificate-${candidateName.replace(/\s+/g, "-")}.html`;
+    a.download = `AIC-ISB-Accelerator-Certificate-${getFirstName(candidateName)}.html`;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -857,7 +829,7 @@ function ResultPhase({
 
   function shareLinkedIn() {
     const text = encodeURIComponent(
-      `I just completed the AIC × ISB Virtual Accelerator Simulation by Prentix — scoring ${finalScore}/100 on my final investment memo for ${startup.name}.`,
+      `I just completed the AIC × ISB Virtual Accelerator Internship by Prentix — scoring ${finalScore}/100 on my final investment memo for ${startup.name}.`,
     );
     const url = encodeURIComponent("https://prentix-bsc.lovable.app");
     window.open(
@@ -980,9 +952,9 @@ function ResultPhase({
 
       <div className="mt-10 glass rounded-2xl p-6 text-center">
         <Trophy className="mx-auto h-10 w-10 text-primary" />
-        <h3 className="mt-3 text-2xl font-semibold text-foreground">Congratulations, {candidateName}.</h3>
+        <h3 className="mt-3 text-2xl font-semibold text-foreground">Congratulations, {getFirstName(candidateName)}.</h3>
         <p className="mt-3 text-sm text-foreground/85 leading-relaxed">
-          You have successfully completed the AIC × ISB Accelerator Simulation. Throughout this
+          You have successfully completed the AIC × ISB Accelerator Internship. Throughout this
           experience, you demonstrated investment analysis, startup evaluation, mentor mapping,
           operational reasoning, root cause analysis, and strategic decision making — the type of
           analytical thinking expected in startup accelerators, venture capital, and strategic
@@ -1009,7 +981,7 @@ function ResultPhase({
           onClick={onContinue}
           className="inline-flex items-center gap-2 rounded-xl border border-border bg-background/40 px-5 py-2.5 text-sm font-medium text-foreground/80 hover:text-foreground transition"
         >
-          Continue Simulation <ArrowRight className="h-4 w-4" />
+          Continue Internship <ArrowRight className="h-4 w-4" />
         </button>
       </div>
     </div>
@@ -1068,7 +1040,7 @@ function certificateHtml(name: string, score: number, startupName: string): stri
  <h2>Certificate of Completion</h2>
  <p>This certifies that</p>
  <div class="name">${escapeHtml(name)}</div>
- <p>has successfully completed the AIC × ISB Virtual Accelerator Simulation by Prentix, demonstrating investment analysis, startup evaluation, mentor mapping, operational reasoning, root cause analysis, and strategic decision making.</p>
+ <p>has successfully completed the AIC × ISB Virtual Accelerator Internship by Prentix, demonstrating investment analysis, startup evaluation, mentor mapping, operational reasoning, root cause analysis, and strategic decision making.</p>
  <p>Final investment memo evaluated <strong>${escapeHtml(startupName)}</strong>.</p>
  <div class="score">Final Score · ${score}/100</div>
  <div class="meta">Issued by Prentix · Program Director, Animesh Sharma</div>

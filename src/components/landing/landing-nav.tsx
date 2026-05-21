@@ -19,7 +19,7 @@ export function LandingNav() {
             Home
           </Link>
           <a href="/#simulations" className={linkClass}>
-            Simulations
+            Internships
           </a>
           <Link to="/about" className={linkClass} activeProps={{ className: "text-foreground" }}>
             About

@@ -12,7 +12,7 @@ import type { ThemeId } from "@/components/aic-isb/startups-data";
 export const Route = createFileRoute("/simulations/aic-isb")({
   head: () => ({
     meta: [
-      { title: "Program Manager Simulation — AIC × ISB" },
+      { title: "Program Manager Internship — AIC × ISB" },
       {
         name: "description",
         content:
@@ -31,19 +31,12 @@ const TASK_TITLES = [
   "Investment Memo",
 ];
 
-function buildTasks(completed: number): ProgressTask[] {
-  return TASK_TITLES.map((title, i) => {
-    const index = i + 1;
-    let state: ProgressTask["state"] = "locked";
-    if (i < completed) state = "done";
-    else if (i === completed) state = "active";
-    return { index, title, state };
-  });
-}
-
 function AicIsbPage() {
   const [name, setName] = useState<string | null>(null);
-  const [completed, setCompleted] = useState(0);
+  // Furthest phase the student has unlocked (0 = none, 5 = all done)
+  const [maxReached, setMaxReached] = useState(0);
+  // Which phase is currently displayed (1-indexed). 1 means Phase 1 is on screen.
+  const [currentPhase, setCurrentPhase] = useState(1);
   const [sector, setSector] = useState<ThemeId | null>(null);
   const [shortlistedIds, setShortlistedIds] = useState<string[]>([]);
 
@@ -51,55 +44,80 @@ function AicIsbPage() {
     return <AicIsbIntroScreen onStart={(n) => setName(n)} />;
   }
 
-  const tasks = buildTasks(completed);
+  // Progress bar shows phases as done when student has moved past them.
+  // `active` = whichever phase is currently rendered.
+  const tasks: ProgressTask[] = TASK_TITLES.map((title, i) => {
+    const index = i + 1;
+    let state: ProgressTask["state"] = "locked";
+    if (index === currentPhase) state = "active";
+    else if (i < maxReached) state = "done";
+    return { index, title, state };
+  });
+
+  const canGoPrevious = currentPhase > 1;
+  const goPrevious = () => {
+    if (canGoPrevious) {
+      setCurrentPhase((p) => Math.max(1, p - 1));
+      if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const advance = (next: number) => {
+    setMaxReached((m) => Math.max(m, next));
+    setCurrentPhase(next + 1 > TASK_TITLES.length ? TASK_TITLES.length : next + 1);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className="min-h-screen bg-background">
-      <AicIsbProgressBar candidateName={name} tasks={tasks} />
-      <main>
-        {completed < 1 && (
+      <AicIsbProgressBar
+        candidateName={name}
+        tasks={tasks}
+        onPrevious={goPrevious}
+        canGoPrevious={canGoPrevious}
+      />
+      <main key={currentPhase} className="animate-[fadeSlide_0.35s_ease-out]">
+        {currentPhase === 1 && (
           <AicIsbTaskOne
             candidateName={name}
             onComplete={(s) => {
               setSector(s);
-              setCompleted((c) => Math.max(c, 1));
+              advance(1);
             }}
           />
         )}
-        {completed >= 1 && sector && (
-          completed < 2 ? (
+        {currentPhase === 2 && sector && (
           <AicIsbTaskTwo
             candidateName={name}
             sector={sector}
             onComplete={(ids) => {
               setShortlistedIds(ids);
-              setCompleted((c) => Math.max(c, 2));
+              advance(2);
             }}
           />
-          ) : null
         )}
-        {completed >= 2 && completed < 3 && sector && shortlistedIds.length > 0 && (
+        {currentPhase === 3 && sector && shortlistedIds.length > 0 && (
           <AicIsbTaskThree
             candidateName={name}
             sector={sector}
             shortlistedIds={shortlistedIds}
-            onComplete={() => setCompleted((c) => Math.max(c, 3))}
+            onComplete={() => advance(3)}
           />
         )}
-        {completed >= 3 && completed < 4 && sector && shortlistedIds.length > 0 && (
+        {currentPhase === 4 && sector && shortlistedIds.length > 0 && (
           <AicIsbTaskFour
             candidateName={name}
             sector={sector}
             shortlistedIds={shortlistedIds}
-            onComplete={() => setCompleted((c) => Math.max(c, 4))}
+            onComplete={() => advance(4)}
           />
         )}
-        {completed >= 4 && sector && shortlistedIds.length > 0 && (
+        {currentPhase === 5 && sector && shortlistedIds.length > 0 && (
           <AicIsbTaskFive
             candidateName={name}
             sector={sector}
             shortlistedIds={shortlistedIds}
-            onComplete={() => setCompleted((c) => Math.max(c, 5))}
+            onComplete={() => setMaxReached((m) => Math.max(m, 5))}
           />
         )}
       </main>

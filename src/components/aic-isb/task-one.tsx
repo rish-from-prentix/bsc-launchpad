@@ -19,7 +19,7 @@ import {
   CircleCheck,
 } from "lucide-react";
 import { AicIsbLogo } from "./aic-logo";
-import { cn } from "@/lib/utils";
+import { cn, getFirstName } from "@/lib/utils";
 
 type Sector = "ai" | "climate" | "health";
 
@@ -126,7 +126,8 @@ export function AicIsbTaskOne({
   onComplete?: (sector: Sector) => void;
 }) {
   const [phase, setPhase] = useState<"loading" | "ready">("loading");
-  const [emailOpen, setEmailOpen] = useState(true);
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [emailHasBeenOpened, setEmailHasBeenOpened] = useState(false);
   const [revealAssignment, setRevealAssignment] = useState(false);
   const [sector, setSector] = useState<Sector | null>(null);
   const [answers, setAnswers] = useState<Answers>(EMPTY_ANSWERS);
@@ -148,10 +149,10 @@ export function AicIsbTaskOne({
   }, []);
 
   useEffect(() => {
-    if (phase !== "ready") return;
-    const t = window.setTimeout(() => setRevealAssignment(true), 1200);
+    if (!emailHasBeenOpened) return;
+    const t = window.setTimeout(() => setRevealAssignment(true), 400);
     return () => window.clearTimeout(t);
-  }, [phase]);
+  }, [emailHasBeenOpened]);
 
   // Autosave (debounced)
   useEffect(() => {
@@ -171,7 +172,7 @@ export function AicIsbTaskOne({
     };
   }, [sector, answers]);
 
-  const greetingName = candidateName || "there";
+  const greetingName = getFirstName(candidateName) || "there";
   const todayLabel = useMemo(() => "Today · 9:30 AM", []);
 
   const canSubmit = !!sector && SECTIONS.every((s) => answers[s.id].trim().length > 0) && !submitted;
@@ -214,9 +215,9 @@ export function AicIsbTaskOne({
         <div className="min-w-0">
           {/* Title block */}
           <div className="mb-8">
-            <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Task 1 of 5</div>
+            <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Phase 1 of 5</div>
             <h1 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-              Task 1 — Thesis: The Basics
+              Phase 1 — Thesis: The Basics
             </h1>
             <div className="mt-2 inline-flex items-center gap-2 text-xs text-muted-foreground">
               <Clock className="h-3.5 w-3.5" />
@@ -241,7 +242,7 @@ export function AicIsbTaskOne({
                 through mentorship, market access, strategic guidance, and investor readiness.
               </p>
               <p>
-                In this simulation, you will step into the role of a{" "}
+                In this internship, you will step into the role of a{" "}
                 <span className="text-primary font-medium">Program Manager Intern</span> working in the accelerator
                 ecosystem of{" "}
                 <span className="text-foreground font-medium">Indian School of Business × Atal Incubation Centre</span>.
@@ -264,7 +265,11 @@ export function AicIsbTaskOne({
 
               <EmailCard
                 open={emailOpen}
-                onToggle={() => setEmailOpen((o) => !o)}
+                hasBeenOpened={emailHasBeenOpened}
+                onToggle={() => {
+                  setEmailOpen((o) => !o);
+                  setEmailHasBeenOpened(true);
+                }}
                 candidateName={greetingName}
                 timestamp={todayLabel}
               />
@@ -401,65 +406,84 @@ function Dot({ delay }: { delay: string }) {
 
 function EmailCard({
   open,
+  hasBeenOpened,
   onToggle,
   candidateName,
   timestamp,
 }: {
   open: boolean;
+  hasBeenOpened: boolean;
   onToggle: () => void;
   candidateName: string;
   timestamp: string;
 }) {
   return (
     <article
-      className="rounded-2xl border border-primary/30 overflow-hidden"
+      className={cn(
+        "rounded-2xl border overflow-hidden transition-all",
+        hasBeenOpened ? "border-border" : "border-primary/40 ring-1 ring-primary/40",
+      )}
       style={{
         background: "linear-gradient(180deg, oklch(0.21 0 0), oklch(0.16 0 0))",
-        boxShadow: "0 18px 48px rgba(0,0,0,0.5), 0 0 0 1px oklch(0.78 0.09 80 / 0.08)",
+        boxShadow: hasBeenOpened
+          ? "0 12px 36px rgba(0,0,0,0.45)"
+          : "0 0 0 1px rgba(93,196,254,0.25), 0 18px 48px -10px rgba(93,196,254,0.45)",
       }}
     >
-      <header className="flex items-start gap-4 p-5 sm:p-6 border-b border-border/70">
-        <div className="h-12 w-12 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
+      <button
+        type="button"
+        onClick={onToggle}
+        className={cn(
+          "w-full text-left flex items-start gap-4 p-5 sm:p-6 hover:bg-secondary/30 transition",
+          open && "border-b border-border/70",
+        )}
+      >
+        <div className="relative h-12 w-12 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
           A
+          {!hasBeenOpened && (
+            <span
+              className="absolute -top-0.5 -right-0.5 h-3 w-3 rounded-full bg-primary border-2 border-background"
+              style={{ animation: "softPulse 2s ease-in-out infinite" }}
+              aria-hidden
+            />
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-semibold text-foreground truncate">Animesh</span>
+            <span className={cn("text-sm truncate", hasBeenOpened ? "font-medium text-foreground/90" : "font-semibold text-foreground")}>Animesh</span>
             <span className="text-xs text-muted-foreground">·</span>
             <span className="text-xs text-muted-foreground">CEO, AIC × ISB</span>
             <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-primary border border-primary/40 bg-primary/5 rounded-full px-1.5 py-0.5">
               <ShieldCheck className="h-3 w-3" /> Verified
             </span>
+            {!hasBeenOpened && (
+              <span className="inline-flex items-center text-[10px] uppercase tracking-[0.14em] text-primary border border-primary/40 bg-primary/10 rounded-full px-1.5 py-0.5">
+                Unread
+              </span>
+            )}
             <AicIsbLogo height={14} className="ml-1 opacity-80" />
           </div>
-          <div className="mt-1 text-[13px] text-foreground/90 font-medium truncate">
+          <div className={cn("mt-1 text-[13px] truncate", hasBeenOpened ? "text-muted-foreground" : "text-foreground font-medium")}>
             Research Assignment — Accelerator Thesis for Upcoming Cohort
           </div>
+          {!open && (
+            <div className="mt-1 text-[12px] text-muted-foreground line-clamp-1">
+              Welcome to the AIC × ISB accelerator. Your first phase is to develop an accelerator thesis…
+            </div>
+          )}
           <div className="mt-1 text-[11px] text-muted-foreground">
             To: {candidateName} · {timestamp}
           </div>
         </div>
-        <div className="flex items-center gap-1 shrink-0">
-          <IconBtn label="Star">
-            <Star className="h-4 w-4" />
-          </IconBtn>
-          <IconBtn label="Reply">
-            <Reply className="h-4 w-4" />
-          </IconBtn>
-          <button
-            onClick={onToggle}
-            aria-label={open ? "Collapse email" : "Expand email"}
-            className="p-2 rounded-md hover:bg-secondary text-muted-foreground transition"
-          >
-            <ChevronDown className={cn("h-4 w-4 transition-transform", !open && "-rotate-90")} />
-          </button>
+        <div className="flex items-center gap-2 shrink-0 pl-2">
+          <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", !open && "-rotate-90")} />
         </div>
-      </header>
+      </button>
 
       {open && (
         <div className="px-6 sm:px-8 py-6 text-[14.5px] leading-[1.8] text-foreground/90">
           <p className="text-foreground font-semibold mb-3">Welcome to Your First Assignment</p>
-          <p>Hi {candidateName},</p>
+          <p>Hi {getFirstName(candidateName)},</p>
           <p className="mt-3">Welcome to the AIC × ISB accelerator ecosystem.</p>
           <p className="mt-3">
             As we prepare for the next accelerator cohort, we’re evaluating sectors with the strongest potential for
@@ -665,7 +689,7 @@ function BottomBar({
             }}
           >
             <Send className="h-3.5 w-3.5" />
-            {submitted ? "Submitted" : "Submit Task"}
+            {submitted ? "Submitted" : "Submit Phase"}
           </button>
           <button
             type="button"
@@ -676,10 +700,10 @@ function BottomBar({
                 ? "border border-primary/50 bg-primary/10 text-primary hover:bg-primary/15"
                 : "border border-border bg-card text-muted-foreground/60 cursor-not-allowed",
             )}
-            title={submitted ? "Continue to Task 2" : "Locked until submission"}
+            title={submitted ? "Continue to Phase 2" : "Locked until submission"}
           >
             {submitted ? null : <Lock className="h-3 w-3" />}
-            Next Task
+            Next Phase
             {submitted && <ArrowRight className="h-3.5 w-3.5" />}
           </button>
         </div>
@@ -718,7 +742,7 @@ function SuccessOverlay() {
           <CheckCircle2 className="h-8 w-8" style={{ color: "oklch(0.78 0.14 155)" }} />
         </div>
         <h3 className="mt-5 text-lg font-semibold text-foreground">Thesis submitted</h3>
-        <p className="mt-1.5 text-sm text-muted-foreground">Animesh will review your work. Task 2 is now unlocked.</p>
+        <p className="mt-1.5 text-sm text-muted-foreground">Animesh will review your work. Phase 2 is now unlocked.</p>
       </div>
     </div>
   );

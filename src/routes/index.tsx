@@ -8,13 +8,13 @@ import { SimulationsSection } from "@/components/landing/simulations-section";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Prentix — Virtual Work Simulations" },
+      { title: "Prentix — Virtual Internships" },
       {
         name: "description",
         content:
-          "Develop employer-ready skills through immersive virtual work simulations from Prentix.",
+          "Develop employer-ready skills through immersive virtual internships from Prentix.",
       },
-      { property: "og:title", content: "Prentix — Virtual Work Simulations" },
+      { property: "og:title", content: "Prentix — Virtual Internships" },
       {
         property: "og:description",
         content:

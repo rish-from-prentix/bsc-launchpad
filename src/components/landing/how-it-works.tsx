@@ -9,12 +9,12 @@ const STEPS = [
   {
     icon: Briefcase,
     title: "Complete Real-World Tasks",
-    body: "Enroll in a simulation and work on practical tasks designed to mirror real job responsibilities.",
+    body: "Enroll in a virtual internship and work on practical phases designed to mirror real job responsibilities.",
   },
   {
     icon: GraduationCap,
     title: "Learn & Get Certified",
-    body: "Compare your submissions with model answers, gain insights, and earn a verified completion certificate.",
+    body: "Gain Insights and earn a verified completion certificate",
   },
   {
     icon: Rocket,
@@ -38,7 +38,7 @@ export function HowItWorks() {
             Prentix bridges the gap between education and career success.
           </p>
           <p className="mt-4 text-[15px] text-muted-foreground leading-relaxed">
-            Our virtual job simulations help students gain real-world exposure by solving tasks
+            Our virtual internships help students gain real-world exposure by solving tasks
             inspired by actual workplace challenges. Explore career paths, build practical skills,
             and experience what it’s like to work in leading companies before landing your first
             job.

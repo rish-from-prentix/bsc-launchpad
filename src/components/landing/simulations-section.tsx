@@ -11,7 +11,7 @@ export function SimulationsSection() {
             Programs
           </div>
           <h2 className="mt-3 text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-            Explore Our Internship Simulations
+            Explore Our Virtual Internships
           </h2>
           <p className="mt-4 text-[15px] text-muted-foreground">
             Choose a program, step into a real role, and ship work that mirrors the job.
@@ -28,7 +28,7 @@ export function SimulationsSection() {
           <SimulationCard
             logo={<AicIsbLogo height={36} />}
             company="AIC × ISB"
-            role="Program Manager Simulation"
+            role="Program Manager Internship"
             to="/simulations/aic-isb"
           />
         </div>

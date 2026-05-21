@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { InboxEmail } from "./inbox-email";
 import {
-  Mail,
   ArrowRight,
   CheckCircle2,
   AlertTriangle,
@@ -15,7 +15,7 @@ import {
   Quote,
   Save,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getFirstName } from "@/lib/utils";
 import { THEMES, type ThemeId, type Startup } from "./startups-data";
 import { mentorsForSector, mentorFit, getMentor, type Mentor } from "./mentors-data";
 
@@ -94,7 +94,7 @@ export function AicIsbTaskThree({
   }
 
   if (phase === "email") {
-    return <EmailPhase name={candidateName} onStart={() => setPhase("dashboard")} />;
+    return <EmailPhase name={getFirstName(candidateName)} onStart={() => setPhase("dashboard")} />;
   }
   if (phase === "loading") return <Loading text="Accelerator board reviewing mentor assignments…" />;
   if (phase === "result") {
@@ -125,34 +125,24 @@ export function AicIsbTaskThree({
 /* ---------------- Email ---------------- */
 function EmailPhase({ name, onStart }: { name: string; onStart: () => void }) {
   return (
-    <div className="mx-auto max-w-3xl px-5 sm:px-8 py-12 sm:py-16">
-      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold flex items-center gap-2">
-        <Mail className="h-3.5 w-3.5" /> New message · Inbox
-      </div>
-      <h1 className="mt-2 text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-        Task 3 · Mentor Mapping & Accelerator Planning
-      </h1>
-      <div className="mt-8 glass rounded-2xl overflow-hidden" style={{ boxShadow: "0 8px 40px rgba(11,16,38,0.55)" }}>
-        <div className="flex items-center gap-3 p-5 border-b border-border">
-          <div className="h-11 w-11 rounded-full bg-primary/15 text-primary flex items-center justify-center font-semibold text-sm shrink-0 border border-primary/40">
-            AS
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-semibold text-foreground">
-              Animesh Sharma <span className="text-muted-foreground font-normal">· Program Director, AIC × ISB</span>
-            </div>
-            <div className="text-xs text-muted-foreground truncate">Mentor Assignment for Accelerator Cohort</div>
-          </div>
-          <div className="text-[11px] text-muted-foreground">Today · 09:30 AM</div>
-        </div>
-        <div className="px-6 sm:px-7 py-6 text-[14.5px] text-foreground/90 leading-[1.75] whitespace-pre-wrap">
-{`Hi ${name},
+    <InboxEmail
+      badge="Phase 3 · Mentor Mapping & Accelerator Planning"
+      senderName="Animesh Sharma"
+      senderRole="Program Director, AIC × ISB"
+      senderInitials="AS"
+      subject="Mentor Assignment for Accelerator Cohort"
+      preview={`Hi ${name}, your selected startups are now entering the accelerator phase — time to assign the right mentors…`}
+      timestamp="Today · 09:30 AM"
+      ctaLabel="Start Mentor Mapping"
+      onCta={onStart}
+    >
+      <div className="whitespace-pre-wrap">{`Hi ${name},
 
 Great work on completing the startup evaluation process.
 
 Your selected startups are now entering the accelerator phase, where founder support and strategic guidance become critical.
 
-Your next task is to assign mentors to the startups based on their operational gaps, growth stage, and scaling challenges.
+Your next phase is to assign mentors to the startups based on their operational gaps, growth stage, and scaling challenges.
 
 You'll be evaluated on:
 • Mentor-founder fit
@@ -161,15 +151,8 @@ You'll be evaluated on:
 • Accelerator operations judgment
 
 Best,
-Animesh Sharma`}
-        </div>
-        <div className="px-6 sm:px-7 pb-7">
-          <button onClick={onStart} className="btn-primary-glow inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold w-full sm:w-auto">
-            Start Mentor Mapping <ArrowRight className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-    </div>
+Animesh Sharma`}</div>
+    </InboxEmail>
   );
 }
 
@@ -195,7 +178,7 @@ function Dashboard({
 }) {
   return (
     <div className="mx-auto max-w-5xl px-5 sm:px-8 py-10 sm:py-14 pb-40">
-      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Task 3 · Accelerator Operations</div>
+      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Phase 3 · Accelerator Operations</div>
       <h1 className="mt-2 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">Accelerator Mentor Assignment</h1>
       <p className="mt-3 text-[15px] text-muted-foreground">Assign the most suitable mentors to support each startup's growth.</p>
 
@@ -648,7 +631,7 @@ function ResultPhase({
 
       <div className="mt-10 flex justify-end">
         <button onClick={onContinue} className="btn-primary-glow inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold">
-          Continue Simulation <ArrowRight className="h-4 w-4" />
+          Continue Internship <ArrowRight className="h-4 w-4" />
         </button>
       </div>
     </div>

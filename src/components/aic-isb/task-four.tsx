@@ -131,26 +131,18 @@ export function AicIsbTaskFour({
 /* ---------------- Email ---------------- */
 function EmailPhase({ name, onStart }: { name: string; onStart: () => void }) {
   return (
-    <div className="mx-auto max-w-3xl px-5 sm:px-8 py-12 sm:py-16">
-      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold flex items-center gap-2">
-        <Mail className="h-3.5 w-3.5" /> New message · Inbox
-      </div>
-      <h1 className="mt-2 text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-        Phase 4 · Root Cause Analysis & Operational Review
-      </h1>
-      <div className="mt-8 glass rounded-2xl overflow-hidden" style={{ boxShadow: "0 8px 40px rgba(11,16,38,0.55)" }}>
-        <div className="flex items-center gap-3 p-5 border-b border-border">
-          <div className="h-11 w-11 rounded-full bg-primary/15 text-primary flex items-center justify-center font-semibold text-sm shrink-0 border border-primary/40">AS</div>
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-semibold text-foreground">
-              Animesh Sharma <span className="text-muted-foreground font-normal">· Program Director, AIC × ISB</span>
-            </div>
-            <div className="text-xs text-muted-foreground truncate">Operational Review & RCA Task</div>
-          </div>
-          <div className="text-[11px] text-muted-foreground">Today · 02:18 PM</div>
-        </div>
-        <div className="px-6 sm:px-7 py-6 text-[14.5px] text-foreground/90 leading-[1.75] whitespace-pre-wrap">
-{`Hi ${name},
+    <InboxEmail
+      badge="Phase 4 · Root Cause Analysis & Operational Review"
+      senderName="Animesh Sharma"
+      senderRole="Program Director, AIC × ISB"
+      senderInitials="AS"
+      subject="Operational Review & RCA Phase"
+      preview={`Hi ${name}, several portfolio startups are facing operational challenges — time to run a Root Cause Analysis…`}
+      timestamp="Today · 02:18 PM"
+      ctaLabel="Start Root Cause Analysis"
+      onCta={onStart}
+    >
+      <div className="whitespace-pre-wrap">{`Hi ${name},
 
 As the accelerator cohort progresses, several startups have started facing operational and growth challenges despite early traction.
 
@@ -163,15 +155,8 @@ Your next phase is to conduct a Root Cause Analysis for the startups you selecte
 Focus on long-term sustainability rather than surface-level symptoms.
 
 Best,
-Animesh Sharma`}
-        </div>
-        <div className="px-6 sm:px-7 pb-7">
-          <button onClick={onStart} className="btn-primary-glow inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold w-full sm:w-auto">
-            Start Root Cause Analysis <ArrowRight className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-    </div>
+Animesh Sharma`}</div>
+    </InboxEmail>
   );
 }
 

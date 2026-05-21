@@ -669,3 +669,78 @@ function StatCard({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+function RatingControl({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  const [text, setText] = useState<string>(value > 0 ? value.toFixed(1) : "");
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    setText(value > 0 ? value.toFixed(1) : "");
+  }, [value]);
+
+  const commit = (raw: string) => {
+    setText(raw);
+    if (raw.trim() === "") {
+      setError(false);
+      onChange(0);
+      return;
+    }
+    const n = Number(raw);
+    if (Number.isNaN(n)) {
+      setError(true);
+      return;
+    }
+    const clamped = Math.max(1, Math.min(10, n));
+    const rounded = Math.round(clamped * 10) / 10;
+    setError(n < 1 || n > 10);
+    onChange(rounded);
+  };
+
+  return (
+    <div className="flex items-center gap-3">
+      <input
+        type="range"
+        min={1}
+        max={10}
+        step={0.1}
+        value={value > 0 ? value : 1}
+        onChange={(e) => {
+          const v = Math.round(Number(e.target.value) * 10) / 10;
+          onChange(v);
+          setError(false);
+        }}
+        className="flex-1 accent-[#5dc4fe] cursor-pointer"
+        style={{ filter: value > 0 ? "drop-shadow(0 0 6px rgba(93,196,254,0.5))" : "none" }}
+      />
+      <div
+        className={cn(
+          "flex items-center gap-1 rounded-xl border bg-background/40 backdrop-blur px-3 py-1.5 transition",
+          error ? "border-destructive/60 ring-1 ring-destructive/40" : "border-border focus-within:border-primary/60 focus-within:ring-1 focus-within:ring-primary/40",
+        )}
+      >
+        <input
+          type="number"
+          min={1}
+          max={10}
+          step={0.1}
+          inputMode="decimal"
+          value={text}
+          placeholder="—"
+          onChange={(e) => commit(e.target.value)}
+          onBlur={(e) => {
+            if (e.target.value.trim() === "") return;
+            const n = Number(e.target.value);
+            if (!Number.isNaN(n)) {
+              const clamped = Math.max(1, Math.min(10, n));
+              const rounded = Math.round(clamped * 10) / 10;
+              setText(rounded.toFixed(1));
+              setError(false);
+              onChange(rounded);
+            }
+          }}
+          className="w-12 bg-transparent text-right text-sm font-mono text-foreground outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        />
+        <span className="text-xs text-muted-foreground font-mono">/ 10</span>
+      </div>
+    </div>
+  );
+}

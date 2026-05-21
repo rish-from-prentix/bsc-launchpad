@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { InboxEmail } from "./inbox-email";
 import {
-  Mail,
   ArrowRight,
   CheckCircle2,
   AlertTriangle,

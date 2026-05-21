@@ -576,7 +576,7 @@ function ResultPhase({
                     Your rating
                   </div>
                   <div className="text-base font-mono text-foreground">
-                    {evals[s.id].rating}/10
+                    {evals[s.id].rating.toFixed(1)} / 10
                   </div>
                 </div>
               </div>

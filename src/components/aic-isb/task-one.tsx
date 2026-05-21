@@ -49,12 +49,7 @@ const SECTORS: Array<{
   },
 ];
 
-type SectionId =
-  | "overview"
-  | "problems"
-  | "activity"
-  | "risks"
-  | "recommendation";
+type SectionId = "overview" | "problems" | "activity" | "risks" | "recommendation";
 
 const SECTIONS: Array<{
   id: SectionId;
@@ -76,14 +71,12 @@ const SECTIONS: Array<{
   {
     id: "activity",
     title: "Current startup and investor activity in the sector",
-    placeholder:
-      "Name notable startups, funding rounds, active investors, and emerging sub-segments.",
+    placeholder: "Name notable startups, funding rounds, active investors, and emerging sub-segments.",
   },
   {
     id: "risks",
     title: "Risks, challenges, and future potential",
-    placeholder:
-      "Highlight regulatory, GTM, technical, and capital risks — plus the long-term scalability story.",
+    placeholder: "Highlight regulatory, GTM, technical, and capital risks — plus the long-term scalability story.",
   },
   {
     id: "recommendation",
@@ -167,10 +160,7 @@ export function AicIsbTaskOne({
     if (saveTimer.current) window.clearTimeout(saveTimer.current);
     saveTimer.current = window.setTimeout(() => {
       try {
-        window.localStorage.setItem(
-          STORAGE_KEY,
-          JSON.stringify({ sector, answers }),
-        );
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ sector, answers }));
         setSaveState("saved");
       } catch {
         setSaveState("idle");
@@ -184,10 +174,7 @@ export function AicIsbTaskOne({
   const greetingName = candidateName || "there";
   const todayLabel = useMemo(() => "Today · 9:30 AM", []);
 
-  const canSubmit =
-    !!sector &&
-    SECTIONS.every((s) => answers[s.id].trim().length > 0) &&
-    !submitted;
+  const canSubmit = !!sector && SECTIONS.every((s) => answers[s.id].trim().length > 0) && !submitted;
 
   function handleAnswer(id: SectionId, value: string) {
     setAnswers((prev) => ({ ...prev, [id]: value }));
@@ -196,10 +183,7 @@ export function AicIsbTaskOne({
   function handleSaveDraft() {
     if (typeof window === "undefined") return;
     try {
-      window.localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({ sector, answers }),
-      );
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ sector, answers }));
       setSaveState("saved");
     } catch {
       /* noop */
@@ -230,9 +214,7 @@ export function AicIsbTaskOne({
         <div className="min-w-0">
           {/* Title block */}
           <div className="mb-8">
-            <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-              Task 1 of 5
-            </div>
+            <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Task 1 of 5</div>
             <h1 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
               Task 1 — Thesis: The Basics
             </h1>
@@ -246,32 +228,23 @@ export function AicIsbTaskOne({
           <section
             className="rounded-2xl border border-border p-6 sm:p-8 mb-10"
             style={{
-              background:
-                "linear-gradient(180deg, oklch(0.21 0 0 / 0.7), oklch(0.16 0 0 / 0.7))",
-              boxShadow:
-                "0 8px 32px rgba(0,0,0,0.45), inset 0 1px 0 oklch(1 0 0 / 0.04)",
+              background: "linear-gradient(180deg, oklch(0.21 0 0 / 0.7), oklch(0.16 0 0 / 0.7))",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.45), inset 0 1px 0 oklch(1 0 0 / 0.04)",
               backdropFilter: "blur(20px)",
             }}
           >
-            <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold mb-3">
-              Background
-            </div>
+            <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold mb-3">Background</div>
             <div className="space-y-4 text-[14.5px] leading-[1.75] text-foreground/90">
               <p>
-                Startup accelerators and venture capital firms play a key role in
-                helping early-stage startups grow into scalable businesses. From
-                AI and SaaS to ClimateTech and HealthTech, accelerators support
-                founders through mentorship, market access, strategic guidance,
-                and investor readiness.
+                Startup accelerators and venture capital firms play a key role in helping early-stage startups grow into
+                scalable businesses. From AI and SaaS to ClimateTech and HealthTech, accelerators support founders
+                through mentorship, market access, strategic guidance, and investor readiness.
               </p>
               <p>
                 In this simulation, you will step into the role of a{" "}
-                <span className="text-primary font-medium">Program Manager Intern</span>{" "}
-                working in the accelerator ecosystem of{" "}
-                <span className="text-foreground font-medium">
-                  Indian School of Business × Atal Incubation Centre
-                </span>
-                .
+                <span className="text-primary font-medium">Program Manager Intern</span> working in the accelerator
+                ecosystem of{" "}
+                <span className="text-foreground font-medium">Indian School of Business × Atal Incubation Centre</span>.
               </p>
             </div>
           </section>
@@ -286,9 +259,7 @@ export function AicIsbTaskOne({
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-70" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
                 </span>
-                <span className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-                  1 New Email
-                </span>
+                <span className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">1 New Email</span>
               </div>
 
               <EmailCard
@@ -306,12 +277,8 @@ export function AicIsbTaskOne({
 
               {/* Sector selection */}
               <div className="mt-10">
-                <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-                  Step 1
-                </div>
-                <h2 className="mt-1 text-xl sm:text-2xl font-semibold text-foreground">
-                  Choose your sector
-                </h2>
+                <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Step 1</div>
+                <h2 className="mt-1 text-xl sm:text-2xl font-semibold text-foreground">Choose your sector</h2>
                 <p className="mt-1.5 text-sm text-muted-foreground">
                   Pick the area you want to build an accelerator thesis around.
                 </p>
@@ -348,16 +315,10 @@ export function AicIsbTaskOne({
                           >
                             {s.icon}
                           </div>
-                          {selected && (
-                            <CircleCheck className="h-5 w-5 text-primary" />
-                          )}
+                          {selected && <CircleCheck className="h-5 w-5 text-primary" />}
                         </div>
-                        <div className="mt-4 text-sm font-semibold text-foreground">
-                          {s.name}
-                        </div>
-                        <div className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                          {s.blurb}
-                        </div>
+                        <div className="mt-4 text-sm font-semibold text-foreground">{s.name}</div>
+                        <div className="mt-1 text-xs text-muted-foreground leading-relaxed">{s.blurb}</div>
                       </button>
                     );
                   })}
@@ -366,12 +327,8 @@ export function AicIsbTaskOne({
 
               {/* Response workspace */}
               <div className="mt-12">
-                <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-                  Step 2
-                </div>
-                <h2 className="mt-1 text-xl sm:text-2xl font-semibold text-foreground">
-                  Build your thesis
-                </h2>
+                <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Step 2</div>
+                <h2 className="mt-1 text-xl sm:text-2xl font-semibold text-foreground">Build your thesis</h2>
                 <p className="mt-1.5 text-sm text-muted-foreground">
                   Each section needs at least a short, well-reasoned response.
                 </p>
@@ -393,7 +350,6 @@ export function AicIsbTaskOne({
             </section>
           )}
         </div>
-
       </div>
 
       {/* Bottom action bar */}
@@ -426,9 +382,7 @@ function ReceivingState() {
         <Dot delay="0.15s" />
         <Dot delay="0.3s" />
       </div>
-      <div className="text-sm text-muted-foreground">
-        Receiving assignment from Animesh…
-      </div>
+      <div className="text-sm text-muted-foreground">Receiving assignment from Animesh…</div>
     </div>
   );
 }
@@ -460,10 +414,8 @@ function EmailCard({
     <article
       className="rounded-2xl border border-primary/30 overflow-hidden"
       style={{
-        background:
-          "linear-gradient(180deg, oklch(0.21 0 0), oklch(0.16 0 0))",
-        boxShadow:
-          "0 18px 48px rgba(0,0,0,0.5), 0 0 0 1px oklch(0.78 0.09 80 / 0.08)",
+        background: "linear-gradient(180deg, oklch(0.21 0 0), oklch(0.16 0 0))",
+        boxShadow: "0 18px 48px rgba(0,0,0,0.5), 0 0 0 1px oklch(0.78 0.09 80 / 0.08)",
       }}
     >
       <header className="flex items-start gap-4 p-5 sm:p-6 border-b border-border/70">
@@ -472,9 +424,7 @@ function EmailCard({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-semibold text-foreground truncate">
-              Animesh
-            </span>
+            <span className="text-sm font-semibold text-foreground truncate">Animesh</span>
             <span className="text-xs text-muted-foreground">·</span>
             <span className="text-xs text-muted-foreground">CEO, AIC × ISB</span>
             <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-primary border border-primary/40 bg-primary/5 rounded-full px-1.5 py-0.5">
@@ -490,44 +440,37 @@ function EmailCard({
           </div>
         </div>
         <div className="flex items-center gap-1 shrink-0">
-          <IconBtn label="Star"><Star className="h-4 w-4" /></IconBtn>
-          <IconBtn label="Reply"><Reply className="h-4 w-4" /></IconBtn>
+          <IconBtn label="Star">
+            <Star className="h-4 w-4" />
+          </IconBtn>
+          <IconBtn label="Reply">
+            <Reply className="h-4 w-4" />
+          </IconBtn>
           <button
             onClick={onToggle}
             aria-label={open ? "Collapse email" : "Expand email"}
             className="p-2 rounded-md hover:bg-secondary text-muted-foreground transition"
           >
-            <ChevronDown
-              className={cn("h-4 w-4 transition-transform", !open && "-rotate-90")}
-            />
+            <ChevronDown className={cn("h-4 w-4 transition-transform", !open && "-rotate-90")} />
           </button>
         </div>
       </header>
 
       {open && (
         <div className="px-6 sm:px-8 py-6 text-[14.5px] leading-[1.8] text-foreground/90">
-          <p className="text-foreground font-semibold mb-3">
-            Welcome to Your First Assignment
-          </p>
+          <p className="text-foreground font-semibold mb-3">Welcome to Your First Assignment</p>
           <p>Hi {candidateName},</p>
           <p className="mt-3">Welcome to the AIC × ISB accelerator ecosystem.</p>
           <p className="mt-3">
-            As part of our upcoming accelerator cohort, we are identifying sectors
-            with the strongest potential for startup innovation, scalability, and
-            investor interest. Your role as a Program Manager Intern is to help us
-            evaluate where the next wave of high-potential startups could emerge.
+            As we prepare for the next accelerator cohort, we’re evaluating sectors with the strongest potential for
+            scalable innovation and long-term venture growth.
           </p>
           <p className="mt-3">
-            For this assignment, I’d like you to develop an{" "}
-            <span className="text-primary font-medium">Accelerator Thesis</span>{" "}
-            for <span className="font-medium">one</span> of the following sectors:
+            Your first phase is to develop an <span className="text-primary font-medium">Accelerator Thesis</span> for{" "}
+            <span className="font-medium">one</span> of the following sectors:
           </p>
           <ul className="mt-2 space-y-1.5 pl-1">
-            {[
-              "Artificial Intelligence (AI) & SaaS",
-              "ClimateTech & Sustainability",
-              "HealthTech",
-            ].map((s) => (
+            {["Artificial Intelligence (AI) & SaaS", "ClimateTech & Sustainability", "HealthTech"].map((s) => (
               <li key={s} className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                 <span>{s}</span>
@@ -535,8 +478,8 @@ function EmailCard({
             ))}
           </ul>
           <p className="mt-4">
-            Please structure your submission carefully and support your
-            recommendations with strong strategic reasoning.
+            Your recommendation should demonstrate clear market understanding, startup opportunity identification, and
+            strategic thinking.
           </p>
           <p className="mt-6 text-foreground font-medium">Best,</p>
           <p className="text-foreground/90">Animesh</p>
@@ -566,13 +509,7 @@ function EmailCard({
   );
 }
 
-function IconBtn({
-  children,
-  label,
-}: {
-  children: React.ReactNode;
-  label: string;
-}) {
+function IconBtn({ children, label }: { children: React.ReactNode; label: string }) {
   return (
     <button
       type="button"
@@ -588,9 +525,7 @@ function Divider({ label }: { label: string }) {
   return (
     <div className="flex items-center gap-4">
       <div className="h-px flex-1 bg-border" />
-      <span className="text-[10px] uppercase tracking-[0.28em] text-primary font-semibold">
-        {label}
-      </span>
+      <span className="text-[10px] uppercase tracking-[0.28em] text-primary font-semibold">{label}</span>
       <div className="h-px flex-1 bg-border" />
     </div>
   );
@@ -630,12 +565,8 @@ function ResponseField({
   return (
     <div>
       <div className="flex items-baseline gap-3 mb-2">
-        <span className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold font-mono">
-          0{index}
-        </span>
-        <h3 className="text-[15px] sm:text-base font-semibold text-foreground leading-snug">
-          {title}
-        </h3>
+        <span className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold font-mono">0{index}</span>
+        <h3 className="text-[15px] sm:text-base font-semibold text-foreground leading-snug">{title}</h3>
       </div>
       <div
         className="rounded-xl border border-border bg-card/60 focus-within:border-primary/60 transition-colors"
@@ -653,10 +584,7 @@ function ResponseField({
         />
         <div className="flex items-center justify-between px-4 sm:px-5 py-2 border-t border-border/60 text-[11px]">
           <span
-            className={cn(
-              "inline-flex items-center gap-1.5",
-              meetsMin ? "text-success" : "text-muted-foreground",
-            )}
+            className={cn("inline-flex items-center gap-1.5", meetsMin ? "text-success" : "text-muted-foreground")}
             style={meetsMin ? { color: "oklch(0.72 0.14 155)" } : undefined}
           >
             {meetsMin ? (
@@ -692,8 +620,7 @@ function BottomBar({
     <div
       className="fixed bottom-0 inset-x-0 z-30 border-t border-border"
       style={{
-        background:
-          "linear-gradient(180deg, oklch(0.14 0 0 / 0.75), oklch(0.13 0 0 / 0.92))",
+        background: "linear-gradient(180deg, oklch(0.14 0 0 / 0.75), oklch(0.13 0 0 / 0.92))",
         backdropFilter: "blur(18px)",
         boxShadow: "0 -8px 32px rgba(0,0,0,0.5)",
       }}
@@ -734,9 +661,7 @@ function BottomBar({
             disabled={!canSubmit}
             className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground transition-all hover:opacity-90 hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             style={{
-              boxShadow: canSubmit
-                ? "0 10px 24px -10px oklch(0.78 0.09 80 / 0.55)"
-                : undefined,
+              boxShadow: canSubmit ? "0 10px 24px -10px oklch(0.78 0.09 80 / 0.55)" : undefined,
             }}
           >
             <Send className="h-3.5 w-3.5" />
@@ -778,8 +703,7 @@ function SuccessOverlay() {
       <div
         className="rounded-3xl border border-border bg-card px-10 py-9 text-center max-w-sm"
         style={{
-          boxShadow:
-            "0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px oklch(0.72 0.14 155 / 0.25)",
+          boxShadow: "0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px oklch(0.72 0.14 155 / 0.25)",
           animation: "fadeSlide 320ms ease-out",
         }}
       >
@@ -791,17 +715,10 @@ function SuccessOverlay() {
             animation: "softPulse 1.6s ease-in-out infinite",
           }}
         >
-          <CheckCircle2
-            className="h-8 w-8"
-            style={{ color: "oklch(0.78 0.14 155)" }}
-          />
+          <CheckCircle2 className="h-8 w-8" style={{ color: "oklch(0.78 0.14 155)" }} />
         </div>
-        <h3 className="mt-5 text-lg font-semibold text-foreground">
-          Thesis submitted
-        </h3>
-        <p className="mt-1.5 text-sm text-muted-foreground">
-          Animesh will review your work. Task 2 is now unlocked.
-        </p>
+        <h3 className="mt-5 text-lg font-semibold text-foreground">Thesis submitted</h3>
+        <p className="mt-1.5 text-sm text-muted-foreground">Animesh will review your work. Task 2 is now unlocked.</p>
       </div>
     </div>
   );

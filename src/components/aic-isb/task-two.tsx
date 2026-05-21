@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { cn, getFirstName } from "@/lib/utils";
 import { THEMES, type ThemeId, type Startup } from "./startups-data";
+import { InboxEmail } from "./inbox-email";
 
 type Phase = "email" | "dashboard" | "loading" | "result";
 

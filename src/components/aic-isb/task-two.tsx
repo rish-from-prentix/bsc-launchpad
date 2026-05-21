@@ -147,37 +147,21 @@ function EmailPhase({
   onStart: () => void;
 }) {
   return (
-    <div className="mx-auto max-w-3xl px-5 sm:px-8 py-12 sm:py-16">
-      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold flex items-center gap-2">
-        <Mail className="h-3.5 w-3.5" /> New message · Inbox
-      </div>
-      <h1 className="mt-2 text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-        Phase 2 · Accelerator Cohort Selection
-      </h1>
+    <InboxEmail
+      badge="Phase 2 · Accelerator Cohort Selection"
+      senderName="Animesh Sharma"
+      senderRole="Program Director, AIC × ISB"
+      senderInitials="AS"
+      subject="Next Evaluation Phase – Accelerator Cohort Selection"
+      preview={`Hi ${name}, congratulations on completing your investment thesis — your next phase is to evaluate 8 startups in ${themeLabel}…`}
+      timestamp="Today · 11:04 AM"
+      attachmentLabel="Cohort Evaluation Brief.pdf"
+      ctaLabel="Continue Evaluation"
+      onCta={onStart}
+    >
+      <div className="whitespace-pre-wrap">{`Hi ${name},
 
-      <div
-        className="mt-8 glass rounded-2xl overflow-hidden"
-        style={{ boxShadow: "0 8px 40px rgba(11,16,38,0.55)" }}
-      >
-        <div className="flex items-center gap-3 p-5 border-b border-border">
-          <div className="h-11 w-11 rounded-full bg-primary/15 text-primary flex items-center justify-center font-semibold text-sm shrink-0 border border-primary/40">
-            AS
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-semibold text-foreground">
-              Animesh Sharma <span className="text-muted-foreground font-normal">· Program Director, AIC × ISB</span>
-            </div>
-            <div className="text-xs text-muted-foreground truncate">
-              Next Evaluation Task – Accelerator Cohort Selection
-            </div>
-          </div>
-          <div className="text-[11px] text-muted-foreground">Today · 11:04 AM</div>
-        </div>
-
-        <div className="px-6 sm:px-7 py-6 text-[14.5px] text-foreground/90 leading-[1.75] whitespace-pre-wrap">
-{`Hi ${name},
-
-Congratulations on successfully completing your investment thesis task.
+Congratulations on successfully completing your investment thesis phase.
 
 Your analysis demonstrated strong strategic thinking, clear understanding of market opportunities, and thoughtful evaluation of sector trends. The board reviewed your recommendations and appreciated your ability to identify scalable startup opportunities aligned with the accelerator's vision.
 
@@ -202,26 +186,8 @@ Best of luck.
 Regards,
 Animesh Sharma
 Program Director
-AIC × ISB`}
-        </div>
-
-        <div className="px-6 sm:px-7 pb-6 flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/40 px-3 py-1.5 text-xs text-muted-foreground">
-            <Paperclip className="h-3.5 w-3.5" /> Cohort Evaluation Brief.pdf
-          </span>
-        </div>
-
-        <div className="px-6 sm:px-7 pb-7">
-          <button
-            onClick={onStart}
-            className="btn-primary-glow inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold w-full sm:w-auto"
-          >
-            Start Startup Evaluation
-            <ArrowRight className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-    </div>
+AIC × ISB`}</div>
+    </InboxEmail>
   );
 }
 

@@ -480,7 +480,8 @@ function EmailCard({
           </div>
           {!open && (
             <div className="mt-1 text-[12px] text-muted-foreground line-clamp-1">
-              Welcome to the AIC × ISB accelerator. Your first phase is to develop an accelerator thesis…
+              I’m glad to have you joining the AIC × ISB accelerator initiative Your first phase is to develop an
+              accelerator thesis…
             </div>
           )}
           <div className="mt-1 text-[11px] text-muted-foreground">

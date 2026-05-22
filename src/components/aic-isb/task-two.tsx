@@ -53,6 +53,8 @@ export function AicIsbTaskTwo({
   });
   const [saveState, setSaveState] = useState<"idle" | "saved">("idle");
   const savedTimer = useRef<number | null>(null);
+  const [limitWarning, setLimitWarning] = useState(false);
+  const warningTimer = useRef<number | null>(null);
 
   const shortlistCount = Object.values(evals).filter((e) => e.shortlisted).length;
   const allRated = bundle.startups.every((s) => evals[s.id].rating > 0);
@@ -84,7 +86,13 @@ export function AicIsbTaskTwo({
     setEvals((prev) => {
       const cur = prev[id];
       const count = Object.values(prev).filter((e) => e.shortlisted).length;
-      if (!cur.shortlisted && count >= 2) return prev; // cap at 2
+      if (!cur.shortlisted && count >= 2) {
+        // Trigger warning toast
+        setLimitWarning(true);
+        if (warningTimer.current) window.clearTimeout(warningTimer.current);
+        warningTimer.current = window.setTimeout(() => setLimitWarning(false), 4200);
+        return prev;
+      }
       return { ...prev, [id]: { ...cur, shortlisted: !cur.shortlisted } };
     });
   }
@@ -130,6 +138,8 @@ export function AicIsbTaskTwo({
       onSubmit={handleSubmit}
       saveState={saveState}
       onSaveDraft={handleSaveDraft}
+      limitWarning={limitWarning}
+      onDismissWarning={() => setLimitWarning(false)}
     />
   );
 }

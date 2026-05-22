@@ -66,7 +66,7 @@ export function AicIsbTaskThree({
 
   const allComplete = selectedStartups.every((s) => {
     const a = assignments[s.id];
-    return a.primaryId && a.secondaryId && a.primaryId !== a.secondaryId && a.reason.trim().length > 0;
+    return a.primaryId && a.secondaryId && a.primaryId !== a.secondaryId;
   });
 
   function update(id: string, patch: Partial<Assignment>) {
@@ -209,7 +209,7 @@ function Dashboard({
             <span className={cn(allComplete && "text-primary")}>
               {selectedStartups.filter((s) => {
                 const a = assignments[s.id];
-                return a.primaryId && a.secondaryId && a.primaryId !== a.secondaryId && a.reason.trim().length > 0;
+                return a.primaryId && a.secondaryId && a.primaryId !== a.secondaryId;
               }).length}/{selectedStartups.length} startups assigned
             </span>
             {saveState === "saved" && (
@@ -330,8 +330,9 @@ function StartupAssignmentBlock({
 
       {/* Reason */}
       <div className="mt-5 glass rounded-xl p-5">
-        <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
+        <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold flex items-center gap-2">
           Why this mentor pairing for {startup.name}?
+          <span className="text-[10px] normal-case tracking-normal text-muted-foreground font-normal">(optional)</span>
         </label>
         <textarea
           value={assignment.reason}
@@ -439,10 +440,6 @@ function MentorCard({
               <Quote className="h-3 w-3" /> Founder feedback
             </div>
             <p className="text-sm italic text-foreground/85">{mentor.feedback}</p>
-          </div>
-          <div className="rounded-lg border border-border bg-background/40 p-3">
-            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-1">Mentor philosophy</div>
-            <p className="text-sm italic text-foreground/85">{mentor.philosophy}</p>
           </div>
         </div>
       )}

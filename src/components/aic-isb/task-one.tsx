@@ -283,9 +283,11 @@ export function AicIsbTaskOne({
               {/* Sector selection */}
               <div className="mt-10">
                 <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Step 1</div>
-                <h2 className="mt-1 text-xl sm:text-2xl font-semibold text-foreground">Choose your sector</h2>
+                <h2 className="mt-1 text-xl sm:text-2xl font-semibold text-foreground">
+                  Research different sectors and select one to build your thesis.
+                </h2>
                 <p className="mt-1.5 text-sm text-muted-foreground">
-                  Pick the area you want to build an accelerator thesis around.
+                  Explore the three sectors below, then commit to the one you'll build your accelerator thesis around.
                 </p>
 
                 <div className="mt-5 grid sm:grid-cols-3 gap-4">

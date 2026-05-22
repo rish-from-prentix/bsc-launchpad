@@ -66,7 +66,7 @@ export function AicIsbTaskThree({
 
   const allComplete = selectedStartups.every((s) => {
     const a = assignments[s.id];
-    return a.primaryId && a.secondaryId && a.primaryId !== a.secondaryId && a.reason.trim().length > 0;
+    return a.primaryId && a.secondaryId && a.primaryId !== a.secondaryId;
   });
 
   function update(id: string, patch: Partial<Assignment>) {
@@ -209,7 +209,7 @@ function Dashboard({
             <span className={cn(allComplete && "text-primary")}>
               {selectedStartups.filter((s) => {
                 const a = assignments[s.id];
-                return a.primaryId && a.secondaryId && a.primaryId !== a.secondaryId && a.reason.trim().length > 0;
+                return a.primaryId && a.secondaryId && a.primaryId !== a.secondaryId;
               }).length}/{selectedStartups.length} startups assigned
             </span>
             {saveState === "saved" && (
@@ -330,8 +330,9 @@ function StartupAssignmentBlock({
 
       {/* Reason */}
       <div className="mt-5 glass rounded-xl p-5">
-        <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
+        <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold flex items-center gap-2">
           Why this mentor pairing for {startup.name}?
+          <span className="text-[10px] normal-case tracking-normal text-muted-foreground font-normal">(optional)</span>
         </label>
         <textarea
           value={assignment.reason}
@@ -439,10 +440,6 @@ function MentorCard({
               <Quote className="h-3 w-3" /> Founder feedback
             </div>
             <p className="text-sm italic text-foreground/85">{mentor.feedback}</p>
-          </div>
-          <div className="rounded-lg border border-border bg-background/40 p-3">
-            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-1">Mentor philosophy</div>
-            <p className="text-sm italic text-foreground/85">{mentor.philosophy}</p>
           </div>
         </div>
       )}
@@ -580,6 +577,13 @@ function ResultPhase({
       <div className="mt-4 space-y-4">
         {evaluations.map((e) => {
           const bothStrong = e.pFit === "strong" && e.sFit === "strong";
+          const weakReasons: { mentor: Mentor; reason: string }[] = [];
+          if (e.primary && e.pFit === "weak") {
+            weakReasons.push({ mentor: e.primary, reason: e.primary.notIdealFor });
+          }
+          if (e.secondary && e.sFit === "weak") {
+            weakReasons.push({ mentor: e.secondary, reason: e.secondary.notIdealFor });
+          }
           return (
             <div key={e.startup.id} className="glass rounded-xl p-5">
               <div className="flex items-start justify-between gap-3">
@@ -596,25 +600,31 @@ function ResultPhase({
                 <FitRow label="Primary" mentor={e.primary} fit={e.pFit} />
                 <FitRow label="Secondary" mentor={e.secondary} fit={e.sFit} />
               </div>
-              <div
-                className={cn(
-                  "mt-4 rounded-lg p-3 text-sm flex gap-2",
-                  bothStrong
-                    ? "border border-[oklch(0.72_0.14_155)]/40 bg-[oklch(0.72_0.14_155)]/5"
-                    : "border border-[oklch(0.72_0.16_25)]/40 bg-[oklch(0.72_0.16_25)]/5",
-                )}
-              >
-                {bothStrong ? (
+              {bothStrong ? (
+                <div className="mt-4 rounded-lg p-3 text-sm flex gap-2 border border-[oklch(0.72_0.14_155)]/40 bg-[oklch(0.72_0.14_155)]/5">
                   <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-[oklch(0.72_0.14_155)]" />
-                ) : (
-                  <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-[oklch(0.72_0.16_25)]" />
-                )}
-                <p className="text-foreground/90">
-                  {bothStrong
-                    ? "Excellent mentor alignment. The selected expertise strongly complements the startup's growth needs."
-                    : "The accelerator board believes at least one mentor may not directly address the startup's primary operational challenge."}
-                </p>
-              </div>
+                  <p className="text-foreground/90">
+                    Excellent mentor alignment. The selected expertise strongly complements the startup's growth needs.
+                  </p>
+                </div>
+              ) : (
+                <div className="mt-4 space-y-2">
+                  {weakReasons.map(({ mentor, reason }) => (
+                    <div
+                      key={mentor.id}
+                      className="rounded-lg p-3 text-sm flex gap-2 border border-[oklch(0.72_0.16_25)]/40 bg-[oklch(0.72_0.16_25)]/5"
+                    >
+                      <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-[oklch(0.72_0.16_25)]" />
+                      <p className="text-foreground/90">
+                        <span className="font-semibold text-foreground">{mentor.name}</span> may not be the ideal fit for{" "}
+                        <span className="text-foreground">{e.startup.name}</span> — best suited for{" "}
+                        <span className="text-foreground">{mentor.bestFor.length ? "different startup profiles" : "other contexts"}</span>
+                        . Not ideal for: <span className="text-foreground/80">{reason.toLowerCase()}</span>. The board would have preferred a mentor with stronger alignment to this startup's stage, business model, and operational challenges.
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}

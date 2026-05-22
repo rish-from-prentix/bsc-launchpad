@@ -53,6 +53,8 @@ export function AicIsbTaskTwo({
   });
   const [saveState, setSaveState] = useState<"idle" | "saved">("idle");
   const savedTimer = useRef<number | null>(null);
+  const [limitWarning, setLimitWarning] = useState(false);
+  const warningTimer = useRef<number | null>(null);
 
   const shortlistCount = Object.values(evals).filter((e) => e.shortlisted).length;
   const allRated = bundle.startups.every((s) => evals[s.id].rating > 0);
@@ -84,7 +86,13 @@ export function AicIsbTaskTwo({
     setEvals((prev) => {
       const cur = prev[id];
       const count = Object.values(prev).filter((e) => e.shortlisted).length;
-      if (!cur.shortlisted && count >= 2) return prev; // cap at 2
+      if (!cur.shortlisted && count >= 2) {
+        // Trigger warning toast
+        setLimitWarning(true);
+        if (warningTimer.current) window.clearTimeout(warningTimer.current);
+        warningTimer.current = window.setTimeout(() => setLimitWarning(false), 4200);
+        return prev;
+      }
       return { ...prev, [id]: { ...cur, shortlisted: !cur.shortlisted } };
     });
   }
@@ -130,6 +138,8 @@ export function AicIsbTaskTwo({
       onSubmit={handleSubmit}
       saveState={saveState}
       onSaveDraft={handleSaveDraft}
+      limitWarning={limitWarning}
+      onDismissWarning={() => setLimitWarning(false)}
     />
   );
 }
@@ -152,7 +162,7 @@ function EmailPhase({
       senderRole="Program Director, AIC × ISB"
       senderInitials="AS"
       subject="Next Evaluation Phase – Accelerator Cohort Selection"
-      preview={`Hi ${name}, congratulations on completing your investment thesis — your next phase is to evaluate 8 startups in ${themeLabel}…`}
+      preview={`Hi ${name}, good job on the thesis — next, evaluate 8 shortlisted startups and pick 2 for the cohort…`}
       timestamp="Today · 11:04 AM"
       attachmentLabel="Cohort Evaluation Brief.pdf"
       ctaLabel="Continue Evaluation"
@@ -160,27 +170,13 @@ function EmailPhase({
     >
       <div className="whitespace-pre-wrap">{`Hi ${name},
 
-Congratulations on successfully completing your investment thesis phase.
+Good job on the investment thesis — the board agrees with your direction and recommendations.
 
-Your analysis demonstrated strong strategic thinking, clear understanding of market opportunities, and thoughtful evaluation of sector trends. The board reviewed your recommendations and appreciated your ability to identify scalable startup opportunities aligned with the accelerator's vision.
+We received over 8,000 startup applications for this cohort. Based on internal analytics and initial screening, 8 startups have now been shortlisted.
 
-Based on your selected theme — ${themeLabel} — we would now like you to move to the next stage of the accelerator selection process.
+Your next task is to evaluate these startups and select the 2 companies you believe should move forward into the AIC × ISB accelerator cohort.
 
-Your next phase is to evaluate 8 early-stage startups operating within the ${themeLabel} sector and identify the 2 startups you believe should be selected for the upcoming AIC × ISB accelerator cohort.
-
-As part of this process, you will:
-• Review startup profiles and traction metrics
-• Analyze market potential and scalability
-• Assess founder strength and differentiation
-• Rate each startup based on investment potential
-• Select the top 2 startups for the accelerator cohort
-
-Please note:
-Not every startup with hype is fundamentally strong. Some startups may have operational, financial, or scalability concerns that should influence your decision-making.
-
-We encourage you to think like a real accelerator investment committee member.
-
-Best of luck.
+Focus on long-term potential, scalability, and founder-market fit.
 
 Regards,
 Animesh Sharma
@@ -204,6 +200,8 @@ function Dashboard({
   onSubmit,
   saveState,
   onSaveDraft,
+  limitWarning,
+  onDismissWarning,
 }: {
   themeLabel: string;
   startups: Startup[];
@@ -216,6 +214,8 @@ function Dashboard({
   onSubmit: () => void;
   saveState: "idle" | "saved";
   onSaveDraft: () => void;
+  limitWarning: boolean;
+  onDismissWarning: () => void;
 }) {
   return (
     <div className="mx-auto max-w-4xl px-5 sm:px-8 py-10 sm:py-14 pb-40 relative">
@@ -251,6 +251,30 @@ function Dashboard({
           />
         ))}
       </div>
+
+      {/* Shortlist limit warning toast */}
+      {limitWarning && (
+        <div
+          role="alert"
+          className="fixed left-1/2 -translate-x-1/2 bottom-24 z-40 max-w-md w-[92%] rounded-xl border border-[oklch(0.78_0.13_70)]/50 bg-[oklch(0.18_0.02_70)]/95 backdrop-blur-xl px-4 py-3 shadow-[0_18px_48px_-10px_rgba(0,0,0,0.6)]"
+          style={{ animation: "fadeSlide 280ms ease-out" }}
+        >
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="h-4 w-4 text-[oklch(0.78_0.13_70)] mt-0.5 shrink-0" />
+            <div className="text-sm text-foreground/90 leading-relaxed">
+              You've already locked in your final 2 picks. Want to back a different startup? Simply remove one from your shortlist first.
+            </div>
+            <button
+              type="button"
+              onClick={onDismissWarning}
+              className="text-xs text-muted-foreground hover:text-foreground"
+              aria-label="Dismiss"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Sticky submit bar */}
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/85 backdrop-blur-xl">
@@ -311,12 +335,14 @@ function StartupCard({
 }) {
   const isShortlisted = evaluation.shortlisted;
   const rating = evaluation.rating;
+  const isGraded = rating > 0;
 
   return (
     <article
       className={cn(
         "glass rounded-2xl p-5 sm:p-6 transition-all",
         isShortlisted && "ring-1 ring-primary/60",
+        !isGraded && !isShortlisted && "border-dashed border-border/70",
       )}
       style={
         isShortlisted
@@ -333,14 +359,36 @@ function StartupCard({
             {startup.name}
           </h3>
           <p className="mt-1 text-sm text-muted-foreground">{startup.tagline}</p>
+          <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px]">
+            <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-2 py-0.5 text-primary">
+              <Users className="h-3 w-3" /> {startup.founders.join(", ")}
+            </span>
+            <span className="inline-flex items-center gap-1 rounded-full border border-border bg-background/40 px-2 py-0.5 text-foreground/80">
+              Stage · {startup.stage}
+            </span>
+          </div>
         </div>
-        <span className="shrink-0 inline-flex items-center gap-1 text-[11px] text-primary border border-primary/30 bg-primary/5 rounded-full px-2.5 py-1">
-          {startup.stage}
+        <span
+          className={cn(
+            "shrink-0 inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] rounded-full px-2.5 py-1 border",
+            isGraded
+              ? "border-[oklch(0.72_0.14_155)]/50 text-[oklch(0.72_0.14_155)] bg-[oklch(0.72_0.14_155)]/10"
+              : "border-[oklch(0.78_0.13_70)]/50 text-[oklch(0.78_0.13_70)] bg-[oklch(0.78_0.13_70)]/10",
+          )}
+        >
+          {isGraded ? (
+            <>
+              <CheckCircle2 className="h-3 w-3" /> Graded
+            </>
+          ) : (
+            <>
+              <AlertTriangle className="h-3 w-3" /> Not Graded Yet
+            </>
+          )}
         </span>
       </header>
 
       <div className="mt-5 grid sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
-        <MetricRow icon={<Users className="h-3.5 w-3.5" />} label="Founders" value={startup.founders.join(", ")} />
         <MetricRow icon={<DollarSign className="h-3.5 w-3.5" />} label="Funding" value={startup.funding} />
         {startup.mrr && <MetricRow label="MRR" value={startup.mrr} />}
         {startup.growth && <MetricRow label="Growth" value={startup.growth} />}
@@ -416,13 +464,12 @@ function StartupCard({
 
         <button
           onClick={onToggleShortlist}
-          disabled={!isShortlisted && shortlistFull}
           className={cn(
             "inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition w-full sm:w-auto",
             isShortlisted
               ? "btn-primary-glow"
               : "border border-primary/40 text-primary hover:bg-primary/10",
-            !isShortlisted && shortlistFull && "opacity-40 pointer-events-none",
+            !isShortlisted && shortlistFull && "opacity-60 hover:bg-transparent",
           )}
         >
           {isShortlisted ? (

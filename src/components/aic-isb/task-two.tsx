@@ -200,6 +200,8 @@ function Dashboard({
   onSubmit,
   saveState,
   onSaveDraft,
+  limitWarning,
+  onDismissWarning,
 }: {
   themeLabel: string;
   startups: Startup[];
@@ -212,6 +214,8 @@ function Dashboard({
   onSubmit: () => void;
   saveState: "idle" | "saved";
   onSaveDraft: () => void;
+  limitWarning: boolean;
+  onDismissWarning: () => void;
 }) {
   return (
     <div className="mx-auto max-w-4xl px-5 sm:px-8 py-10 sm:py-14 pb-40 relative">

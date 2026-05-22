@@ -335,12 +335,14 @@ function StartupCard({
 }) {
   const isShortlisted = evaluation.shortlisted;
   const rating = evaluation.rating;
+  const isGraded = rating > 0;
 
   return (
     <article
       className={cn(
         "glass rounded-2xl p-5 sm:p-6 transition-all",
         isShortlisted && "ring-1 ring-primary/60",
+        !isGraded && !isShortlisted && "border-dashed border-border/70",
       )}
       style={
         isShortlisted
@@ -357,14 +359,36 @@ function StartupCard({
             {startup.name}
           </h3>
           <p className="mt-1 text-sm text-muted-foreground">{startup.tagline}</p>
+          <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px]">
+            <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-2 py-0.5 text-primary">
+              <Users className="h-3 w-3" /> {startup.founders.join(", ")}
+            </span>
+            <span className="inline-flex items-center gap-1 rounded-full border border-border bg-background/40 px-2 py-0.5 text-foreground/80">
+              Stage · {startup.stage}
+            </span>
+          </div>
         </div>
-        <span className="shrink-0 inline-flex items-center gap-1 text-[11px] text-primary border border-primary/30 bg-primary/5 rounded-full px-2.5 py-1">
-          {startup.stage}
+        <span
+          className={cn(
+            "shrink-0 inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] rounded-full px-2.5 py-1 border",
+            isGraded
+              ? "border-[oklch(0.72_0.14_155)]/50 text-[oklch(0.72_0.14_155)] bg-[oklch(0.72_0.14_155)]/10"
+              : "border-[oklch(0.78_0.13_70)]/50 text-[oklch(0.78_0.13_70)] bg-[oklch(0.78_0.13_70)]/10",
+          )}
+        >
+          {isGraded ? (
+            <>
+              <CheckCircle2 className="h-3 w-3" /> Graded
+            </>
+          ) : (
+            <>
+              <AlertTriangle className="h-3 w-3" /> Not Graded Yet
+            </>
+          )}
         </span>
       </header>
 
       <div className="mt-5 grid sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
-        <MetricRow icon={<Users className="h-3.5 w-3.5" />} label="Founders" value={startup.founders.join(", ")} />
         <MetricRow icon={<DollarSign className="h-3.5 w-3.5" />} label="Funding" value={startup.funding} />
         {startup.mrr && <MetricRow label="MRR" value={startup.mrr} />}
         {startup.growth && <MetricRow label="Growth" value={startup.growth} />}
@@ -440,13 +464,12 @@ function StartupCard({
 
         <button
           onClick={onToggleShortlist}
-          disabled={!isShortlisted && shortlistFull}
           className={cn(
             "inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition w-full sm:w-auto",
             isShortlisted
               ? "btn-primary-glow"
               : "border border-primary/40 text-primary hover:bg-primary/10",
-            !isShortlisted && shortlistFull && "opacity-40 pointer-events-none",
+            !isShortlisted && shortlistFull && "opacity-60 hover:bg-transparent",
           )}
         >
           {isShortlisted ? (

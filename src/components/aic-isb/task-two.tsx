@@ -252,6 +252,30 @@ function Dashboard({
         ))}
       </div>
 
+      {/* Shortlist limit warning toast */}
+      {limitWarning && (
+        <div
+          role="alert"
+          className="fixed left-1/2 -translate-x-1/2 bottom-24 z-40 max-w-md w-[92%] rounded-xl border border-[oklch(0.78_0.13_70)]/50 bg-[oklch(0.18_0.02_70)]/95 backdrop-blur-xl px-4 py-3 shadow-[0_18px_48px_-10px_rgba(0,0,0,0.6)]"
+          style={{ animation: "fadeSlide 280ms ease-out" }}
+        >
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="h-4 w-4 text-[oklch(0.78_0.13_70)] mt-0.5 shrink-0" />
+            <div className="text-sm text-foreground/90 leading-relaxed">
+              You've already locked in your final 2 picks. Want to back a different startup? Simply remove one from your shortlist first.
+            </div>
+            <button
+              type="button"
+              onClick={onDismissWarning}
+              className="text-xs text-muted-foreground hover:text-foreground"
+              aria-label="Dismiss"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Sticky submit bar */}
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/85 backdrop-blur-xl">
         <div className="mx-auto max-w-4xl px-5 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">

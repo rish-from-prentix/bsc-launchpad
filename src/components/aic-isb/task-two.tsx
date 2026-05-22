@@ -152,7 +152,7 @@ function EmailPhase({
       senderRole="Program Director, AIC × ISB"
       senderInitials="AS"
       subject="Next Evaluation Phase – Accelerator Cohort Selection"
-      preview={`Hi ${name}, congratulations on completing your investment thesis — your next phase is to evaluate 8 startups in ${themeLabel}…`}
+      preview={`Hi ${name}, good job on the thesis — next, evaluate 8 shortlisted startups and pick 2 for the cohort…`}
       timestamp="Today · 11:04 AM"
       attachmentLabel="Cohort Evaluation Brief.pdf"
       ctaLabel="Continue Evaluation"
@@ -160,27 +160,13 @@ function EmailPhase({
     >
       <div className="whitespace-pre-wrap">{`Hi ${name},
 
-Congratulations on successfully completing your investment thesis phase.
+Good job on the investment thesis — the board agrees with your direction and recommendations.
 
-Your analysis demonstrated strong strategic thinking, clear understanding of market opportunities, and thoughtful evaluation of sector trends. The board reviewed your recommendations and appreciated your ability to identify scalable startup opportunities aligned with the accelerator's vision.
+We received over 8,000 startup applications for this cohort. Based on internal analytics and initial screening, 8 startups have now been shortlisted.
 
-Based on your selected theme — ${themeLabel} — we would now like you to move to the next stage of the accelerator selection process.
+Your next task is to evaluate these startups and select the 2 companies you believe should move forward into the AIC × ISB accelerator cohort.
 
-Your next phase is to evaluate 8 early-stage startups operating within the ${themeLabel} sector and identify the 2 startups you believe should be selected for the upcoming AIC × ISB accelerator cohort.
-
-As part of this process, you will:
-• Review startup profiles and traction metrics
-• Analyze market potential and scalability
-• Assess founder strength and differentiation
-• Rate each startup based on investment potential
-• Select the top 2 startups for the accelerator cohort
-
-Please note:
-Not every startup with hype is fundamentally strong. Some startups may have operational, financial, or scalability concerns that should influence your decision-making.
-
-We encourage you to think like a real accelerator investment committee member.
-
-Best of luck.
+Focus on long-term potential, scalability, and founder-market fit.
 
 Regards,
 Animesh Sharma

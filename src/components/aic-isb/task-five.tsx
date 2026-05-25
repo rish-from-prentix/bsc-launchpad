@@ -28,7 +28,7 @@ import {
   classifyMultiple,
   type Valuation,
 } from "./valuation-data";
-import aicLogoUrl from "@/assets/aic-isb-logo.png";
+import aicLogoUrl from "@/assets/aic-isb-logo-blue.png";
 
 type Phase = "email" | "workspace" | "loading" | "result" | "earned";
 

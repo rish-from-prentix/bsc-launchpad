@@ -1,4 +1,4 @@
-import aicIsbLogo from "@/assets/aic-isb-logo.png";
+import aicIsbLogo from "@/assets/aic-isb-logo-white.png";
 import { cn } from "@/lib/utils";
 
 export function AicIsbLogo({

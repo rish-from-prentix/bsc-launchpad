@@ -432,19 +432,11 @@ function Investigation({
               </ol>
             </div>
 
-            <div
-              className="rounded-xl p-4"
-              style={{
-                background:
-                  "linear-gradient(180deg, oklch(0.93 0.14 95 / 0.92), oklch(0.88 0.15 88 / 0.92))",
-                color: "oklch(0.25 0.05 70)",
-                boxShadow: "0 8px 20px -12px rgba(180,140,20,0.45)",
-              }}
-            >
-              <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-bold">
-                <Lightbulb className="h-3.5 w-3.5" /> At this step, think about…
+            <div className="rounded-xl border border-border bg-card/60 p-4">
+              <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+                <Lightbulb className="h-3.5 w-3.5" /> At this step, think about
               </div>
-              <p className="mt-2 text-[13.5px] leading-snug">{step.tip}</p>
+              <p className="mt-2 text-[13px] leading-relaxed text-foreground/75">{step.tip}</p>
             </div>
           </div>
         </aside>
@@ -648,19 +640,11 @@ function Results({
       </section>
 
       {/* Takeaway */}
-      <section
-        className="mt-8 rounded-xl p-5"
-        style={{
-          background:
-            "linear-gradient(180deg, oklch(0.93 0.14 95 / 0.92), oklch(0.88 0.15 88 / 0.92))",
-          color: "oklch(0.25 0.05 70)",
-          boxShadow: "0 10px 24px -12px rgba(180,140,20,0.4)",
-        }}
-      >
-        <div className="text-[11px] uppercase tracking-[0.22em] font-bold flex items-center gap-2">
-          <Lightbulb className="h-4 w-4" /> Key takeaway
+      <section className="mt-8 rounded-xl border border-border bg-card/60 p-5">
+        <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold flex items-center gap-2">
+          <Lightbulb className="h-3.5 w-3.5" /> Key takeaway
         </div>
-        <p className="mt-2 text-[15px] leading-snug font-medium">{data.takeaway}</p>
+        <p className="mt-2 text-[14.5px] leading-relaxed text-foreground/85">{data.takeaway}</p>
       </section>
 
       <div className="mt-9 flex flex-wrap items-center justify-between gap-3">

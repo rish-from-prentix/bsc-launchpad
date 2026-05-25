@@ -1132,27 +1132,6 @@ function staticCode(seed: string, len: number): string {
   return out;
 }
 
-function buildLinkedInPost(name: string, startupName: string, sector: ThemeId): string {
-  const sectorLabel =
-    sector === "ai"
-      ? "AI & SaaS"
-      : sector === "climate"
-        ? "ClimateTech"
-        : "HealthTech";
-  return `I just completed the AIC × ISB Virtual Accelerator Internship — Program Manager track by Prentix.
-
-Over five phases I shaped an investment thesis in ${sectorLabel}, evaluated a cohort of early-stage startups, allocated mentors, ran a root-cause investigation on a founder SOS, and wrote a board-grade investment memo on ${startupName}.
-
-A few things that stuck with me:
-- The hardest part of evaluation isn't picking winners — it's articulating why others aren't.
-- Mentor allocation is a portfolio decision, not a popularity contest.
-- Most "growth problems" are retention problems wearing a costume.
-
-Grateful to AIC × ISB and Prentix for building something this real.
-
-prentix.ai`;
-}
-
 function EarnedPhase({
   candidateName,
   startup,

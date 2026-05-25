@@ -858,32 +858,17 @@ function ResultPhase({
         ))}
       </div>
 
-      <div className="mt-10 glass rounded-2xl p-6 text-center">
-        <Trophy className="mx-auto h-10 w-10 text-primary" />
-        <h3 className="mt-3 text-2xl font-semibold text-foreground">Congratulations, {getFirstName(candidateName)}.</h3>
-        <p className="mt-3 text-sm text-foreground/85 leading-relaxed">
-          You have successfully completed the AIC × ISB Accelerator Internship. Throughout this
-          experience, you demonstrated investment analysis, startup evaluation, mentor mapping,
-          operational reasoning, root cause analysis, and strategic decision making — the type of
-          analytical thinking expected in startup accelerators, venture capital, and strategic
-          operations roles.
+      <div className="mt-12 flex flex-col items-center">
+        <button
+          onClick={onContinue}
+          className="btn-primary-glow inline-flex items-center justify-center gap-2 rounded-xl px-8 py-3.5 text-sm font-semibold w-full sm:w-[320px]"
+        >
+          See What You've Earned <ArrowRight className="h-4 w-4" />
+        </button>
+        <p className="mt-3 text-[12px] text-muted-foreground">
+          Certificate · Skills · Resume line · LinkedIn post
         </p>
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <button
-            onClick={downloadCertificate}
-            className="btn-primary-glow inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold"
-          >
-            <Download className="h-4 w-4" /> Download Certificate
-          </button>
-          <button
-            onClick={shareLinkedIn}
-            className="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/5 px-5 py-2.5 text-sm font-semibold text-primary hover:bg-primary/10 transition"
-          >
-            <Share2 className="h-4 w-4" /> Share on LinkedIn
-          </button>
-        </div>
       </div>
-
     </div>
   );
 }

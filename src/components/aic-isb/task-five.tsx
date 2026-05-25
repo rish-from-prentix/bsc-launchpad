@@ -908,79 +908,553 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function certificateHtml(name: string, startupName: string, logoDataUrl: string): string {
+/* ============= Earned (BSC-style certificate + skills + resume + post) ============= */
+
+const SKILL_BADGES = [
+  "Investment Analysis",
+  "Startup Evaluation",
+  "Mentor Mapping",
+  "Operational Reasoning",
+  "Root Cause Analysis",
+  "Strategic Decision Making",
+  "Valuation Modelling",
+  "Founder Empathy",
+  "Investment Memo Writing",
+];
+
+const CERT_W = 1920;
+const CERT_H = 1361;
+
+function CertificateNode({
+  name,
+  startupName,
+  scale = 1,
+}: {
+  name: string;
+  startupName: string;
+  scale?: number;
+}) {
   const today = new Date().toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
-  return `<!doctype html><html><head><meta charset="utf-8"><title>Virtual Internship · Program Manager</title>
-<style>
- *{box-sizing:border-box}
- body{margin:0;font-family:'Inter','Helvetica Neue',system-ui,sans-serif;background:#0b1026;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px;color:#0A1628}
- .frame{position:relative;width:1100px;max-width:100%;aspect-ratio:1.4/1;background:#0A1628;border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55)}
- .stripes-l{position:absolute;left:0;top:0;bottom:0;width:120px;background:repeating-linear-gradient(135deg,#0A1628 0 18px,#13315c 18px 36px,#1d4ed8 36px 54px)}
- .stripes-r{position:absolute;right:0;top:0;bottom:0;width:120px;background:repeating-linear-gradient(45deg,#0A1628 0 18px,#13315c 18px 36px,#1d4ed8 36px 54px)}
- .sheet{position:absolute;inset:24px 140px;background:#ffffff;border-radius:8px;padding:56px 64px;display:flex;flex-direction:column;justify-content:space-between}
- .top{display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
- .logo{height:90px;display:flex;align-items:center}
- .logo img{height:80px;width:auto;display:block}
- .badge{background:#0A1628;color:#fff;padding:18px 26px;border-radius:0 0 18px 18px;text-align:center;min-width:180px;clip-path:polygon(0 0,100% 0,100% 100%,50% 88%,0 100%)}
- .badge .brand{font-weight:700;letter-spacing:.01em;font-size:20px}
- .badge .brand .accent{color:#5dc4fe}
- .badge .tag{margin-top:6px;font-size:11px;letter-spacing:.04em;font-weight:500;line-height:1.4}
- .body{margin-top:8px}
- .title{font-size:48px;font-weight:800;line-height:1.05;letter-spacing:-0.01em}
- .completion{margin-top:28px;font-size:28px;font-weight:700}
- .date{margin-top:6px;font-size:22px;font-weight:600;color:#0A1628}
- .desc{margin-top:36px;font-size:13px;line-height:1.55;color:#374151;max-width:780px}
- .verify{margin-top:18px;font-size:11px;color:#4b5563;letter-spacing:.01em}
- .footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:24px}
- .name-line{font-size:13px;color:#374151}
- .signature{text-align:right}
- .sig-name{font-size:18px;font-weight:700;color:#0A1628}
- .sig-role{font-size:12px;color:#4b5563;margin-top:2px}
-</style></head><body>
- <div class="frame">
-  <div class="stripes-l"></div>
-  <div class="stripes-r"></div>
-  <div class="sheet">
-   <div>
-    <div class="top">
-     <div class="logo">${logoDataUrl ? `<img src="${logoDataUrl}" alt="AIC × ISB"/>` : '<div style="font-weight:800;font-size:22px;letter-spacing:.05em">AIC × ISB</div>'}</div>
-     <div class="badge">
-      <div class="brand">prent<span class="accent">i</span>x</div>
-      <div class="tag">Shaping Early Careers<br/>Across The Globe.</div>
-     </div>
+  return (
+    <div
+      style={{
+        width: CERT_W,
+        height: CERT_H,
+        position: "relative",
+        background: "#0A1628",
+        overflow: "hidden",
+        fontFamily: "'Inter','Helvetica Neue',system-ui,sans-serif",
+        color: "#0A1628",
+        transform: scale !== 1 ? `scale(${scale})` : undefined,
+        transformOrigin: "top left",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: 210,
+          background:
+            "repeating-linear-gradient(135deg,#0A1628 0 32px,#13315c 32px 64px,#1d4ed8 64px 96px)",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          right: 0,
+          top: 0,
+          bottom: 0,
+          width: 210,
+          background:
+            "repeating-linear-gradient(45deg,#0A1628 0 32px,#13315c 32px 64px,#1d4ed8 64px 96px)",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: "42px 245px",
+          background: "#ffffff",
+          borderRadius: 14,
+          padding: "100px 112px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              gap: 40,
+            }}
+          >
+            <img
+              src={aicLogoUrl}
+              alt="AIC × ISB"
+              style={{ height: 150, width: "auto", display: "block" }}
+              crossOrigin="anonymous"
+            />
+            <div
+              style={{
+                background: "#0A1628",
+                color: "#fff",
+                padding: "32px 46px",
+                textAlign: "center",
+                minWidth: 320,
+                clipPath:
+                  "polygon(0 0,100% 0,100% 100%,50% 88%,0 100%)",
+              }}
+            >
+              <div
+                style={{ fontWeight: 700, fontSize: 36, letterSpacing: "0.01em" }}
+              >
+                prent<span style={{ color: "#5dc4fe" }}>i</span>x
+              </div>
+              <div
+                style={{
+                  marginTop: 10,
+                  fontSize: 18,
+                  letterSpacing: "0.04em",
+                  fontWeight: 500,
+                  lineHeight: 1.4,
+                }}
+              >
+                Shaping Early Careers
+                <br />
+                Across The Globe.
+              </div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: 60 }}>
+            <div
+              style={{
+                fontSize: 84,
+                fontWeight: 800,
+                lineHeight: 1.05,
+                letterSpacing: "-0.01em",
+                color: "#0A1628",
+              }}
+            >
+              Virtual Internship: Program Manager
+            </div>
+            <div style={{ marginTop: 44, fontSize: 48, fontWeight: 700 }}>
+              Certificate of Completion
+            </div>
+            <div
+              style={{
+                marginTop: 10,
+                fontSize: 36,
+                fontWeight: 600,
+                color: "#0A1628",
+              }}
+            >
+              {today}
+            </div>
+            <div
+              style={{
+                marginTop: 44,
+                fontSize: 22,
+                color: "#374151",
+              }}
+            >
+              Awarded to{" "}
+              <strong style={{ color: "#0A1628", fontSize: 32 }}>{name}</strong>
+            </div>
+            <div
+              style={{
+                marginTop: 36,
+                fontSize: 22,
+                lineHeight: 1.55,
+                color: "#374151",
+                maxWidth: 1280,
+              }}
+            >
+              This certifies that {name} completed the AIC × ISB Virtual
+              Internship — Program Manager experience by Prentix, demonstrating
+              investment analysis, startup evaluation, mentor mapping,
+              operational reasoning, root cause analysis, and strategic
+              decision making across a real accelerator workflow. The final
+              investment memo evaluated <strong>{startupName}</strong>.
+            </div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            marginTop: 32,
+          }}
+        >
+          <div style={{ fontSize: 18, color: "#4b5563" }}>
+            Verification Code: {staticCode(name + startupName, 18)}
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <div style={{ fontSize: 32, fontWeight: 700, color: "#0A1628" }}>
+              Rishik Reddy
+            </div>
+            <div style={{ fontSize: 20, color: "#4b5563", marginTop: 4 }}>
+              Founder, Prentix
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="body">
-     <div class="title">Virtual Internship: Program Manager</div>
-     <div class="completion">Certificate of Completion</div>
-     <div class="date">${escapeHtml(today)}</div>
-     <div class="name-line" style="margin-top:24px">Awarded to <strong style="color:#0A1628;font-size:18px">${escapeHtml(name)}</strong></div>
-     <div class="desc">This certifies that ${escapeHtml(name)} completed the AIC × ISB Virtual Internship Program Manager experience by Prentix — demonstrating investment analysis, startup evaluation, mentor mapping, operational reasoning, root cause analysis, and strategic decision making across a real accelerator workflow. The final investment memo evaluated <strong>${escapeHtml(startupName)}</strong>.</div>
-     <div class="verify">Engagement Verification Code: ${randomCode(15)} · User Verification Code: ${randomCode(15)}</div>
-    </div>
-   </div>
-   <div class="footer">
-    <div></div>
-    <div class="signature">
-     <div class="sig-name">Rishik Reddy</div>
-     <div class="sig-role">Founder, Prentix</div>
-    </div>
-   </div>
-  </div>
- </div>
-</body></html>`;
+  );
 }
 
-function randomCode(len: number): string {
+function staticCode(seed: string, len: number): string {
   const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
   let out = "";
-  for (let i = 0; i < len; i++) out += chars[Math.floor(Math.random() * chars.length)];
+  for (let i = 0; i < len; i++) {
+    h = (h * 1103515245 + 12345) | 0;
+    out += chars[Math.abs(h) % chars.length];
+  }
   return out;
 }
 
-function escapeHtml(s: string): string {
-  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+function buildLinkedInPost(name: string, startupName: string, sector: ThemeId): string {
+  const sectorLabel =
+    sector === "ai"
+      ? "AI & SaaS"
+      : sector === "climate"
+        ? "ClimateTech"
+        : "HealthTech";
+  return `I just completed the AIC × ISB Virtual Accelerator Internship — Program Manager track by Prentix.
+
+Over five phases I shaped an investment thesis in ${sectorLabel}, evaluated a cohort of early-stage startups, allocated mentors, ran a root-cause investigation on a founder SOS, and wrote a board-grade investment memo on ${startupName}.
+
+A few things that stuck with me:
+- The hardest part of evaluation isn't picking winners — it's articulating why others aren't.
+- Mentor allocation is a portfolio decision, not a popularity contest.
+- Most "growth problems" are retention problems wearing a costume.
+
+Grateful to AIC × ISB and Prentix for building something this real.
+
+prentix.ai`;
+}
+
+function buildResumeLineAic(startupName: string, sector: ThemeId): string {
+  const sectorLabel =
+    sector === "ai"
+      ? "AI & SaaS"
+      : sector === "climate"
+        ? "ClimateTech"
+        : "HealthTech";
+  return `Program Manager Intern — AIC × ISB Virtual Accelerator (via Prentix)
+Built a ${sectorLabel} investment thesis, evaluated an early-stage cohort, allocated mentors, and ran a root-cause investigation on a founder crisis.
+Authored a board-grade investment memo for ${startupName} covering valuation, strengths, risks, and recommendation.`;
+}
+
+function EarnedPhase({
+  candidateName,
+  startup,
+  sector,
+  onContinue,
+}: {
+  candidateName: string;
+  startup: Startup;
+  sector: ThemeId;
+  onContinue: () => void;
+}) {
+  const certName = candidateName?.trim() || "Participant";
+  const post = useMemo(
+    () => buildLinkedInPost(certName, startup.name, sector),
+    [certName, startup.name, sector],
+  );
+  const resumeLine = useMemo(
+    () => buildResumeLineAic(startup.name, sector),
+    [startup.name, sector],
+  );
+
+  const certificateRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
+
+  useEffect(() => {
+    const id = "inter-bold-font-link";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap";
+    document.head.appendChild(link);
+  }, []);
+
+  async function downloadCertificate() {
+    if (!certificateRef.current || downloading) return;
+    setDownloading(true);
+    try {
+      const canvas = await html2canvas(certificateRef.current, {
+        scale: 1,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: "#0A1628",
+        width: CERT_W,
+        height: CERT_H,
+        windowWidth: CERT_W,
+        windowHeight: CERT_H,
+      });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "px",
+        format: [CERT_W, CERT_H],
+      });
+      pdf.addImage(imgData, "PNG", 0, 0, CERT_W, CERT_H);
+      pdf.save(`AIC-ISB-Virtual-Internship-${certName}.pdf`);
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  function shareCertOnLinkedIn() {
+    window.open(
+      "https://www.linkedin.com/sharing/share-offsite/?url=https://prentix.ai",
+      "_blank",
+      "noopener,noreferrer",
+    );
+  }
+
+  const [copiedSkill, setCopiedSkill] = useState<string | null>(null);
+  function copySkill(skill: string) {
+    navigator.clipboard.writeText(skill).then(() => {
+      setCopiedSkill(skill);
+      window.setTimeout(() => {
+        setCopiedSkill((c) => (c === skill ? null : c));
+      }, 1500);
+    });
+  }
+
+  const [resumeCopied, setResumeCopied] = useState(false);
+  function copyResume() {
+    navigator.clipboard.writeText(resumeLine).then(() => {
+      setResumeCopied(true);
+      window.setTimeout(() => setResumeCopied(false), 2000);
+    });
+  }
+
+  function handleLinkedIn() {
+    navigator.clipboard.writeText(post);
+    window.open("https://www.linkedin.com/feed/", "_blank");
+  }
+
+  const previewScale = 0.3;
+
+  return (
+    <div
+      className="mx-auto max-w-[760px] px-5 sm:px-8 py-12 sm:py-16 space-y-16"
+      style={{ animation: "fadeSlide 250ms ease-out" }}
+    >
+      {/* Certificate */}
+      <section>
+        <div className="text-center text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+          Your certificate
+        </div>
+        <h2 className="mt-3 text-center text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
+          Congratulations, {getFirstName(candidateName)}.
+        </h2>
+
+        <div className="mt-8 flex justify-center">
+          <div
+            style={{
+              width: CERT_W * previewScale,
+              height: CERT_H * previewScale,
+              maxWidth: "100%",
+              overflow: "hidden",
+              borderRadius: 10,
+              boxShadow: "0 18px 60px rgba(0,0,0,0.55)",
+            }}
+            className="border border-primary/40"
+          >
+            <CertificateNode
+              name={certName}
+              startupName={startup.name}
+              scale={previewScale}
+            />
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+          <button
+            onClick={downloadCertificate}
+            disabled={downloading}
+            className="btn-primary-glow inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold disabled:opacity-60"
+          >
+            <Download className="h-4 w-4" />
+            {downloading ? "Generating PDF…" : "Download Certificate (PDF)"}
+          </button>
+          <button
+            onClick={shareCertOnLinkedIn}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary/40 bg-primary/5 px-6 py-3 text-sm font-semibold text-primary hover:bg-primary/10 transition"
+          >
+            <Linkedin className="h-4 w-4" /> Share on LinkedIn
+          </button>
+        </div>
+        <p className="mt-4 text-center text-[12px] text-muted-foreground">
+          Verifiable certificate · {CERT_W} × {CERT_H} px
+        </p>
+      </section>
+
+      {/* LinkedIn post */}
+      <section>
+        <div className="text-center text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+          Your LinkedIn post
+        </div>
+        <p className="mt-4 text-center text-[14px] text-muted-foreground leading-relaxed">
+          Ready to post. Written to sound like you, not like AI. Personalised to your run.
+        </p>
+
+        <div
+          className="mt-6 rounded-xl overflow-hidden border border-white/5"
+          style={{ backgroundColor: "#1C1C1C" }}
+        >
+          <div className="p-4 border-b border-white/5 flex items-center gap-3">
+            <div className="h-11 w-11 rounded-full bg-neutral-700 text-white flex items-center justify-center text-sm font-semibold">
+              {(candidateName || "Y").slice(0, 1).toUpperCase()}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-[14px] font-semibold text-neutral-100 truncate">
+                {candidateName || "Your Name"}
+              </div>
+              <div className="text-[11px] text-neutral-400">
+                Program Manager Intern · AIC × ISB
+              </div>
+            </div>
+            <Linkedin className="h-5 w-5 text-neutral-400" />
+          </div>
+          <div className="p-4 text-[13.5px] leading-[1.65] text-neutral-100 whitespace-pre-wrap">
+            {post}
+          </div>
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <button
+            onClick={handleLinkedIn}
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 transition"
+          >
+            Open LinkedIn <ExternalLink className="h-4 w-4" />
+          </button>
+        </div>
+        <p className="mt-4 text-center text-[13px] text-muted-foreground">
+          Post copied to your clipboard. Open LinkedIn, start a new post, and paste.
+        </p>
+      </section>
+
+      {/* Resume line */}
+      <section>
+        <div className="text-center text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+          Your resume line
+        </div>
+        <p className="mt-4 text-center text-[14px] text-muted-foreground leading-relaxed">
+          Copy this directly into your resume under Experience or Projects.
+        </p>
+        <div className="mt-6 rounded-lg bg-card border-l-2 border-primary p-5">
+          <pre className="font-mono text-[13px] text-foreground/90 leading-relaxed whitespace-pre-wrap select-text m-0">
+            {resumeLine}
+          </pre>
+        </div>
+        <div className="mt-4 flex justify-center">
+          <button
+            onClick={copyResume}
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-transparent px-5 py-2.5 text-sm font-medium hover:bg-card transition"
+          >
+            {resumeCopied ? (
+              <>
+                <Check className="h-4 w-4 text-[oklch(0.72_0.14_155)]" />
+                <span className="text-[oklch(0.72_0.14_155)]">Copied ✓</span>
+              </>
+            ) : (
+              <>
+                <Copy className="h-4 w-4" /> Copy Resume Line
+              </>
+            )}
+          </button>
+        </div>
+      </section>
+
+      {/* Skills */}
+      <section>
+        <div className="text-center text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+          Skills you can add to your resume and LinkedIn
+        </div>
+        <p className="mt-4 text-center text-[14px] text-muted-foreground leading-relaxed">
+          You didn't just complete a simulation. You practiced skills that take most people years
+          of on-the-job experience to develop.
+        </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-2.5">
+          {SKILL_BADGES.map((skill) => {
+            const isCopied = copiedSkill === skill;
+            return (
+              <button
+                key={skill}
+                onClick={() => copySkill(skill)}
+                className="group relative inline-flex items-center gap-2 rounded-full border border-primary/40 bg-card px-3.5 py-1.5 text-[12px] text-foreground hover:bg-primary/10 transition cursor-pointer"
+              >
+                <Sparkles className="h-3 w-3 text-primary" />
+                <span>{skill}</span>
+                {isCopied ? (
+                  <Check className="h-3 w-3 text-[oklch(0.72_0.14_155)]" />
+                ) : (
+                  <Copy className="h-3 w-3 opacity-0 group-hover:opacity-60 transition" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+        <p className="mt-5 text-center text-[13px] text-muted-foreground">
+          Click any skill to copy it.
+        </p>
+      </section>
+
+      {/* Footer */}
+      <section className="flex flex-col items-center gap-3 pt-4">
+        <p className="text-center text-[14px] text-muted-foreground">
+          An internship experience by Prentix. Built with AIC × ISB.
+        </p>
+        <a
+          href="https://prentix.ai"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[14px] text-primary hover:underline"
+        >
+          Explore more internships at prentix.ai →
+        </a>
+        <button
+          onClick={onContinue}
+          className="mt-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition"
+        >
+          Finish internship
+        </button>
+      </section>
+
+      {/* Hidden full-size certificate node for PDF capture */}
+      <div
+        style={{
+          position: "fixed",
+          left: -100000,
+          top: 0,
+          pointerEvents: "none",
+          opacity: 1,
+        }}
+        aria-hidden="true"
+      >
+        <div ref={certificateRef}>
+          <CertificateNode name={certName} startupName={startup.name} />
+        </div>
+      </div>
+    </div>
+  );
 }

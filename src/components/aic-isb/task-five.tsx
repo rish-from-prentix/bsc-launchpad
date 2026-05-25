@@ -842,7 +842,6 @@ function ResultPhase({
         {[
           "Investment Analysis",
           "Startup Evaluation",
-          "Mentor Mapping",
           "Operational Reasoning",
           "Root Cause Analysis",
           "Strategic Decision Making",
@@ -864,7 +863,7 @@ function ResultPhase({
           Time to save the startup <ArrowRight className="h-4 w-4" />
         </button>
         <p className="mt-3 text-[10px] text-muted-foreground">
-          Certificate · Skills · Resume line
+          Certificate · Skills
         </p>
       </div>
     </div>
@@ -912,12 +911,10 @@ function Stat({ label, value }: { label: string; value: string }) {
 const SKILL_BADGES = [
   "Investment Analysis",
   "Startup Evaluation",
-  "Mentor Mapping",
   "Operational Reasoning",
   "Root Cause Analysis",
   "Strategic Decision Making",
   "Valuation Modelling",
-  "Founder Empathy",
   "Investment Memo Writing",
 ];
 
@@ -1135,39 +1132,6 @@ function staticCode(seed: string, len: number): string {
   return out;
 }
 
-function buildLinkedInPost(name: string, startupName: string, sector: ThemeId): string {
-  const sectorLabel =
-    sector === "ai"
-      ? "AI & SaaS"
-      : sector === "climate"
-        ? "ClimateTech"
-        : "HealthTech";
-  return `I just completed the AIC × ISB Virtual Accelerator Internship — Program Manager track by Prentix.
-
-Over five phases I shaped an investment thesis in ${sectorLabel}, evaluated a cohort of early-stage startups, allocated mentors, ran a root-cause investigation on a founder SOS, and wrote a board-grade investment memo on ${startupName}.
-
-A few things that stuck with me:
-- The hardest part of evaluation isn't picking winners — it's articulating why others aren't.
-- Mentor allocation is a portfolio decision, not a popularity contest.
-- Most "growth problems" are retention problems wearing a costume.
-
-Grateful to AIC × ISB and Prentix for building something this real.
-
-prentix.ai`;
-}
-
-function buildResumeLineAic(startupName: string, sector: ThemeId): string {
-  const sectorLabel =
-    sector === "ai"
-      ? "AI & SaaS"
-      : sector === "climate"
-        ? "ClimateTech"
-        : "HealthTech";
-  return `Program Manager Intern — AIC × ISB Virtual Accelerator (via Prentix)
-Built a ${sectorLabel} investment thesis, evaluated an early-stage cohort, allocated mentors, and ran a root-cause investigation on a founder crisis.
-Authored a board-grade investment memo for ${startupName} covering valuation, strengths, risks, and recommendation.`;
-}
-
 function EarnedPhase({
   candidateName,
   startup,
@@ -1180,10 +1144,6 @@ function EarnedPhase({
   onContinue: () => void;
 }) {
   const certName = candidateName?.trim() || "Participant";
-  const resumeLine = useMemo(
-    () => buildResumeLineAic(startup.name, sector),
-    [startup.name, sector],
-  );
 
   const certificateRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
@@ -1244,14 +1204,6 @@ function EarnedPhase({
     });
   }
 
-  const [resumeCopied, setResumeCopied] = useState(false);
-  function copyResume() {
-    navigator.clipboard.writeText(resumeLine).then(() => {
-      setResumeCopied(true);
-      window.setTimeout(() => setResumeCopied(false), 2000);
-    });
-  }
-
   const previewScale = 0.3;
 
   return (
@@ -1307,37 +1259,6 @@ function EarnedPhase({
       </section>
 
       {/* Resume line */}
-      <section>
-        <div className="text-center text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-          Your resume line
-        </div>
-        <p className="mt-4 text-center text-[14px] text-muted-foreground leading-relaxed">
-          Copy this directly into your resume under Experience or Projects.
-        </p>
-        <div className="mt-6 rounded-lg bg-card border-l-2 border-primary p-5">
-          <pre className="font-mono text-[13px] text-foreground/90 leading-relaxed whitespace-pre-wrap select-text m-0">
-            {resumeLine}
-          </pre>
-        </div>
-        <div className="mt-4 flex justify-center">
-          <button
-            onClick={copyResume}
-            className="inline-flex items-center gap-2 rounded-lg border border-border bg-transparent px-5 py-2.5 text-sm font-medium hover:bg-card transition"
-          >
-            {resumeCopied ? (
-              <>
-                <Check className="h-4 w-4 text-[oklch(0.72_0.14_155)]" />
-                <span className="text-[oklch(0.72_0.14_155)]">Copied ✓</span>
-              </>
-            ) : (
-              <>
-                <Copy className="h-4 w-4" /> Copy Resume Line
-              </>
-            )}
-          </button>
-        </div>
-      </section>
-
       {/* Skills */}
       <section>
         <div className="text-center text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
@@ -1385,12 +1306,6 @@ function EarnedPhase({
         >
           Explore more internships at prentix.ai →
         </a>
-        <button
-          onClick={onContinue}
-          className="mt-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition"
-        >
-          Finish internship
-        </button>
       </section>
 
       {/* Hidden full-size certificate node for PDF capture */}

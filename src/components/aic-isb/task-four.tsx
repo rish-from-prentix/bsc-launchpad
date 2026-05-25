@@ -19,7 +19,7 @@ import {
 } from "./rca-investigation-data";
 import { InboxEmail } from "./inbox-email";
 
-type Phase = "intro" | "email" | "investigate" | "results";
+type Phase = "email" | "investigate" | "results";
 
 type StepRecord = { optionId: "A" | "B" | "C" | "D"; outcome: Outcome };
 
@@ -37,6 +37,7 @@ export function AicIsbTaskFour({
   const firstName = getFirstName(candidateName);
 
   const [phase, setPhase] = useState<Phase>("intro");
+  void 0;
   const [stepIndex, setStepIndex] = useState(0);
   const [records, setRecords] = useState<(StepRecord | null)[]>(() =>
     Array(data.steps.length).fill(null),

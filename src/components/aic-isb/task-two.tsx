@@ -342,12 +342,20 @@ function StartupCard({
       className={cn(
         "glass rounded-2xl p-5 sm:p-6 transition-all",
         isShortlisted && "ring-1 ring-primary/60",
-        !isGraded && !isShortlisted && "border-dashed border-border/70",
+        !isGraded &&
+          !isShortlisted &&
+          "ring-1 ring-[oklch(0.78_0.13_70)]/30 border-[oklch(0.78_0.13_70)]/30",
       )}
       style={
         isShortlisted
           ? { boxShadow: "0 0 0 1px rgba(93,196,254,0.35), 0 12px 40px rgba(93,196,254,0.18)" }
-          : undefined
+          : !isGraded
+            ? {
+                background:
+                  "linear-gradient(180deg, oklch(0.21 0.02 70 / 0.55), oklch(0.16 0.01 70 / 0.55))",
+                boxShadow: "0 0 0 1px oklch(0.78 0.13 70 / 0.18), 0 8px 28px rgba(0,0,0,0.35)",
+              }
+            : undefined
       }
     >
       <header className="flex items-start justify-between gap-4">

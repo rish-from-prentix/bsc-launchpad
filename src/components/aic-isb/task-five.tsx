@@ -864,7 +864,7 @@ function ResultPhase({
           Time to save the startup <ArrowRight className="h-4 w-4" />
         </button>
         <p className="mt-3 text-[10px] text-muted-foreground">
-          Certificate · Skills · Resume line
+          Certificate · Skills
         </p>
       </div>
     </div>
@@ -912,12 +912,10 @@ function Stat({ label, value }: { label: string; value: string }) {
 const SKILL_BADGES = [
   "Investment Analysis",
   "Startup Evaluation",
-  "Mentor Mapping",
   "Operational Reasoning",
   "Root Cause Analysis",
   "Strategic Decision Making",
   "Valuation Modelling",
-  "Founder Empathy",
   "Investment Memo Writing",
 ];
 
@@ -1156,18 +1154,6 @@ Grateful to AIC × ISB and Prentix for building something this real.
 prentix.ai`;
 }
 
-function buildResumeLineAic(startupName: string, sector: ThemeId): string {
-  const sectorLabel =
-    sector === "ai"
-      ? "AI & SaaS"
-      : sector === "climate"
-        ? "ClimateTech"
-        : "HealthTech";
-  return `Program Manager Intern — AIC × ISB Virtual Accelerator (via Prentix)
-Built a ${sectorLabel} investment thesis, evaluated an early-stage cohort, allocated mentors, and ran a root-cause investigation on a founder crisis.
-Authored a board-grade investment memo for ${startupName} covering valuation, strengths, risks, and recommendation.`;
-}
-
 function EarnedPhase({
   candidateName,
   startup,
@@ -1180,10 +1166,6 @@ function EarnedPhase({
   onContinue: () => void;
 }) {
   const certName = candidateName?.trim() || "Participant";
-  const resumeLine = useMemo(
-    () => buildResumeLineAic(startup.name, sector),
-    [startup.name, sector],
-  );
 
   const certificateRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
@@ -1241,14 +1223,6 @@ function EarnedPhase({
       window.setTimeout(() => {
         setCopiedSkill((c) => (c === skill ? null : c));
       }, 1500);
-    });
-  }
-
-  const [resumeCopied, setResumeCopied] = useState(false);
-  function copyResume() {
-    navigator.clipboard.writeText(resumeLine).then(() => {
-      setResumeCopied(true);
-      window.setTimeout(() => setResumeCopied(false), 2000);
     });
   }
 

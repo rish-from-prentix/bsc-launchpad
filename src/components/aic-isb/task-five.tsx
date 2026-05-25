@@ -142,6 +142,16 @@ export function AicIsbTaskFive({
         startup={selected}
         answers={answers}
         benchmark={benchmark}
+        onContinue={() => setPhase("earned")}
+      />
+    );
+
+  if (phase === "earned" && selected)
+    return (
+      <EarnedPhase
+        candidateName={candidateName}
+        startup={selected}
+        sector={sector}
         onContinue={() => onComplete?.()}
       />
     );

@@ -630,15 +630,6 @@ function ResultPhase({
         })}
       </div>
 
-      <h2 className="mt-10 text-sm uppercase tracking-[0.22em] text-primary font-semibold">Skill badges</h2>
-      <div className="mt-4 flex flex-wrap gap-2">
-        {["Mentor-Founder Fit", "Strategic Thinking", "Operations Judgment", "Bottleneck Diagnosis"].map((b) => (
-          <span key={b} className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/5 px-3 py-1.5 text-xs text-primary">
-            <Sparkles className="h-3 w-3" /> {b}
-          </span>
-        ))}
-      </div>
-
       <div className="mt-10 flex justify-end">
         <button onClick={onContinue} className="btn-primary-glow inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold">
           Continue Internship <ArrowRight className="h-4 w-4" />

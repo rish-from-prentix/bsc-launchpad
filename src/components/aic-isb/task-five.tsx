@@ -25,8 +25,9 @@ import {
   classifyMultiple,
   type Valuation,
 } from "./valuation-data";
+import aicLogoUrl from "@/assets/aic-isb-logo.png";
 
-type Phase = "email" | "select" | "workspace" | "loading" | "result";
+type Phase = "email" | "workspace" | "loading" | "result";
 
 type Answers = {
   multiple: string;
@@ -67,17 +68,8 @@ export function AicIsbTaskFive({
   const storageKey = `aic-isb:task5:${sector}:${shortlistedIds.join(",")}`;
 
   const [phase, setPhase] = useState<Phase>("email");
-  const [selectedId, setSelectedId] = useState<string | null>(() => {
-    if (typeof window === "undefined") return null;
-    try {
-      const raw = window.localStorage.getItem(storageKey);
-      if (!raw) return null;
-      const parsed = JSON.parse(raw) as { selectedId?: string | null };
-      return parsed.selectedId ?? null;
-    } catch {
-      return null;
-    }
-  });
+  // One startup is assigned directly — no selection step.
+  const selectedId = cohortStartups[0]?.id ?? null;
   const [answers, setAnswers] = useState<Answers>(() => {
     if (typeof window === "undefined") return emptyAnswers;
     try {
@@ -134,18 +126,7 @@ export function AicIsbTaskFive({
   useEffect(() => () => { if (savedTimer.current) window.clearTimeout(savedTimer.current); }, []);
 
   if (phase === "email")
-    return <EmailPhase name={getFirstName(candidateName)} onStart={() => setPhase("select")} />;
-
-  if (phase === "select")
-    return (
-      <SelectPhase
-        startups={cohortStartups}
-        onSelect={(id) => {
-          setSelectedId(id);
-          setPhase("workspace");
-        }}
-      />
-    );
+    return <EmailPhase name={getFirstName(candidateName)} onStart={() => setPhase("workspace")} />;
 
   if (phase === "loading")
     return <Loading text="Investment committee reviewing your memo…" />;
@@ -183,29 +164,29 @@ export function AicIsbTaskFive({
 function EmailPhase({ name, onStart }: { name: string; onStart: () => void }) {
   return (
     <InboxEmail
-      badge="Phase 5 · Final Investment Evaluation"
-      senderName="Animesh Sharma"
-      senderRole="Program Director, AIC × ISB"
-      senderInitials="AS"
-      subject="Final Investment Evaluation"
-      preview={`Hi ${name}, for the final phase you'll value one portfolio startup and make the investment call…`}
+      badge="Phase 5 · Independent Investment Assessment"
+      senderName="Vikram Sethi"
+      senderRole="Board Member, AIC Ventures"
+      senderInitials="VS"
+      subject="Independent Assessment Required — Investment Review"
+      preview={`Hi ${name}, we're reviewing a potential investment opportunity and need an independent assessment before our board discussion.`}
       timestamp="Today · 04:42 PM"
-      ctaLabel="Start Investment Evaluation"
+      ctaLabel="Begin Evaluation"
       onCta={onStart}
     >
       <div className="whitespace-pre-wrap">{`Hi ${name},
 
-You've now completed multiple stages of the accelerator process.
+We're currently reviewing a potential investment opportunity that has generated significant internal discussion among the board.
 
-For the final phase, you'll evaluate one startup from your selected cohort and recommend:
-• A realistic valuation
-• Whether the accelerator should invest
-• Key strengths and investment risks
+Before moving forward, I'd like an independent assessment of the company's business fundamentals, operational strength, and long-term scalability.
 
-Focus on balancing growth potential with operational sustainability.
+Your evaluation will be included in our upcoming investment review discussion, so I'd encourage you to approach this with both strategic and analytical rigor.
 
-Best,
-Animesh Sharma`}</div>
+Please review the startup and share your recommendation.
+
+Vikram Sethi
+Board Member
+AIC Ventures`}</div>
     </InboxEmail>
   );
 }

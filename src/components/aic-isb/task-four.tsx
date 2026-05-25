@@ -6,7 +6,6 @@ import {
   XCircle,
   CircleDashed,
   Lightbulb,
-  Mail,
   Sparkles,
 } from "lucide-react";
 import { cn, getFirstName } from "@/lib/utils";

@@ -1281,37 +1281,6 @@ function EarnedPhase({
       </section>
 
       {/* Resume line */}
-      <section>
-        <div className="text-center text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-          Your resume line
-        </div>
-        <p className="mt-4 text-center text-[14px] text-muted-foreground leading-relaxed">
-          Copy this directly into your resume under Experience or Projects.
-        </p>
-        <div className="mt-6 rounded-lg bg-card border-l-2 border-primary p-5">
-          <pre className="font-mono text-[13px] text-foreground/90 leading-relaxed whitespace-pre-wrap select-text m-0">
-            {resumeLine}
-          </pre>
-        </div>
-        <div className="mt-4 flex justify-center">
-          <button
-            onClick={copyResume}
-            className="inline-flex items-center gap-2 rounded-lg border border-border bg-transparent px-5 py-2.5 text-sm font-medium hover:bg-card transition"
-          >
-            {resumeCopied ? (
-              <>
-                <Check className="h-4 w-4 text-[oklch(0.72_0.14_155)]" />
-                <span className="text-[oklch(0.72_0.14_155)]">Copied ✓</span>
-              </>
-            ) : (
-              <>
-                <Copy className="h-4 w-4" /> Copy Resume Line
-              </>
-            )}
-          </button>
-        </div>
-      </section>
-
       {/* Skills */}
       <section>
         <div className="text-center text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">

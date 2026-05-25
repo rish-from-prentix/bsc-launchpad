@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { AicIsbLogo } from "./aic-logo";
 
 export function AicIsbIntroScreen({ onStart }: { onStart: (name: string) => void }) {

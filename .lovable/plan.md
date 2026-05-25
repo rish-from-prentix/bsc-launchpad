@@ -1,95 +1,59 @@
-## Phase 4 rebuild — "Go save your startups now"
+## 1. Remove the duplicate "Previous" button in footers
 
-Phase 4 is being completely re-scoped. Today it shows 9 startups with free-text RCA forms. The new version is a single guided **5-step root-cause investigation** for one CEO case, picked from the student's selected sector. All current Phase 4 UI (free-text fields, draft saving, multi-startup blocks, sparklines, voices, founder quotes) is removed.
+The top progress bar already shows a "Previous" button. A second one exists in the Task 1 sticky footer (`src/components/aic-isb/task-one.tsx`, lines ~666–675 — disabled placeholder).
 
-The 3 CEO cases map to the existing sector IDs:
-- `ai` → NeuroPilot AI (Aarav Mehta)
-- `climate` → GreenLoop Energy (Rhea Kapoor)
-- `health` → MediSync Health (Dr. Kavya Sharma)
+- Delete that disabled `Previous` button so only the top-nav Previous remains.
+- Spot-check `task-two.tsx`, `task-three.tsx`, `task-four.tsx`, `task-five.tsx` footers and remove any other footer-level Previous button. (Task 4's "Previous step" inside the multi-step investigation stays — it navigates between sub-steps, not pages.)
 
-`shortlistedIds` is no longer used inside Phase 4 (kept in the route signature so Phase 5 still works).
+## 2. Task 4 — merge email into the "Save your startups" page
 
----
+Currently Phase 4 has two sequential screens: an Intro ("Go save your startups now…" with a CTA "Open the CEO's email") and then a separate EmailScreen.
 
-### Screens
+Change `src/components/aic-isb/task-four.tsx`:
 
-**Screen 1 — Intro**
-- Large heading: "Go save your startups now"
-- Subheadline: "Real startup crises. Structured problem solving. Find the root cause before the company collapses."
-- Single CTA: "Open the CEO's email →"
+- Delete the `"intro"` phase entirely. Start directly on the email phase.
+- On that page, render in this order:
+  1. The phase headline "Go save your startups now, {firstName}." + subheadline "Real startup crises. Structured problem solving. Find the root cause before the company collapses."
+  2. The CEO email window (existing `InboxEmail`, opened by default — pass `defaultOpen` if available, or render the email expanded inline).
+  3. A separate "How to approach this" box **below** the email (currently it sits inside the email body). Same subtle dark card styling (`border-border bg-card/60`), with the lightbulb icon and the 4 bullets.
+- Keep the CTA "Start your investigation" inside (or right under) the email card.
 
-**Screen 2 — Email client view (sector-specific)**
-- Realistic email-client chrome (not the existing `InboxEmail` inbox row):
-  - Header row with **From / To / Subject** fields and a timestamp ("Today · 09:42 AM")
-  - From: the CEO's name + role + company; To: "You · Program Manager Intern, AIC × ISB"
-  - Subject line per case (exact strings from spec)
-  - Email body rendered as a real message (paragraphs, signed by the CEO)
-- Below the email card: a **yellow sticky-note panel** titled "How to approach this" with 4 plain-English bullets (per spec).
-- CTA button: "Start your investigation →"
+## 3. Task 5 — BSC-style results flow with CTA gate
 
-**Screen 3 — Investigation (5 steps)**
-- Sticky top: thin progress bar + "Step N of 5" indicator.
-- Two-column layout (60/40 on desktop, stacked on mobile):
-  - **Left (main):** step heading, 1–2 sentence context, then 4 option cards in a 2×2 grid. Each card shows option title + short description. Click selects.
-  - **Right (sticky sidebar):**
-    - "Your investigation so far" — running log of prior steps with a check/X/tilde icon and the chosen option (greyed).
-    - "At this step, think about…" tip box, content changes per step.
-- After selection, feedback appears inline below the grid (no navigation):
-  - Correct → green left border + checkmark
-  - Wrong → red left border + X + redirect hint
-  - Partial → amber left border + tilde
-  - Feedback text is 2–3 sentences from the data.
-- "Continue →" button appears after feedback. On step 5 it becomes "See results →".
+Today `ResultPhase` in `src/components/aic-isb/task-five.tsx` shows scores + benchmark + strengths/improvements + skill badges + Trophy congrats + Download/Share buttons all on one long page.
 
-**Screen 4 — Results & debrief**
-- Score: `X / 5` (1 / 0.5 / 0 per step) + percentage, color-coded (green ≥80%, amber 50–79%, red <50%).
-- Heading: "Here's what you found" if ≥60%, else "Here's where you went off track".
-- 5 step icons in a row (✓ / ~ / ✗).
-- "What actually happened" — short 3–4 sentence narrative per case (hardcoded per startup).
-- "Your path vs the right path" — 2-column table for all 5 steps.
-- "Key takeaway" callout — 1 case-specific business lesson (hardcoded per startup).
-- Buttons: "Review this case →" (scrolls back through steps with correct answer highlighted) and a primary "Continue to Phase 5 →" that calls `onComplete()`.
-  - Note: spec says "Try a different startup" — but the sector is fixed by Phase 1, so I'm replacing it with the review action + continue. Flag if you'd prefer to let students replay other sector cases here.
+Restructure to mirror BSC (`final-moment.tsx` → `final-proof.tsx`):
 
----
+**Step A — Results moment screen** (replaces the current single-page result):
+- Keep score reveal, "Memo Approved / Reviewed / Returned" headline, feedback paragraph, the 3 stats (final score / valuation accuracy / strategic), the "Your memo vs. board benchmark" card, and the strengths/improvements lists.
+- At the bottom, replace the Trophy + Download/Share block with a single CTA button: **"See What You've Earned →"** and a subheading directly below: `Certificate · Skills · Resume line · LinkedIn post` (matches BSC `final-moment.tsx` lines 60–71).
 
-### Data model (new file `src/components/aic-isb/rca-investigation-data.ts`)
+**Step B — Earnings screen** (new, BSC-style):
+- New internal phase (e.g. `"earned"`) that renders after the CTA is clicked.
+- Build it like `final-proof.tsx`: stacked sections in this order — Certificate preview + Download/Share buttons → LinkedIn post (sector/startup-specific copy) → Resume line → Skill badges (click to copy) → Prentix footer.
+- Reuse the existing `SKILLS` list pattern; copy/share/LinkedIn logic can be ported from `final-proof.tsx`.
 
-```ts
-type Outcome = "correct" | "wrong" | "partial";
-type Option = { id: "A"|"B"|"C"|"D"; title: string; description: string;
-                outcome: Outcome; feedback: string; hint?: string };
-type Step = { title: string; context: string; tip: string; options: Option[] };
-type InvestigationCase = {
-  ceo: { name: string; role: string; initials: string; company: string };
-  email: { subject: string; body: string; timestamp: string };
-  steps: [Step, Step, Step, Step, Step];
-  narrative: string;     // "what actually happened"
-  takeaway: string;
-};
-export const INVESTIGATIONS: Record<ThemeId, InvestigationCase> = { ai: …, climate: …, health: … };
-```
+## 4. Certificate redesign (1920 × 1361 px, new logo)
 
-All option text, feedback, hints, emails, narratives, and takeaways come verbatim from the user's spec.
+Rework the `certificateHtml(...)` template at the bottom of `task-five.tsx` to match the uploaded reference `Virtual-Internship-Program-Manager-Palak.html`:
 
-Scoring: `correct = 1`, `partial = 0.5`, `wrong = 0`.
+- Frame `1920 × 1361` (set explicit `width:1920px; height:1361px`); scale interior paddings/font sizes proportionally from the reference (which is 1100 × ~785).
+- Left + right diagonal stripe panels (navy / mid-blue / royal-blue) — same `repeating-linear-gradient` pattern as reference.
+- White inset "sheet" with rounded corners.
+- Top row: AIC × ISB logo on the left (use the new uploaded `AIC-ISB-new-logo.png`), Prentix navy badge on the right.
+- Body: title **"Virtual Internship: Program Manager"**, "Certificate of Completion", today's date, "Awarded to **{Student Name}**", description paragraph mentioning the evaluated startup, verification codes.
+- Footer signature: "Rishik Reddy · Founder, Prentix".
 
----
+Logo handling:
+- Copy `user-uploads://AIC-ISB-new-logo.png` to `src/assets/aic-isb-logo.png` (overwrite the existing import target so `aicLogoUrl` already used in `task-five.tsx` resolves to the new logo). Both the in-app header and certificate get the new logo automatically.
+- Continue inlining the logo as a data URL into the downloadable HTML so it stays embedded.
 
-### Files touched
+## 5. Verification
 
-- **New:** `src/components/aic-isb/rca-investigation-data.ts` — the three full cases hardcoded.
-- **Rewrite:** `src/components/aic-isb/task-four.tsx` — replace with screens above (intro → email → investigation → results). Drop dependencies on `getRcaCase`, `rca-data.ts`, draft persistence, and the old `Answer` shape.
-- **No changes** to `rca-data.ts` (still used by Phase 5 / memo? — verify; if unused project-wide after this change I'll leave it untouched to keep blast radius small).
-- **No changes** to the route file `src/routes/simulations.aic-isb.tsx` — `AicIsbTaskFour` keeps the same props (`candidateName`, `sector`, `shortlistedIds`, `onComplete`).
+- Manually walk through Phases 1 → 5 in the preview: confirm only one Previous button, Phase 4 shows the email inline with "How to approach" below it, Phase 5 results page ends with the single "See What You've Earned →" CTA, the earnings page mirrors BSC layout, certificate downloads at 1920×1361 with the new logo and correct student name.
 
----
+## Technical notes
 
-### Design notes
-
-- Reuse existing `glass`, `btn-primary-glow`, `softPulse`, `fadeSlide` tokens.
-- Sticky-note: warm yellow (`oklch(0.92 0.13 95)` background tint, `oklch(0.78 0.13 70)` border) with a small folded-corner accent.
-- Option cards: bordered, hover lift, selected state uses primary ring; after submission all 4 cards lock and the chosen one gets the outcome color.
-- Mobile: sidebar collapses below the question; sticky progress bar stays at top.
-
-Ready to implement on approval.
+- Files changed: `src/components/aic-isb/task-one.tsx`, `task-four.tsx`, `task-five.tsx`, `src/assets/aic-isb-logo.png` (replaced).
+- No new dependencies; LinkedIn/copy/share helpers can be lifted from `src/components/screens/final-proof.tsx` patterns (without pulling in `html2canvas`/`jsPDF` unless the user later asks for a PDF — current flow downloads an `.html` certificate).
+- No data model or routing changes.

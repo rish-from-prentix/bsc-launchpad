@@ -6,7 +6,6 @@ import {
   XCircle,
   CircleDashed,
   Lightbulb,
-  Mail,
   Sparkles,
 } from "lucide-react";
 import { cn, getFirstName } from "@/lib/utils";
@@ -19,7 +18,7 @@ import {
 } from "./rca-investigation-data";
 import { InboxEmail } from "./inbox-email";
 
-type Phase = "intro" | "email" | "investigate" | "results";
+type Phase = "email" | "investigate" | "results";
 
 type StepRecord = { optionId: "A" | "B" | "C" | "D"; outcome: Outcome };
 
@@ -36,21 +35,12 @@ export function AicIsbTaskFour({
   const data = INVESTIGATIONS[sector];
   const firstName = getFirstName(candidateName);
 
-  const [phase, setPhase] = useState<Phase>("intro");
+  const [phase, setPhase] = useState<Phase>("email");
   const [stepIndex, setStepIndex] = useState(0);
   const [records, setRecords] = useState<(StepRecord | null)[]>(() =>
     Array(data.steps.length).fill(null),
   );
   const [reviewMode, setReviewMode] = useState(false);
-
-  if (phase === "intro") {
-    return (
-      <Intro
-        firstName={firstName}
-        onStart={() => setPhase("email")}
-      />
-    );
-  }
 
   if (phase === "email") {
     return (
@@ -115,31 +105,6 @@ export function AicIsbTaskFour({
   );
 }
 
-/* ---------- Intro ---------- */
-function Intro({ firstName, onStart }: { firstName: string; onStart: () => void }) {
-  return (
-    <div className="mx-auto max-w-3xl px-5 sm:px-8 py-20 sm:py-28 text-center">
-      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-        Phase 4 · Root Cause Investigation
-      </div>
-      <h1 className="mt-3 text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
-        Go save your startups now{firstName ? `, ${firstName}` : ""}.
-      </h1>
-      <p className="mt-5 text-[17px] text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-        Real startup crises. Structured problem solving. Find the root cause before
-        the company collapses.
-      </p>
-      <button
-        onClick={onStart}
-        className="btn-primary-glow mt-10 inline-flex items-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold"
-      >
-        <Mail className="h-4 w-4" /> Open the CEO's email
-        <ArrowRight className="h-4 w-4" />
-      </button>
-    </div>
-  );
-}
-
 /* ---------- Email screen (realistic email client) ---------- */
 function EmailScreen({
   firstName,
@@ -159,8 +124,20 @@ function EmailScreen({
 
   return (
     <div className="animate-[fadeSlide_0.35s_ease-out]">
+      <div className="mx-auto max-w-3xl px-5 sm:px-8 pt-14 sm:pt-20 text-center">
+        <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+          Phase 4 · Root Cause Investigation
+        </div>
+        <h1 className="mt-3 text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
+          Go save your startups now{firstName ? `, ${firstName}` : ""}.
+        </h1>
+        <p className="mt-5 text-[17px] text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+          Real startup crises. Structured problem solving. Find the root cause before
+          the company collapses.
+        </p>
+      </div>
+
       <InboxEmail
-        badge="Phase 4 · Founder SOS"
         senderName={data.ceo.name}
         senderRole={data.ceo.role}
         senderInitials={data.ceo.initials}
@@ -169,11 +146,14 @@ function EmailScreen({
         timestamp={data.email.timestamp}
         ctaLabel="Start your investigation"
         onCta={onStart}
+        defaultOpen
       >
         <div className="whitespace-pre-wrap">{data.email.body}</div>
+      </InboxEmail>
 
-        {/* Approach guidance — subtle dark card */}
-        <div className="mt-7 rounded-xl border border-border bg-background/40 p-5">
+      {/* Approach guidance — separate box below the email */}
+      <div className="mx-auto max-w-3xl px-5 sm:px-8 pb-16">
+        <div className="rounded-2xl border border-border bg-card/60 p-5 sm:p-6">
           <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
             <Lightbulb className="h-3.5 w-3.5" /> How to approach this
           </div>
@@ -186,7 +166,7 @@ function EmailScreen({
             ))}
           </ul>
         </div>
-      </InboxEmail>
+      </div>
     </div>
   );
 }

@@ -1,59 +1,43 @@
-## 1. Remove the duplicate "Previous" button in footers
+## 1. Task 2 — "Missed conviction" logic fix
 
-The top progress bar already shows a "Previous" button. A second one exists in the Task 1 sticky footer (`src/components/aic-isb/task-one.tsx`, lines ~666–675 — disabled placeholder).
+In `src/components/aic-isb/task-two.tsx` (`ResultPhase`), `underratedStrong` currently picks from `shortlisted`, so a startup the student already chose (e.g. WindSync) can still surface under "Missed conviction". Change it to pick strong startups the student did NOT shortlist:
 
-- Delete that disabled `Previous` button so only the top-nav Previous remains.
-- Spot-check `task-two.tsx`, `task-three.tsx`, `task-four.tsx`, `task-five.tsx` footers and remove any other footer-level Previous button. (Task 4's "Previous step" inside the multi-step investigation stays — it navigates between sub-steps, not pages.)
+```ts
+const underratedStrong = startups.filter(
+  (s) => bestIds.includes(s.id) && !evals[s.id].shortlisted,
+);
+```
 
-## 2. Task 4 — merge email into the "Save your startups" page
+Keep the existing copy ("stronger long-term defensibility … than your evaluation reflected for …") — it now correctly names startups the board would have picked but the student skipped.
 
-Currently Phase 4 has two sequential screens: an Intro ("Go save your startups now…" with a CTA "Open the CEO's email") and then a separate EmailScreen.
+## 2. Replace ` — ` with `, ` in user-facing copy
 
-Change `src/components/aic-isb/task-four.tsx`:
+Across the AIC × ISB flow, swap the spaced em-dash separator for a comma in displayed prose. Leave standalone `—` placeholders (empty-value fallbacks like `value ?? "—"` and the rating input placeholder) untouched. Files and lines (all in `src/components/aic-isb/`):
 
-- Delete the `"intro"` phase entirely. Start directly on the email phase.
-- On that page, render in this order:
-  1. The phase headline "Go save your startups now, {firstName}." + subheadline "Real startup crises. Structured problem solving. Find the root cause before the company collapses."
-  2. The CEO email window (existing `InboxEmail`, opened by default — pass `defaultOpen` if available, or render the email expanded inline).
-  3. A separate "How to approach this" box **below** the email (currently it sits inside the email body). Same subtle dark card styling (`border-border bg-card/60`), with the lightbulb icon and the 4 bullets.
-- Keep the CTA "Start your investigation" inside (or right under) the email card.
+- `task-one.tsx` — lines 78, 478, 522
+- `task-two.tsx` — lines 165, 173, 585, 620
+- `task-three.tsx` — lines 134, 189, 620
+- `task-four.tsx` — lines 119, 122, 252
+- `task-five.tsx` — lines 184, 245, 895, 897, 1082, 1135, 1140, 1156
+- `rca-data.ts` — lines 22, 38, 65, 84, 112, 148, 219, 255, 282
+- `startups-data.ts` — lines 78, 187, 229, 270, 302
 
-## 3. Task 5 — BSC-style results flow with CTA gate
+Skip JSX comments (e.g. `{/* Background — glass card */}`) and the inline code comment on line 74 of task-five.tsx — those aren't rendered.
 
-Today `ResultPhase` in `src/components/aic-isb/task-five.tsx` shows scores + benchmark + strengths/improvements + skill badges + Trophy congrats + Download/Share buttons all on one long page.
+## 3. Remove "Verifiable certificate · 1920 × 1361 px" caption
 
-Restructure to mirror BSC (`final-moment.tsx` → `final-proof.tsx`):
+In `task-five.tsx` `EarnedPhase` (around line 1306), delete the `<p>Verifiable certificate · {CERT_W} × {CERT_H} px</p>` paragraph.
 
-**Step A — Results moment screen** (replaces the current single-page result):
-- Keep score reveal, "Memo Approved / Reviewed / Returned" headline, feedback paragraph, the 3 stats (final score / valuation accuracy / strategic), the "Your memo vs. board benchmark" card, and the strengths/improvements lists.
-- At the bottom, replace the Trophy + Download/Share block with a single CTA button: **"See What You've Earned →"** and a subheading directly below: `Certificate · Skills · Resume line · LinkedIn post` (matches BSC `final-moment.tsx` lines 60–71).
+## 4. Remove "Your LinkedIn post" section on Earned screen
 
-**Step B — Earnings screen** (new, BSC-style):
-- New internal phase (e.g. `"earned"`) that renders after the CTA is clicked.
-- Build it like `final-proof.tsx`: stacked sections in this order — Certificate preview + Download/Share buttons → LinkedIn post (sector/startup-specific copy) → Resume line → Skill badges (click to copy) → Prentix footer.
-- Reuse the existing `SKILLS` list pattern; copy/share/LinkedIn logic can be ported from `final-proof.tsx`.
+In `task-five.tsx` `EarnedPhase`, delete the entire `{/* LinkedIn post */}` section (lines ~1311–1354), including the post card and "Open LinkedIn" button. Remove now-unused `post`, `handleLinkedIn`, `buildLinkedInPost` references (drop the `post` `useMemo`, the `handleLinkedIn` function, the `buildLinkedInPost` helper, and the `ExternalLink` / `Linkedin` imports if no longer used — `Linkedin` is still used by the certificate "Share on LinkedIn" button, keep it; `ExternalLink` becomes unused, drop it). Leave Resume line, Skills, Certificate, and Footer sections intact.
 
-## 4. Certificate redesign (1920 × 1361 px, new logo)
+## 5. Certificate name font size
 
-Rework the `certificateHtml(...)` template at the bottom of `task-five.tsx` to match the uploaded reference `Virtual-Internship-Program-Manager-Palak.html`:
+In `CertificateNode` (`task-five.tsx` ~lines 1069–1071): the internship title uses `fontSize: 84`. Update the awarded name to match — change `<strong … fontSize: 32>{name}</strong>` to `fontSize: 84` and bump the surrounding "Awarded to" line spacing so the larger name fits cleanly (wrap name on its own line: render "Awarded to" on one line at size 22, then `{name}` on the next line at size 84, weight 800, color `#0A1628`, with `marginTop: 12`). Keep certificate dimensions at the existing `CERT_W = 1920`, `CERT_H = 1361`.
 
-- Frame `1920 × 1361` (set explicit `width:1920px; height:1361px`); scale interior paddings/font sizes proportionally from the reference (which is 1100 × ~785).
-- Left + right diagonal stripe panels (navy / mid-blue / royal-blue) — same `repeating-linear-gradient` pattern as reference.
-- White inset "sheet" with rounded corners.
-- Top row: AIC × ISB logo on the left (use the new uploaded `AIC-ISB-new-logo.png`), Prentix navy badge on the right.
-- Body: title **"Virtual Internship: Program Manager"**, "Certificate of Completion", today's date, "Awarded to **{Student Name}**", description paragraph mentioning the evaluated startup, verification codes.
-- Footer signature: "Rishik Reddy · Founder, Prentix".
+## 6. Verification
 
-Logo handling:
-- Copy `user-uploads://AIC-ISB-new-logo.png` to `src/assets/aic-isb-logo.png` (overwrite the existing import target so `aicLogoUrl` already used in `task-five.tsx` resolves to the new logo). Both the in-app header and certificate get the new logo automatically.
-- Continue inlining the logo as a data URL into the downloadable HTML so it stays embedded.
-
-## 5. Verification
-
-- Manually walk through Phases 1 → 5 in the preview: confirm only one Previous button, Phase 4 shows the email inline with "How to approach" below it, Phase 5 results page ends with the single "See What You've Earned →" CTA, the earnings page mirrors BSC layout, certificate downloads at 1920×1361 with the new logo and correct student name.
-
-## Technical notes
-
-- Files changed: `src/components/aic-isb/task-one.tsx`, `task-four.tsx`, `task-five.tsx`, `src/assets/aic-isb-logo.png` (replaced).
-- No new dependencies; LinkedIn/copy/share helpers can be lifted from `src/components/screens/final-proof.tsx` patterns (without pulling in `html2canvas`/`jsPDF` unless the user later asks for a PDF — current flow downloads an `.html` certificate).
-- No data model or routing changes.
+- `tsc` clean build.
+- Manually walk Phase 2 with WindSync shortlisted to confirm it no longer appears in "Missed conviction".
+- Open Earned screen, confirm LinkedIn post section gone, caption gone, name renders at internship-title size without clipping; download PDF to confirm layout still fits 1920×1361.

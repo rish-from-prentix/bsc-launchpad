@@ -734,16 +734,34 @@ function ResultPhase({
         : "Memo Returned for Revision";
 
   function downloadCertificate() {
-    const html = certificateHtml(getFirstName(candidateName), finalScore, startup.name);
-    const blob = new Blob([html], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `AIC-ISB-Accelerator-Certificate-${getFirstName(candidateName)}.html`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    fetch(aicLogoUrl)
+      .then((r) => r.blob())
+      .then(
+        (blob) =>
+          new Promise<string>((res, rej) => {
+            const reader = new FileReader();
+            reader.onload = () => res(reader.result as string);
+            reader.onerror = rej;
+            reader.readAsDataURL(blob);
+          }),
+      )
+      .catch(() => "")
+      .then((logoDataUrl) => {
+        const html = certificateHtml(
+          getFirstName(candidateName),
+          startup.name,
+          logoDataUrl,
+        );
+        const blob = new Blob([html], { type: "text/html" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Virtual-Internship-Program-Manager-${getFirstName(candidateName)}.html`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
   }
 
   function shareLinkedIn() {
@@ -895,14 +913,6 @@ function ResultPhase({
         </div>
       </div>
 
-      <div className="mt-10 flex justify-end">
-        <button
-          onClick={onContinue}
-          className="inline-flex items-center gap-2 rounded-xl border border-border bg-background/40 px-5 py-2.5 text-sm font-medium text-foreground/80 hover:text-foreground transition"
-        >
-          Continue Internship <ArrowRight className="h-4 w-4" />
-        </button>
-      </div>
     </div>
   );
 }

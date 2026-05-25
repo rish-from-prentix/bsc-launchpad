@@ -58,12 +58,6 @@ export function AicIsbIntroScreen({ onStart }: { onStart: (name: string) => void
               >
                 <Play className="h-6 w-6 ml-0.5" fill="currentColor" />
               </button>
-              <div className="mt-5 text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-                Welcome Message
-              </div>
-              <div className="mt-1 text-sm text-foreground/90 font-medium">
-                from Animesh
-              </div>
             </div>
           </div>
         </div>

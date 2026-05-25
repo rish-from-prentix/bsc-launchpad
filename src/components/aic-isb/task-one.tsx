@@ -217,7 +217,7 @@ export function AicIsbTaskOne({
           <div className="mb-8">
             <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Phase 1 of 5</div>
             <h1 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-              Phase 1 — Thesis: The Basics
+              Phase 1 · Thesis: The Basics
             </h1>
             <div className="mt-2 inline-flex items-center gap-2 text-xs text-muted-foreground">
               <Clock className="h-3.5 w-3.5" />
@@ -334,9 +334,7 @@ export function AicIsbTaskOne({
 
               {/* Response workspace */}
               <div className="mt-12">
-                <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">Step 2</div>
-                <h2 className="mt-1 text-xl sm:text-2xl font-semibold text-foreground">Build your thesis</h2>
-                <p className="mt-1.5 text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Each section needs at least a short, well-reasoned response.
                 </p>
 

@@ -14,7 +14,6 @@ import {
   BookOpen,
   Download,
   Linkedin,
-  ExternalLink,
   Copy,
   Check,
   Save,
@@ -1181,10 +1180,6 @@ function EarnedPhase({
   onContinue: () => void;
 }) {
   const certName = candidateName?.trim() || "Participant";
-  const post = useMemo(
-    () => buildLinkedInPost(certName, startup.name, sector),
-    [certName, startup.name, sector],
-  );
   const resumeLine = useMemo(
     () => buildResumeLineAic(startup.name, sector),
     [startup.name, sector],
@@ -1257,11 +1252,6 @@ function EarnedPhase({
     });
   }
 
-  function handleLinkedIn() {
-    navigator.clipboard.writeText(post);
-    window.open("https://www.linkedin.com/feed/", "_blank");
-  }
-
   const previewScale = 0.3;
 
   return (
@@ -1314,51 +1304,6 @@ function EarnedPhase({
             <Linkedin className="h-4 w-4" /> Share on LinkedIn
           </button>
         </div>
-      </section>
-
-      {/* LinkedIn post */}
-      <section>
-        <div className="text-center text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-          Your LinkedIn post
-        </div>
-        <p className="mt-4 text-center text-[14px] text-muted-foreground leading-relaxed">
-          Ready to post. Written to sound like you, not like AI. Personalised to your run.
-        </p>
-
-        <div
-          className="mt-6 rounded-xl overflow-hidden border border-white/5"
-          style={{ backgroundColor: "#1C1C1C" }}
-        >
-          <div className="p-4 border-b border-white/5 flex items-center gap-3">
-            <div className="h-11 w-11 rounded-full bg-neutral-700 text-white flex items-center justify-center text-sm font-semibold">
-              {(candidateName || "Y").slice(0, 1).toUpperCase()}
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[14px] font-semibold text-neutral-100 truncate">
-                {candidateName || "Your Name"}
-              </div>
-              <div className="text-[11px] text-neutral-400">
-                Program Manager Intern · AIC × ISB
-              </div>
-            </div>
-            <Linkedin className="h-5 w-5 text-neutral-400" />
-          </div>
-          <div className="p-4 text-[13.5px] leading-[1.65] text-neutral-100 whitespace-pre-wrap">
-            {post}
-          </div>
-        </div>
-
-        <div className="mt-6 flex justify-center">
-          <button
-            onClick={handleLinkedIn}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 transition"
-          >
-            Open LinkedIn <ExternalLink className="h-4 w-4" />
-          </button>
-        </div>
-        <p className="mt-4 text-center text-[13px] text-muted-foreground">
-          Post copied to your clipboard. Open LinkedIn, start a new post, and paste.
-        </p>
       </section>
 
       {/* Resume line */}

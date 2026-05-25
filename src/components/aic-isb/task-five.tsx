@@ -861,10 +861,10 @@ function ResultPhase({
           onClick={onContinue}
           className="btn-primary-glow inline-flex items-center justify-center gap-2 rounded-xl px-8 py-3.5 text-sm font-semibold w-full sm:w-[320px]"
         >
-          See What You've Earned <ArrowRight className="h-4 w-4" />
+          Time to save the startup <ArrowRight className="h-4 w-4" />
         </button>
-        <p className="mt-3 text-[12px] text-muted-foreground">
-          Certificate · Skills · Resume line · LinkedIn post
+        <p className="mt-3 text-[10px] text-muted-foreground">
+          Certificate · Skills · Resume line
         </p>
       </div>
     </div>

@@ -550,11 +550,12 @@ function ResultPhase({
   const shortlisted = startups.filter((s) => evals[s.id].shortlisted);
   const hasWeakInShortlist = shortlisted.some((s) => weakIds.includes(s.id));
 
-  const overratedWeak = startups.filter(
+  // Board feedback should only reference the startups the student actually selected.
+  const overratedWeak = shortlisted.filter(
     (s) => weakIds.includes(s.id) && evals[s.id].rating >= 7,
   );
-  const underratedStrong = startups.filter(
-    (s) => bestIds.includes(s.id) && evals[s.id].rating > 0 && evals[s.id].rating < 7 && !evals[s.id].shortlisted,
+  const underratedStrong = shortlisted.filter(
+    (s) => bestIds.includes(s.id) && evals[s.id].rating > 0 && evals[s.id].rating < 7,
   );
 
   const accuracy = useMemo(() => {
@@ -676,23 +677,6 @@ function ResultPhase({
           )}
         </div>
       )}
-
-      {/* Analyst badges */}
-      <h2 className="mt-10 text-sm uppercase tracking-[0.22em] text-primary font-semibold">
-        Analyst skill badges
-      </h2>
-      <div className="mt-4 flex flex-wrap gap-2">
-        {["Investment Judgment", "Scalability Read", "Risk Analysis", "Revenue Quality", "Founder-Market Fit"].map(
-          (b) => (
-            <span
-              key={b}
-              className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/5 px-3 py-1.5 text-xs text-primary"
-            >
-              <Sparkles className="h-3 w-3" /> {b}
-            </span>
-          ),
-        )}
-      </div>
 
       <div className="mt-10 flex justify-end">
         <button

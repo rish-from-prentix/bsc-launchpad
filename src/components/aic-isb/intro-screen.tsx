@@ -33,34 +33,6 @@ export function AicIsbIntroScreen({ onStart }: { onStart: (name: string) => void
           Make real decisions. See real consequences.
         </p>
 
-        {/* Video placeholder */}
-        <div className="mt-12 w-full max-w-xl">
-          <div
-            className="group relative rounded-2xl overflow-hidden border border-border bg-card aspect-[16/9]"
-            style={{
-              boxShadow:
-                "0 10px 40px rgba(0,0,0,0.45), 0 0 0 1px oklch(0.78 0.09 80 / 0.08)",
-              animation: "softPulse 3.2s ease-in-out infinite",
-            }}
-          >
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(600px 300px at 50% 50%, oklch(0.78 0.09 80 / 0.15), transparent 70%), linear-gradient(135deg, oklch(0.18 0 0), oklch(0.13 0 0))",
-              }}
-            />
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <button
-                type="button"
-                className="h-16 w-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-xl transition-transform group-hover:scale-110"
-                aria-label="Play welcome video"
-              >
-                <Play className="h-6 w-6 ml-0.5" fill="currentColor" />
-              </button>
-            </div>
-          </div>
-        </div>
 
         {/* Name input */}
         <div className="mt-12 w-full max-w-md">

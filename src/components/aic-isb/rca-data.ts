@@ -19,7 +19,7 @@ const cases: Record<string, RcaCase> = {
   neuralforge: {
     problem:
       "Over the last two quarters, NeuralForge AI has continued generating strong enterprise interest, with inbound leads increasing significantly after several successful pilot deployments. However, despite rising demand, revenue growth has slowed and deal closures have become inconsistent. Several enterprise customers delayed final contract signings after technical evaluations, while existing customers reported frustration regarding onboarding timelines and implementation delays. The sales team believes market demand remains strong, but the implementation team raised concerns around increasing customization requests and engineering dependency.",
-    rootCauseLabel: "Operational scaling bottleneck — implementation & customization debt",
+    rootCauseLabel: "Operational scaling bottleneck, implementation & customization debt",
     keywords: ["implementation", "onboarding", "customization", "operational", "scaling", "delivery", "deployment", "engineering"],
     revenue: [40, 55, 70, 78, 80, 82],
     burn: [60, 65, 72, 78, 85, 92],
@@ -35,7 +35,7 @@ const cases: Record<string, RcaCase> = {
       "Sales cycle ↑ from 71 → 118 days",
     ],
     founderQuote:
-      "“We thought demand was the constraint — turns out, our delivery model is.”",
+      "“We thought demand was the constraint, turns out, our delivery model is.”",
     investorPressure: "Board pushing for ARR > $2M before Series B; current trajectory misses by 2 quarters.",
     boardTags: ["Delivery bottleneck", "Engineering dependency", "Sales-implementation gap"],
     operationalMetrics: [
@@ -62,7 +62,7 @@ const cases: Record<string, RcaCase> = {
       "Subscription conversion 1.1% (industry avg 3–5%)",
       "Push notification CTR collapsing",
     ],
-    founderQuote: "“We have the top of the funnel — we don’t have the loop.”",
+    founderQuote: "“We have the top of the funnel, we don’t have the loop.”",
     investorPressure: "Investors questioning unit economics; runway < 10 months at current burn.",
     boardTags: ["Retention collapse", "No habit loop", "Monetization symptom, not cause"],
     operationalMetrics: [
@@ -81,7 +81,7 @@ const cases: Record<string, RcaCase> = {
     retention: [91, 92, 93, 93, 92, 91],
     customerVoices: [
       "“Single-store rollout took 6 weeks per location.”",
-      "“We love it — we just can’t deploy it fast.”",
+      "“We love it, we just can’t deploy it fast.”",
       "“Need a partner network for installation.”",
     ],
     teamNotes: [
@@ -109,7 +109,7 @@ const cases: Record<string, RcaCase> = {
     retention: [95, 95, 94, 93, 92, 90],
     customerVoices: [
       "“Procurement committee needs 9–12 months.”",
-      "“Pilot was great — capex sign-off is another year.”",
+      "“Pilot was great, capex sign-off is another year.”",
       "“We need shared financing for full deployment.”",
     ],
     teamNotes: [
@@ -145,7 +145,7 @@ const cases: Record<string, RcaCase> = {
       "No dedicated SRE / reliability function",
     ],
     founderQuote: "“We shipped contracts faster than we shipped reliability.”",
-    investorPressure: "Margins compressing — board questioning long-term sustainability.",
+    investorPressure: "Margins compressing, board questioning long-term sustainability.",
     boardTags: ["Reliability debt", "Margin compression", "Operational immaturity"],
     operationalMetrics: [
       { label: "Gross margin", value: "31%", trend: "down" },
@@ -216,7 +216,7 @@ const cases: Record<string, RcaCase> = {
     burn: [55, 65, 75, 82, 88, 94],
     retention: [96, 95, 92, 88, 84, 80],
     customerVoices: [
-      "“We get 40+ alerts per shift — most are noise.”",
+      "“We get 40+ alerts per shift, most are noise.”",
       "“It’s another tab, not part of my workflow.”",
       "“EHR integration is shallow.”",
     ],
@@ -252,7 +252,7 @@ const cases: Record<string, RcaCase> = {
       "No dedicated commercialization lead",
       "Pharma BD cycle averaging 14 months",
     ],
-    founderQuote: "“We assumed validation would pull the market — it hasn’t.”",
+    founderQuote: "“We assumed validation would pull the market, it hasn’t.”",
     investorPressure: "Investors increasingly concerned about commercialization timeline vs capital consumption.",
     boardTags: ["Commercialization gap", "Pharma BD drag", "Burn acceleration"],
     operationalMetrics: [
@@ -279,7 +279,7 @@ export function getRcaCase(startup: Startup): RcaCase {
     burn: [50, 60, 72, 84, 96, 108],
     retention: [92, 90, 88, 85, 82, 80],
     customerVoices: [
-      "“The product works — but scaling our usage has been hard.”",
+      "“The product works, but scaling our usage has been hard.”",
       "“We need better support and clearer ROI.”",
     ],
     teamNotes: [

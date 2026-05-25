@@ -116,10 +116,10 @@ function EmailScreen({
   onStart: () => void;
 }) {
   const guidance = [
-    "Start by figuring out where in the business the problem is actually happening — don't jump to conclusions.",
+    "Start by figuring out where in the business the problem is actually happening, don't jump to conclusions.",
     "Eliminate areas one by one using evidence, not gut feeling.",
     "At each step, ask: does this data actually explain what the CEO described?",
-    "Your final recommendation should directly fix the specific thing that's broken — not a general fix.",
+    "Your final recommendation should directly fix the specific thing that's broken, not a general fix.",
   ];
 
   return (
@@ -249,7 +249,7 @@ function Investigation({
 
           {reviewMode && (
             <div className="mt-5 rounded-lg border border-primary/40 bg-primary/5 px-3.5 py-2.5 text-xs text-primary">
-              Review mode — the correct answer is highlighted.
+              Review mode, the correct answer is highlighted.
             </div>
           )}
 

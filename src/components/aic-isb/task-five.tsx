@@ -14,7 +14,6 @@ import {
   BookOpen,
   Download,
   Linkedin,
-  ExternalLink,
   Copy,
   Check,
   Save,
@@ -181,7 +180,7 @@ function EmailPhase({ name, onStart }: { name: string; onStart: () => void }) {
       senderName="Vikram Sethi"
       senderRole="Board Member, AIC Ventures"
       senderInitials="VS"
-      subject="Independent Assessment Required — Investment Review"
+      subject="Independent Assessment Required, Investment Review"
       preview={`Hi ${name}, we're reviewing a potential investment opportunity and need an independent assessment before our board discussion.`}
       timestamp="Today · 04:42 PM"
       ctaLabel="Begin Evaluation"
@@ -242,7 +241,7 @@ function Workspace({
         Startup Investment Recommendation
       </h1>
       <p className="mt-3 text-[15px] text-muted-foreground">
-        Evaluating <span className="text-foreground font-medium">{startup.name}</span> —{" "}
+        Evaluating <span className="text-foreground font-medium">{startup.name}</span>,{" "}
         {startup.tagline}
       </p>
 
@@ -892,9 +891,9 @@ function evaluationImprovements(
   if (valClass === "high") out.push("Re-weight burn and retention before justifying a premium valuation.");
   if (valClass === "low") out.push("Account for long-term defensibility and market potential.");
   if (multClass !== "fair") out.push("Calibrate the ARR multiple against comparable startups in the sector.");
-  if (a.risks.trim().length < 80) out.push("Deepen the risk analysis — bridge symptoms to root causes.");
+  if (a.risks.trim().length < 80) out.push("Deepen the risk analysis, bridge symptoms to root causes.");
   if (a.recommendation === "Observe Further" || a.recommendation === "")
-    out.push("Lean into a clearer investment stance — committees value decisiveness.");
+    out.push("Lean into a clearer investment stance, committees value decisiveness.");
   if (out.length === 0) out.push("Tighten the link between metrics and the chosen multiple.");
   return out;
 }
@@ -1066,8 +1065,19 @@ function CertificateNode({
                 color: "#374151",
               }}
             >
-              Awarded to{" "}
-              <strong style={{ color: "#0A1628", fontSize: 32 }}>{name}</strong>
+              Awarded to
+            </div>
+            <div
+              style={{
+                marginTop: 12,
+                fontSize: 84,
+                fontWeight: 800,
+                lineHeight: 1.05,
+                letterSpacing: "-0.01em",
+                color: "#0A1628",
+              }}
+            >
+              {name}
             </div>
             <div
               style={{
@@ -1079,7 +1089,7 @@ function CertificateNode({
               }}
             >
               This certifies that {name} completed the AIC × ISB Virtual
-              Internship — Program Manager experience by Prentix, demonstrating
+              Internship, Program Manager experience by Prentix, demonstrating
               investment analysis, startup evaluation, mentor mapping,
               operational reasoning, root cause analysis, and strategic
               decision making across a real accelerator workflow. The final
@@ -1170,10 +1180,6 @@ function EarnedPhase({
   onContinue: () => void;
 }) {
   const certName = candidateName?.trim() || "Participant";
-  const post = useMemo(
-    () => buildLinkedInPost(certName, startup.name, sector),
-    [certName, startup.name, sector],
-  );
   const resumeLine = useMemo(
     () => buildResumeLineAic(startup.name, sector),
     [startup.name, sector],
@@ -1246,11 +1252,6 @@ function EarnedPhase({
     });
   }
 
-  function handleLinkedIn() {
-    navigator.clipboard.writeText(post);
-    window.open("https://www.linkedin.com/feed/", "_blank");
-  }
-
   const previewScale = 0.3;
 
   return (
@@ -1303,54 +1304,6 @@ function EarnedPhase({
             <Linkedin className="h-4 w-4" /> Share on LinkedIn
           </button>
         </div>
-        <p className="mt-4 text-center text-[12px] text-muted-foreground">
-          Verifiable certificate · {CERT_W} × {CERT_H} px
-        </p>
-      </section>
-
-      {/* LinkedIn post */}
-      <section>
-        <div className="text-center text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-          Your LinkedIn post
-        </div>
-        <p className="mt-4 text-center text-[14px] text-muted-foreground leading-relaxed">
-          Ready to post. Written to sound like you, not like AI. Personalised to your run.
-        </p>
-
-        <div
-          className="mt-6 rounded-xl overflow-hidden border border-white/5"
-          style={{ backgroundColor: "#1C1C1C" }}
-        >
-          <div className="p-4 border-b border-white/5 flex items-center gap-3">
-            <div className="h-11 w-11 rounded-full bg-neutral-700 text-white flex items-center justify-center text-sm font-semibold">
-              {(candidateName || "Y").slice(0, 1).toUpperCase()}
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[14px] font-semibold text-neutral-100 truncate">
-                {candidateName || "Your Name"}
-              </div>
-              <div className="text-[11px] text-neutral-400">
-                Program Manager Intern · AIC × ISB
-              </div>
-            </div>
-            <Linkedin className="h-5 w-5 text-neutral-400" />
-          </div>
-          <div className="p-4 text-[13.5px] leading-[1.65] text-neutral-100 whitespace-pre-wrap">
-            {post}
-          </div>
-        </div>
-
-        <div className="mt-6 flex justify-center">
-          <button
-            onClick={handleLinkedIn}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 transition"
-          >
-            Open LinkedIn <ExternalLink className="h-4 w-4" />
-          </button>
-        </div>
-        <p className="mt-4 text-center text-[13px] text-muted-foreground">
-          Post copied to your clipboard. Open LinkedIn, start a new post, and paste.
-        </p>
       </section>
 
       {/* Resume line */}

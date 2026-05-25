@@ -75,7 +75,7 @@ const SECTIONS: Array<{
   {
     id: "risks",
     title: "Risks, challenges, and future potential",
-    placeholder: "Highlight regulatory, GTM, technical, and capital risks — plus the long-term scalability story.",
+    placeholder: "Highlight regulatory, GTM, technical, and capital risks, plus the long-term scalability story.",
   },
   {
     id: "recommendation",
@@ -475,7 +475,7 @@ function EmailCard({
               hasBeenOpened ? "text-muted-foreground" : "text-foreground font-medium",
             )}
           >
-            Research Assignment — Accelerator Thesis for Upcoming Cohort
+            Research Assignment, Accelerator Thesis for Upcoming Cohort
           </div>
           {!open && (
             <div className="mt-1 text-[12px] text-muted-foreground line-clamp-1">
@@ -519,7 +519,7 @@ function EmailCard({
           </p>
           <p className="mt-6 text-foreground font-medium">Best,</p>
           <p className="text-foreground/90">Animesh</p>
-          <p className="text-xs text-muted-foreground">CEO — AIC × ISB</p>
+          <p className="text-xs text-muted-foreground">CEO, AIC × ISB</p>
 
           <div className="mt-6 inline-flex items-center gap-2 rounded-lg border border-border bg-background/50 px-3 py-2 text-xs text-foreground/90">
             <Paperclip className="h-3.5 w-3.5 text-primary" />

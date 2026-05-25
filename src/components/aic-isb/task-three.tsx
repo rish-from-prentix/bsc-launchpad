@@ -131,7 +131,7 @@ function EmailPhase({ name, onStart }: { name: string; onStart: () => void }) {
       senderRole="Program Director, AIC × ISB"
       senderInitials="AS"
       subject="Mentor Assignment for Accelerator Cohort"
-      preview={`Hi ${name}, your selected startups are now entering the accelerator phase — time to assign the right mentors…`}
+      preview={`Hi ${name}, your selected startups are now entering the accelerator phase, time to assign the right mentors…`}
       timestamp="Today · 09:30 AM"
       ctaLabel="Start Mentor Mapping"
       onCta={onStart}
@@ -186,7 +186,7 @@ function Dashboard({
         <Sparkles className="h-4 w-4 text-primary shrink-0 mt-0.5" />
         <p>
           Match mentors based on the startup's <span className="text-primary">operational gaps, growth stage, and scaling
-          bottlenecks</span> — not just industry overlap. Strong assignments solve the right bottleneck at the right time.
+          bottlenecks</span>, not just industry overlap. Strong assignments solve the right bottleneck at the right time.
         </p>
       </div>
 
@@ -617,7 +617,7 @@ function ResultPhase({
                       <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-[oklch(0.72_0.16_25)]" />
                       <p className="text-foreground/90">
                         <span className="font-semibold text-foreground">{mentor.name}</span> may not be the ideal fit for{" "}
-                        <span className="text-foreground">{e.startup.name}</span> — best suited for{" "}
+                        <span className="text-foreground">{e.startup.name}</span>, best suited for{" "}
                         <span className="text-foreground">{mentor.bestFor.length ? "different startup profiles" : "other contexts"}</span>
                         . Not ideal for: <span className="text-foreground/80">{reason.toLowerCase()}</span>. The board would have preferred a mentor with stronger alignment to this startup's stage, business model, and operational challenges.
                       </p>

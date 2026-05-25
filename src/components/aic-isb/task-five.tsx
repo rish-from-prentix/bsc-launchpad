@@ -191,68 +191,6 @@ AIC Ventures`}</div>
   );
 }
 
-/* ============= Select ============= */
-function SelectPhase({
-  startups,
-  onSelect,
-}: {
-  startups: Startup[];
-  onSelect: (id: string) => void;
-}) {
-  return (
-    <div className="mx-auto max-w-4xl px-5 sm:px-8 py-12 sm:py-16">
-      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-        Phase 5 · Investment Evaluation
-      </div>
-      <h1 className="mt-2 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
-        Investment Evaluation
-      </h1>
-      <p className="mt-3 text-[15px] text-muted-foreground">
-        Choose one startup from your accelerator cohort to evaluate.
-      </p>
-
-      <div className="mt-8 grid sm:grid-cols-2 gap-4">
-        {startups.map((s) => (
-          <button
-            key={s.id}
-            onClick={() => onSelect(s.id)}
-            className="text-left glass rounded-2xl p-5 hover:border-primary/60 transition border border-border"
-          >
-            <div className="flex items-start gap-3">
-              <div className="h-10 w-10 rounded-xl bg-primary/10 border border-primary/40 text-primary flex items-center justify-center">
-                <Building2 className="h-5 w-5" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="text-lg font-semibold text-foreground">{s.name}</div>
-                <div className="text-xs text-muted-foreground">{s.tagline}</div>
-              </div>
-            </div>
-            <div className="mt-4 grid grid-cols-3 gap-2 text-[11px]">
-              <Mini label="Stage" value={s.stage} />
-              <Mini label="MRR" value={s.mrr ?? "—"} />
-              <Mini label="Funding" value={s.funding} />
-            </div>
-            <div className="mt-4 inline-flex items-center gap-1.5 text-xs text-primary">
-              Evaluate this startup <ArrowRight className="h-3.5 w-3.5" />
-            </div>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function Mini({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-border bg-background/40 p-2">
-      <div className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-        {label}
-      </div>
-      <div className="text-[12px] font-medium text-foreground truncate">{value}</div>
-    </div>
-  );
-}
-
 /* ============= Workspace ============= */
 function Workspace({
   sector,

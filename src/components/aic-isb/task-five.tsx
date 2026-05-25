@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { InboxEmail } from "./inbox-email";
 import {
   ArrowRight,
@@ -10,9 +12,11 @@ import {
   TrendingUp,
   DollarSign,
   BookOpen,
-  Trophy,
   Download,
-  Share2,
+  Linkedin,
+  ExternalLink,
+  Copy,
+  Check,
   Building2,
   Save,
 } from "lucide-react";
@@ -27,7 +31,7 @@ import {
 } from "./valuation-data";
 import aicLogoUrl from "@/assets/aic-isb-logo.png";
 
-type Phase = "email" | "workspace" | "loading" | "result";
+type Phase = "email" | "workspace" | "loading" | "result" | "earned";
 
 type Answers = {
   multiple: string;

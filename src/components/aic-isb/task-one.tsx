@@ -12,7 +12,6 @@ import {
   HeartPulse,
   Save,
   Send,
-  ArrowLeft,
   ArrowRight,
   Lock,
   CheckCircle2,

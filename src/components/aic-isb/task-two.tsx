@@ -342,12 +342,20 @@ function StartupCard({
       className={cn(
         "glass rounded-2xl p-5 sm:p-6 transition-all",
         isShortlisted && "ring-1 ring-primary/60",
-        !isGraded && !isShortlisted && "border-dashed border-border/70",
+        !isGraded &&
+          !isShortlisted &&
+          "ring-1 ring-[oklch(0.78_0.13_70)]/30 border-[oklch(0.78_0.13_70)]/30",
       )}
       style={
         isShortlisted
           ? { boxShadow: "0 0 0 1px rgba(93,196,254,0.35), 0 12px 40px rgba(93,196,254,0.18)" }
-          : undefined
+          : !isGraded
+            ? {
+                background:
+                  "linear-gradient(180deg, oklch(0.21 0.02 70 / 0.55), oklch(0.16 0.01 70 / 0.55))",
+                boxShadow: "0 0 0 1px oklch(0.78 0.13 70 / 0.18), 0 8px 28px rgba(0,0,0,0.35)",
+              }
+            : undefined
       }
     >
       <header className="flex items-start justify-between gap-4">
@@ -550,11 +558,12 @@ function ResultPhase({
   const shortlisted = startups.filter((s) => evals[s.id].shortlisted);
   const hasWeakInShortlist = shortlisted.some((s) => weakIds.includes(s.id));
 
-  const overratedWeak = startups.filter(
+  // Board feedback should only reference the startups the student actually selected.
+  const overratedWeak = shortlisted.filter(
     (s) => weakIds.includes(s.id) && evals[s.id].rating >= 7,
   );
-  const underratedStrong = startups.filter(
-    (s) => bestIds.includes(s.id) && evals[s.id].rating > 0 && evals[s.id].rating < 7 && !evals[s.id].shortlisted,
+  const underratedStrong = shortlisted.filter(
+    (s) => bestIds.includes(s.id) && evals[s.id].rating > 0 && evals[s.id].rating < 7,
   );
 
   const accuracy = useMemo(() => {
@@ -676,23 +685,6 @@ function ResultPhase({
           )}
         </div>
       )}
-
-      {/* Analyst badges */}
-      <h2 className="mt-10 text-sm uppercase tracking-[0.22em] text-primary font-semibold">
-        Analyst skill badges
-      </h2>
-      <div className="mt-4 flex flex-wrap gap-2">
-        {["Investment Judgment", "Scalability Read", "Risk Analysis", "Revenue Quality", "Founder-Market Fit"].map(
-          (b) => (
-            <span
-              key={b}
-              className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/5 px-3 py-1.5 text-xs text-primary"
-            >
-              <Sparkles className="h-3 w-3" /> {b}
-            </span>
-          ),
-        )}
-      </div>
 
       <div className="mt-10 flex justify-end">
         <button

@@ -25,8 +25,9 @@ import {
   classifyMultiple,
   type Valuation,
 } from "./valuation-data";
+import aicLogoUrl from "@/assets/aic-isb-logo.png";
 
-type Phase = "email" | "select" | "workspace" | "loading" | "result";
+type Phase = "email" | "workspace" | "loading" | "result";
 
 type Answers = {
   multiple: string;
@@ -67,17 +68,8 @@ export function AicIsbTaskFive({
   const storageKey = `aic-isb:task5:${sector}:${shortlistedIds.join(",")}`;
 
   const [phase, setPhase] = useState<Phase>("email");
-  const [selectedId, setSelectedId] = useState<string | null>(() => {
-    if (typeof window === "undefined") return null;
-    try {
-      const raw = window.localStorage.getItem(storageKey);
-      if (!raw) return null;
-      const parsed = JSON.parse(raw) as { selectedId?: string | null };
-      return parsed.selectedId ?? null;
-    } catch {
-      return null;
-    }
-  });
+  // One startup is assigned directly — no selection step.
+  const selectedId = cohortStartups[0]?.id ?? null;
   const [answers, setAnswers] = useState<Answers>(() => {
     if (typeof window === "undefined") return emptyAnswers;
     try {
@@ -134,18 +126,7 @@ export function AicIsbTaskFive({
   useEffect(() => () => { if (savedTimer.current) window.clearTimeout(savedTimer.current); }, []);
 
   if (phase === "email")
-    return <EmailPhase name={getFirstName(candidateName)} onStart={() => setPhase("select")} />;
-
-  if (phase === "select")
-    return (
-      <SelectPhase
-        startups={cohortStartups}
-        onSelect={(id) => {
-          setSelectedId(id);
-          setPhase("workspace");
-        }}
-      />
-    );
+    return <EmailPhase name={getFirstName(candidateName)} onStart={() => setPhase("workspace")} />;
 
   if (phase === "loading")
     return <Loading text="Investment committee reviewing your memo…" />;
@@ -183,92 +164,30 @@ export function AicIsbTaskFive({
 function EmailPhase({ name, onStart }: { name: string; onStart: () => void }) {
   return (
     <InboxEmail
-      badge="Phase 5 · Final Investment Evaluation"
-      senderName="Animesh Sharma"
-      senderRole="Program Director, AIC × ISB"
-      senderInitials="AS"
-      subject="Final Investment Evaluation"
-      preview={`Hi ${name}, for the final phase you'll value one portfolio startup and make the investment call…`}
+      badge="Phase 5 · Independent Investment Assessment"
+      senderName="Vikram Sethi"
+      senderRole="Board Member, AIC Ventures"
+      senderInitials="VS"
+      subject="Independent Assessment Required — Investment Review"
+      preview={`Hi ${name}, we're reviewing a potential investment opportunity and need an independent assessment before our board discussion.`}
       timestamp="Today · 04:42 PM"
-      ctaLabel="Start Investment Evaluation"
+      ctaLabel="Begin Evaluation"
       onCta={onStart}
     >
       <div className="whitespace-pre-wrap">{`Hi ${name},
 
-You've now completed multiple stages of the accelerator process.
+We're currently reviewing a potential investment opportunity that has generated significant internal discussion among the board.
 
-For the final phase, you'll evaluate one startup from your selected cohort and recommend:
-• A realistic valuation
-• Whether the accelerator should invest
-• Key strengths and investment risks
+Before moving forward, I'd like an independent assessment of the company's business fundamentals, operational strength, and long-term scalability.
 
-Focus on balancing growth potential with operational sustainability.
+Your evaluation will be included in our upcoming investment review discussion, so I'd encourage you to approach this with both strategic and analytical rigor.
 
-Best,
-Animesh Sharma`}</div>
+Please review the startup and share your recommendation.
+
+Vikram Sethi
+Board Member
+AIC Ventures`}</div>
     </InboxEmail>
-  );
-}
-
-/* ============= Select ============= */
-function SelectPhase({
-  startups,
-  onSelect,
-}: {
-  startups: Startup[];
-  onSelect: (id: string) => void;
-}) {
-  return (
-    <div className="mx-auto max-w-4xl px-5 sm:px-8 py-12 sm:py-16">
-      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-        Phase 5 · Investment Evaluation
-      </div>
-      <h1 className="mt-2 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
-        Investment Evaluation
-      </h1>
-      <p className="mt-3 text-[15px] text-muted-foreground">
-        Choose one startup from your accelerator cohort to evaluate.
-      </p>
-
-      <div className="mt-8 grid sm:grid-cols-2 gap-4">
-        {startups.map((s) => (
-          <button
-            key={s.id}
-            onClick={() => onSelect(s.id)}
-            className="text-left glass rounded-2xl p-5 hover:border-primary/60 transition border border-border"
-          >
-            <div className="flex items-start gap-3">
-              <div className="h-10 w-10 rounded-xl bg-primary/10 border border-primary/40 text-primary flex items-center justify-center">
-                <Building2 className="h-5 w-5" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="text-lg font-semibold text-foreground">{s.name}</div>
-                <div className="text-xs text-muted-foreground">{s.tagline}</div>
-              </div>
-            </div>
-            <div className="mt-4 grid grid-cols-3 gap-2 text-[11px]">
-              <Mini label="Stage" value={s.stage} />
-              <Mini label="MRR" value={s.mrr ?? "—"} />
-              <Mini label="Funding" value={s.funding} />
-            </div>
-            <div className="mt-4 inline-flex items-center gap-1.5 text-xs text-primary">
-              Evaluate this startup <ArrowRight className="h-3.5 w-3.5" />
-            </div>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function Mini({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-border bg-background/40 p-2">
-      <div className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-        {label}
-      </div>
-      <div className="text-[12px] font-medium text-foreground truncate">{value}</div>
-    </div>
   );
 }
 
@@ -815,16 +734,34 @@ function ResultPhase({
         : "Memo Returned for Revision";
 
   function downloadCertificate() {
-    const html = certificateHtml(getFirstName(candidateName), finalScore, startup.name);
-    const blob = new Blob([html], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `AIC-ISB-Accelerator-Certificate-${getFirstName(candidateName)}.html`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    fetch(aicLogoUrl)
+      .then((r) => r.blob())
+      .then(
+        (blob) =>
+          new Promise<string>((res, rej) => {
+            const reader = new FileReader();
+            reader.onload = () => res(reader.result as string);
+            reader.onerror = rej;
+            reader.readAsDataURL(blob);
+          }),
+      )
+      .catch(() => "")
+      .then((logoDataUrl) => {
+        const html = certificateHtml(
+          getFirstName(candidateName),
+          startup.name,
+          logoDataUrl,
+        );
+        const blob = new Blob([html], { type: "text/html" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Virtual-Internship-Program-Manager-${getFirstName(candidateName)}.html`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
   }
 
   function shareLinkedIn() {
@@ -976,14 +913,6 @@ function ResultPhase({
         </div>
       </div>
 
-      <div className="mt-10 flex justify-end">
-        <button
-          onClick={onContinue}
-          className="inline-flex items-center gap-2 rounded-xl border border-border bg-background/40 px-5 py-2.5 text-sm font-medium text-foreground/80 hover:text-foreground transition"
-        >
-          Continue Internship <ArrowRight className="h-4 w-4" />
-        </button>
-      </div>
     </div>
   );
 }
@@ -1024,27 +953,77 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function certificateHtml(name: string, score: number, startupName: string): string {
-  return `<!doctype html><html><head><meta charset="utf-8"><title>AIC × ISB Accelerator Certificate</title>
+function certificateHtml(name: string, startupName: string, logoDataUrl: string): string {
+  const today = new Date().toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  return `<!doctype html><html><head><meta charset="utf-8"><title>Virtual Internship · Program Manager</title>
 <style>
- body{margin:0;font-family:'Inter',system-ui,sans-serif;background:#0b1026;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:40px}
- .card{max-width:900px;width:100%;padding:60px;border:1px solid rgba(93,196,254,.4);border-radius:24px;background:linear-gradient(135deg,#111c5a,#1c1f7a);box-shadow:0 20px 80px rgba(0,0,0,.5);text-align:center}
- h1{font-size:14px;letter-spacing:.3em;text-transform:uppercase;color:#5dc4fe;margin:0 0 24px}
- h2{font-size:40px;margin:0 0 16px;font-weight:700;letter-spacing:-0.02em}
- .name{font-size:48px;font-weight:700;color:#5dc4fe;margin:32px 0;letter-spacing:-0.02em}
- p{font-size:16px;line-height:1.7;color:rgba(255,255,255,.85);margin:0 0 12px}
- .score{margin-top:40px;display:inline-block;padding:14px 28px;border:1px solid rgba(93,196,254,.5);border-radius:999px;font-size:14px;color:#5dc4fe;letter-spacing:.1em;text-transform:uppercase}
- .meta{margin-top:40px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6)}
-</style></head><body><div class="card">
- <h1>AIC × ISB Virtual Accelerator</h1>
- <h2>Certificate of Completion</h2>
- <p>This certifies that</p>
- <div class="name">${escapeHtml(name)}</div>
- <p>has successfully completed the AIC × ISB Virtual Accelerator Internship by Prentix, demonstrating investment analysis, startup evaluation, mentor mapping, operational reasoning, root cause analysis, and strategic decision making.</p>
- <p>Final investment memo evaluated <strong>${escapeHtml(startupName)}</strong>.</p>
- <div class="score">Final Score · ${score}/100</div>
- <div class="meta">Issued by Prentix · Program Director, Animesh Sharma</div>
-</div></body></html>`;
+ *{box-sizing:border-box}
+ body{margin:0;font-family:'Inter','Helvetica Neue',system-ui,sans-serif;background:#0b1026;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px;color:#0A1628}
+ .frame{position:relative;width:1100px;max-width:100%;aspect-ratio:1.4/1;background:#0A1628;border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+ .stripes-l{position:absolute;left:0;top:0;bottom:0;width:120px;background:repeating-linear-gradient(135deg,#0A1628 0 18px,#13315c 18px 36px,#1d4ed8 36px 54px)}
+ .stripes-r{position:absolute;right:0;top:0;bottom:0;width:120px;background:repeating-linear-gradient(45deg,#0A1628 0 18px,#13315c 18px 36px,#1d4ed8 36px 54px)}
+ .sheet{position:absolute;inset:24px 140px;background:#ffffff;border-radius:8px;padding:56px 64px;display:flex;flex-direction:column;justify-content:space-between}
+ .top{display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
+ .logo{height:90px;display:flex;align-items:center}
+ .logo img{height:80px;width:auto;display:block}
+ .badge{background:#0A1628;color:#fff;padding:18px 26px;border-radius:0 0 18px 18px;text-align:center;min-width:180px;clip-path:polygon(0 0,100% 0,100% 100%,50% 88%,0 100%)}
+ .badge .brand{font-weight:700;letter-spacing:.01em;font-size:20px}
+ .badge .brand .accent{color:#5dc4fe}
+ .badge .tag{margin-top:6px;font-size:11px;letter-spacing:.04em;font-weight:500;line-height:1.4}
+ .body{margin-top:8px}
+ .title{font-size:48px;font-weight:800;line-height:1.05;letter-spacing:-0.01em}
+ .completion{margin-top:28px;font-size:28px;font-weight:700}
+ .date{margin-top:6px;font-size:22px;font-weight:600;color:#0A1628}
+ .desc{margin-top:36px;font-size:13px;line-height:1.55;color:#374151;max-width:780px}
+ .verify{margin-top:18px;font-size:11px;color:#4b5563;letter-spacing:.01em}
+ .footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:24px}
+ .name-line{font-size:13px;color:#374151}
+ .signature{text-align:right}
+ .sig-name{font-size:18px;font-weight:700;color:#0A1628}
+ .sig-role{font-size:12px;color:#4b5563;margin-top:2px}
+</style></head><body>
+ <div class="frame">
+  <div class="stripes-l"></div>
+  <div class="stripes-r"></div>
+  <div class="sheet">
+   <div>
+    <div class="top">
+     <div class="logo">${logoDataUrl ? `<img src="${logoDataUrl}" alt="AIC × ISB"/>` : '<div style="font-weight:800;font-size:22px;letter-spacing:.05em">AIC × ISB</div>'}</div>
+     <div class="badge">
+      <div class="brand">prent<span class="accent">i</span>x</div>
+      <div class="tag">Shaping Early Careers<br/>Across The Globe.</div>
+     </div>
+    </div>
+    <div class="body">
+     <div class="title">Virtual Internship: Program Manager</div>
+     <div class="completion">Certificate of Completion</div>
+     <div class="date">${escapeHtml(today)}</div>
+     <div class="name-line" style="margin-top:24px">Awarded to <strong style="color:#0A1628;font-size:18px">${escapeHtml(name)}</strong></div>
+     <div class="desc">This certifies that ${escapeHtml(name)} completed the AIC × ISB Virtual Internship Program Manager experience by Prentix — demonstrating investment analysis, startup evaluation, mentor mapping, operational reasoning, root cause analysis, and strategic decision making across a real accelerator workflow. The final investment memo evaluated <strong>${escapeHtml(startupName)}</strong>.</div>
+     <div class="verify">Engagement Verification Code: ${randomCode(15)} · User Verification Code: ${randomCode(15)}</div>
+    </div>
+   </div>
+   <div class="footer">
+    <div></div>
+    <div class="signature">
+     <div class="sig-name">Rishik Reddy</div>
+     <div class="sig-role">Founder, Prentix</div>
+    </div>
+   </div>
+  </div>
+ </div>
+</body></html>`;
+}
+
+function randomCode(len: number): string {
+  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+  let out = "";
+  for (let i = 0; i < len; i++) out += chars[Math.floor(Math.random() * chars.length)];
+  return out;
 }
 
 function escapeHtml(s: string): string {

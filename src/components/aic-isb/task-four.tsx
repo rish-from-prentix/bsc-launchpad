@@ -7,7 +7,6 @@ import {
   CircleDashed,
   Lightbulb,
   Mail,
-  StickyNote,
   Sparkles,
 } from "lucide-react";
 import { cn, getFirstName } from "@/lib/utils";
@@ -18,6 +17,7 @@ import {
   type InvestigationOption,
   type Outcome,
 } from "./rca-investigation-data";
+import { InboxEmail } from "./inbox-email";
 
 type Phase = "intro" | "email" | "investigate" | "results";
 
@@ -158,114 +158,35 @@ function EmailScreen({
   ];
 
   return (
-    <div className="mx-auto max-w-3xl px-5 sm:px-8 py-12 sm:py-16 animate-[fadeSlide_0.35s_ease-out]">
-      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold flex items-center gap-2">
-        <Mail className="h-3.5 w-3.5" /> Inbox · Priority
-      </div>
-      <h1 className="mt-2 text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-        A founder needs your help.
-      </h1>
-
-      {/* Email client */}
-      <article
-        className="mt-6 rounded-2xl border border-border bg-card overflow-hidden"
-        style={{ boxShadow: "0 12px 50px -12px rgba(0,0,0,0.55)" }}
+    <div className="animate-[fadeSlide_0.35s_ease-out]">
+      <InboxEmail
+        badge="Phase 4 · Founder SOS"
+        senderName={data.ceo.name}
+        senderRole={data.ceo.role}
+        senderInitials={data.ceo.initials}
+        subject={data.email.subject}
+        preview={data.email.body.split("\n").find((l) => l.trim().length > 0) ?? ""}
+        timestamp={data.email.timestamp}
+        ctaLabel="Start your investigation"
+        onCta={onStart}
       >
-        {/* Email client toolbar */}
-        <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-border bg-background/40">
-          <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.72_0.16_25)]/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.85_0.14_85)]/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.72_0.14_155)]/70" />
-          <span className="ml-3 text-[11px] text-muted-foreground font-mono">message · inbox</span>
-        </div>
+        <div className="whitespace-pre-wrap">{data.email.body}</div>
 
-        {/* Header fields */}
-        <header className="px-5 sm:px-7 pt-5 pb-4 border-b border-border/60">
-          <h2 className="text-lg sm:text-xl font-semibold text-foreground leading-snug">
-            {data.email.subject}
-          </h2>
-          <div className="mt-4 flex items-start gap-3">
-            <div className="h-10 w-10 rounded-full bg-primary/15 border border-primary/40 text-primary text-xs font-semibold flex items-center justify-center shrink-0">
-              {data.ceo.initials}
-            </div>
-            <div className="flex-1 min-w-0 text-[13px]">
-              <FieldRow label="From">
-                <span className="text-foreground font-medium">{data.ceo.name}</span>{" "}
-                <span className="text-muted-foreground">&lt;{data.ceo.email}&gt;</span>
-                <div className="text-[11px] text-muted-foreground">{data.ceo.role}</div>
-              </FieldRow>
-              <FieldRow label="To">
-                <span className="text-foreground/90">
-                  {firstName || "You"}{" "}
-                  <span className="text-muted-foreground">&lt;intern@aic-isb.in&gt;</span>
-                </span>
-              </FieldRow>
-              <FieldRow label="Date">
-                <span className="text-muted-foreground">{data.email.timestamp}</span>
-              </FieldRow>
-            </div>
+        {/* Approach guidance — subtle dark card */}
+        <div className="mt-7 rounded-xl border border-border bg-background/40 p-5">
+          <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+            <Lightbulb className="h-3.5 w-3.5" /> How to approach this
           </div>
-        </header>
-
-        {/* Body */}
-        <div className="px-5 sm:px-7 py-6 text-[14.5px] text-foreground/90 leading-[1.75] whitespace-pre-wrap">
-          {data.email.body}
+          <ul className="mt-3 space-y-2 text-[13.5px] leading-relaxed text-foreground/80">
+            {guidance.map((g) => (
+              <li key={g} className="flex gap-2.5">
+                <span className="mt-2 h-1 w-1 rounded-full bg-muted-foreground/60 shrink-0" />
+                <span>{g}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-      </article>
-
-      {/* Sticky note */}
-      <div
-        className="mt-7 relative rounded-xl p-5 sm:p-6"
-        style={{
-          background:
-            "linear-gradient(180deg, oklch(0.93 0.14 95 / 0.94), oklch(0.88 0.15 88 / 0.94))",
-          color: "oklch(0.25 0.05 70)",
-          boxShadow:
-            "0 10px 28px -10px rgba(180,140,20,0.45), 0 2px 0 rgba(120,90,10,0.18) inset",
-          transform: "rotate(-0.4deg)",
-        }}
-      >
-        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-bold">
-          <StickyNote className="h-4 w-4" /> How to approach this
-        </div>
-        <ul className="mt-3 space-y-2.5 text-[14px] leading-snug">
-          {guidance.map((g) => (
-            <li key={g} className="flex gap-2.5">
-              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[oklch(0.35_0.08_70)] shrink-0" />
-              <span>{g}</span>
-            </li>
-          ))}
-        </ul>
-        {/* folded corner */}
-        <span
-          className="absolute top-0 right-0 h-5 w-5"
-          style={{
-            background:
-              "linear-gradient(135deg, transparent 50%, oklch(0.78 0.13 80 / 0.9) 50%)",
-            borderTopRightRadius: "0.75rem",
-          }}
-        />
-      </div>
-
-      <div className="mt-8 flex justify-center">
-        <button
-          onClick={onStart}
-          className="btn-primary-glow inline-flex items-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold"
-        >
-          Start your investigation <ArrowRight className="h-4 w-4" />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function FieldRow({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="grid grid-cols-[48px_1fr] gap-2 py-0.5">
-      <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground pt-0.5">
-        {label}
-      </div>
-      <div className="text-foreground/90">{children}</div>
+      </InboxEmail>
     </div>
   );
 }
@@ -511,19 +432,11 @@ function Investigation({
               </ol>
             </div>
 
-            <div
-              className="rounded-xl p-4"
-              style={{
-                background:
-                  "linear-gradient(180deg, oklch(0.93 0.14 95 / 0.92), oklch(0.88 0.15 88 / 0.92))",
-                color: "oklch(0.25 0.05 70)",
-                boxShadow: "0 8px 20px -12px rgba(180,140,20,0.45)",
-              }}
-            >
-              <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-bold">
-                <Lightbulb className="h-3.5 w-3.5" /> At this step, think about…
+            <div className="rounded-xl border border-border bg-card/60 p-4">
+              <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+                <Lightbulb className="h-3.5 w-3.5" /> At this step, think about
               </div>
-              <p className="mt-2 text-[13.5px] leading-snug">{step.tip}</p>
+              <p className="mt-2 text-[13px] leading-relaxed text-foreground/75">{step.tip}</p>
             </div>
           </div>
         </aside>
@@ -727,19 +640,11 @@ function Results({
       </section>
 
       {/* Takeaway */}
-      <section
-        className="mt-8 rounded-xl p-5"
-        style={{
-          background:
-            "linear-gradient(180deg, oklch(0.93 0.14 95 / 0.92), oklch(0.88 0.15 88 / 0.92))",
-          color: "oklch(0.25 0.05 70)",
-          boxShadow: "0 10px 24px -12px rgba(180,140,20,0.4)",
-        }}
-      >
-        <div className="text-[11px] uppercase tracking-[0.22em] font-bold flex items-center gap-2">
-          <Lightbulb className="h-4 w-4" /> Key takeaway
+      <section className="mt-8 rounded-xl border border-border bg-card/60 p-5">
+        <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold flex items-center gap-2">
+          <Lightbulb className="h-3.5 w-3.5" /> Key takeaway
         </div>
-        <p className="mt-2 text-[15px] leading-snug font-medium">{data.takeaway}</p>
+        <p className="mt-2 text-[14.5px] leading-relaxed text-foreground/85">{data.takeaway}</p>
       </section>
 
       <div className="mt-9 flex flex-wrap items-center justify-between gap-3">

@@ -162,7 +162,7 @@ function EmailPhase({
       senderRole="Program Director, AIC × ISB"
       senderInitials="AS"
       subject="Next Evaluation Phase – Accelerator Cohort Selection"
-      preview={`Hi ${name}, good job on the thesis — next, evaluate 8 shortlisted startups and pick 2 for the cohort…`}
+      preview={`Hi ${name}, good job on the thesis, next, evaluate 8 shortlisted startups and pick 2 for the cohort…`}
       timestamp="Today · 11:04 AM"
       attachmentLabel="Cohort Evaluation Brief.pdf"
       ctaLabel="Continue Evaluation"
@@ -170,7 +170,7 @@ function EmailPhase({
     >
       <div className="whitespace-pre-wrap">{`Hi ${name},
 
-Good job on the investment thesis — the board agrees with your direction and recommendations.
+Good job on the investment thesis, the board agrees with your direction and recommendations.
 
 We received over 8,000 startup applications for this cohort. Based on internal analytics and initial screening, 8 startups have now been shortlisted.
 
@@ -562,8 +562,9 @@ function ResultPhase({
   const overratedWeak = shortlisted.filter(
     (s) => weakIds.includes(s.id) && evals[s.id].rating >= 7,
   );
-  const underratedStrong = shortlisted.filter(
-    (s) => bestIds.includes(s.id) && evals[s.id].rating > 0 && evals[s.id].rating < 7,
+  // Missed conviction = strong startups the student did NOT shortlist.
+  const underratedStrong = startups.filter(
+    (s) => bestIds.includes(s.id) && !evals[s.id].shortlisted,
   );
 
   const accuracy = useMemo(() => {
@@ -582,7 +583,7 @@ function ResultPhase({
       </h1>
       <p className="mt-4 text-[15px] text-muted-foreground leading-relaxed">
         {hasWeakInShortlist
-          ? "The accelerator board has reviewed your recommendations. Some selections raised concerns — but your reasoning showed real investment thinking. Read the board's feedback below."
+          ? "The accelerator board has reviewed your recommendations. Some selections raised concerns, but your reasoning showed real investment thinking. Read the board's feedback below."
           : "The accelerator board agreed with your recommendations. Your selected startups demonstrated strong market potential, scalable business models, and long-term founder alignment. Your evaluations reflected thoughtful investment analysis and strategic decision-making expected from accelerator associates."}
       </p>
 
@@ -617,7 +618,7 @@ function ResultPhase({
             ? "Strong selection. This startup aligns well with the accelerator's investment thesis due to its scalable model, market timing, and sustainable traction."
             : isWeak
               ? "The accelerator board has concerns regarding this startup's scalability and operational sustainability. You may proceed with your selection, but be prepared to justify your decision."
-              : "This startup is a defensible pick — though not the board's top conviction, the fundamentals support the case.";
+              : "This startup is a defensible pick, though not the board's top conviction, the fundamentals support the case.";
           return (
             <div key={s.id} className="glass rounded-xl p-5">
               <div className="flex items-start justify-between gap-3">

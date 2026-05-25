@@ -842,7 +842,6 @@ function ResultPhase({
         {[
           "Investment Analysis",
           "Startup Evaluation",
-          "Mentor Mapping",
           "Operational Reasoning",
           "Root Cause Analysis",
           "Strategic Decision Making",
@@ -1328,12 +1327,6 @@ function EarnedPhase({
         >
           Explore more internships at prentix.ai →
         </a>
-        <button
-          onClick={onContinue}
-          className="mt-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition"
-        >
-          Finish internship
-        </button>
       </section>
 
       {/* Hidden full-size certificate node for PDF capture */}

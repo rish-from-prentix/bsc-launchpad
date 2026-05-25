@@ -747,49 +747,6 @@ function ResultPhase({
         ? "Memo Reviewed with Notes"
         : "Memo Returned for Revision";
 
-  function downloadCertificate() {
-    fetch(aicLogoUrl)
-      .then((r) => r.blob())
-      .then(
-        (blob) =>
-          new Promise<string>((res, rej) => {
-            const reader = new FileReader();
-            reader.onload = () => res(reader.result as string);
-            reader.onerror = rej;
-            reader.readAsDataURL(blob);
-          }),
-      )
-      .catch(() => "")
-      .then((logoDataUrl) => {
-        const html = certificateHtml(
-          getFirstName(candidateName),
-          startup.name,
-          logoDataUrl,
-        );
-        const blob = new Blob([html], { type: "text/html" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `Virtual-Internship-Program-Manager-${getFirstName(candidateName)}.html`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-      });
-  }
-
-  function shareLinkedIn() {
-    const text = encodeURIComponent(
-      `I just completed the AIC × ISB Virtual Accelerator Internship by Prentix — scoring ${finalScore}/100 on my final investment memo for ${startup.name}.`,
-    );
-    const url = encodeURIComponent("https://prentix-bsc.lovable.app");
-    window.open(
-      `https://www.linkedin.com/sharing/share-offsite/?url=${url}&summary=${text}`,
-      "_blank",
-      "noopener,noreferrer",
-    );
-  }
-
   return (
     <div className="mx-auto max-w-3xl px-5 sm:px-8 py-12 sm:py-16">
       <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold flex items-center gap-2">

@@ -953,27 +953,77 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function certificateHtml(name: string, score: number, startupName: string): string {
-  return `<!doctype html><html><head><meta charset="utf-8"><title>AIC × ISB Accelerator Certificate</title>
+function certificateHtml(name: string, startupName: string, logoDataUrl: string): string {
+  const today = new Date().toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  return `<!doctype html><html><head><meta charset="utf-8"><title>Virtual Internship · Program Manager</title>
 <style>
- body{margin:0;font-family:'Inter',system-ui,sans-serif;background:#0b1026;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:40px}
- .card{max-width:900px;width:100%;padding:60px;border:1px solid rgba(93,196,254,.4);border-radius:24px;background:linear-gradient(135deg,#111c5a,#1c1f7a);box-shadow:0 20px 80px rgba(0,0,0,.5);text-align:center}
- h1{font-size:14px;letter-spacing:.3em;text-transform:uppercase;color:#5dc4fe;margin:0 0 24px}
- h2{font-size:40px;margin:0 0 16px;font-weight:700;letter-spacing:-0.02em}
- .name{font-size:48px;font-weight:700;color:#5dc4fe;margin:32px 0;letter-spacing:-0.02em}
- p{font-size:16px;line-height:1.7;color:rgba(255,255,255,.85);margin:0 0 12px}
- .score{margin-top:40px;display:inline-block;padding:14px 28px;border:1px solid rgba(93,196,254,.5);border-radius:999px;font-size:14px;color:#5dc4fe;letter-spacing:.1em;text-transform:uppercase}
- .meta{margin-top:40px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6)}
-</style></head><body><div class="card">
- <h1>AIC × ISB Virtual Accelerator</h1>
- <h2>Certificate of Completion</h2>
- <p>This certifies that</p>
- <div class="name">${escapeHtml(name)}</div>
- <p>has successfully completed the AIC × ISB Virtual Accelerator Internship by Prentix, demonstrating investment analysis, startup evaluation, mentor mapping, operational reasoning, root cause analysis, and strategic decision making.</p>
- <p>Final investment memo evaluated <strong>${escapeHtml(startupName)}</strong>.</p>
- <div class="score">Final Score · ${score}/100</div>
- <div class="meta">Issued by Prentix · Program Director, Animesh Sharma</div>
-</div></body></html>`;
+ *{box-sizing:border-box}
+ body{margin:0;font-family:'Inter','Helvetica Neue',system-ui,sans-serif;background:#0b1026;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px;color:#0A1628}
+ .frame{position:relative;width:1100px;max-width:100%;aspect-ratio:1.4/1;background:#0A1628;border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+ .stripes-l{position:absolute;left:0;top:0;bottom:0;width:120px;background:repeating-linear-gradient(135deg,#0A1628 0 18px,#13315c 18px 36px,#1d4ed8 36px 54px)}
+ .stripes-r{position:absolute;right:0;top:0;bottom:0;width:120px;background:repeating-linear-gradient(45deg,#0A1628 0 18px,#13315c 18px 36px,#1d4ed8 36px 54px)}
+ .sheet{position:absolute;inset:24px 140px;background:#ffffff;border-radius:8px;padding:56px 64px;display:flex;flex-direction:column;justify-content:space-between}
+ .top{display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
+ .logo{height:90px;display:flex;align-items:center}
+ .logo img{height:80px;width:auto;display:block}
+ .badge{background:#0A1628;color:#fff;padding:18px 26px;border-radius:0 0 18px 18px;text-align:center;min-width:180px;clip-path:polygon(0 0,100% 0,100% 100%,50% 88%,0 100%)}
+ .badge .brand{font-weight:700;letter-spacing:.01em;font-size:20px}
+ .badge .brand .accent{color:#5dc4fe}
+ .badge .tag{margin-top:6px;font-size:11px;letter-spacing:.04em;font-weight:500;line-height:1.4}
+ .body{margin-top:8px}
+ .title{font-size:48px;font-weight:800;line-height:1.05;letter-spacing:-0.01em}
+ .completion{margin-top:28px;font-size:28px;font-weight:700}
+ .date{margin-top:6px;font-size:22px;font-weight:600;color:#0A1628}
+ .desc{margin-top:36px;font-size:13px;line-height:1.55;color:#374151;max-width:780px}
+ .verify{margin-top:18px;font-size:11px;color:#4b5563;letter-spacing:.01em}
+ .footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:24px}
+ .name-line{font-size:13px;color:#374151}
+ .signature{text-align:right}
+ .sig-name{font-size:18px;font-weight:700;color:#0A1628}
+ .sig-role{font-size:12px;color:#4b5563;margin-top:2px}
+</style></head><body>
+ <div class="frame">
+  <div class="stripes-l"></div>
+  <div class="stripes-r"></div>
+  <div class="sheet">
+   <div>
+    <div class="top">
+     <div class="logo">${logoDataUrl ? `<img src="${logoDataUrl}" alt="AIC × ISB"/>` : '<div style="font-weight:800;font-size:22px;letter-spacing:.05em">AIC × ISB</div>'}</div>
+     <div class="badge">
+      <div class="brand">prent<span class="accent">i</span>x</div>
+      <div class="tag">Shaping Early Careers<br/>Across The Globe.</div>
+     </div>
+    </div>
+    <div class="body">
+     <div class="title">Virtual Internship: Program Manager</div>
+     <div class="completion">Certificate of Completion</div>
+     <div class="date">${escapeHtml(today)}</div>
+     <div class="name-line" style="margin-top:24px">Awarded to <strong style="color:#0A1628;font-size:18px">${escapeHtml(name)}</strong></div>
+     <div class="desc">This certifies that ${escapeHtml(name)} completed the AIC × ISB Virtual Internship Program Manager experience by Prentix — demonstrating investment analysis, startup evaluation, mentor mapping, operational reasoning, root cause analysis, and strategic decision making across a real accelerator workflow. The final investment memo evaluated <strong>${escapeHtml(startupName)}</strong>.</div>
+     <div class="verify">Engagement Verification Code: ${randomCode(15)} · User Verification Code: ${randomCode(15)}</div>
+    </div>
+   </div>
+   <div class="footer">
+    <div></div>
+    <div class="signature">
+     <div class="sig-name">Rishik Reddy</div>
+     <div class="sig-role">Founder, Prentix</div>
+    </div>
+   </div>
+  </div>
+ </div>
+</body></html>`;
+}
+
+function randomCode(len: number): string {
+  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+  let out = "";
+  for (let i = 0; i < len; i++) out += chars[Math.floor(Math.random() * chars.length)];
+  return out;
 }
 
 function escapeHtml(s: string): string {

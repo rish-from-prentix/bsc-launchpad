@@ -387,7 +387,7 @@ function ReceivingState() {
         <Dot delay="0.15s" />
         <Dot delay="0.3s" />
       </div>
-      <div className="text-sm text-muted-foreground">Receiving assignment from Animesh…</div>
+      <div className="text-sm text-muted-foreground">Receiving challenge from Animesh…</div>
     </div>
   );
 }
@@ -537,7 +537,7 @@ function EmailCard({
             </button>
             <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground inline-flex items-center gap-1">
               <Sparkles className="h-3 w-3 text-primary" />
-              Assignment unlocked below
+              Challenge unlocked below
             </span>
           </div>
         </div>

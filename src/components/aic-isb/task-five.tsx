@@ -17,7 +17,6 @@ import {
   ExternalLink,
   Copy,
   Check,
-  Building2,
   Save,
 } from "lucide-react";
 import { cn, getFirstName } from "@/lib/utils";

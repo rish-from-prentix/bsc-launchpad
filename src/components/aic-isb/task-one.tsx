@@ -278,7 +278,7 @@ export function AicIsbTaskOne({
 
           {revealAssignment && (
             <section className="mt-12" style={{ animation: "fadeSlide 500ms ease-out" }}>
-              <Divider label="Begin Assignment" />
+              <Divider label="Begin " />
 
               {/* Sector selection */}
               <div className="mt-10">

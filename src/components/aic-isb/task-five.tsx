@@ -181,7 +181,7 @@ function EmailPhase({ name, onStart }: { name: string; onStart: () => void }) {
       senderName="Vikram Sethi"
       senderRole="Board Member, AIC Ventures"
       senderInitials="VS"
-      subject="Independent Assessment Required — Investment Review"
+      subject="Independent Assessment Required, Investment Review"
       preview={`Hi ${name}, we're reviewing a potential investment opportunity and need an independent assessment before our board discussion.`}
       timestamp="Today · 04:42 PM"
       ctaLabel="Begin Evaluation"
@@ -242,7 +242,7 @@ function Workspace({
         Startup Investment Recommendation
       </h1>
       <p className="mt-3 text-[15px] text-muted-foreground">
-        Evaluating <span className="text-foreground font-medium">{startup.name}</span> —{" "}
+        Evaluating <span className="text-foreground font-medium">{startup.name}</span>,{" "}
         {startup.tagline}
       </p>
 
@@ -892,9 +892,9 @@ function evaluationImprovements(
   if (valClass === "high") out.push("Re-weight burn and retention before justifying a premium valuation.");
   if (valClass === "low") out.push("Account for long-term defensibility and market potential.");
   if (multClass !== "fair") out.push("Calibrate the ARR multiple against comparable startups in the sector.");
-  if (a.risks.trim().length < 80) out.push("Deepen the risk analysis — bridge symptoms to root causes.");
+  if (a.risks.trim().length < 80) out.push("Deepen the risk analysis, bridge symptoms to root causes.");
   if (a.recommendation === "Observe Further" || a.recommendation === "")
-    out.push("Lean into a clearer investment stance — committees value decisiveness.");
+    out.push("Lean into a clearer investment stance, committees value decisiveness.");
   if (out.length === 0) out.push("Tighten the link between metrics and the chosen multiple.");
   return out;
 }
@@ -1066,8 +1066,19 @@ function CertificateNode({
                 color: "#374151",
               }}
             >
-              Awarded to{" "}
-              <strong style={{ color: "#0A1628", fontSize: 32 }}>{name}</strong>
+              Awarded to
+            </div>
+            <div
+              style={{
+                marginTop: 12,
+                fontSize: 84,
+                fontWeight: 800,
+                lineHeight: 1.05,
+                letterSpacing: "-0.01em",
+                color: "#0A1628",
+              }}
+            >
+              {name}
             </div>
             <div
               style={{
@@ -1079,7 +1090,7 @@ function CertificateNode({
               }}
             >
               This certifies that {name} completed the AIC × ISB Virtual
-              Internship — Program Manager experience by Prentix, demonstrating
+              Internship, Program Manager experience by Prentix, demonstrating
               investment analysis, startup evaluation, mentor mapping,
               operational reasoning, root cause analysis, and strategic
               decision making across a real accelerator workflow. The final
@@ -1303,9 +1314,6 @@ function EarnedPhase({
             <Linkedin className="h-4 w-4" /> Share on LinkedIn
           </button>
         </div>
-        <p className="mt-4 text-center text-[12px] text-muted-foreground">
-          Verifiable certificate · {CERT_W} × {CERT_H} px
-        </p>
       </section>
 
       {/* LinkedIn post */}

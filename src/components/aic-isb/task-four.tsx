@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   ArrowLeft,
@@ -27,6 +27,29 @@ type StepRecord = {
   correctOptionId: OptionId;
   tries: number;
 };
+
+/** Rebuild local attempts from a committed record (when navigating back). */
+function rebuildAttempts(rec: StepRecord, options: InvestigationOption[]): Attempt[] {
+  const out: Attempt[] = [];
+  if (rec.firstOptionId !== rec.correctOptionId) {
+    out.push({ id: rec.firstOptionId, outcome: rec.firstOutcome });
+  }
+  const correct = options.find((o) => o.outcome === "correct")!;
+  // Add the final correct attempt last.
+  out.push({ id: correct.id, outcome: "correct" });
+  return out;
+}
+
+/** Sector-specific 7-days-later success card copy. */
+const SUCCESS_MOMENT: Record<ThemeId, string> = {
+  ai: "Aarav rebuilt the onboarding flow with guided setup and prebuilt templates. Within a week, drop-off went from 72% to single digits. The product team is calling it the biggest unlock since launch. Great job. You just saved NeuroPilot.",
+  climate:
+    "Rhea's team built an EV density scoring model and paused expansion into unvalidated zones. Utilization at existing high-demand stations climbed 34% in the first week as resources were redirected. Great job. You just saved GreenLoop.",
+  health:
+    "Dr. Sharma's team shipped AI-based alert prioritization. Doctor login rates recovered within the first week. Three hospitals that were about to churn signed renewals. Great job. You just saved MediSync.",
+};
+const FAILURE_MOMENT =
+  "The founder tried a few things, but the real problem stayed hidden a little longer. With the right diagnosis, this could have been a different story. Review the case and try again — the founder is counting on you.";
 
 export function AicIsbTaskFour({
   candidateName,

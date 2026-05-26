@@ -85,6 +85,7 @@ export function AicIsbTaskFour({
     return (
       <Results
         data={data}
+        sector={sector}
         records={records as StepRecord[]}
         reviewMode={reviewMode}
         onReview={() => {

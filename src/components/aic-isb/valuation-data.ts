@@ -1,4 +1,4 @@
-import type { Startup, ThemeId } from "./startups-data";
+import { THEMES, type Startup, type ThemeId } from "./startups-data";
 
 export type Valuation = {
   arrUsdM: number; // Annual recurring revenue in millions USD
@@ -142,7 +142,10 @@ export function getValuation(s: Startup): Valuation {
   const mrrM = parseUsd(s.mrr) ?? 0.05;
   const arr = +(mrrM * 12).toFixed(2);
 
-  const [sectorLow, sectorHigh] = SECTOR_MULTIPLES[s.themeId] ?? [5, 8];
+  const themeId = (Object.keys(THEMES) as ThemeId[]).find((k) =>
+    THEMES[k].startups.some((x) => x.id === s.id),
+  ) ?? "ai";
+  const [sectorLow, sectorHigh] = SECTOR_MULTIPLES[themeId];
   // Map boardScore (roughly 5-10) → position inside the sector's [low, high] window.
   const t = Math.max(0, Math.min(1, (s.boardScore - 5) / 5));
   const mid = sectorLow + (sectorHigh - sectorLow) * t;

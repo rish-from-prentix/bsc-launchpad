@@ -178,12 +178,14 @@ function EmailScreen({
 }
 
 /* ---------- Investigation ---------- */
+type Attempt = { id: OptionId; outcome: Outcome };
+
 function Investigation({
   data,
   stepIndex,
   records,
   reviewMode,
-  onSelect,
+  onCommit,
   onContinue,
   onBack,
   onExitReview,
@@ -192,18 +194,53 @@ function Investigation({
   stepIndex: number;
   records: (StepRecord | null)[];
   reviewMode: boolean;
-  onSelect: (opt: InvestigationOption) => void;
+  onCommit: (rec: StepRecord) => void;
   onContinue: () => void;
   onBack: () => void;
   onExitReview: () => void;
 }) {
   const step = data.steps[stepIndex];
   const total = data.steps.length;
-  const pct = Math.round(((stepIndex + (records[stepIndex] ? 1 : 0)) / total) * 100);
-  const current = records[stepIndex];
-  const selectedOption =
-    current && step.options.find((o) => o.id === current.optionId);
+  const committed = records[stepIndex];
   const correctOption = step.options.find((o) => o.outcome === "correct")!;
+
+  // Local attempts for the active step. Re-seeded whenever the step or committed record changes.
+  const [attempts, setAttempts] = useState<Attempt[]>(() =>
+    committed
+      ? rebuildAttempts(committed, step.options)
+      : [],
+  );
+  // Reset on step change.
+  useMemo(() => {
+    setAttempts(
+      committed ? rebuildAttempts(committed, step.options) : [],
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepIndex]);
+
+  const lastAttempt = attempts[attempts.length - 1];
+  const landedCorrect =
+    !!lastAttempt && lastAttempt.outcome === "correct";
+  const pct = Math.round(((stepIndex + (landedCorrect || committed ? 1 : 0)) / total) * 100);
+  const lastOption = lastAttempt
+    ? step.options.find((o) => o.id === lastAttempt.id)
+    : null;
+
+  const handleSelect = (opt: InvestigationOption) => {
+    if (reviewMode || landedCorrect) return;
+    // Ignore re-clicks on the same wrong option.
+    if (attempts.some((a) => a.id === opt.id)) return;
+    const next = [...attempts, { id: opt.id, outcome: opt.outcome }];
+    setAttempts(next);
+    if (opt.outcome === "correct") {
+      onCommit({
+        firstOptionId: next[0].id,
+        firstOutcome: next[0].outcome,
+        correctOptionId: correctOption.id,
+        tries: next.length,
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -259,41 +296,60 @@ function Investigation({
             </div>
           )}
 
-          {/* Options 2x2 */}
-          <div className="mt-6 grid sm:grid-cols-2 gap-3.5">
-            {step.options.map((opt) => {
-              const isSelected = current?.optionId === opt.id;
-              const isCorrect = opt.outcome === "correct";
-              const showOutcome = !!current || reviewMode;
+          {/* Retry hint shown after a wrong/partial pick, before landing correct */}
+          {!reviewMode && attempts.length > 0 && !landedCorrect && (
+            <div className="mt-5 text-[12px] uppercase tracking-[0.18em] text-muted-foreground font-semibold">
+              Have another look — pick again
+            </div>
+          )}
 
-              const outcomeStyle =
-                isSelected && current
-                  ? outcomeRing(current.outcome)
-                  : reviewMode && isCorrect
-                    ? outcomeRing("correct")
-                    : "border-border hover:border-primary/40 hover:bg-secondary/40";
+          {/* Options 2x2 */}
+          <div className="mt-3 grid sm:grid-cols-2 gap-3.5">
+            {step.options.map((opt) => {
+              const attempt = attempts.find((a) => a.id === opt.id);
+              const isCorrectOpt = opt.outcome === "correct";
+              const isFirstWrong =
+                !!attempt &&
+                attempts.length > 1 &&
+                attempts[0].id === opt.id &&
+                attempts[0].outcome !== "correct";
+              const disabled =
+                reviewMode ||
+                landedCorrect ||
+                !!attempt; // can't re-pick same option
+
+              const outcomeStyle = attempt
+                ? isFirstWrong && landedCorrect
+                  ? // faded original wrong pick once they got it right
+                    "border-[oklch(0.72_0.16_25)]/40 bg-[oklch(0.72_0.16_25)]/5 opacity-70"
+                  : outcomeRing(attempt.outcome)
+                : reviewMode && isCorrectOpt
+                  ? outcomeRing("correct")
+                  : "border-border hover:border-primary/40 hover:bg-secondary/40";
 
               return (
                 <button
                   key={opt.id}
-                  onClick={() => !current && !reviewMode && onSelect(opt)}
-                  disabled={!!current || reviewMode}
+                  onClick={() => handleSelect(opt)}
+                  disabled={disabled}
                   className={cn(
                     "text-left rounded-xl border bg-card p-4 transition relative",
                     outcomeStyle,
-                    !current && !reviewMode && "hover:-translate-y-0.5 cursor-pointer",
-                    (current || reviewMode) && "cursor-default",
+                    !disabled && "hover:-translate-y-0.5 cursor-pointer",
+                    disabled && "cursor-default",
                   )}
                 >
                   <div className="flex items-start gap-3">
                     <span
                       className={cn(
                         "h-6 w-6 rounded-md text-[11px] font-bold flex items-center justify-center shrink-0",
-                        isSelected
-                          ? "bg-primary text-primary-foreground"
-                          : reviewMode && isCorrect
-                            ? "bg-[oklch(0.72_0.14_155)] text-background"
-                            : "bg-secondary text-foreground/80",
+                        attempt && attempt.outcome === "correct"
+                          ? "bg-[oklch(0.72_0.14_155)] text-background"
+                          : attempt
+                            ? "bg-primary text-primary-foreground"
+                            : reviewMode && isCorrectOpt
+                              ? "bg-[oklch(0.72_0.14_155)] text-background"
+                              : "bg-secondary text-foreground/80",
                       )}
                     >
                       {opt.id}
@@ -307,12 +363,12 @@ function Investigation({
                       </div>
                     </div>
                   </div>
-                  {showOutcome && isSelected && (
+                  {attempt && (
                     <div className="absolute top-2.5 right-2.5">
-                      <OutcomeIcon outcome={current!.outcome} small />
+                      <OutcomeIcon outcome={attempt.outcome} small />
                     </div>
                   )}
-                  {reviewMode && isCorrect && !isSelected && (
+                  {reviewMode && isCorrectOpt && !attempt && (
                     <div className="absolute top-2.5 right-2.5 text-[10px] uppercase tracking-[0.16em] font-semibold text-[oklch(0.72_0.14_155)]">
                       Correct
                     </div>
@@ -322,10 +378,8 @@ function Investigation({
             })}
           </div>
 
-          {/* Feedback */}
-          {selectedOption && (
-            <FeedbackBlock option={selectedOption} />
-          )}
+          {/* Feedback for last attempt */}
+          {lastOption && <FeedbackBlock option={lastOption} />}
 
           {/* Controls */}
           <div className="mt-7 flex items-center justify-between gap-3">
@@ -355,10 +409,10 @@ function Investigation({
             ) : (
               <button
                 onClick={onContinue}
-                disabled={!current}
+                disabled={!landedCorrect}
                 className={cn(
                   "btn-primary-glow inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold",
-                  !current && "opacity-40 pointer-events-none",
+                  !landedCorrect && "opacity-40 pointer-events-none",
                 )}
               >
                 {stepIndex === total - 1 ? "See results" : "Continue"}
@@ -379,6 +433,11 @@ function Investigation({
                 {data.steps.map((s, i) => {
                   const r = records[i];
                   const isCurrent = i === stepIndex;
+                  const correctOpt = s.options.find((o) => o.outcome === "correct")!;
+                  const firstChoice = r
+                    ? s.options.find((o) => o.id === r.firstOptionId)
+                    : null;
+                  const gotFirstTry = r && r.tries === 1;
                   return (
                     <li
                       key={i}
@@ -389,7 +448,7 @@ function Investigation({
                     >
                       <span className="mt-0.5">
                         {r ? (
-                          <OutcomeIcon outcome={r.outcome} small />
+                          <CheckCircle2 className="h-4 w-4 text-[oklch(0.72_0.14_155)]" />
                         ) : (
                           <span
                             className={cn(
@@ -403,12 +462,15 @@ function Investigation({
                           </span>
                         )}
                       </span>
-                      <span className={cn(r && "opacity-70")}>
-                        <span className="font-medium">{s.title}</span>
+                      <span className={cn(r && "opacity-90")}>
+                        <span className="font-medium">
+                          Step {i + 1}: {correctOpt.title}
+                        </span>
                         {r && (
                           <span className="block text-[11.5px] text-muted-foreground">
-                            You chose: {r.optionId} ·{" "}
-                            {s.options.find((o) => o.id === r.optionId)?.title}
+                            {gotFirstTry
+                              ? "(your answer)"
+                              : `(correct answer — you chose ${firstChoice?.title ?? r.firstOptionId})`}
                           </span>
                         )}
                       </span>

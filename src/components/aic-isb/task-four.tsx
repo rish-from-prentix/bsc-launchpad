@@ -51,6 +51,31 @@ const SUCCESS_MOMENT: Record<ThemeId, string> = {
 const FAILURE_MOMENT =
   "The founder tried a few things, but the real problem stayed hidden a little longer. With the right diagnosis, this could have been a different story. Review the case and try again — the founder is counting on you.";
 
+function SevenDaysLaterCard({ sector, success }: { sector: ThemeId; success: boolean }) {
+  const message = success ? SUCCESS_MOMENT[sector] : FAILURE_MOMENT;
+  return (
+    <section
+      className="mt-10 rounded-2xl p-6 sm:p-7 text-white relative overflow-hidden"
+      style={{
+        background: "linear-gradient(180deg, #060914 0%, #0a1426 100%)",
+        boxShadow: "0 12px 50px rgba(0,0,0,0.55)",
+      }}
+    >
+      <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-white/70 font-semibold">
+        <span className="relative flex h-2 w-2">
+          <span
+            className="absolute inline-flex h-full w-full rounded-full bg-[oklch(0.78_0.18_155)] opacity-70"
+            style={{ animation: "softPulse 1.6s ease-in-out infinite" }}
+          />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-[oklch(0.78_0.18_155)]" />
+        </span>
+        — 7 days later —
+      </div>
+      <p className="mt-3 text-[15.5px] leading-relaxed text-white/90">{message}</p>
+    </section>
+  );
+}
+
 export function AicIsbTaskFour({
   candidateName,
   sector,

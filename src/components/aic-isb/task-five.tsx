@@ -265,40 +265,42 @@ function Workspace({
               <NumericField
                 label="Recommended ARR multiple (x)"
                 value={answers.multiple}
-                placeholder="e.g. 8"
+                placeholder="e.g. 8 — what multiple fits this startup?"
                 suffix="x"
                 onChange={(v) => onUpdate({ multiple: v })}
+                helper="Reference sector comparables below."
               />
               <NumericField
                 label="Estimated valuation ($M)"
                 value={answers.valuation}
-                placeholder="e.g. 18"
+                placeholder="e.g. 25.2 — ARR × your multiple"
                 suffix="$M"
                 onChange={(v) => onUpdate({ valuation: v })}
+                helper="Use the formula: ARR × Multiple."
               />
               <TextArea
                 label="Why does this valuation make sense?"
                 value={answers.rationale}
                 rows={3}
-
-                placeholder="Reference ARR, growth, retention, and risk."
+                placeholder="In 2–4 lines, justify the multiple — tie it to ARR, growth, retention, and risk."
                 onChange={(v) => onUpdate({ rationale: v })}
+                helper="Recommended: 2–4 concise lines, reasoning over summary."
               />
               <TextArea
                 label="Strengths of the startup"
                 value={answers.strengths}
                 rows={2}
-
-                placeholder="Moat, retention, market, founder quality…"
+                placeholder="Briefly list the strongest positives (moat, retention, market, founder quality) in 2–4 lines."
                 onChange={(v) => onUpdate({ strengths: v })}
+                helper="Focus on what makes the business defensible."
               />
               <TextArea
                 label="Biggest investment risks"
                 value={answers.risks}
                 rows={2}
-
-                placeholder="Burn, churn, regulation, competition…"
+                placeholder="Summarise the biggest risks affecting long-term scalability — burn, churn, regulation, competition."
                 onChange={(v) => onUpdate({ risks: v })}
+                helper="Be specific — which risk would actually break the thesis?"
               />
               <div>
                 <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
@@ -322,9 +324,9 @@ function Workspace({
                 label="Why this recommendation?"
                 value={answers.recReason}
                 rows={2}
-
-                placeholder="Brief rationale tied to fundamentals."
+                placeholder="Would you invest? Briefly justify your decision with strategic reasoning."
                 onChange={(v) => onUpdate({ recReason: v })}
+                helper="Support your recommendation with evidence, not adjectives."
               />
             </div>
           </div>

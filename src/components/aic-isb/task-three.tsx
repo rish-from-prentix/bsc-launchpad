@@ -404,19 +404,21 @@ function MentorCard({
         <div className="min-w-0 flex-1">
           <div className="text-base font-semibold text-foreground">{mentor.name}</div>
           <div className="text-xs text-muted-foreground">{mentor.role}</div>
-          <div className="mt-1 flex flex-wrap gap-1.5 text-[10px] text-primary">
+          <div className="mt-1 text-[10px] text-primary">
             <span className="rounded-full border border-primary/30 bg-primary/5 px-2 py-0.5">
-              <Briefcase className="inline h-2.5 w-2.5 mr-1" />
-              {mentor.years} yrs
+              {mentor.years} yrs experience
             </span>
-            {mentor.expertise.slice(0, 2).map((e) => (
-              <span key={e} className="rounded-full border border-border bg-background/40 px-2 py-0.5 text-muted-foreground">
-                {e}
-              </span>
-            ))}
           </div>
         </div>
       </header>
+
+      {/* Their journey — distinct background strip */}
+      <div className="mt-4 rounded-xl border border-border/70 bg-foreground/[0.04] p-3.5">
+        <div className="text-[10px] uppercase tracking-[0.18em] text-primary font-semibold mb-1.5 flex items-center gap-1.5">
+          <Compass className="h-3 w-3" /> Their journey
+        </div>
+        <p className="text-[13px] leading-relaxed text-foreground/85">{mentor.journey}</p>
+      </div>
 
       <button
         onClick={() => setOpen((o) => !o)}
@@ -428,36 +430,77 @@ function MentorCard({
 
       {open && (
         <div className="mt-3 space-y-3 text-sm">
-          <Section label="Previous experience">
-            <ul className="space-y-1 text-foreground/85">
-              {mentor.prevExperience.map((p) => (
-                <li key={p} className="flex gap-2">
-                  <span className="mt-1.5 h-1 w-1 rounded-full bg-primary shrink-0" />
-                  {p}
-                </li>
-              ))}
-            </ul>
-          </Section>
-          <Section label="Core expertise">
-            <div className="flex flex-wrap gap-1.5">
-              {mentor.expertise.map((e) => (
-                <span key={e} className="rounded-full border border-border bg-background/40 px-2 py-0.5 text-[11px] text-foreground/80">
-                  {e}
-                </span>
-              ))}
+          {/* Two-column value vs struggle */}
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="rounded-lg border border-[oklch(0.72_0.14_155)]/35 bg-[oklch(0.72_0.14_155)]/[0.06] p-3">
+              <div className="text-[10px] uppercase tracking-[0.18em] text-[oklch(0.78_0.14_155)] font-semibold mb-1.5">
+                Where they add most value
+              </div>
+              <ul className="space-y-1.5 text-[12.5px] text-foreground/85">
+                {mentor.addsValue.map((v) => (
+                  <li key={v} className="flex gap-2">
+                    <span className="mt-1.5 h-1 w-1 rounded-full bg-[oklch(0.78_0.14_155)] shrink-0" />
+                    {v}
+                  </li>
+                ))}
+              </ul>
             </div>
-          </Section>
-          <Section label="Mentorship style">
-            <p className="text-foreground/85">{mentor.style}</p>
-          </Section>
-          <Section label="Not ideal for">
-            <p className="text-foreground/70">{mentor.notIdealFor}</p>
-          </Section>
+            <div className="rounded-lg border border-[oklch(0.72_0.16_25)]/35 bg-[oklch(0.72_0.16_25)]/[0.05] p-3">
+              <div className="text-[10px] uppercase tracking-[0.18em] text-[oklch(0.78_0.16_25)] font-semibold mb-1.5">
+                Where they may struggle
+              </div>
+              <ul className="space-y-1.5 text-[12.5px] text-foreground/85">
+                {mentor.mayStruggle.map((v) => (
+                  <li key={v} className="flex gap-2">
+                    <span className="mt-1.5 h-1 w-1 rounded-full bg-[oklch(0.78_0.16_25)] shrink-0" />
+                    {v}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Honest caveat — amber */}
+          <div className="rounded-lg border border-[oklch(0.78_0.14_85)]/45 bg-[oklch(0.78_0.14_85)]/[0.07] p-3 flex gap-2">
+            <AlertTriangle className="h-3.5 w-3.5 text-[oklch(0.82_0.15_85)] mt-0.5 shrink-0" />
+            <p className="text-[12.5px] leading-relaxed text-[oklch(0.88_0.08_85)]">{mentor.honestCaveat}</p>
+          </div>
+
+          {/* Fit tags */}
+          <div className="space-y-2">
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-1.5">
+                Strong fit when a startup needs
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {mentor.strongFitTags.map((t) => (
+                  <span key={t} className="rounded-full border border-[oklch(0.72_0.14_155)]/40 bg-[oklch(0.72_0.14_155)]/10 px-2 py-0.5 text-[11px] text-[oklch(0.82_0.14_155)]">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-1.5">
+                Less useful when a startup needs
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {mentor.lessUsefulTags.map((t) => (
+                  <span key={t} className="rounded-full border border-[oklch(0.72_0.16_25)]/35 bg-[oklch(0.72_0.16_25)]/[0.08] px-2 py-0.5 text-[11px] text-[oklch(0.82_0.16_25)]">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Founder quote + context */}
           <div className="rounded-lg border border-primary/25 bg-primary/5 p-3">
             <div className="text-[10px] uppercase tracking-[0.18em] text-primary mb-1 flex items-center gap-1.5">
               <Quote className="h-3 w-3" /> Founder feedback
             </div>
-            <p className="text-sm italic text-foreground/85">{mentor.feedback}</p>
+            <p className="text-sm italic text-foreground/85">"{mentor.founderQuote}"</p>
+            <p className="mt-1.5 text-[11px] text-muted-foreground leading-relaxed">{mentor.quoteContext}</p>
           </div>
         </div>
       )}

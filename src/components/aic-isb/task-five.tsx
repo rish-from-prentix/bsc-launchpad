@@ -611,12 +611,14 @@ function NumericField({
   placeholder,
   suffix,
   onChange,
+  helper,
 }: {
   label: string;
   value: string;
   placeholder: string;
   suffix?: string;
   onChange: (v: string) => void;
+  helper?: string;
 }) {
   return (
     <div>
@@ -637,6 +639,9 @@ function NumericField({
           </span>
         )}
       </div>
+      {helper && (
+        <p className="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug">{helper}</p>
+      )}
     </div>
   );
 }
@@ -647,12 +652,14 @@ function TextArea({
   rows,
   placeholder,
   onChange,
+  helper,
 }: {
   label: string;
   value: string;
   rows: number;
   placeholder: string;
   onChange: (v: string) => void;
+  helper?: string;
 }) {
   return (
     <div>
@@ -666,6 +673,9 @@ function TextArea({
         placeholder={placeholder}
         className="mt-2 w-full rounded-xl border border-border bg-background/40 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/60 resize-y"
       />
+      {helper && (
+        <p className="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug">{helper}</p>
+      )}
     </div>
   );
 }

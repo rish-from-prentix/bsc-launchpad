@@ -592,19 +592,25 @@ function FeedbackBlock({ option }: { option: InvestigationOption }) {
 /* ---------- Results ---------- */
 function Results({
   data,
+  sector,
   records,
   reviewMode: _reviewMode,
   onReview,
   onContinue,
 }: {
   data: (typeof INVESTIGATIONS)[ThemeId];
+  sector: ThemeId;
   records: StepRecord[];
   reviewMode: boolean;
   onReview: () => void;
   onContinue: () => void;
 }) {
   const score = useMemo(
-    () => records.reduce((sum, r) => sum + (r ? SCORE_BY_OUTCOME[r.outcome] : 0), 0),
+    () =>
+      records.reduce(
+        (sum, r) => sum + (r ? (r.tries === 1 ? 1 : 0.5) : 0),
+        0,
+      ),
     [records],
   );
   const total = data.steps.length;
@@ -659,7 +665,7 @@ function Results({
               className="h-9 w-9 rounded-lg border border-border bg-background/40 flex items-center justify-center"
               title={`Step ${i + 1}`}
             >
-              <OutcomeIcon outcome={r.outcome} />
+              <OutcomeIcon outcome={r.tries === 1 ? "correct" : "partial"} />
             </div>
           ))}
         </div>
@@ -679,31 +685,35 @@ function Results({
           Your path vs. the right path
         </h2>
         <div className="mt-3 rounded-xl border border-border overflow-hidden">
-          <div className="grid grid-cols-[40px_1fr_1fr] bg-background/40 px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-semibold">
+          <div className="grid grid-cols-[40px_1fr_1fr_72px] bg-background/40 px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-semibold">
             <div>Step</div>
             <div>Your choice</div>
             <div>Correct choice</div>
+            <div>Tries</div>
           </div>
           {data.steps.map((s, i) => {
             const r = records[i];
-            const chosen = s.options.find((o) => o.id === r.optionId);
+            const chosen = s.options.find((o) => o.id === r.firstOptionId);
             const correct = s.options.find((o) => o.outcome === "correct")!;
             return (
               <div
                 key={i}
-                className="grid grid-cols-[40px_1fr_1fr] gap-3 px-4 py-3 border-t border-border text-[13px] items-start"
+                className="grid grid-cols-[40px_1fr_1fr_72px] gap-3 px-4 py-3 border-t border-border text-[13px] items-start"
               >
                 <div className="flex items-center gap-1.5 text-muted-foreground font-mono">
                   {i + 1}
-                  <OutcomeIcon outcome={r.outcome} small />
+                  <OutcomeIcon outcome={r.tries === 1 ? "correct" : "partial"} small />
                 </div>
                 <div className="text-foreground/90">
-                  <span className="text-muted-foreground font-mono mr-1">{r.optionId}.</span>
+                  <span className="text-muted-foreground font-mono mr-1">{r.firstOptionId}.</span>
                   {chosen?.title}
                 </div>
                 <div className="text-[oklch(0.78_0.14_155)]">
                   <span className="font-mono mr-1">{correct.id}.</span>
                   {correct.title}
+                </div>
+                <div className="text-muted-foreground font-mono">
+                  {r.tries === 1 ? "1st try" : r.tries === 2 ? "2nd try" : `${r.tries}rd try`}
                 </div>
               </div>
             );
@@ -718,6 +728,9 @@ function Results({
         </div>
         <p className="mt-2 text-[14.5px] leading-relaxed text-foreground/85">{data.takeaway}</p>
       </section>
+
+      {/* 7 days later moment */}
+      <SevenDaysLaterCard sector={sector} success={score >= 3} />
 
       <div className="mt-9 flex flex-wrap items-center justify-between gap-3">
         <button

@@ -191,6 +191,23 @@ function Dashboard({
         </p>
       </div>
 
+      {/* The core insight — sticky-note style */}
+      <div
+        className="mt-4 rounded-xl p-5 sm:p-6 border border-[oklch(0.78_0.14_85)]/40 bg-[oklch(0.78_0.14_85)]/[0.07] shadow-[0_8px_30px_rgba(255,200,80,0.08)] relative"
+      >
+        <div className="flex items-start gap-3">
+          <Lightbulb className="h-5 w-5 text-[oklch(0.82_0.15_85)] shrink-0 mt-0.5" />
+          <div>
+            <div className="text-[10px] uppercase tracking-[0.22em] text-[oklch(0.82_0.15_85)] font-semibold mb-1.5">
+              The principle to carry through this task
+            </div>
+            <p className="text-[14.5px] leading-relaxed text-foreground/90">
+              A mentor who scaled a 5,000-person organisation has learnt very different lessons from a founder who built something from nothing. The most valuable mentors for early-stage startups are people who have personally lived the zero-to-one experience — the ambiguity, the resource constraints, the pivots. Impressive titles don't always translate to useful advice at this stage.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div className="mt-10 space-y-12">
         {selectedStartups.map((s, i) => (
           <StartupAssignmentBlock

@@ -872,7 +872,7 @@ function ResultPhase({
           onClick={onContinue}
           className="btn-primary-glow inline-flex items-center justify-center gap-2 rounded-xl px-8 py-3.5 text-sm font-semibold w-full sm:w-[320px]"
         >
-          Time to save the startup <ArrowRight className="h-4 w-4" />
+          See What You've Earned <ArrowRight className="h-4 w-4" />
         </button>
         <p className="mt-3 text-[10px] text-muted-foreground">
           Certificate · Skills
@@ -1277,8 +1277,8 @@ function EarnedPhase({
           Skills you can add to your resume and LinkedIn
         </div>
         <p className="mt-4 text-center text-[14px] text-muted-foreground leading-relaxed">
-          You didn't just complete a simulation. You practiced skills that take most people years
-          of on-the-job experience to develop.
+          Years of boardrooms, bad calls, and hard lessons — you just lived all of it in a few
+          hours.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2.5">
           {SKILL_BADGES.map((skill) => {

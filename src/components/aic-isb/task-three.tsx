@@ -633,18 +633,11 @@ function ResultPhase({
       </div>
 
       <h2 className="mt-10 text-sm uppercase tracking-[0.22em] text-primary font-semibold">
-        Per-startup board review
+        Here's how the AIC × ISB board reviewed your mentor assignments
       </h2>
       <div className="mt-4 space-y-4">
         {evaluations.map((e) => {
           const bothStrong = e.pFit === "strong" && e.sFit === "strong";
-          const weakReasons: { mentor: Mentor; reason: string }[] = [];
-          if (e.primary && e.pFit === "weak") {
-            weakReasons.push({ mentor: e.primary, reason: e.primary.notIdealFor });
-          }
-          if (e.secondary && e.sFit === "weak") {
-            weakReasons.push({ mentor: e.secondary, reason: e.secondary.notIdealFor });
-          }
           return (
             <div key={e.startup.id} className="glass rounded-xl p-5">
               <div className="flex items-start justify-between gap-3">
@@ -661,34 +654,64 @@ function ResultPhase({
                 <FitRow label="Primary" mentor={e.primary} fit={e.pFit} />
                 <FitRow label="Secondary" mentor={e.secondary} fit={e.sFit} />
               </div>
-              {bothStrong ? (
-                <div className="mt-4 rounded-lg p-3 text-sm flex gap-2 border border-[oklch(0.72_0.14_155)]/40 bg-[oklch(0.72_0.14_155)]/5">
-                  <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-[oklch(0.72_0.14_155)]" />
-                  <p className="text-foreground/90">
-                    Excellent mentor alignment. The selected expertise strongly complements the startup's growth needs.
-                  </p>
+
+              {/* Fit assessment per mentor */}
+              <div className="mt-4 space-y-3">
+                {e.primary && (
+                  <MentorAssessment role="Primary" mentor={e.primary} fit={e.pFit} startupName={e.startup.name} />
+                )}
+                {e.secondary && (
+                  <MentorAssessment role="Secondary" mentor={e.secondary} fit={e.sFit} startupName={e.startup.name} />
+                )}
+              </div>
+
+              {/* What you got right */}
+              <div className="mt-4 rounded-lg p-3 border border-[oklch(0.72_0.14_155)]/35 bg-[oklch(0.72_0.14_155)]/[0.06]">
+                <div className="text-[10px] uppercase tracking-[0.18em] text-[oklch(0.78_0.14_155)] font-semibold mb-1.5">
+                  What you got right
                 </div>
-              ) : (
-                <div className="mt-4 space-y-2">
-                  {weakReasons.map(({ mentor, reason }) => (
-                    <div
-                      key={mentor.id}
-                      className="rounded-lg p-3 text-sm flex gap-2 border border-[oklch(0.72_0.16_25)]/40 bg-[oklch(0.72_0.16_25)]/5"
-                    >
-                      <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-[oklch(0.72_0.16_25)]" />
-                      <p className="text-foreground/90">
-                        <span className="font-semibold text-foreground">{mentor.name}</span> may not be the ideal fit for{" "}
-                        <span className="text-foreground">{e.startup.name}</span>, best suited for{" "}
-                        <span className="text-foreground">{mentor.bestFor.length ? "different startup profiles" : "other contexts"}</span>
-                        . Not ideal for: <span className="text-foreground/80">{reason.toLowerCase()}</span>. The board would have preferred a mentor with stronger alignment to this startup's stage, business model, and operational challenges.
-                      </p>
-                    </div>
-                  ))}
+                <p className="text-[13px] leading-relaxed text-foreground/90">
+                  {gotRightCopy(e, bothStrong)}
+                </p>
+              </div>
+
+              {/* What to watch out for */}
+              <div className="mt-3 rounded-lg p-3 border border-[oklch(0.78_0.14_85)]/40 bg-[oklch(0.78_0.14_85)]/[0.06]">
+                <div className="text-[10px] uppercase tracking-[0.18em] text-[oklch(0.82_0.15_85)] font-semibold mb-1.5">
+                  What to watch out for
                 </div>
-              )}
+                <p className="text-[13px] leading-relaxed text-foreground/90">
+                  {watchOutCopy(e)}
+                </p>
+              </div>
+
+              {/* The gap in this pairing */}
+              <div className="mt-3 rounded-lg p-3 border border-border bg-background/40">
+                <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-semibold mb-1.5">
+                  The gap in this pairing
+                </div>
+                <p className="text-[13px] leading-relaxed text-foreground/85">
+                  {gapCopy(e)}
+                </p>
+              </div>
             </div>
           );
         })}
+      </div>
+
+      {/* The lesson from this task */}
+      <div className="mt-8 rounded-xl p-5 sm:p-6 border border-primary/40 bg-primary/[0.06] shadow-[0_8px_30px_rgba(93,196,254,0.12)]">
+        <div className="flex items-start gap-3">
+          <Lightbulb className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+          <div>
+            <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold mb-1.5">
+              The lesson from this task
+            </div>
+            <p className="text-[14.5px] leading-relaxed text-foreground/90">
+              The best mentor for a startup is rarely the most impressive person in the room. It's the person whose specific lived experience maps most closely to where the founder is right now — not where the startup will be in five years. A mentor who has scaled a 10,000-person organisation has learnt very different lessons from someone who once sat in a garage not knowing if anyone would buy their product. Both are valuable — at different stages.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="mt-10 flex justify-end">
@@ -698,6 +721,95 @@ function ResultPhase({
       </div>
     </div>
   );
+}
+
+/* ---------------- Debrief helpers ---------------- */
+type Evaluation = {
+  startup: Startup;
+  primary: Mentor | null;
+  secondary: Mentor | null;
+  pFit: "strong" | "weak";
+  sFit: "strong" | "weak";
+  score: number;
+};
+
+function MentorAssessment({
+  role,
+  mentor,
+  fit,
+  startupName,
+}: {
+  role: string;
+  mentor: Mentor;
+  fit: "strong" | "weak";
+  startupName: string;
+}) {
+  const strong = fit === "strong";
+  return (
+    <div
+      className={cn(
+        "rounded-lg p-3 border",
+        strong
+          ? "border-[oklch(0.72_0.14_155)]/35 bg-[oklch(0.72_0.14_155)]/[0.05]"
+          : "border-[oklch(0.72_0.16_25)]/35 bg-[oklch(0.72_0.16_25)]/[0.05]",
+      )}
+    >
+      <div className="flex items-center gap-2 mb-1">
+        <span
+          className={cn(
+            "text-[10px] uppercase tracking-[0.18em] font-semibold",
+            strong ? "text-[oklch(0.78_0.14_155)]" : "text-[oklch(0.78_0.16_25)]",
+          )}
+        >
+          {role} — {mentor.name}
+        </span>
+      </div>
+      <p className="text-[13px] leading-relaxed text-foreground/90">
+        {strong ? (
+          <>
+            {mentor.name.split(" ").slice(-1)[0]} brings exactly what {startupName} needs right now —{" "}
+            {mentor.strongFitTags.slice(0, 2).join(" and ").toLowerCase()}. The remaining gap:{" "}
+            {mentor.lessUsefulTags[0].toLowerCase()} will still need to come from elsewhere.
+          </>
+        ) : (
+          <>
+            {mentor.name.split(" ").slice(-1)[0]}'s strengths are real —{" "}
+            {mentor.strongFitTags.slice(0, 2).join(" and ").toLowerCase()} — but those aren't the bottlenecks{" "}
+            {startupName} is facing right now. {mentor.honestCaveat}
+          </>
+        )}
+      </p>
+    </div>
+  );
+}
+
+function gotRightCopy(e: Evaluation, bothStrong: boolean): string {
+  if (bothStrong && e.primary && e.secondary) {
+    return `You paired two mentors whose lived experience maps directly to ${e.startup.name}'s current stage. The reasoning held — you matched expertise to bottleneck, not just to sector.`;
+  }
+  if (e.pFit === "strong" && e.primary) {
+    return `Your primary pick was sound. ${e.primary.name.split(" ").slice(-1)[0]}'s background in ${e.primary.strongFitTags[0].toLowerCase()} directly addresses one of ${e.startup.name}'s most pressing constraints.`;
+  }
+  if (e.sFit === "strong" && e.secondary) {
+    return `The secondary pick was the stronger of the two — ${e.secondary.name.split(" ").slice(-1)[0]} brings credible support for ${e.secondary.strongFitTags[0].toLowerCase()}, which ${e.startup.name} will need soon.`;
+  }
+  return `Both picks were thoughtful in intent. You were thinking about ${e.startup.name}'s long-term trajectory — that instinct is valuable, even if the lived experience didn't fully match this stage.`;
+}
+
+function watchOutCopy(e: Evaluation): string {
+  if (e.primary && e.pFit === "strong") {
+    return `${e.primary.name.split(" ").slice(-1)[0]} is the right choice for ${e.primary.strongFitTags[0].toLowerCase()} — but ${e.startup.name} is still working through ${(e.startup.risks[0] || "early-stage uncertainty").toLowerCase()}. Make sure the founder doesn't start optimising the next stage before the current one is resolved.`;
+  }
+  if (e.primary) {
+    return `${e.primary.name.split(" ").slice(-1)[0]}'s instincts are tuned for ${e.primary.strongFitTags[0].toLowerCase()}, which is ahead of where ${e.startup.name} is today. The founder may end up working on the wrong problem in the wrong order.`;
+  }
+  return `Without a primary mentor assigned, ${e.startup.name} risks pulling guidance from whichever advisor speaks loudest — not whichever advisor's experience matches the current bottleneck.`;
+}
+
+function gapCopy(e: Evaluation): string {
+  const missingFromPrimary = e.primary?.lessUsefulTags[0]?.toLowerCase() ?? "early-stage operational support";
+  const missingFromSecondary = e.secondary?.lessUsefulTags[0]?.toLowerCase() ?? "hands-on execution help";
+  return `This pairing under-indexes on ${missingFromPrimary} and ${missingFromSecondary}. Programme directors should keep an eye out for moments when ${e.startup.name} needs a third voice — someone who has personally lived the part of the journey neither mentor has navigated themselves.`;
 }
 
 function FitRow({ label, mentor, fit }: { label: string; mentor: Mentor | null; fit: "strong" | "weak" }) {

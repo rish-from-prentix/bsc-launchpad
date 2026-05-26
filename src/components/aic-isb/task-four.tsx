@@ -12,7 +12,6 @@ import { cn, getFirstName } from "@/lib/utils";
 import type { ThemeId } from "./startups-data";
 import {
   INVESTIGATIONS,
-  SCORE_BY_OUTCOME,
   type InvestigationOption,
   type Outcome,
 } from "./rca-investigation-data";
@@ -20,7 +19,14 @@ import { InboxEmail } from "./inbox-email";
 
 type Phase = "email" | "investigate" | "results";
 
-type StepRecord = { optionId: "A" | "B" | "C" | "D"; outcome: Outcome };
+type OptionId = "A" | "B" | "C" | "D";
+/** Committed step record (after the student lands on the correct answer). */
+type StepRecord = {
+  firstOptionId: OptionId;
+  firstOutcome: Outcome;
+  correctOptionId: OptionId;
+  tries: number;
+};
 
 export function AicIsbTaskFour({
   candidateName,
@@ -74,10 +80,10 @@ export function AicIsbTaskFour({
       stepIndex={stepIndex}
       records={records}
       reviewMode={reviewMode}
-      onSelect={(opt) => {
+      onCommit={(rec) => {
         setRecords((r) => {
           const next = [...r];
-          next[stepIndex] = { optionId: opt.id, outcome: opt.outcome };
+          next[stepIndex] = rec;
           return next;
         });
       }}

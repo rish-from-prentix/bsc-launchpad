@@ -265,40 +265,42 @@ function Workspace({
               <NumericField
                 label="Recommended ARR multiple (x)"
                 value={answers.multiple}
-                placeholder="e.g. 8"
+                placeholder="e.g. 8 — what multiple fits this startup?"
                 suffix="x"
                 onChange={(v) => onUpdate({ multiple: v })}
+                helper="Reference sector comparables below."
               />
               <NumericField
                 label="Estimated valuation ($M)"
                 value={answers.valuation}
-                placeholder="e.g. 18"
+                placeholder="e.g. 25.2 — ARR × your multiple"
                 suffix="$M"
                 onChange={(v) => onUpdate({ valuation: v })}
+                helper="Use the formula: ARR × Multiple."
               />
               <TextArea
                 label="Why does this valuation make sense?"
                 value={answers.rationale}
                 rows={3}
-
-                placeholder="Reference ARR, growth, retention, and risk."
+                placeholder="In 2–4 lines, justify the multiple — tie it to ARR, growth, retention, and risk."
                 onChange={(v) => onUpdate({ rationale: v })}
+                helper="Recommended: 2–4 concise lines, reasoning over summary."
               />
               <TextArea
                 label="Strengths of the startup"
                 value={answers.strengths}
                 rows={2}
-
-                placeholder="Moat, retention, market, founder quality…"
+                placeholder="Briefly list the strongest positives (moat, retention, market, founder quality) in 2–4 lines."
                 onChange={(v) => onUpdate({ strengths: v })}
+                helper="Focus on what makes the business defensible."
               />
               <TextArea
                 label="Biggest investment risks"
                 value={answers.risks}
                 rows={2}
-
-                placeholder="Burn, churn, regulation, competition…"
+                placeholder="Summarise the biggest risks affecting long-term scalability — burn, churn, regulation, competition."
                 onChange={(v) => onUpdate({ risks: v })}
+                helper="Be specific — which risk would actually break the thesis?"
               />
               <div>
                 <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
@@ -322,9 +324,9 @@ function Workspace({
                 label="Why this recommendation?"
                 value={answers.recReason}
                 rows={2}
-
-                placeholder="Brief rationale tied to fundamentals."
+                placeholder="Would you invest? Briefly justify your decision with strategic reasoning."
                 onChange={(v) => onUpdate({ recReason: v })}
+                helper="Support your recommendation with evidence, not adjectives."
               />
             </div>
           </div>
@@ -609,12 +611,14 @@ function NumericField({
   placeholder,
   suffix,
   onChange,
+  helper,
 }: {
   label: string;
   value: string;
   placeholder: string;
   suffix?: string;
   onChange: (v: string) => void;
+  helper?: string;
 }) {
   return (
     <div>
@@ -635,6 +639,9 @@ function NumericField({
           </span>
         )}
       </div>
+      {helper && (
+        <p className="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug">{helper}</p>
+      )}
     </div>
   );
 }
@@ -645,12 +652,14 @@ function TextArea({
   rows,
   placeholder,
   onChange,
+  helper,
 }: {
   label: string;
   value: string;
   rows: number;
   placeholder: string;
   onChange: (v: string) => void;
+  helper?: string;
 }) {
   return (
     <div>
@@ -664,6 +673,9 @@ function TextArea({
         placeholder={placeholder}
         className="mt-2 w-full rounded-xl border border-border bg-background/40 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/60 resize-y"
       />
+      {helper && (
+        <p className="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug">{helper}</p>
+      )}
     </div>
   );
 }
@@ -860,7 +872,7 @@ function ResultPhase({
           onClick={onContinue}
           className="btn-primary-glow inline-flex items-center justify-center gap-2 rounded-xl px-8 py-3.5 text-sm font-semibold w-full sm:w-[320px]"
         >
-          Time to save the startup <ArrowRight className="h-4 w-4" />
+          See What You've Earned <ArrowRight className="h-4 w-4" />
         </button>
         <p className="mt-3 text-[10px] text-muted-foreground">
           Certificate · Skills
@@ -1265,8 +1277,8 @@ function EarnedPhase({
           Skills you can add to your resume and LinkedIn
         </div>
         <p className="mt-4 text-center text-[14px] text-muted-foreground leading-relaxed">
-          You didn't just complete a simulation. You practiced skills that take most people years
-          of on-the-job experience to develop.
+          Years of boardrooms, bad calls, and hard lessons — you just lived all of it in a few
+          hours.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2.5">
           {SKILL_BADGES.map((skill) => {

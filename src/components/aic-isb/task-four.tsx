@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   ArrowLeft,
@@ -12,7 +12,6 @@ import { cn, getFirstName } from "@/lib/utils";
 import type { ThemeId } from "./startups-data";
 import {
   INVESTIGATIONS,
-  SCORE_BY_OUTCOME,
   type InvestigationOption,
   type Outcome,
 } from "./rca-investigation-data";
@@ -20,7 +19,62 @@ import { InboxEmail } from "./inbox-email";
 
 type Phase = "email" | "investigate" | "results";
 
-type StepRecord = { optionId: "A" | "B" | "C" | "D"; outcome: Outcome };
+type OptionId = "A" | "B" | "C" | "D";
+/** Committed step record (after the student lands on the correct answer). */
+type StepRecord = {
+  firstOptionId: OptionId;
+  firstOutcome: Outcome;
+  correctOptionId: OptionId;
+  tries: number;
+};
+
+/** Rebuild local attempts from a committed record (when navigating back). */
+function rebuildAttempts(rec: StepRecord, options: InvestigationOption[]): Attempt[] {
+  const out: Attempt[] = [];
+  if (rec.firstOptionId !== rec.correctOptionId) {
+    out.push({ id: rec.firstOptionId, outcome: rec.firstOutcome });
+  }
+  const correct = options.find((o) => o.outcome === "correct")!;
+  // Add the final correct attempt last.
+  out.push({ id: correct.id, outcome: "correct" });
+  return out;
+}
+
+/** Sector-specific 7-days-later success card copy. */
+const SUCCESS_MOMENT: Record<ThemeId, string> = {
+  ai: "Aarav rebuilt the onboarding flow with guided setup and prebuilt templates. Within a week, drop-off went from 72% to single digits. The product team is calling it the biggest unlock since launch. Great job. You just saved NeuroPilot.",
+  climate:
+    "Rhea's team built an EV density scoring model and paused expansion into unvalidated zones. Utilization at existing high-demand stations climbed 34% in the first week as resources were redirected. Great job. You just saved GreenLoop.",
+  health:
+    "Dr. Sharma's team shipped AI-based alert prioritization. Doctor login rates recovered within the first week. Three hospitals that were about to churn signed renewals. Great job. You just saved MediSync.",
+};
+const FAILURE_MOMENT =
+  "The founder tried a few things, but the real problem stayed hidden a little longer. With the right diagnosis, this could have been a different story. Review the case and try again — the founder is counting on you.";
+
+function SevenDaysLaterCard({ sector, success }: { sector: ThemeId; success: boolean }) {
+  const message = success ? SUCCESS_MOMENT[sector] : FAILURE_MOMENT;
+  return (
+    <section
+      className="mt-10 rounded-2xl p-6 sm:p-7 text-white relative overflow-hidden"
+      style={{
+        background: "linear-gradient(180deg, #060914 0%, #0a1426 100%)",
+        boxShadow: "0 12px 50px rgba(0,0,0,0.55)",
+      }}
+    >
+      <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-white/70 font-semibold">
+        <span className="relative flex h-2 w-2">
+          <span
+            className="absolute inline-flex h-full w-full rounded-full bg-[oklch(0.78_0.18_155)] opacity-70"
+            style={{ animation: "softPulse 1.6s ease-in-out infinite" }}
+          />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-[oklch(0.78_0.18_155)]" />
+        </span>
+        — 7 days later —
+      </div>
+      <p className="mt-3 text-[15.5px] leading-relaxed text-white/90">{message}</p>
+    </section>
+  );
+}
 
 export function AicIsbTaskFour({
   candidateName,
@@ -56,6 +110,7 @@ export function AicIsbTaskFour({
     return (
       <Results
         data={data}
+        sector={sector}
         records={records as StepRecord[]}
         reviewMode={reviewMode}
         onReview={() => {
@@ -74,10 +129,10 @@ export function AicIsbTaskFour({
       stepIndex={stepIndex}
       records={records}
       reviewMode={reviewMode}
-      onSelect={(opt) => {
+      onCommit={(rec) => {
         setRecords((r) => {
           const next = [...r];
-          next[stepIndex] = { optionId: opt.id, outcome: opt.outcome };
+          next[stepIndex] = rec;
           return next;
         });
       }}
@@ -172,12 +227,14 @@ function EmailScreen({
 }
 
 /* ---------- Investigation ---------- */
+type Attempt = { id: OptionId; outcome: Outcome };
+
 function Investigation({
   data,
   stepIndex,
   records,
   reviewMode,
-  onSelect,
+  onCommit,
   onContinue,
   onBack,
   onExitReview,
@@ -186,18 +243,53 @@ function Investigation({
   stepIndex: number;
   records: (StepRecord | null)[];
   reviewMode: boolean;
-  onSelect: (opt: InvestigationOption) => void;
+  onCommit: (rec: StepRecord) => void;
   onContinue: () => void;
   onBack: () => void;
   onExitReview: () => void;
 }) {
   const step = data.steps[stepIndex];
   const total = data.steps.length;
-  const pct = Math.round(((stepIndex + (records[stepIndex] ? 1 : 0)) / total) * 100);
-  const current = records[stepIndex];
-  const selectedOption =
-    current && step.options.find((o) => o.id === current.optionId);
+  const committed = records[stepIndex];
   const correctOption = step.options.find((o) => o.outcome === "correct")!;
+
+  // Local attempts for the active step. Re-seeded whenever the step or committed record changes.
+  const [attempts, setAttempts] = useState<Attempt[]>(() =>
+    committed
+      ? rebuildAttempts(committed, step.options)
+      : [],
+  );
+  // Reset on step change.
+  useMemo(() => {
+    setAttempts(
+      committed ? rebuildAttempts(committed, step.options) : [],
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepIndex]);
+
+  const lastAttempt = attempts[attempts.length - 1];
+  const landedCorrect =
+    !!lastAttempt && lastAttempt.outcome === "correct";
+  const pct = Math.round(((stepIndex + (landedCorrect || committed ? 1 : 0)) / total) * 100);
+  const lastOption = lastAttempt
+    ? step.options.find((o) => o.id === lastAttempt.id)
+    : null;
+
+  const handleSelect = (opt: InvestigationOption) => {
+    if (reviewMode || landedCorrect) return;
+    // Ignore re-clicks on the same wrong option.
+    if (attempts.some((a) => a.id === opt.id)) return;
+    const next = [...attempts, { id: opt.id, outcome: opt.outcome }];
+    setAttempts(next);
+    if (opt.outcome === "correct") {
+      onCommit({
+        firstOptionId: next[0].id,
+        firstOutcome: next[0].outcome,
+        correctOptionId: correctOption.id,
+        tries: next.length,
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -253,41 +345,60 @@ function Investigation({
             </div>
           )}
 
-          {/* Options 2x2 */}
-          <div className="mt-6 grid sm:grid-cols-2 gap-3.5">
-            {step.options.map((opt) => {
-              const isSelected = current?.optionId === opt.id;
-              const isCorrect = opt.outcome === "correct";
-              const showOutcome = !!current || reviewMode;
+          {/* Retry hint shown after a wrong/partial pick, before landing correct */}
+          {!reviewMode && attempts.length > 0 && !landedCorrect && (
+            <div className="mt-5 text-[12px] uppercase tracking-[0.18em] text-muted-foreground font-semibold">
+              Have another look — pick again
+            </div>
+          )}
 
-              const outcomeStyle =
-                isSelected && current
-                  ? outcomeRing(current.outcome)
-                  : reviewMode && isCorrect
-                    ? outcomeRing("correct")
-                    : "border-border hover:border-primary/40 hover:bg-secondary/40";
+          {/* Options 2x2 */}
+          <div className="mt-3 grid sm:grid-cols-2 gap-3.5">
+            {step.options.map((opt) => {
+              const attempt = attempts.find((a) => a.id === opt.id);
+              const isCorrectOpt = opt.outcome === "correct";
+              const isFirstWrong =
+                !!attempt &&
+                attempts.length > 1 &&
+                attempts[0].id === opt.id &&
+                attempts[0].outcome !== "correct";
+              const disabled =
+                reviewMode ||
+                landedCorrect ||
+                !!attempt; // can't re-pick same option
+
+              const outcomeStyle = attempt
+                ? isFirstWrong && landedCorrect
+                  ? // faded original wrong pick once they got it right
+                    "border-[oklch(0.72_0.16_25)]/40 bg-[oklch(0.72_0.16_25)]/5 opacity-70"
+                  : outcomeRing(attempt.outcome)
+                : reviewMode && isCorrectOpt
+                  ? outcomeRing("correct")
+                  : "border-border hover:border-primary/40 hover:bg-secondary/40";
 
               return (
                 <button
                   key={opt.id}
-                  onClick={() => !current && !reviewMode && onSelect(opt)}
-                  disabled={!!current || reviewMode}
+                  onClick={() => handleSelect(opt)}
+                  disabled={disabled}
                   className={cn(
                     "text-left rounded-xl border bg-card p-4 transition relative",
                     outcomeStyle,
-                    !current && !reviewMode && "hover:-translate-y-0.5 cursor-pointer",
-                    (current || reviewMode) && "cursor-default",
+                    !disabled && "hover:-translate-y-0.5 cursor-pointer",
+                    disabled && "cursor-default",
                   )}
                 >
                   <div className="flex items-start gap-3">
                     <span
                       className={cn(
                         "h-6 w-6 rounded-md text-[11px] font-bold flex items-center justify-center shrink-0",
-                        isSelected
-                          ? "bg-primary text-primary-foreground"
-                          : reviewMode && isCorrect
-                            ? "bg-[oklch(0.72_0.14_155)] text-background"
-                            : "bg-secondary text-foreground/80",
+                        attempt && attempt.outcome === "correct"
+                          ? "bg-[oklch(0.72_0.14_155)] text-background"
+                          : attempt
+                            ? "bg-primary text-primary-foreground"
+                            : reviewMode && isCorrectOpt
+                              ? "bg-[oklch(0.72_0.14_155)] text-background"
+                              : "bg-secondary text-foreground/80",
                       )}
                     >
                       {opt.id}
@@ -301,12 +412,12 @@ function Investigation({
                       </div>
                     </div>
                   </div>
-                  {showOutcome && isSelected && (
+                  {attempt && (
                     <div className="absolute top-2.5 right-2.5">
-                      <OutcomeIcon outcome={current!.outcome} small />
+                      <OutcomeIcon outcome={attempt.outcome} small />
                     </div>
                   )}
-                  {reviewMode && isCorrect && !isSelected && (
+                  {reviewMode && isCorrectOpt && !attempt && (
                     <div className="absolute top-2.5 right-2.5 text-[10px] uppercase tracking-[0.16em] font-semibold text-[oklch(0.72_0.14_155)]">
                       Correct
                     </div>
@@ -316,10 +427,8 @@ function Investigation({
             })}
           </div>
 
-          {/* Feedback */}
-          {selectedOption && (
-            <FeedbackBlock option={selectedOption} />
-          )}
+          {/* Feedback for last attempt */}
+          {lastOption && <FeedbackBlock option={lastOption} />}
 
           {/* Controls */}
           <div className="mt-7 flex items-center justify-between gap-3">
@@ -349,10 +458,10 @@ function Investigation({
             ) : (
               <button
                 onClick={onContinue}
-                disabled={!current}
+                disabled={!landedCorrect}
                 className={cn(
                   "btn-primary-glow inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold",
-                  !current && "opacity-40 pointer-events-none",
+                  !landedCorrect && "opacity-40 pointer-events-none",
                 )}
               >
                 {stepIndex === total - 1 ? "See results" : "Continue"}
@@ -373,6 +482,11 @@ function Investigation({
                 {data.steps.map((s, i) => {
                   const r = records[i];
                   const isCurrent = i === stepIndex;
+                  const correctOpt = s.options.find((o) => o.outcome === "correct")!;
+                  const firstChoice = r
+                    ? s.options.find((o) => o.id === r.firstOptionId)
+                    : null;
+                  const gotFirstTry = r && r.tries === 1;
                   return (
                     <li
                       key={i}
@@ -383,7 +497,7 @@ function Investigation({
                     >
                       <span className="mt-0.5">
                         {r ? (
-                          <OutcomeIcon outcome={r.outcome} small />
+                          <CheckCircle2 className="h-4 w-4 text-[oklch(0.72_0.14_155)]" />
                         ) : (
                           <span
                             className={cn(
@@ -397,12 +511,15 @@ function Investigation({
                           </span>
                         )}
                       </span>
-                      <span className={cn(r && "opacity-70")}>
-                        <span className="font-medium">{s.title}</span>
+                      <span className={cn(r && "opacity-90")}>
+                        <span className="font-medium">
+                          Step {i + 1}: {correctOpt.title}
+                        </span>
                         {r && (
                           <span className="block text-[11.5px] text-muted-foreground">
-                            You chose: {r.optionId} ·{" "}
-                            {s.options.find((o) => o.id === r.optionId)?.title}
+                            {gotFirstTry
+                              ? "(your answer)"
+                              : `(correct answer — you chose ${firstChoice?.title ?? r.firstOptionId})`}
                           </span>
                         )}
                       </span>
@@ -500,19 +617,25 @@ function FeedbackBlock({ option }: { option: InvestigationOption }) {
 /* ---------- Results ---------- */
 function Results({
   data,
+  sector,
   records,
   reviewMode: _reviewMode,
   onReview,
   onContinue,
 }: {
   data: (typeof INVESTIGATIONS)[ThemeId];
+  sector: ThemeId;
   records: StepRecord[];
   reviewMode: boolean;
   onReview: () => void;
   onContinue: () => void;
 }) {
   const score = useMemo(
-    () => records.reduce((sum, r) => sum + (r ? SCORE_BY_OUTCOME[r.outcome] : 0), 0),
+    () =>
+      records.reduce(
+        (sum, r) => sum + (r ? (r.tries === 1 ? 1 : 0.5) : 0),
+        0,
+      ),
     [records],
   );
   const total = data.steps.length;
@@ -567,7 +690,7 @@ function Results({
               className="h-9 w-9 rounded-lg border border-border bg-background/40 flex items-center justify-center"
               title={`Step ${i + 1}`}
             >
-              <OutcomeIcon outcome={r.outcome} />
+              <OutcomeIcon outcome={r.tries === 1 ? "correct" : "partial"} />
             </div>
           ))}
         </div>
@@ -587,31 +710,35 @@ function Results({
           Your path vs. the right path
         </h2>
         <div className="mt-3 rounded-xl border border-border overflow-hidden">
-          <div className="grid grid-cols-[40px_1fr_1fr] bg-background/40 px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-semibold">
+          <div className="grid grid-cols-[40px_1fr_1fr_72px] bg-background/40 px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-semibold">
             <div>Step</div>
             <div>Your choice</div>
             <div>Correct choice</div>
+            <div>Tries</div>
           </div>
           {data.steps.map((s, i) => {
             const r = records[i];
-            const chosen = s.options.find((o) => o.id === r.optionId);
+            const chosen = s.options.find((o) => o.id === r.firstOptionId);
             const correct = s.options.find((o) => o.outcome === "correct")!;
             return (
               <div
                 key={i}
-                className="grid grid-cols-[40px_1fr_1fr] gap-3 px-4 py-3 border-t border-border text-[13px] items-start"
+                className="grid grid-cols-[40px_1fr_1fr_72px] gap-3 px-4 py-3 border-t border-border text-[13px] items-start"
               >
                 <div className="flex items-center gap-1.5 text-muted-foreground font-mono">
                   {i + 1}
-                  <OutcomeIcon outcome={r.outcome} small />
+                  <OutcomeIcon outcome={r.tries === 1 ? "correct" : "partial"} small />
                 </div>
                 <div className="text-foreground/90">
-                  <span className="text-muted-foreground font-mono mr-1">{r.optionId}.</span>
+                  <span className="text-muted-foreground font-mono mr-1">{r.firstOptionId}.</span>
                   {chosen?.title}
                 </div>
                 <div className="text-[oklch(0.78_0.14_155)]">
                   <span className="font-mono mr-1">{correct.id}.</span>
                   {correct.title}
+                </div>
+                <div className="text-muted-foreground font-mono">
+                  {r.tries === 1 ? "1st try" : r.tries === 2 ? "2nd try" : `${r.tries}rd try`}
                 </div>
               </div>
             );
@@ -626,6 +753,9 @@ function Results({
         </div>
         <p className="mt-2 text-[14.5px] leading-relaxed text-foreground/85">{data.takeaway}</p>
       </section>
+
+      {/* 7 days later moment */}
+      <SevenDaysLaterCard sector={sector} success={score >= 3} />
 
       <div className="mt-9 flex flex-wrap items-center justify-between gap-3">
         <button

@@ -18,7 +18,7 @@ import { cn, getFirstName } from "@/lib/utils";
 import { THEMES, type ThemeId, type Startup } from "./startups-data";
 import { InboxEmail } from "./inbox-email";
 
-type Phase = "email" | "dashboard" | "loading" | "result";
+type Phase = "email" | "notification" | "loading" | "result";
 
 type Evaluation = {
   rating: number; // 1–10, 0 = unset
@@ -104,7 +104,13 @@ export function AicIsbTaskTwo({
   }
 
   if (phase === "email") {
-    return <EmailPhase name={getFirstName(candidateName)} themeLabel={bundle.label} onStart={() => setPhase("dashboard")} />;
+    return (
+      <EmailPhase
+        name={getFirstName(candidateName)}
+        themeLabel={bundle.label}
+        onStart={() => setPhase("notification")}
+      />
+    );
   }
 
   if (phase === "loading") {
@@ -126,7 +132,9 @@ export function AicIsbTaskTwo({
   }
 
   return (
-    <Dashboard
+    <>
+      <NotificationHero />
+      <Dashboard
       themeLabel={bundle.label}
       startups={bundle.startups}
       evals={evals}
@@ -140,7 +148,8 @@ export function AicIsbTaskTwo({
       onSaveDraft={handleSaveDraft}
       limitWarning={limitWarning}
       onDismissWarning={() => setLimitWarning(false)}
-    />
+      />
+    </>
   );
 }
 
@@ -157,32 +166,63 @@ function EmailPhase({
 }) {
   return (
     <InboxEmail
-      badge="Phase 2 · Accelerator Cohort Selection"
+      badge="Phase 2 · Call for Applications"
       senderName="Animesh Sharma"
-      senderRole="Program Director, AIC × ISB"
+      senderRole="CEO, AIC × ISB"
       senderInitials="AS"
-      subject="Next Evaluation Phase – Accelerator Cohort Selection"
-      preview={`Hi ${name}, good job on the thesis, next, evaluate 8 shortlisted startups and pick 2 for the cohort…`}
+      subject="Call for Applications — ready when you are"
+      preview={`Hi ${name}, good job on the thesis — we've opened the call for applications. Launch it when ready…`}
       timestamp="Today · 11:04 AM"
-      attachmentLabel="Cohort Evaluation Brief.pdf"
-      ctaLabel="Continue Evaluation"
+      ctaLabel="Call for Applications"
       onCta={onStart}
     >
       <div className="whitespace-pre-wrap">{`Hi ${name},
 
-Good job on the investment thesis, the board agrees with your direction and recommendations.
+Good job on the investment thesis — the board agrees with your direction and recommendations.
 
-We received over 8,000 startup applications for this cohort. Based on internal analytics and initial screening, 8 startups have now been shortlisted.
+We've opened the call for applications. When you're ready, go ahead and launch it. Our analytical team will surface the shortlisted pool for your review, and I'd like to hear which ones you'd back.
 
-Your next task is to evaluate these startups and select the 2 companies you believe should move forward into the AIC × ISB accelerator cohort.
-
-Focus on long-term potential, scalability, and founder-market fit.
+No pressure — trust your instincts.
 
 Regards,
 Animesh Sharma
-Program Director
+CEO
 AIC × ISB`}</div>
     </InboxEmail>
+  );
+}
+
+/* ---------------- Notification hero ---------------- */
+
+function NotificationHero() {
+  return (
+    <section className="mx-auto max-w-4xl px-5 sm:px-8 pt-10 sm:pt-14">
+      <div
+        className="rounded-2xl border border-primary/30 bg-primary/5 p-6 sm:p-8"
+        style={{ animation: "fadeSlide 400ms ease-out" }}
+      >
+        <div className="flex items-center gap-2">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-70" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+          </span>
+          <span className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+            Applications closed · Shortlist ready
+          </span>
+        </div>
+        <h2 className="mt-3 text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
+          8,000+ applications. 8 startups make the cut.
+        </h2>
+        <p className="mt-3 text-[15px] text-foreground/85 leading-relaxed">
+          We received 8,000+ applications from founders across the country. Our analytical
+          board reviewed them all and shortlisted 8 startups for your evaluation.
+          <span className="text-primary"> Pick the 2 you'd bet on.</span>
+        </p>
+        <div className="mt-4 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+          Scroll down to review the shortlist ↓
+        </div>
+      </div>
+    </section>
   );
 }
 

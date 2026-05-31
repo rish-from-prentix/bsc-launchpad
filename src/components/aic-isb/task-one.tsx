@@ -1025,6 +1025,17 @@ function EvaluationPanel({
               >
                 Submit thesis <ArrowRight className="h-4 w-4" />
               </button>
+              <a
+                href={`https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent(
+                  linkedInPost.plain,
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={onCopyPost}
+                className="inline-flex items-center gap-2 rounded-lg bg-[#0a66c2] px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition"
+              >
+                <Linkedin className="h-4 w-4" /> Post on LinkedIn
+              </a>
               <button
                 type="button"
                 onClick={onCopyPost}

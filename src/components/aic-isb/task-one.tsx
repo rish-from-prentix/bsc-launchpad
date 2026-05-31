@@ -804,26 +804,38 @@ function SlideBuilder({
 
           {/* Right pane — LinkedIn post preview */}
           <div className="p-5 sm:p-7 bg-background/20">
-            <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-3">
-              Live LinkedIn preview
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                Live LinkedIn preview
+              </div>
+              <div className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                <Lock className="h-3 w-3" /> Locked
+              </div>
             </div>
-            <LinkedInPreview post={linkedInPost} />
-            <button
-              type="button"
-              onClick={onCopyPost}
-              disabled={linkedInPost.sections.length === 0}
-              className="mt-3 inline-flex items-center gap-2 rounded-lg border border-border bg-card hover:bg-secondary px-3.5 py-2 text-xs text-foreground/90 transition disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {postCopied ? (
-                <>
-                  <Check className="h-3.5 w-3.5" /> Copied
-                </>
-              ) : (
-                <>
-                  <Copy className="h-3.5 w-3.5" /> Copy post
-                </>
-              )}
-            </button>
+            <div className="relative">
+              <div
+                className="transition-all duration-500"
+                style={{ filter: "grayscale(1) blur(1.5px)", opacity: 0.55 }}
+                aria-hidden="true"
+              >
+                <LinkedInPreview post={linkedInPost} />
+              </div>
+              {/* Lock overlay */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-background/55 backdrop-blur-[3px] border border-border">
+                <div
+                  className="h-12 w-12 rounded-full bg-background/80 border border-border flex items-center justify-center"
+                  style={{ boxShadow: "0 4px 18px rgba(0,0,0,0.35)" }}
+                >
+                  <Lock className="h-5 w-5 text-foreground/80" />
+                </div>
+                <div className="mt-3 text-[13px] font-semibold text-foreground tracking-tight">
+                  Earn the post.
+                </div>
+                <div className="text-[11px] text-muted-foreground mt-0.5">
+                  Evaluate first, publish after.
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

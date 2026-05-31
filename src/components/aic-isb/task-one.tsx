@@ -18,6 +18,8 @@ import {
   MessageCircle,
   Repeat2,
   Send as SendIcon,
+  Lock,
+  Linkedin,
 } from "lucide-react";
 import { AicIsbLogo } from "./aic-logo";
 import { cn, getFirstName } from "@/lib/utils";

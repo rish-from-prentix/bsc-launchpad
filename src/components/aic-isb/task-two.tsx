@@ -170,19 +170,19 @@ function EmailPhase({
       senderName="Animesh Sharma"
       senderRole="CEO, AIC × ISB"
       senderInitials="AS"
-      subject="Call for Applications , ready when you are"
-      preview={`Hi ${name}, good job on the thesis , we've opened the call for applications. Launch it when ready…`}
+      subject="Call for Applications — ready when you are"
+      preview={`Hi ${name}, good job on the thesis — we've opened the call for applications. Launch it when ready…`}
       timestamp="Today · 11:04 AM"
       ctaLabel="Call for Applications"
       onCta={onStart}
     >
       <div className="whitespace-pre-wrap">{`Hi ${name},
 
-Good job on the investment thesis , the board agrees with your direction and recommendations.
+Good job on the investment thesis — the board agrees with your direction and recommendations.
 
 We've opened the call for applications. When you're ready, go ahead and launch it. Our analytical team will surface the shortlisted pool for your review, and I'd like to hear which ones you'd back.
 
-No pressure , trust your instincts.
+No pressure — trust your instincts.
 
 Regards,
 Animesh Sharma
@@ -504,7 +504,7 @@ function StartupCard({
               Your rating
             </label>
             <span className="text-sm font-mono text-muted-foreground">
-              {rating > 0 ? `${rating.toFixed(1)} / 10` : ","}
+              {rating > 0 ? `${rating.toFixed(1)} / 10` : "—"}
             </span>
           </div>
           <RatingControl value={rating} onChange={(v) => onUpdate({ rating: v })} />
@@ -802,7 +802,7 @@ function RatingControl({ value, onChange }: { value: number; onChange: (v: numbe
           step={0.1}
           inputMode="decimal"
           value={text}
-          placeholder=","
+          placeholder="—"
           onChange={(e) => commit(e.target.value)}
           onBlur={(e) => {
             if (e.target.value.trim() === "") return;

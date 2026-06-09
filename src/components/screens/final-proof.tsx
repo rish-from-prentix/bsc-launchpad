@@ -130,7 +130,7 @@ export function FinalProof({
       className="mx-auto max-w-[720px] px-5 sm:px-8 py-12 sm:py-16 space-y-16"
       style={{ animation: "fadeSlide 250ms ease-out" }}
     >
-      {/* SECTION 1 , Certificate */}
+      {/* SECTION 1 — Certificate */}
       <section>
         <div className="flex justify-center">
           <div
@@ -170,7 +170,7 @@ export function FinalProof({
         </p>
       </section>
 
-      {/* SECTION 4 , LinkedIn post */}
+      {/* SECTION 4 — LinkedIn post */}
       <section>
         <div className="text-center text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
           Your LinkedIn post
@@ -207,7 +207,7 @@ export function FinalProof({
         </p>
       </section>
 
-      {/* SECTION 3 , Resume line */}
+      {/* SECTION 3 — Resume line */}
       <section>
         <div className="text-center text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
           Your resume line
@@ -242,7 +242,7 @@ export function FinalProof({
         </div>
       </section>
 
-      {/* SECTION 4 , Skills */}
+      {/* SECTION 4 — Skills */}
       <section>
         <div className="text-center text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
           Skills you can add to your resume and LinkedIn
@@ -282,7 +282,7 @@ export function FinalProof({
         </p>
       </section>
 
-      {/* SECTION 5 , Footer close */}
+      {/* SECTION 5 — Footer close */}
       <section className="flex flex-col items-center gap-3 pt-4">
         <BrandMark brand="prentix" height={20} />
         <p className="text-center text-[14px] text-muted-foreground">

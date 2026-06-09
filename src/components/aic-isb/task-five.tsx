@@ -70,7 +70,7 @@ export function AicIsbTaskFive({
   const storageKey = `aic-isb:task5:${sector}:${shortlistedIds.join(",")}`;
 
   const [phase, setPhase] = useState<Phase>("email");
-  // One startup is assigned directly , no selection step.
+  // One startup is assigned directly — no selection step.
   const selectedId = cohortStartups[0]?.id ?? null;
   const [answers, setAnswers] = useState<Answers>(() => {
     if (typeof window === "undefined") return emptyAnswers;
@@ -246,7 +246,7 @@ function Workspace({
       </p>
 
       <div className="mt-8 grid lg:grid-cols-3 gap-6">
-        {/* LEFT , startup data panel */}
+        {/* LEFT — startup data panel */}
         <div className="lg:col-span-2 space-y-6">
           <StartupDataPanel startup={startup} rcaSummary={rca.rootCauseLabel} />
 
@@ -255,7 +255,7 @@ function Workspace({
           <ExamplesPanel sector={sector} examples={examples} />
         </div>
 
-        {/* RIGHT , recommendation form */}
+        {/* RIGHT — recommendation form */}
         <div className="space-y-6">
           <div className="glass rounded-2xl p-5 sticky top-24">
             <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold flex items-center gap-2">
@@ -265,7 +265,7 @@ function Workspace({
               <NumericField
                 label="Recommended ARR multiple (x)"
                 value={answers.multiple}
-                placeholder="e.g. 8 , what multiple fits this startup?"
+                placeholder="e.g. 8 — what multiple fits this startup?"
                 suffix="x"
                 onChange={(v) => onUpdate({ multiple: v })}
                 helper="Reference sector comparables below."
@@ -273,7 +273,7 @@ function Workspace({
               <NumericField
                 label="Estimated valuation ($M)"
                 value={answers.valuation}
-                placeholder="e.g. 25.2 , ARR × your multiple"
+                placeholder="e.g. 25.2 — ARR × your multiple"
                 suffix="$M"
                 onChange={(v) => onUpdate({ valuation: v })}
                 helper="Use the formula: ARR × Multiple."
@@ -282,7 +282,7 @@ function Workspace({
                 label="Why does this valuation make sense?"
                 value={answers.rationale}
                 rows={3}
-                placeholder="In 2–4 lines, justify the multiple , tie it to ARR, growth, retention, and risk."
+                placeholder="In 2–4 lines, justify the multiple — tie it to ARR, growth, retention, and risk."
                 onChange={(v) => onUpdate({ rationale: v })}
                 helper="Recommended: 2–4 concise lines, reasoning over summary."
               />
@@ -298,9 +298,9 @@ function Workspace({
                 label="Biggest investment risks"
                 value={answers.risks}
                 rows={2}
-                placeholder="Summarise the biggest risks affecting long-term scalability , burn, churn, regulation, competition."
+                placeholder="Summarise the biggest risks affecting long-term scalability — burn, churn, regulation, competition."
                 onChange={(v) => onUpdate({ risks: v })}
-                helper="Be specific , which risk would actually break the thesis?"
+                helper="Be specific — which risk would actually break the thesis?"
               />
               <div>
                 <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
@@ -385,12 +385,12 @@ function StartupDataPanel({ startup, rcaSummary }: { startup: Startup; rcaSummar
       </div>
 
       <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <Metric label="MRR" value={startup.mrr ?? ","} />
-        <Metric label="Growth" value={startup.growth ?? ","} />
-        <Metric label="Retention" value={startup.retention ?? ","} />
-        <Metric label="Burn" value={startup.burn ?? ","} />
-        <Metric label="Runway" value={startup.runway ?? ","} />
-        <Metric label="Customers" value={startup.customers ?? ","} />
+        <Metric label="MRR" value={startup.mrr ?? "—"} />
+        <Metric label="Growth" value={startup.growth ?? "—"} />
+        <Metric label="Retention" value={startup.retention ?? "—"} />
+        <Metric label="Burn" value={startup.burn ?? "—"} />
+        <Metric label="Runway" value={startup.runway ?? "—"} />
+        <Metric label="Customers" value={startup.customers ?? "—"} />
       </div>
 
       <div className="mt-5 grid md:grid-cols-2 gap-4">
@@ -785,7 +785,7 @@ function ResultPhase({
             <div className="mt-1 text-foreground">
               <div className="text-2xl font-semibold">${studentVal}M</div>
               <div className="text-xs text-muted-foreground">
-                {studentMult}x ARR · {answers.recommendation || ","}
+                {studentMult}x ARR · {answers.recommendation || "—"}
               </div>
             </div>
           </div>
@@ -1277,7 +1277,7 @@ function EarnedPhase({
           Skills you can add to your resume and LinkedIn
         </div>
         <p className="mt-4 text-center text-[14px] text-muted-foreground leading-relaxed">
-          Years of boardrooms, bad calls, and hard lessons , you just lived all of it in a few
+          Years of boardrooms, bad calls, and hard lessons — you just lived all of it in a few
           hours.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2.5">

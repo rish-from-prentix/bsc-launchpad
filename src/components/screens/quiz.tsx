@@ -85,7 +85,7 @@ export function Quiz({
       style={{ animation: "fadeSlide 250ms ease-out" }}
     >
       <div className="flex items-center justify-between mb-6">
-        <Breadcrumb>Knowledge Check , {title}</Breadcrumb>
+        <Breadcrumb>Knowledge Check — {title}</Breadcrumb>
         <StepBar active={step} />
       </div>
 

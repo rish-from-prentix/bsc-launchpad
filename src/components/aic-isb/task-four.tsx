@@ -49,7 +49,7 @@ const SUCCESS_MOMENT: Record<ThemeId, string> = {
     "Dr. Sharma's team shipped AI-based alert prioritization. Doctor login rates recovered within the first week. Three hospitals that were about to churn signed renewals. Great job. You just saved MediSync.",
 };
 const FAILURE_MOMENT =
-  "The founder tried a few things, but the real problem stayed hidden a little longer. With the right diagnosis, this could have been a different story. Review the case and try again , the founder is counting on you.";
+  "The founder tried a few things, but the real problem stayed hidden a little longer. With the right diagnosis, this could have been a different story. Review the case and try again — the founder is counting on you.";
 
 function SevenDaysLaterCard({ sector, success }: { sector: ThemeId; success: boolean }) {
   const message = success ? SUCCESS_MOMENT[sector] : FAILURE_MOMENT;
@@ -69,7 +69,7 @@ function SevenDaysLaterCard({ sector, success }: { sector: ThemeId; success: boo
           />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-[oklch(0.78_0.18_155)]" />
         </span>
-        , 7 days later ,
+        — 7 days later —
       </div>
       <p className="mt-3 text-[15.5px] leading-relaxed text-white/90">{message}</p>
     </section>
@@ -206,7 +206,7 @@ function EmailScreen({
         <div className="whitespace-pre-wrap">{data.email.body}</div>
       </InboxEmail>
 
-      {/* Approach guidance , separate box below the email */}
+      {/* Approach guidance — separate box below the email */}
       <div className="mx-auto max-w-3xl px-5 sm:px-8 pb-16">
         <div className="rounded-2xl border border-border bg-card/60 p-5 sm:p-6">
           <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
@@ -348,7 +348,7 @@ function Investigation({
           {/* Retry hint shown after a wrong/partial pick, before landing correct */}
           {!reviewMode && attempts.length > 0 && !landedCorrect && (
             <div className="mt-5 text-[12px] uppercase tracking-[0.18em] text-muted-foreground font-semibold">
-              Have another look , pick again
+              Have another look — pick again
             </div>
           )}
 
@@ -519,7 +519,7 @@ function Investigation({
                           <span className="block text-[11.5px] text-muted-foreground">
                             {gotFirstTry
                               ? "(your answer)"
-                              : `(correct answer , you chose ${firstChoice?.title ?? r.firstOptionId})`}
+                              : `(correct answer — you chose ${firstChoice?.title ?? r.firstOptionId})`}
                           </span>
                         )}
                       </span>

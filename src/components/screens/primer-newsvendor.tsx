@@ -49,7 +49,7 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
       </div>
 
       <p className="mt-8 text-[15px] text-foreground/90 leading-[1.7]">
-        This is exactly the problem BSC's supply chain team faces every month , except at a much larger scale, across
+        This is exactly the problem BSC's supply chain team faces every month — except at a much larger scale, across
         cities and channels.
       </p>
 
@@ -82,7 +82,7 @@ export function PrimerNewsvendor({ onBack, onQuiz }: { onBack: () => void; onQui
         </p>
         <div className="mt-6 rounded-lg bg-secondary/40 border border-border p-5 italic text-sm text-foreground/85 leading-relaxed">
           How to read this: You should stock enough inventory to meet the demand in about 87.4% of scenarios. In other
-          words, you're willing to risk a stockout only 12.6% of the time , because your profit margin is high enough to
+          words, you're willing to risk a stockout only 12.6% of the time — because your profit margin is high enough to
           justify holding more stock. The higher your margin relative to holding cost, the more inventory you should
           hold. Intuitively, that should make sense.
         </div>

@@ -412,35 +412,35 @@ export function evaluateFeedback(
 
       const sellThrough = inv > 0 ? sales / inv : 0;
 
-      // N1 , Full stockout (sold 100%)
+      // N1 — Full stockout (sold 100%)
       if (inv > 0 && sales >= inv) {
         bad.push({
           tone: "bad",
-          title: `Stockout , ${meta.skuLabel}, ${meta.cityLabel}, ${chLabel}`,
-          body: `You ran out of ${meta.skuLabel} in ${meta.cityLabel} via ${chLabel} before the month ended. Every customer who came after that walked away empty-handed , and likely went to a competitor. Stockouts don't just hurt this month's revenue. They erode the market you're trying to build.`,
+          title: `Stockout — ${meta.skuLabel}, ${meta.cityLabel}, ${chLabel}`,
+          body: `You ran out of ${meta.skuLabel} in ${meta.cityLabel} via ${chLabel} before the month ended. Every customer who came after that walked away empty-handed — and likely went to a competitor. Stockouts don't just hurt this month's revenue. They erode the market you're trying to build.`,
         });
       } else if (inv > 0 && sellThrough >= 0.95) {
-        // W1 , Near stockout (95-99%)
+        // W1 — Near stockout (95-99%)
         warn.push({
           tone: "warn",
-          title: `Cutting it close , ${meta.skuLabel}, ${meta.cityLabel}, ${chLabel}`,
-          body: `You sold ${Math.round(sellThrough * 100)}% of your inventory here. That's efficient but risky , a small demand uptick would have caused a stockout. Consider whether a small buffer makes sense next month.`,
+          title: `Cutting it close — ${meta.skuLabel}, ${meta.cityLabel}, ${chLabel}`,
+          body: `You sold ${Math.round(sellThrough * 100)}% of your inventory here. That's efficient but risky — a small demand uptick would have caused a stockout. Consider whether a small buffer makes sense next month.`,
         });
       } else if (inv > 0 && sellThrough >= 0.85) {
-        // P1 , Tight inventory (85-94%)
+        // P1 — Tight inventory (85-94%)
         good.push({
           tone: "good",
           title: "Tight inventory management",
-          body: `You sold ${Math.round(sellThrough * 100)}% of your ${meta.skuLabel} inventory in ${meta.cityLabel} via ${chLabel} this month. That's efficient capital deployment , you're not leaving money sitting in a warehouse.`,
+          body: `You sold ${Math.round(sellThrough * 100)}% of your ${meta.skuLabel} inventory in ${meta.cityLabel} via ${chLabel} this month. That's efficient capital deployment — you're not leaving money sitting in a warehouse.`,
         });
       }
 
-      // W3 , Severe excess (>=3x sales), W2 , excess (2x-3x)
+      // W3 — Severe excess (>=3x sales), W2 — excess (2x-3x)
       if (sales > 0 && inv >= sales * 3) {
         const idle = inv - sales;
         warn.push({
           tone: "warn",
-          title: `Significant overstock , ${meta.skuLabel}, ${meta.cityLabel}, ${chLabel}`,
+          title: `Significant overstock — ${meta.skuLabel}, ${meta.cityLabel}, ${chLabel}`,
           body: `You're holding ${inv} units but only sold ${sales}. That's ${idle} units tied up in working capital, each costing ₹${hc}/month to hold. This is a pattern worth breaking early.`,
         });
       } else if (sales > 0 && inv >= sales * 2) {
@@ -452,7 +452,7 @@ export function evaluateFeedback(
         });
       }
 
-      // P2 / W4 , high elasticity
+      // P2 / W4 — high elasticity
       if (e > 1.1 && curMkt > prevMkt) {
         good.push({
           tone: "good",
@@ -462,12 +462,12 @@ export function evaluateFeedback(
       } else if (e > 1.1 && curMkt <= prevMkt) {
         warn.push({
           tone: "warn",
-          title: `Missed opportunity , ${meta.skuLabel}, ${meta.cityLabel}, ${chLabel}`,
-          body: `Elasticity here is ${e.toFixed(2)} , that means every 1% increase in spend drives ${e.toFixed(2)}% more sales. You kept the budget flat. That's a high-yield channel left underutilized.`,
+          title: `Missed opportunity — ${meta.skuLabel}, ${meta.cityLabel}, ${chLabel}`,
+          body: `Elasticity here is ${e.toFixed(2)} — that means every 1% increase in spend drives ${e.toFixed(2)}% more sales. You kept the budget flat. That's a high-yield channel left underutilized.`,
         });
       }
 
-      // P10 / W5 , low elasticity
+      // P10 / W5 — low elasticity
       if (e < 0.8 && curMkt <= prevMkt) {
         good.push({
           tone: "good",
@@ -477,12 +477,12 @@ export function evaluateFeedback(
       } else if (e < 0.8 && curMkt > prevMkt) {
         warn.push({
           tone: "warn",
-          title: `Low-yield ad spend , ${meta.skuLabel}, ${meta.cityLabel}, ${chLabel}`,
+          title: `Low-yield ad spend — ${meta.skuLabel}, ${meta.cityLabel}, ${chLabel}`,
           body: `You increased marketing in a channel where elasticity is only ${e.toFixed(2)}. Each 1% extra spend only returns ${e.toFixed(2)}% in sales. That budget would have worked harder elsewhere.`,
         });
       }
 
-      // N5 , Returned stock you needed
+      // N5 — Returned stock you needed
       if (carriedHere > inv && sales >= inv && inv > 0) {
         bad.push({
           tone: "bad",
@@ -492,7 +492,7 @@ export function evaluateFeedback(
       }
     }
 
-    // P6 , Hyderabad growth capture (cells 1, 4, 7)
+    // P6 — Hyderabad growth capture (cells 1, 4, 7)
     if ([1, 4, 7].includes(i)) {
       for (const ch of ["iq", "id"] as const) {
         const inv = current.inventory[ch][i] ?? 0;
@@ -509,7 +509,7 @@ export function evaluateFeedback(
     }
   }
 
-  // Sourcing rules , Hyd Razor (cell 1)
+  // Sourcing rules — Hyd Razor (cell 1)
   const sourcing = current.sourcing;
   const hydBeardStockedOut =
     ((current.inventory.iq[4] ?? 0) > 0 && (current.sales.sq[4] ?? 0) >= (current.inventory.iq[4] ?? 0)) ||
@@ -526,13 +526,13 @@ export function evaluateFeedback(
         bad.push({
           tone: "bad",
           title: "Right instinct, wrong SKU",
-          body: `You ordered from the nearby supplier , good instinct for speed. But the spike was in Beard Oil, and inventory there still ran short. Next time, trace the signal all the way to the specific SKU before placing the order.`,
+          body: `You ordered from the nearby supplier — good instinct for speed. But the spike was in Beard Oil, and inventory there still ran short. Next time, trace the signal all the way to the specific SKU before placing the order.`,
         });
       }
     } else if (sourcing === "far" && hydBeardStockedOut) {
       bad.push({
         tone: "bad",
-        title: "Speed mattered here , wrong supplier",
+        title: "Speed mattered here — wrong supplier",
         body: `You ordered from the faraway supplier to save ₹20 per unit, but the inventory was needed urgently. It arrived too late. The margin saving was wiped out by the sales you missed while waiting.`,
       });
     }
@@ -553,7 +553,7 @@ export function evaluateFeedback(
     }
   }
 
-  // N2/N3 , Hyd Beard Oil spike (Month 3)
+  // N2/N3 — Hyd Beard Oil spike (Month 3)
   if (monthNumber === 3) {
     for (const ch of ["sq", "sd"] as const) {
       const proj = current.projectedDemand[ch][4] ?? 0;
@@ -564,7 +564,7 @@ export function evaluateFeedback(
         bad.push({
           tone: "bad",
           title: "Missed the Hyderabad spike",
-          body: `The influencer reel drove a surge in Beard Oil demand in Hyderabad. By not increasing inventory, we ran out in roughly two weeks. The last half of the month was dead sales , and every customer who couldn't find the product found someone else who had it.`,
+          body: `The influencer reel drove a surge in Beard Oil demand in Hyderabad. By not increasing inventory, we ran out in roughly two weeks. The last half of the month was dead sales — and every customer who couldn't find the product found someone else who had it.`,
         });
         break;
       } else if (ratio >= 0.7 && ratio < 0.9) {
@@ -578,7 +578,7 @@ export function evaluateFeedback(
     }
   }
 
-  // P5 / W6 , Festival season prep (Month 2)
+  // P5 / W6 — Festival season prep (Month 2)
   if (monthNumber === 2) {
     let increases = 0;
     for (let i = 1; i <= 9; i++) {
@@ -592,19 +592,19 @@ export function evaluateFeedback(
     if (increases >= 4) {
       good.push({
         tone: "good",
-        title: "Festival season , well prepared",
+        title: "Festival season — well prepared",
         body: `You stocked up ahead of the demand spike. Brands that don't prepare for festival season leave their best sales window understocked. You didn't make that mistake.`,
       });
     } else if (increases < 3) {
       warn.push({
         tone: "warn",
-        title: "Festival season , underweight",
+        title: "Festival season — underweight",
         body: `You didn't materially increase inventory heading into festival season. Demand spikes 20-30% this period. If demand came in at the high end, you likely left sales on the table.`,
       });
     }
   }
 
-  // P7 / W7 , Bombay Razor (Month 4)
+  // P7 / W7 — Bombay Razor (Month 4)
   if (monthNumber === 4) {
     const prevMq = prev.marketing.mq[3] ?? 0;
     const prevMd = prev.marketing.md[3] ?? 0;
@@ -620,18 +620,18 @@ export function evaluateFeedback(
       good.push({
         tone: "good",
         title: "Right diagnosis, right response",
-        body: `You increased marketing for Razor Kits in Bombay instead of cutting inventory. That's the correct read , this was a visibility problem, not a demand problem. Reducing inventory would have made it worse.`,
+        body: `You increased marketing for Razor Kits in Bombay instead of cutting inventory. That's the correct read — this was a visibility problem, not a demand problem. Reducing inventory would have made it worse.`,
       });
     } else if (invDown && !mktUp) {
       warn.push({
         tone: "warn",
         title: "Wrong lever in Bombay",
-        body: `You reduced inventory for Razor Kits in Bombay but didn't increase marketing. The problem was visibility , customers couldn't find the product. Cutting supply made the symptom worse, not better.`,
+        body: `You reduced inventory for Razor Kits in Bombay but didn't increase marketing. The problem was visibility — customers couldn't find the product. Cutting supply made the symptom worse, not better.`,
       });
     }
   }
 
-  // P8 , D2C Bangalore Beard Oil high elasticity
+  // P8 — D2C Bangalore Beard Oil high elasticity
   {
     const cur = current.marketing.md[5] ?? 0;
     const p = prev.marketing.md[5] ?? 0;
@@ -645,7 +645,7 @@ export function evaluateFeedback(
     }
   }
 
-  // P9 , Budget crunch handled well (Month 5)
+  // P9 — Budget crunch handled well (Month 5)
   if (monthNumber === 5) {
     const totalMkt = totalMarketing(current.marketing);
     const additional = additionalInventoryExpense(current.inventory, carried, current.sourcing);
@@ -698,7 +698,7 @@ export const MONTH_EVENTS: Record<number, EventEmail | null> = {
     subject: "Heads up: Festival season incoming",
     body: `Hi [Name],
 
-Quick heads up , we're heading into festival season. Historically, demand across all cities spikes 20-30% during this period. Plan accordingly.
+Quick heads up — we're heading into festival season. Historically, demand across all cities spikes 20-30% during this period. Plan accordingly.
 
 All the best,
 Shantanu`,
@@ -733,7 +733,7 @@ Shantanu`,
   5: {
     sender: "Shantanu Deshpande",
     initials: "SD",
-    subject: "Tighter budget this month , plan carefully",
+    subject: "Tighter budget this month — plan carefully",
     body: `Hi [Name],
 
 We're working with a tighter budget this month. You only have ₹11,00,000 to work with. Think carefully about where every rupee goes. Would you reduce marketing? Would you reduce inventory? The right answer depends on where you've been spending and what the numbers are telling you.
@@ -746,8 +746,8 @@ Shantanu`,
 export const MONTH_CONTEXT: Record<number, string> = {
   1: "Baseline",
   2: "Festival Season",
-  3: "Demand Spike , Hyderabad",
-  4: "Conversion Dip , Bombay",
+  3: "Demand Spike — Hyderabad",
+  4: "Conversion Dip — Bombay",
   5: "Budget Crunch",
 };
 
@@ -776,7 +776,7 @@ Our demand forecasts are estimates, not guarantees. When using Newsvendor analys
 
 For example: if Razor Kit sold 290 units last month in a given city and channel, use a standard deviation of 58 units (290 × 0.20) when computing your optimal stock for that cell.
 
-You don't need to use Newsvendor analysis for every decision , you can also rely on your judgement and the data in front of you. But whenever you want to apply it, the 20% rule is a good starting point.
+You don't need to use Newsvendor analysis for every decision — you can also rely on your judgement and the data in front of you. But whenever you want to apply it, the 20% rule is a good starting point.
 
 The Z-table button in the bottom-right corner of every screen will help you look up Z-scores whenever you need them.
 

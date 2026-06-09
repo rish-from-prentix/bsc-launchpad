@@ -16,7 +16,7 @@ export function FinalMoment({
     .reduce((s, m) => s + (m.totalProfit ?? 0), 0);
   const tier = getPerformanceTier(totalProfit);
 
-  // Animated count-up , same easing as original final results.
+  // Animated count-up — same easing as original final results.
   const [shown, setShown] = useState(0);
   useEffect(() => {
     const start = performance.now();

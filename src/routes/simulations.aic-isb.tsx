@@ -12,7 +12,7 @@ import type { ThemeId } from "@/components/aic-isb/startups-data";
 export const Route = createFileRoute("/simulations/aic-isb")({
   head: () => ({
     meta: [
-      { title: "Program Manager Internship , AIC × ISB" },
+      { title: "Program Manager Internship — AIC × ISB" },
       {
         name: "description",
         content:

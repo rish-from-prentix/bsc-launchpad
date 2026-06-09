@@ -5,7 +5,7 @@ import { LandingFooter } from "@/components/landing/landing-footer";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About , Prentix" },
+      { title: "About — Prentix" },
       { name: "description", content: "Prentix builds virtual internship simulations that prepare students for real-world roles." },
     ],
   }),
@@ -24,7 +24,7 @@ function AboutPage() {
         <p className="mt-6 text-[15px] text-muted-foreground leading-relaxed">
           Prentix partners with leading companies to design virtual internship simulations
           that mirror the real work students will do on day one. We believe career readiness
-          should be experiential , not theoretical.
+          should be experiential — not theoretical.
         </p>
         <p className="mt-4 text-[15px] text-muted-foreground leading-relaxed">
           More about our team, mission, and partners is coming soon.

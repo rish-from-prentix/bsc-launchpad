@@ -5,7 +5,7 @@ import { LandingFooter } from "@/components/landing/landing-footer";
 export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
-      { title: "Sign Up , Prentix" },
+      { title: "Sign Up — Prentix" },
       { name: "description", content: "Create your Prentix account and start your first simulation." },
     ],
   }),

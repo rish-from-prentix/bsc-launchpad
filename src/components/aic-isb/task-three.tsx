@@ -191,7 +191,7 @@ function Dashboard({
         </p>
       </div>
 
-      {/* The core insight — sticky-note style */}
+      {/* The core insight , sticky-note style */}
       <div
         className="mt-4 rounded-xl p-5 sm:p-6 border border-[oklch(0.78_0.14_85)]/40 bg-[oklch(0.78_0.14_85)]/[0.07] shadow-[0_8px_30px_rgba(255,200,80,0.08)] relative"
       >
@@ -202,7 +202,7 @@ function Dashboard({
               The principle to carry through this task
             </div>
             <p className="text-[14.5px] leading-relaxed text-foreground/90">
-              A mentor who scaled a 5,000-person organisation has learnt very different lessons from a founder who built something from nothing. The most valuable mentors for early-stage startups are people who have personally lived the zero-to-one experience — the ambiguity, the resource constraints, the pivots. Impressive titles don't always translate to useful advice at this stage.
+              A mentor who scaled a 5,000-person organisation has learnt very different lessons from a founder who built something from nothing. The most valuable mentors for early-stage startups are people who have personally lived the zero-to-one experience , the ambiguity, the resource constraints, the pivots. Impressive titles don't always translate to useful advice at this stage.
             </p>
           </div>
         </div>
@@ -412,7 +412,7 @@ function MentorCard({
         </div>
       </header>
 
-      {/* Their journey — distinct background strip */}
+      {/* Their journey , distinct background strip */}
       <div className="mt-4 rounded-xl border border-border/70 bg-foreground/[0.04] p-3.5">
         <div className="text-[10px] uppercase tracking-[0.18em] text-primary font-semibold mb-1.5 flex items-center gap-1.5">
           <Compass className="h-3 w-3" /> Their journey
@@ -460,7 +460,7 @@ function MentorCard({
             </div>
           </div>
 
-          {/* Honest caveat — amber */}
+          {/* Honest caveat , amber */}
           <div className="rounded-lg border border-[oklch(0.78_0.14_85)]/45 bg-[oklch(0.78_0.14_85)]/[0.07] p-3 flex gap-2">
             <AlertTriangle className="h-3.5 w-3.5 text-[oklch(0.82_0.15_85)] mt-0.5 shrink-0" />
             <p className="text-[12.5px] leading-relaxed text-[oklch(0.88_0.08_85)]">{mentor.honestCaveat}</p>
@@ -708,7 +708,7 @@ function ResultPhase({
               The lesson from this task
             </div>
             <p className="text-[14.5px] leading-relaxed text-foreground/90">
-              The best mentor for a startup is rarely the most impressive person in the room. It's the person whose specific lived experience maps most closely to where the founder is right now — not where the startup will be in five years. A mentor who has scaled a 10,000-person organisation has learnt very different lessons from someone who once sat in a garage not knowing if anyone would buy their product. Both are valuable — at different stages.
+              The best mentor for a startup is rarely the most impressive person in the room. It's the person whose specific lived experience maps most closely to where the founder is right now , not where the startup will be in five years. A mentor who has scaled a 10,000-person organisation has learnt very different lessons from someone who once sat in a garage not knowing if anyone would buy their product. Both are valuable , at different stages.
             </p>
           </div>
         </div>
@@ -761,20 +761,20 @@ function MentorAssessment({
             strong ? "text-[oklch(0.78_0.14_155)]" : "text-[oklch(0.78_0.16_25)]",
           )}
         >
-          {role} — {mentor.name}
+          {role} , {mentor.name}
         </span>
       </div>
       <p className="text-[13px] leading-relaxed text-foreground/90">
         {strong ? (
           <>
-            {mentor.name.split(" ").slice(-1)[0]} brings exactly what {startupName} needs right now —{" "}
+            {mentor.name.split(" ").slice(-1)[0]} brings exactly what {startupName} needs right now ,{" "}
             {mentor.strongFitTags.slice(0, 2).join(" and ").toLowerCase()}. The remaining gap:{" "}
             {mentor.lessUsefulTags[0].toLowerCase()} will still need to come from elsewhere.
           </>
         ) : (
           <>
-            {mentor.name.split(" ").slice(-1)[0]}'s strengths are real —{" "}
-            {mentor.strongFitTags.slice(0, 2).join(" and ").toLowerCase()} — but those aren't the bottlenecks{" "}
+            {mentor.name.split(" ").slice(-1)[0]}'s strengths are real ,{" "}
+            {mentor.strongFitTags.slice(0, 2).join(" and ").toLowerCase()} , but those aren't the bottlenecks{" "}
             {startupName} is facing right now. {mentor.honestCaveat}
           </>
         )}
@@ -785,31 +785,31 @@ function MentorAssessment({
 
 function gotRightCopy(e: Evaluation, bothStrong: boolean): string {
   if (bothStrong && e.primary && e.secondary) {
-    return `You paired two mentors whose lived experience maps directly to ${e.startup.name}'s current stage. The reasoning held — you matched expertise to bottleneck, not just to sector.`;
+    return `You paired two mentors whose lived experience maps directly to ${e.startup.name}'s current stage. The reasoning held , you matched expertise to bottleneck, not just to sector.`;
   }
   if (e.pFit === "strong" && e.primary) {
     return `Your primary pick was sound. ${e.primary.name.split(" ").slice(-1)[0]}'s background in ${e.primary.strongFitTags[0].toLowerCase()} directly addresses one of ${e.startup.name}'s most pressing constraints.`;
   }
   if (e.sFit === "strong" && e.secondary) {
-    return `The secondary pick was the stronger of the two — ${e.secondary.name.split(" ").slice(-1)[0]} brings credible support for ${e.secondary.strongFitTags[0].toLowerCase()}, which ${e.startup.name} will need soon.`;
+    return `The secondary pick was the stronger of the two , ${e.secondary.name.split(" ").slice(-1)[0]} brings credible support for ${e.secondary.strongFitTags[0].toLowerCase()}, which ${e.startup.name} will need soon.`;
   }
-  return `Both picks were thoughtful in intent. You were thinking about ${e.startup.name}'s long-term trajectory — that instinct is valuable, even if the lived experience didn't fully match this stage.`;
+  return `Both picks were thoughtful in intent. You were thinking about ${e.startup.name}'s long-term trajectory , that instinct is valuable, even if the lived experience didn't fully match this stage.`;
 }
 
 function watchOutCopy(e: Evaluation): string {
   if (e.primary && e.pFit === "strong") {
-    return `${e.primary.name.split(" ").slice(-1)[0]} is the right choice for ${e.primary.strongFitTags[0].toLowerCase()} — but ${e.startup.name} is still working through ${(e.startup.risks[0] || "early-stage uncertainty").toLowerCase()}. Make sure the founder doesn't start optimising the next stage before the current one is resolved.`;
+    return `${e.primary.name.split(" ").slice(-1)[0]} is the right choice for ${e.primary.strongFitTags[0].toLowerCase()} , but ${e.startup.name} is still working through ${(e.startup.risks[0] || "early-stage uncertainty").toLowerCase()}. Make sure the founder doesn't start optimising the next stage before the current one is resolved.`;
   }
   if (e.primary) {
     return `${e.primary.name.split(" ").slice(-1)[0]}'s instincts are tuned for ${e.primary.strongFitTags[0].toLowerCase()}, which is ahead of where ${e.startup.name} is today. The founder may end up working on the wrong problem in the wrong order.`;
   }
-  return `Without a primary mentor assigned, ${e.startup.name} risks pulling guidance from whichever advisor speaks loudest — not whichever advisor's experience matches the current bottleneck.`;
+  return `Without a primary mentor assigned, ${e.startup.name} risks pulling guidance from whichever advisor speaks loudest , not whichever advisor's experience matches the current bottleneck.`;
 }
 
 function gapCopy(e: Evaluation): string {
   const missingFromPrimary = e.primary?.lessUsefulTags[0]?.toLowerCase() ?? "early-stage operational support";
   const missingFromSecondary = e.secondary?.lessUsefulTags[0]?.toLowerCase() ?? "hands-on execution help";
-  return `This pairing under-indexes on ${missingFromPrimary} and ${missingFromSecondary}. Programme directors should keep an eye out for moments when ${e.startup.name} needs a third voice — someone who has personally lived the part of the journey neither mentor has navigated themselves.`;
+  return `This pairing under-indexes on ${missingFromPrimary} and ${missingFromSecondary}. Programme directors should keep an eye out for moments when ${e.startup.name} needs a third voice , someone who has personally lived the part of the journey neither mentor has navigated themselves.`;
 }
 
 function FitRow({ label, mentor, fit }: { label: string; mentor: Mentor | null; fit: "strong" | "weak" }) {
@@ -817,7 +817,7 @@ function FitRow({ label, mentor, fit }: { label: string; mentor: Mentor | null; 
     <div className="rounded-lg border border-border bg-background/40 p-3">
       <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{label}</div>
       <div className="mt-1 flex items-center justify-between gap-2">
-        <div className="text-sm text-foreground">{mentor?.name ?? "—"}</div>
+        <div className="text-sm text-foreground">{mentor?.name ?? ","}</div>
         <span
           className={cn(
             "text-[10px] rounded-full px-2 py-0.5 border",

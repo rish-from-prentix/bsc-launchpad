@@ -8,16 +8,16 @@ export type Mentor = {
   years: number;
   sector: ThemeId;
   // Rich profile
-  journey: string;            // "Their journey" — 2–3 sentence career story
-  addsValue: string[];        // 3 bullets — where they add most value
-  mayStruggle: string[];      // 3 bullets — where they may struggle
+  journey: string;            // "Their journey" , 2–3 sentence career story
+  addsValue: string[];        // 3 bullets , where they add most value
+  mayStruggle: string[];      // 3 bullets , where they may struggle
   honestCaveat: string;       // amber callout sentence
   strongFitTags: string[];    // "Strong fit when a startup needs:"
   lessUsefulTags: string[];   // "Less useful when a startup needs:"
   founderQuote: string;       // verbatim quote
   quoteContext: string;       // small grey context line under quote
   expertise: string[];        // legacy tags
-  bestFor: string[];          // startup ids — drives fit scoring
+  bestFor: string[];          // startup ids , drives fit scoring
 };
 
 const ai: Mentor[] = [
@@ -46,7 +46,7 @@ const ai: Mentor[] = [
     lessUsefulTags: ["First customer discovery", "Pre-revenue ICP search", "Core product pivots"],
     founderQuote: "Rajiv helped us reduce enterprise sales cycles by nearly 40%.",
     quoteContext:
-      "This founder had already closed early enterprise deals and needed help making the motion repeatable — different from cold-start customer discovery.",
+      "This founder had already closed early enterprise deals and needed help making the motion repeatable , different from cold-start customer discovery.",
     expertise: ["Enterprise GTM", "SaaS scaling", "International expansion", "Revenue operations"],
     bestFor: ["neuralforge", "quantedge", "synapseflow"],
   },
@@ -58,7 +58,7 @@ const ai: Mentor[] = [
     years: 14,
     sector: "ai",
     journey:
-      "Meera has spent her career inside large research and healthcare AI organisations — NVIDIA, academic institutions, established clinical systems. She understands how AI gets deployed inside complex organisations. She has not personally run a startup with limited runway and a small team.",
+      "Meera has spent her career inside large research and healthcare AI organisations , NVIDIA, academic institutions, established clinical systems. She understands how AI gets deployed inside complex organisations. She has not personally run a startup with limited runway and a small team.",
     addsValue: [
       "Navigating clinical compliance and validation pathways",
       "Designing AI products that fit institutional buyer expectations",
@@ -75,7 +75,7 @@ const ai: Mentor[] = [
     lessUsefulTags: ["Rapid iteration cycles", "Cash-constrained decisions", "Unregulated experimentation"],
     founderQuote: "Meera completely changed how we approached healthcare compliance.",
     quoteContext:
-      "This founder was already inside hospital pilots and needed institutional rigour — different from a pre-pilot team racing on runway.",
+      "This founder was already inside hospital pilots and needed institutional rigour , different from a pre-pilot team racing on runway.",
     expertise: ["Healthcare AI", "Clinical compliance", "AI productization", "Medical workflows"],
     bestFor: ["medpredict", "visionpilot"],
   },
@@ -91,7 +91,7 @@ const ai: Mentor[] = [
     addsValue: [
       "Living the ambiguity of pre-product-market-fit consumer building",
       "Designing viral loops and retention systems on a tight budget",
-      "Making fast calls with incomplete data — and recovering from wrong ones",
+      "Making fast calls with incomplete data , and recovering from wrong ones",
     ],
     mayStruggle: [
       "Navigating enterprise procurement and institutional sales cycles",
@@ -104,7 +104,7 @@ const ai: Mentor[] = [
     lessUsefulTags: ["Enterprise procurement", "Regulated sales cycles", "Long B2B partnerships"],
     founderQuote: "Kunal understands retention better than almost anyone.",
     quoteContext:
-      "This founder was running a consumer app where daily engagement was the entire business — his instincts mapped perfectly.",
+      "This founder was running a consumer app where daily engagement was the entire business , his instincts mapped perfectly.",
     expertise: ["Viral acquisition", "Consumer retention", "Product engagement", "Growth loops"],
     bestFor: ["echomind", "scriptly"],
   },
@@ -116,7 +116,7 @@ const ai: Mentor[] = [
     years: 16,
     sector: "ai",
     journey:
-      "Priya scaled operations at Uber and Stripe — both companies that already had strong product-market fit and significant capital. She is world-class at building systems, processes, and workflows at scale. She has not experienced the ambiguity of building before the model is proven.",
+      "Priya scaled operations at Uber and Stripe , both companies that already had strong product-market fit and significant capital. She is world-class at building systems, processes, and workflows at scale. She has not experienced the ambiguity of building before the model is proven.",
     addsValue: [
       "Bringing order to fast-growing teams that are already winning",
       "Designing process for marketplaces and high-volume workflows",
@@ -133,7 +133,7 @@ const ai: Mentor[] = [
     lessUsefulTags: ["Pre-PMF experimentation", "Early sales hustle", "Business model search"],
     founderQuote: "Priya identified scaling issues we didn't even realise existed.",
     quoteContext:
-      "This founder already had repeatable revenue and was breaking under their own growth — exactly the stage Priya's systems were built for.",
+      "This founder already had repeatable revenue and was breaking under their own growth , exactly the stage Priya's systems were built for.",
     expertise: ["Operational scaling", "Process optimization", "Marketplace systems", "Implementation workflows"],
     bestFor: ["neuralforge", "visionpilot", "atlasmind"],
   },
@@ -145,7 +145,7 @@ const ai: Mentor[] = [
     years: 20,
     sector: "ai",
     journey:
-      "Arvind has spent two decades evaluating and investing in DeepTech startups as a partner and consultant. He understands what makes a DeepTech company fundable and defensible. He has advised from the outside — he has not personally been a founder building with limited resources.",
+      "Arvind has spent two decades evaluating and investing in DeepTech startups as a partner and consultant. He understands what makes a DeepTech company fundable and defensible. He has advised from the outside , he has not personally been a founder building with limited resources.",
     addsValue: [
       "Sharpening defensibility, moats, and long-term strategic positioning",
       "Preparing DeepTech companies for institutional fundraising",
@@ -157,12 +157,12 @@ const ai: Mentor[] = [
       "Helping founders survive the next 90 days, not just win the next decade",
     ],
     honestCaveat:
-      "Arvind sees startups through an investor lens — defensibility, moats, long-term positioning. Founders in the earliest stages sometimes need someone who can help them survive the next 90 days, not just win the next decade.",
+      "Arvind sees startups through an investor lens , defensibility, moats, long-term positioning. Founders in the earliest stages sometimes need someone who can help them survive the next 90 days, not just win the next decade.",
     strongFitTags: ["Investor positioning", "DeepTech defensibility", "Series A readiness"],
     lessUsefulTags: ["Hands-on execution", "Pre-Series A operations", "Day-to-day product calls"],
     founderQuote: "Arvind pushed us to think beyond short-term revenue.",
     quoteContext:
-      "This founder was preparing for institutional fundraising and needed long-horizon framing — different from a pre-seed team focused on survival.",
+      "This founder was preparing for institutional fundraising and needed long-horizon framing , different from a pre-seed team focused on survival.",
     expertise: ["DeepTech fundraising", "Robotics commercialization", "Investor strategy", "Enterprise scaling"],
     bestFor: ["atlasmind", "medpredict"],
   },
@@ -177,7 +177,7 @@ const climate: Mentor[] = [
     years: 19,
     sector: "climate",
     journey:
-      "Neha led sustainability and renewable energy deployment at Tesla Energy APAC — a company with enormous resources, established partnerships, and government relationships already in place. She knows how to scale clean energy infrastructure when the rails already exist.",
+      "Neha led sustainability and renewable energy deployment at Tesla Energy APAC , a company with enormous resources, established partnerships, and government relationships already in place. She knows how to scale clean energy infrastructure when the rails already exist.",
     addsValue: [
       "Scaling clean energy deployment across geographies",
       "Structuring enterprise sustainability partnerships",
@@ -189,12 +189,12 @@ const climate: Mentor[] = [
       "Operating in resource-constrained environments without playbooks",
     ],
     honestCaveat:
-      "Neha's experience is in deploying at scale inside resource-rich organisations. An early-stage climate startup trying to get its first pilot off the ground is operating in a very different environment — one she hasn't personally navigated.",
+      "Neha's experience is in deploying at scale inside resource-rich organisations. An early-stage climate startup trying to get its first pilot off the ground is operating in a very different environment , one she hasn't personally navigated.",
     strongFitTags: ["Infrastructure scaling", "Enterprise sustainability partnerships", "Utility-grade deployment"],
     lessUsefulTags: ["First pilot acquisition", "Scrappy zero-budget GTM", "Building brand from zero"],
     founderQuote: "Neha helped us restructure our deployment strategy before expansion became unmanageable.",
     quoteContext:
-      "This founder already had paying enterprise pilots and was scaling deployment — a different stage from pre-pilot teams.",
+      "This founder already had paying enterprise pilots and was scaling deployment , a different stage from pre-pilot teams.",
     expertise: ["Clean energy scaling", "Renewable infrastructure", "Sustainability partnerships"],
     bestFor: ["solvix", "windsync", "carbonloop"],
   },
@@ -218,12 +218,12 @@ const climate: Mentor[] = [
       "Tactical day-to-day support when the team is two co-founders",
     ],
     honestCaveat:
-      "Vikram's advice is excellent for founders who need to navigate fundraising and policy — but his perspective is always from the other side of the table. He may underestimate how hard execution feels from inside a small team.",
+      "Vikram's advice is excellent for founders who need to navigate fundraising and policy , but his perspective is always from the other side of the table. He may underestimate how hard execution feels from inside a small team.",
     strongFitTags: ["Climate fundraising", "Policy alignment", "Capital structure"],
     lessUsefulTags: ["Operational execution", "Pre-fundraising product work", "Tactical day-to-day support"],
     founderQuote: "Vikram completely changed how we approached infrastructure financing.",
     quoteContext:
-      "This founder was raising a growth round for capital-intensive infrastructure — Vikram's investor lens was exactly the gap.",
+      "This founder was raising a growth round for capital-intensive infrastructure , Vikram's investor lens was exactly the gap.",
     expertise: ["Climate fundraising", "Industrial sustainability", "Government policy navigation"],
     bestFor: ["carbonloop", "terrafuel", "solvix"],
   },
@@ -252,7 +252,7 @@ const climate: Mentor[] = [
     lessUsefulTags: ["First enterprise sale", "Product definition", "Early sales hustle"],
     founderQuote: "Sarah identified why enterprise onboarding was becoming our biggest churn risk.",
     quoteContext:
-      "This founder had signed Fortune 500 logos and was losing them — the operational gap was exactly Sarah's wheelhouse.",
+      "This founder had signed Fortune 500 logos and was losing them , the operational gap was exactly Sarah's wheelhouse.",
     expertise: ["ESG analytics", "Enterprise SaaS onboarding", "Customer success systems"],
     bestFor: ["ecobyte", "greenchain"],
   },
@@ -264,7 +264,7 @@ const climate: Mentor[] = [
     years: 17,
     sector: "climate",
     journey:
-      "Rohit spent 17 years managing large-scale infrastructure projects at Siemens — complex, multi-stakeholder, heavily resourced deployments. He is exceptional at making big systems run efficiently. He has not operated in the scrappy, low-resource environment of an early-stage startup.",
+      "Rohit spent 17 years managing large-scale infrastructure projects at Siemens , complex, multi-stakeholder, heavily resourced deployments. He is exceptional at making big systems run efficiently. He has not operated in the scrappy, low-resource environment of an early-stage startup.",
     addsValue: [
       "Designing reliable industrial deployment processes",
       "Managing multi-stakeholder infrastructure projects",
@@ -281,7 +281,7 @@ const climate: Mentor[] = [
     lessUsefulTags: ["Pre-deployment partner search", "Low-budget improvisation", "Pre-vendor stage"],
     founderQuote: "Rohit helped us identify operational bottlenecks before they became expensive failures.",
     quoteContext:
-      "This founder was already deploying with industrial partners — Rohit's enterprise-grade frameworks landed cleanly.",
+      "This founder was already deploying with industrial partners , Rohit's enterprise-grade frameworks landed cleanly.",
     expertise: ["Infrastructure deployment", "Industrial logistics", "Supply chain optimization"],
     bestFor: ["windsync", "aquagrid", "carbonloop"],
   },
@@ -293,7 +293,7 @@ const climate: Mentor[] = [
     years: 18,
     sector: "climate",
     journey:
-      "Elena has spent 18 years in the field — working directly with farming communities, rural NGOs, and agricultural sustainability programmes. She has genuine zero-to-one experience in adoption challenges. She understands what it feels like to convince someone to change behaviour with no budget and no brand recognition.",
+      "Elena has spent 18 years in the field , working directly with farming communities, rural NGOs, and agricultural sustainability programmes. She has genuine zero-to-one experience in adoption challenges. She understands what it feels like to convince someone to change behaviour with no budget and no brand recognition.",
     addsValue: [
       "Driving adoption in low-trust, low-budget rural environments",
       "Designing community-led implementation programmes",
@@ -310,7 +310,7 @@ const climate: Mentor[] = [
     lessUsefulTags: ["Urban enterprise sales", "Industrial procurement", "Investor positioning"],
     founderQuote: "Elena helped us realise adoption barriers were more behavioural than technical.",
     quoteContext:
-      "This founder was working directly with farmers — Elena's field experience mapped exactly to the adoption problem.",
+      "This founder was working directly with farmers , Elena's field experience mapped exactly to the adoption problem.",
     expertise: ["Regenerative agriculture", "Rural adoption systems", "AgriTech scaling"],
     bestFor: ["puresoil"],
   },
@@ -325,10 +325,10 @@ const health: Mentor[] = [
     years: 20,
     sector: "health",
     journey:
-      "Aisha designed hospital workflow systems at Mayo Clinic and large healthcare networks — organisations with established budgets, IT infrastructure, and clinical governance. She understands deeply how healthcare institutions think and resist change. She has not built a startup from scratch.",
+      "Aisha designed hospital workflow systems at Mayo Clinic and large healthcare networks , organisations with established budgets, IT infrastructure, and clinical governance. She understands deeply how healthcare institutions think and resist change. She has not built a startup from scratch.",
     addsValue: [
       "Navigating hospital workflow integration and clinical buy-in",
-      "Understanding why institutions resist change — and how to work with it",
+      "Understanding why institutions resist change , and how to work with it",
       "Designing products that survive contact with real clinical environments",
     ],
     mayStruggle: [
@@ -337,12 +337,12 @@ const health: Mentor[] = [
       "Building products before institutional credibility exists",
     ],
     honestCaveat:
-      "Aisha's advice is grounded in how large healthcare institutions work — which is invaluable once a startup is selling to them. But her instincts are institutional, not entrepreneurial. A founder in early-stage discovery may need someone who has felt the uncertainty of not knowing if the product will find a market.",
+      "Aisha's advice is grounded in how large healthcare institutions work , which is invaluable once a startup is selling to them. But her instincts are institutional, not entrepreneurial. A founder in early-stage discovery may need someone who has felt the uncertainty of not knowing if the product will find a market.",
     strongFitTags: ["Hospital workflow integration", "Clinical buy-in", "Institutional sales"],
     lessUsefulTags: ["Pre-traction discovery", "Clinical use-case validation", "Pre-institutional credibility"],
     founderQuote: "Aisha helped us understand why doctors resisted our product despite strong technology.",
     quoteContext:
-      "This founder had a working product and was inside hospital pilots — exactly where Aisha's institutional lens compounds.",
+      "This founder had a working product and was inside hospital pilots , exactly where Aisha's institutional lens compounds.",
     expertise: ["Clinical adoption", "Hospital workflows", "Healthcare systems integration"],
     bestFor: ["pulsetrack", "caresync", "medpredict"],
   },
@@ -366,12 +366,12 @@ const health: Mentor[] = [
       "Day-to-day execution and product calls under uncertainty",
     ],
     honestCaveat:
-      "Rohan sees healthcare startups through the lens of what makes them fundable and commercially scalable. Founders in the earliest stage sometimes need someone who can help them validate whether the problem is real — not just whether the pitch is convincing.",
+      "Rohan sees healthcare startups through the lens of what makes them fundable and commercially scalable. Founders in the earliest stage sometimes need someone who can help them validate whether the problem is real , not just whether the pitch is convincing.",
     strongFitTags: ["Commercial positioning", "Healthcare fundraising", "Enterprise repositioning"],
     lessUsefulTags: ["Clinical problem validation", "Pre-revenue discovery", "Product execution"],
     founderQuote: "Rohan helped us reposition our business for enterprise healthcare buyers.",
     quoteContext:
-      "This founder had a working product seeking a clearer buyer — different from a team still validating the clinical use case.",
+      "This founder had a working product seeking a clearer buyer , different from a team still validating the clinical use case.",
     expertise: ["Healthcare fundraising", "Growth strategy", "Market expansion"],
     bestFor: ["medilink", "nanocure", "pulsetrack"],
   },
@@ -383,7 +383,7 @@ const health: Mentor[] = [
     years: 22,
     sector: "health",
     journey:
-      "Karan led commercialisation inside Novartis — one of the world's largest pharmaceutical companies, with vast resources, regulatory teams, and established clinical networks. He understands the pharma partnership and drug commercialisation world better than almost anyone. He has operated exclusively inside large institutions.",
+      "Karan led commercialisation inside Novartis , one of the world's largest pharmaceutical companies, with vast resources, regulatory teams, and established clinical networks. He understands the pharma partnership and drug commercialisation world better than almost anyone. He has operated exclusively inside large institutions.",
     addsValue: [
       "Structuring pharma partnerships and licensing deals",
       "Mapping regulatory pathways for drug and diagnostics commercialisation",
@@ -395,12 +395,12 @@ const health: Mentor[] = [
       "Moving fast in environments without institutional support",
     ],
     honestCaveat:
-      "Karan thinks in timelines that make sense inside a large pharma company — multi-year clinical programmes, institutional approvals, large partnership deals. An early-stage biotech startup with 18 months of runway is playing a fundamentally different game.",
+      "Karan thinks in timelines that make sense inside a large pharma company , multi-year clinical programmes, institutional approvals, large partnership deals. An early-stage biotech startup with 18 months of runway is playing a fundamentally different game.",
     strongFitTags: ["Pharma partnerships", "Regulatory pathways", "Long-horizon commercialisation"],
     lessUsefulTags: ["Short-runway execution", "Pre-PMF discovery", "Fast iteration"],
     founderQuote: "Karan forced us to think about commercialisation years before launch.",
     quoteContext:
-      "This founder had a validated biotech asset moving toward trials — Karan's institutional timelines matched the work.",
+      "This founder had a validated biotech asset moving toward trials , Karan's institutional timelines matched the work.",
     expertise: ["Pharma partnerships", "Drug commercialization", "Regulatory approvals"],
     bestFor: ["biopulse", "geneticore", "nanocure"],
   },
@@ -429,7 +429,7 @@ const health: Mentor[] = [
     lessUsefulTags: ["Clinical/institutional sales", "Regulated environments", "Enterprise GTM"],
     founderQuote: "Shreya completely reframed how we thought about long-term engagement.",
     quoteContext:
-      "This founder was running a consumer wellness app where retention was the whole business — Shreya's lens fit perfectly.",
+      "This founder was running a consumer wellness app where retention was the whole business , Shreya's lens fit perfectly.",
     expertise: ["User engagement", "Habit formation", "Subscription retention"],
     bestFor: ["healmate", "vitasense"],
   },
@@ -458,7 +458,7 @@ const health: Mentor[] = [
     lessUsefulTags: ["Pre-data-access teams", "Commercial/product guidance", "Short-runway execution"],
     founderQuote: "Ethan helped us redesign our entire healthcare data architecture.",
     quoteContext:
-      "This founder had hospital data partnerships and was hitting infrastructure ceilings — exactly Ethan's domain.",
+      "This founder had hospital data partnerships and was hitting infrastructure ceilings , exactly Ethan's domain.",
     expertise: ["AI diagnostics", "Healthcare infrastructure", "Clinical AI systems"],
     bestFor: ["nanocure", "pulsetrack", "medpredict"],
   },

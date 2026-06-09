@@ -56,7 +56,7 @@ export function MonthFeedback({
       <div className="mt-10 space-y-8">
         {cards.length === 0 && (
           <div className="text-center text-sm text-muted-foreground py-8">
-            No specific notes this month — solid steady-state run.
+            No specific notes this month , solid steady-state run.
           </div>
         )}
         {good.length > 0 && (

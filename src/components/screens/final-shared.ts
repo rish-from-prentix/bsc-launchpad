@@ -20,7 +20,7 @@ export function buildSubtext(tier: PerfTier): string {
   if (tier === "high")
     return "Five months. Eighteen SKU-city combinations. Budget crunches, demand spikes, festival seasons. You navigated all of it and came out ahead.";
   if (tier === "mid")
-    return "Not every month went perfectly — and that's the point. You adjusted, you learned, and you finished strong.";
+    return "Not every month went perfectly , and that's the point. You adjusted, you learned, and you finished strong.";
   return "The best operators in the world made their worst mistakes early. What matters is that you made real decisions and understood why they worked or didn't.";
 }
 
@@ -48,7 +48,7 @@ export function selectPostVariant(tier: PerfTier, seed: number): PostVariant {
 }
 
 // EBITDA placeholder is the literal token {EBITDA} (replaced with a Cr value
-// like "5.42"). Post copy is verbatim per spec — do not edit wording.
+// like "5.42"). Post copy is verbatim per spec , do not edit wording.
 export const POST_TEMPLATES: Record<PostVariant, string> = {
   A: `I just wrapped up a virtual internship with Bombay Shaving Company and I genuinely
 didn't expect it to be this intense.
@@ -73,7 +73,7 @@ I spent 5 months as a virtual Growth & Business Ops Intern at Bombay Shaving Com
 managing inventory and marketing across 3 cities. Finished with ₹{EBITDA}Cr in
 cumulative EBITDA.
 
-The decisions that surprised me most weren't the big ones. They were the small ones —
+The decisions that surprised me most weren't the big ones. They were the small ones ,
 which supplier to use in Hyderabad, whether to cut inventory or increase marketing
 when Bombay conversions dipped. Those trade-offs compound fast.
 
@@ -82,12 +82,12 @@ high-growth consumer brand actually operates.
 
 prentix.ai`,
 
-  C: `I just finished a 5-month virtual internship with Bombay Shaving Company — and it
+  C: `I just finished a 5-month virtual internship with Bombay Shaving Company , and it
 was harder than I expected.
 
 I was responsible for inventory planning and marketing budgets across 3 SKUs and
 3 cities. The simulation threw a demand spike, a festival season, a competitor
-eating into our Bombay market share, and a budget crunch — all across 5 months.
+eating into our Bombay market share, and a budget crunch , all across 5 months.
 
 Ended with ₹{EBITDA}Cr in cumulative profit. Not a perfect run, but a real one.
 
@@ -104,7 +104,7 @@ and channel strategy.
 
 Honestly, I made mistakes. I understocked during a demand spike. I over-indexed
 on a low-elasticity channel early on. But I understood exactly why each decision
-cost me what it did — and that's the point.
+cost me what it did , and that's the point.
 
 ₹{EBITDA}Cr across the run. Already know what I'd do differently.
 
@@ -113,7 +113,7 @@ Thanks to Prentix for the platform and BSC for making this available.
 prentix.ai`,
 };
 
-const RESUME_TEMPLATE = `Growth & Business Ops Intern — Bombay Shaving Company (Virtual, via Prentix)
+const RESUME_TEMPLATE = `Growth & Business Ops Intern , Bombay Shaving Company (Virtual, via Prentix)
 Managed inventory and marketing budgets across 3 SKUs and 3 cities over 5 months.
 Applied demand planning, Newsvendor analysis, and channel strategy (D2C and Quick Commerce) to optimise EBITDA.
 Navigated demand spikes, budget constraints, and competitive market shifts to deliver ₹{EBITDA}Cr in cumulative profit.`;

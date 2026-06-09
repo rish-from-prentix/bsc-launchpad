@@ -81,7 +81,7 @@ export function SplashScreen({ onBegin }: { onBegin: (name: string) => void }) {
             </div>
             {
               <p className="mt-3 text-xs text-muted-foreground">
-                Welcome message from Shantanu Deshpande, Founder — Bombay Shaving Company
+                Welcome message from Shantanu Deshpande, Founder , Bombay Shaving Company
               </p>
             }
           </div>

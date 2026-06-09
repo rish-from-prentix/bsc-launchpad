@@ -39,19 +39,19 @@ export const scoreThesis = createServerFn({ method: "POST" })
 
     const userPrompt = `Sector chosen: ${data.sector}
 
-Q1 — The opportunity (what's happening that makes the sector impossible to ignore):
+Q1 , The opportunity (what's happening that makes the sector impossible to ignore):
 ${data.answers.overview}
 
-Q2 — Where startups should play (specific bet a founder should take):
+Q2 , Where startups should play (specific bet a founder should take):
 ${data.answers.problems}
 
-Q3 — What the market is saying (active startups, investors, deals):
+Q3 , What the market is saying (active startups, investors, deals):
 ${data.answers.activity}
 
-Q4 — Risks worth taking (bear case + why upside still wins):
+Q4 , Risks worth taking (bear case + why upside still wins):
 ${data.answers.risks}
 
-Q5 — Recommendation to the AIC × ISB board:
+Q5 , Recommendation to the AIC × ISB board:
 ${data.answers.recommendation}
 
 Score the thesis on:

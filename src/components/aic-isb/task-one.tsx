@@ -85,7 +85,7 @@ const SECTIONS: Array<{
     tag: "The opportunity",
     question:
       "What's happening in this sector right now that makes it impossible to ignore?",
-    hint: "Think about what's shifted — policy, technology, behaviour, capital. Why is this moment different?",
+    hint: "Think about what's shifted , policy, technology, behaviour, capital. Why is this moment different?",
     placeholder:
       "e.g. Regulation X just passed, capital is flowing into Y, customer behaviour shifted after Z…",
   },
@@ -102,7 +102,7 @@ const SECTIONS: Array<{
     id: "activity",
     emoji: "📊",
     tag: "What the market is saying",
-    question: "Who's already in the room — and what are they betting on?",
+    question: "Who's already in the room , and what are they betting on?",
     hint: "Name startups, investors, or deals that signal where the smart money is going. What does activity in this space tell you?",
     placeholder:
       "Companies, recent rounds, active investors, and what their bets imply about the sector…",
@@ -111,7 +111,7 @@ const SECTIONS: Array<{
     id: "risks",
     emoji: "⚡",
     tag: "Risks worth taking",
-    question: "What could go wrong — and why are you backing this anyway?",
+    question: "What could go wrong , and why are you backing this anyway?",
     hint: "Every thesis has a bear case. Acknowledge it honestly, then explain why the upside still wins.",
     placeholder: "Bear case + why you'd still write the check.",
   },
@@ -120,7 +120,7 @@ const SECTIONS: Array<{
     emoji: "✅",
     tag: "My recommendation",
     question:
-      "If you had one shot to convince the AIC × ISB board — what would you tell them?",
+      "If you had one shot to convince the AIC × ISB board , what would you tell them?",
     hint: "This is your conviction statement. Make it decisive, make it yours.",
     placeholder: "Your one-paragraph pitch to the board.",
   },
@@ -576,7 +576,7 @@ function EmailCard({
             <AicIsbLogo height={14} className="ml-1 opacity-80" />
           </div>
           <div className="mt-1 text-[13px] font-medium text-foreground">
-            Your first brief — pick a sector, build a thesis
+            Your first brief , pick a sector, build a thesis
           </div>
           <div className="mt-1 text-[11px] text-muted-foreground">
             To: {candidateName} · {timestamp}
@@ -587,14 +587,14 @@ function EmailCard({
       <div className="px-6 sm:px-8 py-6 text-[14.5px] leading-[1.8] text-foreground/90">
         <p>Hi {candidateName},</p>
         <p className="mt-3">
-          Really glad to have you on board. You're joining at an exciting time — we're
+          Really glad to have you on board. You're joining at an exciting time , we're
           shaping the next AIC × ISB cohort, and I want fresh thinking involved from day
           one.
         </p>
         <p className="mt-3">
           Here's what I need from you first: pick one of the three sectors below based on
           your research and build an Accelerator Investment Thesis around it. Think of it
-          as your POV — where the opportunity is, why now, and what kind of startups
+          as your POV , where the opportunity is, why now, and what kind of startups
           deserve backing.
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
@@ -614,7 +614,7 @@ function EmailCard({
         </p>
         <p className="mt-3">Looking forward to seeing your thinking.</p>
         <p className="mt-5 text-foreground font-medium">Animesh</p>
-        <p className="text-xs text-muted-foreground">CEO — AIC × ISB</p>
+        <p className="text-xs text-muted-foreground">CEO , AIC × ISB</p>
 
         <div className="mt-6 pt-5 border-t border-border/60">
           <button
@@ -692,7 +692,7 @@ function SlideBuilder({
 
         {/* Two panes */}
         <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
-          {/* Left pane — guided questions */}
+          {/* Left pane , guided questions */}
           <div className="p-5 sm:p-7 border-b lg:border-b-0 lg:border-r border-border">
             {/* Step pips */}
             <div className="flex items-center gap-1.5">
@@ -802,7 +802,7 @@ function SlideBuilder({
             </div>
           </div>
 
-          {/* Right pane — LinkedIn post preview */}
+          {/* Right pane , LinkedIn post preview */}
           <div className="p-5 sm:p-7 bg-background/20">
             <div className="flex items-center justify-between mb-3">
               <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
@@ -1083,7 +1083,7 @@ function ScoreTile({ label, value }: { label: string; value: number | null }) {
         {label}
       </div>
       <div className="mt-2 font-mono text-2xl text-foreground">
-        {value === null ? "—" : (
+        {value === null ? "," : (
           <>
             {value}
             <span className="text-sm text-muted-foreground">/10</span>
@@ -1116,7 +1116,7 @@ function buildLinkedInPost(
 
   const plain = [
     sections.length > 0
-      ? `My Accelerator Investment Thesis — drafted as a Program Manager Intern at AIC × ISB.`
+      ? `My Accelerator Investment Thesis , drafted as a Program Manager Intern at AIC × ISB.`
       : "",
     ...sections.map((s) => `${s.emoji} ${s.tag}\n${s.text}`),
     hashtags.join(" "),

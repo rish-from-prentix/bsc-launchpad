@@ -19,7 +19,7 @@ import { MONTH_0, type MonthData } from "@/lib/simulation";
 export const Route = createFileRoute("/simulations/bsc")({
   head: () => ({
     meta: [
-      { title: "BSC Virtual Internship — Powered by Prentix" },
+      { title: "BSC Virtual Internship , Powered by Prentix" },
       {
         name: "description",
         content:
@@ -164,7 +164,7 @@ function Index() {
   // months[0] = MONTH_0; months[1..5] populated as user submits
   const [months, setMonths] = useState<MonthData[]>(() => [MONTH_0]);
   const [reviewing, setReviewing] = useState<number | null>(null);
-  // Stable seed for LinkedIn post variant selection — fixed for the session
+  // Stable seed for LinkedIn post variant selection , fixed for the session
   // so navigating back/forward doesn't re-roll the variant.
   const [postVariantSeed] = useState<number>(() => Math.random());
 

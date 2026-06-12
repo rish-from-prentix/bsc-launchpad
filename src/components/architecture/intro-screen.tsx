@@ -37,8 +37,6 @@ export function ArchIntroScreen({ onStart }: { onStart: (name: string) => void }
         </div>
         <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground leading-[1.05]">
           Architecture Internship
-          <br />
-          <span className="text-foreground/90">Community Learning Hub</span>
         </h1>
         <p className="mt-6 text-[15px] sm:text-base text-muted-foreground max-w-xl leading-relaxed">
           Step into the role of an Architecture Intern at Meridian Studio.

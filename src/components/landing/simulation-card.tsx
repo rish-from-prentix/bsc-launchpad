@@ -2,9 +2,9 @@ import { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Award, BarChart3 } from "lucide-react";
 
-type Tag = { icon: ReactNode; label: string };
+export type SimulationTag = { icon: ReactNode; label: string };
 
-const DEFAULT_TAGS: Tag[] = [
+const DEFAULT_TAGS: SimulationTag[] = [
   { icon: <BarChart3 className="h-3.5 w-3.5" />, label: "Intermediate Level" },
   { icon: <Award className="h-3.5 w-3.5" />, label: "Certificate Included" },
 ];
@@ -16,6 +16,7 @@ export function SimulationCard({
   to,
   ctaLabel = "Start Internship",
   comingSoon = false,
+  tags,
 }: {
   logo: ReactNode;
   company: string;
@@ -23,7 +24,9 @@ export function SimulationCard({
   to: string;
   ctaLabel?: string;
   comingSoon?: boolean;
+  tags?: SimulationTag[];
 }) {
+  const tagList = tags ?? DEFAULT_TAGS;
   return (
     <div
       className="group relative flex flex-col rounded-2xl border border-border bg-card p-7 sm:p-8 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40"
@@ -46,7 +49,7 @@ export function SimulationCard({
         </h3>
       </div>
       <div className="mt-6 flex flex-wrap gap-2">
-        {DEFAULT_TAGS.map((t) => (
+        {tagList.map((t) => (
           <span
             key={t.label}
             className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/50 px-3 py-1.5 text-xs text-muted-foreground"

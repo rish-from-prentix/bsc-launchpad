@@ -1,5 +1,6 @@
 import { BrandMark } from "@/components/brand-mark";
 import { AicIsbLogo } from "@/components/aic-isb/aic-logo";
+import { TrendingUp, Award } from "lucide-react";
 import { SimulationCard } from "./simulation-card";
 
 export function SimulationsSection() {
@@ -18,7 +19,7 @@ export function SimulationsSection() {
           </p>
         </div>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-2">
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <SimulationCard
             logo={<BrandMark brand="bsc" height={40} />}
             company="Bombay Shaving Company"
@@ -30,6 +31,33 @@ export function SimulationsSection() {
             company="AIC × ISB"
             role="Program Manager Internship"
             to="/simulations/aic-isb"
+          />
+          <SimulationCard
+            logo={
+              <div className="flex items-center gap-2.5">
+                <div
+                  className="h-10 w-10 rounded-md border border-primary/40 flex items-center justify-center text-primary text-lg font-semibold tracking-tight"
+                  style={{ fontFamily: "ui-serif, Georgia, serif" }}
+                >
+                  M
+                </div>
+                <div className="leading-tight">
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-foreground/90 font-semibold">
+                    Meridian
+                  </div>
+                  <div className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+                    Architecture Studio
+                  </div>
+                </div>
+              </div>
+            }
+            company="Meridian Architecture Studio"
+            role="Architecture Internship"
+            to="/simulations/architecture"
+            tags={[
+              { icon: <TrendingUp className="h-3.5 w-3.5" />, label: "Advanced Level" },
+              { icon: <Award className="h-3.5 w-3.5" />, label: "Certificate Included" },
+            ]}
           />
         </div>
       </div>

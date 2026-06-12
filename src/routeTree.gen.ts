@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SimulationsBscRouteImport } from './routes/simulations.bsc'
+import { Route as SimulationsArchitectureRouteImport } from './routes/simulations.architecture'
 import { Route as SimulationsAicIsbRouteImport } from './routes/simulations.aic-isb'
 
 const SignupRoute = SignupRouteImport.update({
@@ -41,6 +42,11 @@ const SimulationsBscRoute = SimulationsBscRouteImport.update({
   path: '/simulations/bsc',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SimulationsArchitectureRoute = SimulationsArchitectureRouteImport.update({
+  id: '/simulations/architecture',
+  path: '/simulations/architecture',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SimulationsAicIsbRoute = SimulationsAicIsbRouteImport.update({
   id: '/simulations/aic-isb',
   path: '/simulations/aic-isb',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/simulations/aic-isb': typeof SimulationsAicIsbRoute
+  '/simulations/architecture': typeof SimulationsArchitectureRoute
   '/simulations/bsc': typeof SimulationsBscRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/simulations/aic-isb': typeof SimulationsAicIsbRoute
+  '/simulations/architecture': typeof SimulationsArchitectureRoute
   '/simulations/bsc': typeof SimulationsBscRoute
 }
 export interface FileRoutesById {
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/simulations/aic-isb': typeof SimulationsAicIsbRoute
+  '/simulations/architecture': typeof SimulationsArchitectureRoute
   '/simulations/bsc': typeof SimulationsBscRoute
 }
 export interface FileRouteTypes {
@@ -80,6 +89,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/simulations/aic-isb'
+    | '/simulations/architecture'
     | '/simulations/bsc'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -88,6 +98,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/simulations/aic-isb'
+    | '/simulations/architecture'
     | '/simulations/bsc'
   id:
     | '__root__'
@@ -96,6 +107,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/simulations/aic-isb'
+    | '/simulations/architecture'
     | '/simulations/bsc'
   fileRoutesById: FileRoutesById
 }
@@ -105,6 +117,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
   SimulationsAicIsbRoute: typeof SimulationsAicIsbRoute
+  SimulationsArchitectureRoute: typeof SimulationsArchitectureRoute
   SimulationsBscRoute: typeof SimulationsBscRoute
 }
 
@@ -145,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SimulationsBscRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/simulations/architecture': {
+      id: '/simulations/architecture'
+      path: '/simulations/architecture'
+      fullPath: '/simulations/architecture'
+      preLoaderRoute: typeof SimulationsArchitectureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/simulations/aic-isb': {
       id: '/simulations/aic-isb'
       path: '/simulations/aic-isb'
@@ -161,8 +181,18 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
   SimulationsAicIsbRoute: SimulationsAicIsbRoute,
+  SimulationsArchitectureRoute: SimulationsArchitectureRoute,
   SimulationsBscRoute: SimulationsBscRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

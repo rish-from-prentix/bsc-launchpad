@@ -2,6 +2,18 @@ import { ReactNode } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+// Architecture internship surface tokens — tuned to mirror the HTML reference
+// (Meridian Studio intern portal) but with AIC cyan as the accent.
+const SURFACE = "bg-[#161616]";
+const SURFACE_2 = "bg-[#1e1e1e]";
+const BORDER = "border-[#2a2a2a]";
+const BORDER_LIGHT = "border-[#333]";
+const MUTED = "text-[#7a756c]";
+const DIM = "text-[#4a4640]";
+const TEXT = "text-[#e8e4dc]";
+const MONO = "font-['IBM_Plex_Mono',ui-monospace,monospace]";
+const SERIF = "font-['Playfair_Display',serif]";
+
 export function TaskHeader({
   week,
   taskNumber,
@@ -18,21 +30,34 @@ export function TaskHeader({
   rightBadge?: ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border pb-5">
+    <div className={cn("flex flex-wrap items-start justify-between gap-3 border-b pb-[18px] mb-1", BORDER)}>
       <div>
-        <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+        <div
+          className={cn(
+            "inline-flex items-center text-[10px] text-primary bg-primary/10 px-[9px] py-[3px] rounded-[2px] border border-primary/40 mb-[7px]",
+            MONO,
+          )}
+        >
           Week {week} · Task {taskNumber} · {duration}
         </div>
-        <h2 className="mt-1 text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+        <h2 className={cn("text-[22px] font-bold leading-[1.2]", SERIF, TEXT)}>
           {title}
         </h2>
-        <p className="mt-1.5 text-sm text-muted-foreground">
-          <span className="text-foreground/80 font-medium">Deliverable:</span> {deliverable}
+        <p className={cn("mt-[5px] text-[12px] leading-[1.5]", MUTED)}>
+          <span className={cn(TEXT, "font-medium")}>Deliverable:</span> {deliverable}
         </p>
       </div>
       {rightBadge ?? (
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/5 px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+        <span
+          className={cn(
+            "inline-flex items-center gap-[6px] px-[13px] py-[5px] rounded-full text-[11px] whitespace-nowrap shrink-0",
+            MONO,
+            "border",
+            BORDER_LIGHT,
+            MUTED,
+          )}
+        >
+          <span className="h-[6px] w-[6px] rounded-full bg-[#52c47a] animate-pulse" />
           Active
         </span>
       )}
@@ -42,14 +67,23 @@ export function TaskHeader({
 
 export function MentorPrinciple({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-xl border border-primary/30 bg-primary/5 px-4 py-3">
-      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+    <div className="rounded-md border border-[#1a3a1a] bg-[#0d1a0d] px-[13px] py-[11px] text-[12px] leading-[1.6] text-[#7ab87a]">
+      <div className={cn("text-[9px] uppercase tracking-[0.12em] mb-[6px] opacity-70", MONO)}>
         Core Principle
       </div>
-      <p className="mt-1 text-[13.5px] text-foreground/85 leading-relaxed">{children}</p>
+      {children}
     </div>
   );
 }
+
+const AVATAR_PALETTE: Record<string, string> = {
+  km: "bg-[#1a2a1a] text-[#52c47a] border-[#52c47a]",
+  pn: "bg-[#1a1a2a] text-[#5299e0] border-[#5299e0]",
+  aj: "bg-[#2a1a1a] text-[#e05252] border-[#e05252]",
+  sm: "bg-[#1a1a2a] text-[#e0b752] border-[#e0b752]",
+  da: "bg-[#2a1a1a] text-[#e05252] border-[#e05252]",
+  sr: "bg-[#1a1a2a] text-[#e0b752] border-[#e0b752]",
+};
 
 export function VoiceNote({
   initials,
@@ -66,30 +100,53 @@ export function VoiceNote({
   children: ReactNode;
   tone?: "default" | "urgent";
 }) {
+  const key = initials.toLowerCase();
+  const avatarCls =
+    tone === "urgent"
+      ? "bg-[#2a1a1a] text-[#e05252] border-[#e05252]"
+      : AVATAR_PALETTE[key] || "bg-[#1a2a1a] text-[#52c47a] border-[#52c47a]";
   return (
     <div
       className={cn(
-        "flex gap-3 rounded-xl border bg-card p-4",
-        tone === "urgent" ? "border-destructive/50" : "border-border",
+        "relative flex gap-[10px] rounded-[7px] border px-[14px] py-[12px] mb-1 overflow-hidden",
+        SURFACE_2,
+        tone === "urgent" ? "border-[#5a1a1a]" : BORDER_LIGHT,
       )}
     >
       <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-[2px]"
+        style={{
+          background:
+            tone === "urgent"
+              ? "linear-gradient(90deg, #e05252, transparent)"
+              : "linear-gradient(90deg, var(--primary), transparent)",
+        }}
+      />
+      <div
         className={cn(
-          "h-10 w-10 shrink-0 rounded-full flex items-center justify-center text-xs font-semibold border",
-          tone === "urgent"
-            ? "bg-destructive/15 text-destructive border-destructive/40"
-            : "bg-primary/10 text-primary border-primary/40",
+          "h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-[10px] font-semibold border",
+          MONO,
+          avatarCls,
         )}
       >
         {initials}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
-          <span className="font-semibold text-foreground">{name}</span>
-          <span className="text-muted-foreground">{role}</span>
-          <span className="text-muted-foreground/70 font-mono text-[10px]">{timestamp}</span>
+        <div className="flex flex-wrap items-center gap-x-[7px] gap-y-0.5 mb-[5px]">
+          <span className={cn("text-[11px] font-semibold", TEXT)}>{name}</span>
+          <span className={cn("text-[10px]", MONO, MUTED)}>{role}</span>
+          <span className={cn("text-[10px] ml-auto", MONO, DIM)}>{timestamp}</span>
         </div>
-        <div className="mt-1.5 text-[13.5px] leading-relaxed text-foreground/90">{children}</div>
+        <div className={cn("flex items-center gap-[2px] h-5 mb-[6px]")}>
+          {[6, 14, 10, 18, 8, 20, 12, 16, 9, 14, 19, 11].map((h, i) => (
+            <span
+              key={i}
+              className="w-[3px] rounded-[2px] bg-primary/50"
+              style={{ height: `${h}px` }}
+            />
+          ))}
+        </div>
+        <div className={cn("text-[12px] leading-[1.6] italic", MUTED, "[&_strong]:text-[#e8e4dc] [&_strong]:not-italic [&_b]:text-[#e8e4dc] [&_b]:not-italic")}>{children}</div>
       </div>
     </div>
   );
@@ -97,28 +154,35 @@ export function VoiceNote({
 
 export function DataCard({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="rounded-xl border border-dashed border-border bg-card/60 p-4">
-      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold mb-2">
+    <div className={cn("relative rounded-md border px-[15px] py-[13px] mb-[6px]", SURFACE, BORDER_LIGHT)}>
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] rounded-t-md"
+        style={{ background: "linear-gradient(90deg, var(--primary), transparent)" }}
+      />
+      <div className={cn("text-[9px] uppercase tracking-[0.1em] mb-[7px] text-primary", MONO)}>
         {label}
       </div>
-      <div className="text-[13px] leading-relaxed text-foreground/85 space-y-1">{children}</div>
+      <div className={cn("text-[12px] leading-[1.7] space-y-1", MUTED, "[&_strong]:text-[#e8e4dc] [&_b]:text-[#e8e4dc]")}>
+        {children}
+      </div>
     </div>
   );
 }
 
 export function SectionHeader({ children, hint }: { children: ReactNode; hint?: string }) {
   return (
-    <div>
-      <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-foreground/90">
-        {children}
-      </h3>
-      {hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}
+    <div className="mt-[14px] mb-[5px]">
+      <div className={cn("flex items-center gap-[7px] text-[10px] uppercase tracking-[0.1em]", MONO, DIM)}>
+        <span>{children}</span>
+        <span className={cn("flex-1 h-px", "bg-[#2a2a2a]")} />
+      </div>
+      {hint && <p className={cn("mt-[6px] text-[11px]", MUTED)}>{hint}</p>}
     </div>
   );
 }
 
 export function HelperText({ children }: { children: ReactNode }) {
-  return <p className="mt-1 text-[11px] text-muted-foreground/80">{children}</p>;
+  return <p className={cn("mt-1 text-[10px]", MONO, DIM)}>{children}</p>;
 }
 
 export function SubmitBar({
@@ -135,9 +199,9 @@ export function SubmitBar({
   hint?: string;
 }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-5">
+    <div className={cn("flex flex-wrap items-center justify-between gap-3 border-t pt-[14px] mt-[16px]", BORDER)}>
       {hint ? (
-        <p className="text-xs text-muted-foreground">{hint}</p>
+        <p className={cn("text-[11px]", MUTED)}>{hint}</p>
       ) : (
         <span />
       )}
@@ -145,10 +209,13 @@ export function SubmitBar({
         type="button"
         onClick={onSubmit}
         disabled={disabled || loading}
-        className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed"
+        className={cn(
+          "inline-flex items-center gap-[5px] rounded-[4px] bg-primary px-[15px] py-[7px] text-[11.5px] font-medium text-[#000] hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed border border-primary",
+          MONO,
+        )}
       >
         {loading ? "Evaluating..." : label}
-        {!loading && <ArrowRight className="h-4 w-4" />}
+        {!loading && <ArrowRight className="h-[14px] w-[14px]" />}
       </button>
     </div>
   );
@@ -170,42 +237,50 @@ export function FeedbackPanel({
   return (
     <div
       className={cn(
-        "rounded-xl border p-5",
+        "rounded-md border px-[14px] py-[13px] mt-3",
         passed
-          ? "border-[oklch(0.72_0.14_155_/_0.4)] bg-[oklch(0.72_0.14_155_/_0.07)]"
-          : "border-destructive/40 bg-destructive/5",
+          ? "border-[#1a3a1a] bg-[#0d1a0d]"
+          : "border-[#5a1a1a] bg-[#1a0808]",
       )}
     >
-      <div className="flex items-center gap-2 text-sm font-semibold">
+      <div className={cn("flex items-center gap-2 text-[11px]", MONO)}>
         {passed ? (
-          <CheckCircle2 className="h-4 w-4 text-[oklch(0.72_0.14_155)]" />
+          <CheckCircle2 className="h-[14px] w-[14px] text-[#52c47a]" />
         ) : (
-          <span className="h-2 w-2 rounded-full bg-destructive" />
+          <span className="h-2 w-2 rounded-full bg-[#e05252]" />
         )}
-        <span className={passed ? "text-[oklch(0.72_0.14_155)]" : "text-destructive"}>
-          {passed ? "Approved" : "Needs another pass"}
+        <span className={passed ? "text-[#52c47a]" : "text-[#e05252]"}>
+          {passed ? "APPROVED" : "NEEDS ANOTHER PASS"}
         </span>
-        <span className="ml-auto text-xs text-muted-foreground font-mono">
+        <span className={cn("ml-auto text-[10px]", DIM)}>
           Score {score}/10
         </span>
       </div>
-      <p className="mt-3 text-[13.5px] leading-relaxed text-foreground/90 whitespace-pre-line">
+      <p className={cn("mt-[10px] text-[12px] leading-[1.7] whitespace-pre-line", MUTED, "[&_strong]:text-[#e8e4dc]")}>
         {feedback}
       </p>
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-[13px] flex flex-wrap gap-[7px]">
         {passed ? (
           <button
             type="button"
             onClick={onContinue}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+            className={cn(
+              "inline-flex items-center gap-[5px] rounded-[4px] bg-primary px-[15px] py-[7px] text-[11.5px] font-medium text-[#000] border border-primary hover:brightness-110",
+              MONO,
+            )}
           >
-            Continue <ArrowRight className="h-4 w-4" />
+            Continue <ArrowRight className="h-[14px] w-[14px]" />
           </button>
         ) : (
           <button
             type="button"
             onClick={onRetry}
-            className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground hover:border-primary/40"
+            className={cn(
+              "inline-flex items-center gap-2 rounded-[4px] border px-[15px] py-[7px] text-[11.5px] font-medium hover:border-primary/40 hover:text-primary",
+              MONO,
+              BORDER_LIGHT,
+              MUTED,
+            )}
           >
             Try Again
           </button>
@@ -217,6 +292,8 @@ export function FeedbackPanel({
 
 export function TaskFrame({ children }: { children: ReactNode }) {
   return (
-    <div className="mx-auto max-w-4xl px-5 sm:px-8 py-10 space-y-6">{children}</div>
+    <div className="mx-auto max-w-[860px] px-6 sm:px-8 py-6 space-y-[13px] bg-[#0f0f0f] min-h-[calc(100vh-130px)]">
+      {children}
+    </div>
   );
 }

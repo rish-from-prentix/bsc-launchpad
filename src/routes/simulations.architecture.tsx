@@ -58,7 +58,7 @@ function ArchitecturePage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0f0f0f] text-[#e8e4dc]">
       <ArchProgressBar
         candidateName={name}
         tasks={ARCH_TASKS}

@@ -29,10 +29,10 @@ export function ArchProgressBar({
 
   return (
     <header
-      className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-xl"
-      style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.35)" }}
+      className="sticky top-0 z-30 border-b border-[#2a2a2a] bg-[#0a0a0a]"
+      style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.5)" }}
     >
-      <div className="mx-auto max-w-6xl px-5 sm:px-8 py-4">
+      <div className="mx-auto max-w-[1080px] px-5 sm:px-6 py-3 font-['IBM_Plex_Mono',ui-monospace,monospace]">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <button
@@ -40,44 +40,47 @@ export function ArchProgressBar({
               onClick={onPrevious}
               disabled={!canGoPrevious}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition",
+                "inline-flex items-center gap-1.5 rounded-[3px] border px-[10px] py-[4px] text-[10px] uppercase tracking-wider transition",
                 canGoPrevious
-                  ? "border-border text-foreground/90 hover:bg-secondary hover:border-primary/40 hover:-translate-x-0.5"
-                  : "border-border/40 text-muted-foreground/40 cursor-not-allowed",
+                  ? "border-[#333] text-[#7a756c] hover:border-primary/60 hover:text-primary"
+                  : "border-[#2a2a2a] text-[#4a4640] cursor-not-allowed",
               )}
               aria-label="Previous task"
             >
-              <ArrowLeft className="h-3.5 w-3.5" />
+              <ArrowLeft className="h-3 w-3" />
               Previous
             </button>
             <div>
-              <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-                Architecture Internship
+              <div className="text-[10px] uppercase tracking-[0.12em] text-primary font-medium">
+                Meridian Architecture Studio
               </div>
-              <div className="mt-0.5 text-sm text-foreground/90">
-                {firstName ? `Welcome, ${firstName}` : "Meridian Studio"} ·{" "}
-                <span className="text-muted-foreground">
+              <div className="mt-0.5 text-[11px] text-[#e8e4dc]">
+                {firstName ? `${firstName}` : "Intern"} ·{" "}
+                <span className="text-[#7a756c]">
                   Week {active.week} · Task {active.index} of {total}
                 </span>
               </div>
             </div>
           </div>
-          <div className="text-xs text-muted-foreground font-mono">
+          <div className="text-[10px] text-[#7a756c]">
             {completed} / {total} · {pct}%
           </div>
         </div>
 
-        <div className="mt-4 h-1.5 w-full rounded-full bg-border overflow-hidden">
+        <div className="mt-3 h-[3px] w-full rounded-[2px] bg-[#2a2a2a] overflow-hidden">
           <div
-            className="h-full bg-primary transition-all duration-500"
-            style={{ width: `${pct}%` }}
+            className="h-full transition-all duration-500"
+            style={{
+              width: `${pct}%`,
+              background: "linear-gradient(90deg, var(--primary), #a78bfa)",
+            }}
           />
         </div>
-        <div className="mt-2 flex items-center justify-between text-[10px] uppercase tracking-[0.18em]">
-          <span className="text-foreground/85 font-semibold">
+        <div className="mt-[6px] flex items-center justify-between text-[9px] uppercase tracking-[0.12em]">
+          <span className="text-[#e8e4dc]">
             Phase {active.index}: {active.title}
           </span>
-          <span className="text-muted-foreground font-mono">Week {active.week}</span>
+          <span className="text-[#4a4640]">Week {active.week}</span>
         </div>
       </div>
     </header>

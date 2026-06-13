@@ -57,7 +57,7 @@ export function ArchProgressBar({
               <div className="mt-0.5 text-[11px] text-[#e8e4dc]">
                 {firstName ? `${firstName}` : "Intern"} ·{" "}
                 <span className="text-[#7a756c]">
-                  Week {active.week} · Task {active.index} of {total}
+                  Week {active.week} · Task {active.index} · Day {active.index}
                 </span>
               </div>
             </div>

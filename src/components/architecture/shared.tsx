@@ -38,7 +38,7 @@ export function TaskHeader({
             MONO,
           )}
         >
-          Week {week} · Task {taskNumber} · {duration}
+          Week {week} · Task {taskNumber} · Day {duration.split(' ')[0]}
         </div>
         <h2 className={cn("text-[22px] font-bold leading-[1.2]", SERIF, TEXT)}>
           {title}

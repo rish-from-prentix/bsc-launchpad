@@ -14,6 +14,7 @@ import { ArchTaskEight } from "@/components/architecture/task-08-mep";
 import { ArchTaskNine } from "@/components/architecture/task-09-rfi";
 import { ArchTaskTen } from "@/components/architecture/task-10-audit";
 import { ArchTaskEleven } from "@/components/architecture/task-11-crisis";
+import { ArchRightPanel } from "@/components/architecture/right-panel";
 
 export const Route = createFileRoute("/simulations/architecture")({
   head: () => ({
@@ -67,8 +68,9 @@ function ArchitecturePage() {
         onPrevious={goPrevious}
         canGoPrevious={canGoPrevious}
       />
-      <main key={currentPhase} className="animate-[fadeSlide_0.35s_ease-out]">
-        {currentPhase === 1 && <ArchTaskOne onComplete={() => advance(1)} />}
+      <div className="flex">
+        <main key={currentPhase} className="flex-1 min-w-0 animate-[fadeSlide_0.35s_ease-out]">
+          {currentPhase === 1 && <ArchTaskOne onComplete={() => advance(1)} />}
         {currentPhase === 2 && <ArchTaskTwo onComplete={() => advance(2)} />}
         {currentPhase === 3 && <ArchTaskThree onComplete={() => advance(3)} />}
         {currentPhase === 4 && <ArchTaskFour onComplete={() => advance(4)} />}
@@ -81,7 +83,9 @@ function ArchitecturePage() {
         {currentPhase === 11 && (
           <ArchTaskEleven onComplete={() => setMaxReached((m) => Math.max(m, 11))} />
         )}
-      </main>
+        </main>
+        <ArchRightPanel />
+      </div>
     </div>
   );
 }

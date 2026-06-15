@@ -186,7 +186,7 @@ export function HelperText({ children }: { children: ReactNode }) {
 }
 
 export function SubmitBar({
-  label = "Submit & Continue",
+  label = "Next Task",
   onSubmit,
   disabled = false,
   loading = false,
@@ -208,9 +208,9 @@ export function SubmitBar({
       <button
         type="button"
         onClick={onSubmit}
-        disabled={disabled || loading}
+        disabled={loading}
         className={cn(
-          "inline-flex items-center gap-[5px] rounded-[4px] bg-primary px-[15px] py-[7px] text-[11.5px] font-medium text-[#000] hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed border border-primary",
+          "inline-flex items-center gap-[5px] rounded-[4px] bg-primary px-[18px] py-[8px] text-[12px] font-semibold text-[#000] hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed border border-primary shadow-[0_0_18px_rgba(167,139,250,0.25)]",
           MONO,
         )}
       >

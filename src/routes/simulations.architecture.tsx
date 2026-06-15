@@ -90,20 +90,24 @@ function ArchitecturePage() {
           visited={visited}
           onJump={goToTask}
         />
-        <main key={currentPhase} className="flex-1 min-w-0 animate-[fadeSlide_0.35s_ease-out]">
-          {currentPhase === 1 && <ArchTaskOne onComplete={() => advance(1)} />}
-        {currentPhase === 2 && <ArchTaskTwo onComplete={() => advance(2)} />}
-        {currentPhase === 3 && <ArchTaskThree onComplete={() => advance(3)} />}
-        {currentPhase === 4 && <ArchTaskFour onComplete={() => advance(4)} />}
-        {currentPhase === 5 && <ArchTaskFive onComplete={() => advance(5)} />}
-        {currentPhase === 6 && <ArchTaskSix onComplete={() => advance(6)} />}
-        {currentPhase === 7 && <ArchTaskSeven onComplete={() => advance(7)} />}
-        {currentPhase === 8 && <ArchTaskEight onComplete={() => advance(8)} />}
-        {currentPhase === 9 && <ArchTaskNine onComplete={() => advance(9)} />}
-        {currentPhase === 10 && <ArchTaskTen onComplete={() => advance(10)} />}
-        {currentPhase === 11 && (
-          <ArchTaskEleven onComplete={() => setCompleted((c) => { const n = new Set(c); n.add(11); return n; })} />
-        )}
+        <main className="flex-1 min-w-0">
+          {([
+            <ArchTaskOne onComplete={() => advance(1)} />,
+            <ArchTaskTwo onComplete={() => advance(2)} />,
+            <ArchTaskThree onComplete={() => advance(3)} />,
+            <ArchTaskFour onComplete={() => advance(4)} />,
+            <ArchTaskFive onComplete={() => advance(5)} />,
+            <ArchTaskSix onComplete={() => advance(6)} />,
+            <ArchTaskSeven onComplete={() => advance(7)} />,
+            <ArchTaskEight onComplete={() => advance(8)} />,
+            <ArchTaskNine onComplete={() => advance(9)} />,
+            <ArchTaskTen onComplete={() => advance(10)} />,
+            <ArchTaskEleven onComplete={() => setCompleted((c) => { const n = new Set(c); n.add(11); return n; })} />,
+          ]).map((node, idx) => (
+            <div key={idx} hidden={currentPhase !== idx + 1}>
+              {node}
+            </div>
+          ))}
           <NavFooter
             currentPhase={currentPhase}
             total={ARCH_TASKS.length}

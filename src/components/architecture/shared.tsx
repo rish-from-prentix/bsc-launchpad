@@ -214,7 +214,7 @@ export function SubmitBar({
           MONO,
         )}
       >
-        {loading ? "Evaluating..." : `${label} →`}
+        {loading ? "Evaluating..." : label}
         {!loading && <ArrowRight className="h-[14px] w-[14px]" />}
       </button>
     </div>

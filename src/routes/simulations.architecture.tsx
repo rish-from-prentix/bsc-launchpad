@@ -15,6 +15,7 @@ import { ArchTaskNine } from "@/components/architecture/task-09-rfi";
 import { ArchTaskTen } from "@/components/architecture/task-10-audit";
 import { ArchTaskEleven } from "@/components/architecture/task-11-crisis";
 import { ArchRightPanel } from "@/components/architecture/right-panel";
+import { ArchTaskNavigator } from "@/components/architecture/task-navigator";
 
 export const Route = createFileRoute("/simulations/architecture")({
   head: () => ({
@@ -38,7 +39,8 @@ export const Route = createFileRoute("/simulations/architecture")({
 
 function ArchitecturePage() {
   const [name, setName] = useState<string | null>(null);
-  const [maxReached, setMaxReached] = useState(0);
+  const [completed, setCompleted] = useState<Set<number>>(() => new Set());
+  const [visited, setVisited] = useState<Set<number>>(() => new Set([1]));
   const [currentPhase, setCurrentPhase] = useState(1);
 
   if (!name) {
@@ -46,16 +48,28 @@ function ArchitecturePage() {
   }
 
   const canGoPrevious = currentPhase > 1;
+  const goToTask = (n: number) => {
+    const target = Math.max(1, Math.min(ARCH_TASKS.length, n));
+    setCurrentPhase(target);
+    setVisited((v) => {
+      if (v.has(target)) return v;
+      const next = new Set(v);
+      next.add(target);
+      return next;
+    });
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const goPrevious = () => {
-    if (canGoPrevious) {
-      setCurrentPhase((p) => Math.max(1, p - 1));
-      if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    if (canGoPrevious) goToTask(currentPhase - 1);
   };
   const advance = (next: number) => {
-    setMaxReached((m) => Math.max(m, next));
-    setCurrentPhase(next + 1 > ARCH_TASKS.length ? ARCH_TASKS.length : next + 1);
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+    setCompleted((c) => {
+      if (c.has(next)) return c;
+      const n = new Set(c);
+      n.add(next);
+      return n;
+    });
+    goToTask(next + 1 > ARCH_TASKS.length ? ARCH_TASKS.length : next + 1);
   };
 
   return (
@@ -64,11 +78,17 @@ function ArchitecturePage() {
         candidateName={name}
         tasks={ARCH_TASKS}
         currentPhase={currentPhase}
-        completed={maxReached}
+        completed={completed.size}
         onPrevious={goPrevious}
         canGoPrevious={canGoPrevious}
       />
       <div className="flex">
+        <ArchTaskNavigator
+          currentPhase={currentPhase}
+          completed={completed}
+          visited={visited}
+          onJump={goToTask}
+        />
         <main key={currentPhase} className="flex-1 min-w-0 animate-[fadeSlide_0.35s_ease-out]">
           {currentPhase === 1 && <ArchTaskOne onComplete={() => advance(1)} />}
         {currentPhase === 2 && <ArchTaskTwo onComplete={() => advance(2)} />}
@@ -81,7 +101,7 @@ function ArchitecturePage() {
         {currentPhase === 9 && <ArchTaskNine onComplete={() => advance(9)} />}
         {currentPhase === 10 && <ArchTaskTen onComplete={() => advance(10)} />}
         {currentPhase === 11 && (
-          <ArchTaskEleven onComplete={() => setMaxReached((m) => Math.max(m, 11))} />
+          <ArchTaskEleven onComplete={() => setCompleted((c) => { const n = new Set(c); n.add(11); return n; })} />
         )}
         </main>
         <ArchRightPanel />

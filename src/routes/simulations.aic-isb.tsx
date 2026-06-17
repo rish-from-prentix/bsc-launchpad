@@ -86,10 +86,10 @@ function AicIsbPage() {
             }}
           />
         )}
-        {currentPhase === 2 && sector && (
+        {currentPhase === 2 && (
           <AicIsbTaskTwo
             candidateName={name}
-            sector={sector}
+            sector={sector || "ai"}
             onComplete={(ids) => {
               setShortlistedIds(ids);
               advance(2);

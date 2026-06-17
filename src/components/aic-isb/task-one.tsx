@@ -403,10 +403,10 @@ export function AicIsbTaskOne({
           style={{ animation: "fadeSlide 500ms ease-out" }}
         >
           <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-            Step 1 · Pick your sector
+            {"\n"}
           </div>
           <h2 className="mt-2 text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
-            Before you back a startup, you need a point of view. Start here.
+            Build Your Investment Thesis
           </h2>
 
           <div className="mt-6 grid sm:grid-cols-3 gap-3">

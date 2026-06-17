@@ -592,10 +592,9 @@ function EmailCard({
           one.
         </p>
         <p className="mt-3">
-          Here's what I need from you first: pick one of the three sectors below based on
-          your research and build an Accelerator Investment Thesis around it. Think of it
-          as your POV — where the opportunity is, why now, and what kind of startups
-          deserve backing.
+          As a first step, select one of the three sectors below and build an Accelerator Investment Thesis around it.
+
+          Consider where you believe the most promising opportunities lie, what market trends or shifts are creating momentum today, and what qualities would make a startup stand out as a strong investment candidate.
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           {SECTORS.map((s) => (

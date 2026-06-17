@@ -13,11 +13,13 @@ export function AicIsbProgressBar({
   candidateName,
   tasks,
   onPrevious,
+  onPhaseSelect,
   canGoPrevious = false,
 }: {
   candidateName: string;
   tasks: ProgressTask[];
   onPrevious?: () => void;
+  onPhaseSelect?: (phase: number) => void;
   canGoPrevious?: boolean;
 }) {
   const completed = tasks.filter((t) => t.state === "done").length;

@@ -658,15 +658,17 @@ function LoadingPhase() {
 function ResultPhase({
   bundle,
   evals,
+  shortlistedIds,
   onContinue,
 }: {
   bundle: (typeof THEMES)[ThemeId];
   evals: Record<string, Evaluation>;
+  shortlistedIds: string[];
   onContinue: () => void;
 }) {
   const { startups, bestIds, weakIds } = bundle;
 
-  const shortlisted = startups.filter((s) => evals[s.id].shortlisted);
+  const shortlisted = startups.filter((s) => shortlistedIds.includes(s.id));
   const hasWeakInShortlist = shortlisted.some((s) => weakIds.includes(s.id));
 
   // Board feedback should only reference the startups the student actually selected.
@@ -675,7 +677,7 @@ function ResultPhase({
   );
   // Missed conviction = strong startups the student did NOT shortlist.
   const underratedStrong = startups.filter(
-    (s) => bestIds.includes(s.id) && !evals[s.id].shortlisted,
+    (s) => bestIds.includes(s.id) && !shortlistedIds.includes(s.id),
   );
 
   const accuracy = useMemo(() => {

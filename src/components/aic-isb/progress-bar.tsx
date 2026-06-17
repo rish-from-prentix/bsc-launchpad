@@ -13,11 +13,13 @@ export function AicIsbProgressBar({
   candidateName,
   tasks,
   onPrevious,
+  onPhaseSelect,
   canGoPrevious = false,
 }: {
   candidateName: string;
   tasks: ProgressTask[];
   onPrevious?: () => void;
+  onPhaseSelect?: (phase: number) => void;
   canGoPrevious?: boolean;
 }) {
   const completed = tasks.filter((t) => t.state === "done").length;
@@ -69,7 +71,14 @@ export function AicIsbProgressBar({
             const isDone = t.state === "done";
             const isLocked = t.state === "locked";
             return (
-              <li key={t.index} className="flex flex-col gap-1.5">
+              <li
+                key={t.index}
+                className={cn(
+                  "flex flex-col gap-1.5",
+                  !isLocked && "cursor-pointer group"
+                )}
+                onClick={() => !isLocked && onPhaseSelect?.(t.index)}
+              >
                 <div
                   className={cn(
                     "h-1.5 w-full rounded-full transition-colors",

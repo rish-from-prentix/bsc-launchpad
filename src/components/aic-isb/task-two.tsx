@@ -166,21 +166,31 @@ function EmailPhase({
 }) {
   return (
     <InboxEmail
-      badge="Phase 2 · Call for Applications"
+      badge="Phase 2 · Review Shortlisted Startups"
       senderName="Animesh Sharma"
       senderRole="CEO, AIC × ISB"
       senderInitials="AS"
-      subject="Call for Applications — ready when you are"
-      preview={`Hi ${name}, good job on the thesis — we've opened the call for applications. Launch it when ready…`}
+      subject="Review Shortlisted Startups — ready when you are"
+      preview={`Hi ${name}, good job on the investment thesis — the board has approved the launch of applications…`}
       timestamp="Today · 11:04 AM"
-      ctaLabel="Call for Applications"
+      ctaLabel="Review Shortlisted Startups"
       onCta={onStart}
     >
       <div className="whitespace-pre-wrap">{`Hi ${name},
 
 Good job on the investment thesis — the board agrees with your direction and recommendations.
 
-We've opened the call for applications. When you're ready, go ahead and launch it. Our analytical team will surface the shortlisted pool for your review, and I'd like to hear which ones you'd back.
+The board has approved the launch of applications for the upcoming accelerator cohort.
+
+
+
+We're expecting a large volume of submissions, so our screening team will conduct the initial review and prepare a shortlist of the most promising startups. Once that's complete, the shortlisted companies will land on your desk.
+
+
+
+
+Your job will be simple: identify the founders and businesses you believe have the strongest potential to succeed within the accelerator.
+
 
 No pressure — trust your instincts.
 

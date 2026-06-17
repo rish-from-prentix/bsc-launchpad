@@ -74,6 +74,7 @@ function AicIsbPage() {
         candidateName={name}
         tasks={tasks}
         onPrevious={goPrevious}
+        onPhaseSelect={(p) => setCurrentPhase(p)}
         canGoPrevious={canGoPrevious}
       />
       <main key={currentPhase} className="animate-[fadeSlide_0.35s_ease-out]">

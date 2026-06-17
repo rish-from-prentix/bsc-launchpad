@@ -178,15 +178,33 @@ function EmailPhase({
     >
       <div className="whitespace-pre-wrap">{`Hi ${name},
 
-Good job on the investment thesis — the board agrees with your direction and recommendations.
+The board reviewed your investment thesis.
 
-The board has approved the launch of applications for the upcoming accelerator cohort.
+They agree with your direction. Your recommendations are approved.
 
-We're expecting a large volume of submissions, so our screening team will conduct the initial review and prepare a shortlist of the most promising startups. Once that's complete, the shortlisted companies will land on your desk.
+Take a moment — that matters.
 
-Your job will be simple: identify the founders and businesses you believe have the strongest potential to succeed within the accelerator.
+ WHAT HAPPENS NEXT
 
-No pressure — trust your instincts.
+We're officially launching applications for the upcoming accelerator cohort. We're expecting a high volume of submissions — hundreds of founders who believe they have what it takes to be part of AIC Mohali.
+
+Our screening team will run the first pass. They'll comb through the pile, filter out the noise, and prepare a shortlist of the most promising startups.
+
+And then those companies land on your desk.
+
+ YOUR ROLE
+
+From the shortlist, your job is to identify the founders and businesses you believe have the strongest potential to succeed within the accelerator.
+
+Not the flashiest decks. Not the buzziest sectors.
+
+The ones with real grit, a solvable problem, and a founder who'll still be standing when things get hard.
+
+This is exactly the kind of decision that separates a good program manager from a great one. You've earned the shot at it.
+
+More details on the shortlist timeline coming soon.
+
+Let's find the next big ones
 
 Regards,
 Animesh Sharma

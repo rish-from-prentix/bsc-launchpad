@@ -139,17 +139,20 @@ function EmailPhase({ name, onStart }: { name: string; onStart: () => void }) {
     >
       <div className="whitespace-pre-wrap">{`Hi ${name},
 
-Great work on completing the startup evaluation process.
+First — well done. Completing the startup evaluation process is no small feat, and the quality of thinking you brought to it didn't go unnoticed.
 
-Your selected startups are now entering the accelerator phase, where founder support and strategic guidance become critical.
+But here's the truth: that was the warm-up.
 
-Your next phase is to assign mentors to the startups based on their operational gaps, growth stage, and scaling challenges.
+The startups you selected are now entering the accelerator phase — and this is where the rubber meets the road. Founders are no longer pitching; they're building, pivoting, and hitting walls. Your job now is to make sure they don't hit those walls alone.
 
-You'll be evaluated on:
-• Mentor-founder fit
-• Strategic thinking
-• Understanding startup bottlenecks
-• Accelerator operations judgment
+ YOUR NEXT MISSION: MENTOR ASSIGNMENT
+
+You'll be assigning mentors to each of your selected startups. This sounds straightforward — it isn't. A wrong mentor-founder match can stall a startup's momentum for months. A right one can be the difference between a pivot that works and one that doesn't.
+
+
+This is the kind of judgment that separates someone who works in the startup ecosystem from someone who understands it.
+
+Looking forward to seeing what you put together.
 
 Best,
 Animesh Sharma`}</div>

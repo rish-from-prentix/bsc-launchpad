@@ -451,25 +451,23 @@ function StartupCard({
   index,
   startup,
   evaluation,
-  shortlistFull,
+  rank,
   onUpdate,
-  onToggleShortlist,
 }: {
   index: number;
   startup: Startup;
   evaluation: Evaluation;
-  shortlistFull: boolean;
+  rank?: number;
   onUpdate: (patch: Partial<Evaluation>) => void;
-  onToggleShortlist: () => void;
 }) {
-  const isShortlisted = evaluation.shortlisted;
   const rating = evaluation.rating;
   const isGraded = rating > 0;
+  const isShortlisted = rank !== undefined;
 
   return (
     <article
       className={cn(
-        "glass rounded-2xl p-5 sm:p-6 transition-all",
+        "glass rounded-2xl p-5 sm:p-6 transition-all relative",
         isShortlisted && "ring-1 ring-primary/60",
         !isGraded &&
           !isShortlisted &&
@@ -487,6 +485,13 @@ function StartupCard({
             : undefined
       }
     >
+      {isShortlisted && (
+        <div className="absolute -top-3 left-5 flex items-center gap-2">
+          <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-primary-foreground shadow-[0_4px_12px_rgba(93,196,254,0.45)]">
+            <Trophy className="h-3 w-3" /> #{rank} · Accelerator Recommended
+          </span>
+        </div>
+      )}
       <header className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
@@ -515,11 +520,11 @@ function StartupCard({
         >
           {isGraded ? (
             <>
-              <CheckCircle2 className="h-3 w-3" /> Graded
+              <CheckCircle2 className="h-3 w-3" /> Rated
             </>
           ) : (
             <>
-              <AlertTriangle className="h-3 w-3" /> Not Graded Yet
+              <AlertTriangle className="h-3 w-3" /> Rating Pending
             </>
           )}
         </span>
@@ -586,39 +591,16 @@ function StartupCard({
       )}
 
       {/* Rating + reason + shortlist */}
-      <div className="mt-6 pt-5 border-t border-border space-y-4">
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
-              Your rating
-            </label>
-            <span className="text-sm font-mono text-muted-foreground">
-              {rating > 0 ? `${rating.toFixed(1)} / 10` : "—"}
-            </span>
-          </div>
-          <RatingControl value={rating} onChange={(v) => onUpdate({ rating: v })} />
+      <div className="mt-6 pt-5 border-t border-border">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
+            Your rating
+          </label>
+          <StarRating
+            value={rating}
+            onChange={(v) => onUpdate({ rating: v })}
+          />
         </div>
-
-        <button
-          onClick={onToggleShortlist}
-          className={cn(
-            "inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition w-full sm:w-auto",
-            isShortlisted
-              ? "btn-primary-glow"
-              : "border border-primary/40 text-primary hover:bg-primary/10",
-            !isShortlisted && shortlistFull && "opacity-60 hover:bg-transparent",
-          )}
-        >
-          {isShortlisted ? (
-            <>
-              <CheckCircle2 className="h-4 w-4" /> Added to Accelerator Shortlist
-            </>
-          ) : (
-            <>
-              <Star className="h-4 w-4" /> Add to Accelerator Shortlist
-            </>
-          )}
-        </button>
       </div>
     </article>
   );

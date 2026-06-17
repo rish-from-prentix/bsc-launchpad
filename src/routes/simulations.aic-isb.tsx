@@ -50,7 +50,7 @@ function AicIsbPage() {
     const index = i + 1;
     let state: ProgressTask["state"] = "locked";
     if (index === currentPhase) state = "active";
-    else if (i < maxReached || i < 2) state = "done"; // Force unlock first two phases for testing or ease
+    else if (i < maxReached) state = "done";
     return { index, title, state };
   });
 

@@ -323,31 +323,31 @@ function Dashboard({
   themeLabel,
   startups,
   evals,
-  shortlistCount,
+  rankById,
   allRated,
   canSubmit,
   onUpdate,
-  onToggleShortlist,
   onSubmit,
   saveState,
   onSaveDraft,
-  limitWarning,
-  onDismissWarning,
+  needsTiebreak,
+  onOpenTiebreak,
 }: {
   themeLabel: string;
   startups: Startup[];
   evals: Record<string, Evaluation>;
-  shortlistCount: number;
+  rankById: Record<string, number>;
   allRated: boolean;
   canSubmit: boolean;
   onUpdate: (id: string, patch: Partial<Evaluation>) => void;
-  onToggleShortlist: (id: string) => void;
   onSubmit: () => void;
   saveState: "idle" | "saved";
   onSaveDraft: () => void;
-  limitWarning: boolean;
-  onDismissWarning: () => void;
+  needsTiebreak: boolean;
+  onOpenTiebreak: () => void;
 }) {
+  const ratedCount = Object.values(evals).filter((e) => e.rating > 0).length;
+  const shortlistCount = Object.keys(rankById).length;
   return (
     <div className="mx-auto max-w-4xl px-5 sm:px-8 py-10 sm:py-14 pb-40 relative">
       <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
@@ -357,7 +357,7 @@ function Dashboard({
         Accelerator Cohort Evaluation
       </h1>
       <p className="mt-3 text-[15px] text-muted-foreground">
-        Evaluate all 8 startups and select the top 2 for the cohort.
+        Rate every startup out of 10. The top 2 highest-rated are auto-shortlisted for the cohort.
       </p>
 
       <div className="mt-6 glass rounded-xl p-4 sm:p-5 text-sm text-foreground/85 flex gap-3">
@@ -376,32 +376,30 @@ function Dashboard({
             index={i + 1}
             startup={s}
             evaluation={evals[s.id]}
-            shortlistFull={shortlistCount >= 2}
+            rank={rankById[s.id]}
             onUpdate={(patch) => onUpdate(s.id, patch)}
-            onToggleShortlist={() => onToggleShortlist(s.id)}
           />
         ))}
       </div>
 
-      {/* Shortlist limit warning toast */}
-      {limitWarning && (
+      {/* Tie-breaker alert */}
+      {allRated && needsTiebreak && (
         <div
           role="alert"
-          className="fixed left-1/2 -translate-x-1/2 bottom-24 z-40 max-w-md w-[92%] rounded-xl border border-[oklch(0.78_0.13_70)]/50 bg-[oklch(0.18_0.02_70)]/95 backdrop-blur-xl px-4 py-3 shadow-[0_18px_48px_-10px_rgba(0,0,0,0.6)]"
-          style={{ animation: "fadeSlide 280ms ease-out" }}
+          className="mt-6 rounded-xl border border-[oklch(0.78_0.13_70)]/50 bg-[oklch(0.78_0.13_70)]/5 px-4 py-3"
         >
           <div className="flex items-start gap-3">
             <AlertTriangle className="h-4 w-4 text-[oklch(0.78_0.13_70)] mt-0.5 shrink-0" />
-            <div className="text-sm text-foreground/90 leading-relaxed">
-              You've already locked in your final 2 picks. Want to back a different startup? Simply remove one from your shortlist first.
+            <div className="text-sm text-foreground/90 leading-relaxed flex-1">
+              Multiple startups are tied at the shortlist boundary. The committee needs your final
+              recommendation.
             </div>
             <button
               type="button"
-              onClick={onDismissWarning}
-              className="text-xs text-muted-foreground hover:text-foreground"
-              aria-label="Dismiss"
+              onClick={onOpenTiebreak}
+              className="rounded-lg border border-[oklch(0.78_0.13_70)]/60 px-3 py-1.5 text-xs font-semibold text-[oklch(0.78_0.13_70)] hover:bg-[oklch(0.78_0.13_70)]/10"
             >
-              ✕
+              Resolve tie
             </button>
           </div>
         </div>
@@ -412,11 +410,11 @@ function Dashboard({
         <div className="mx-auto max-w-4xl px-5 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
           <div className="text-xs text-muted-foreground">
             <span className={cn(allRated ? "text-primary" : "")}>
-              {Object.values(evals).filter((e) => e.rating > 0).length}/8 evaluated
+              {ratedCount}/{startups.length} rated
             </span>
             <span className="mx-2 text-border">·</span>
             <span className={cn(shortlistCount === 2 ? "text-primary" : "")}>
-              {shortlistCount}/2 shortlisted
+              {shortlistCount}/2 auto-shortlisted
             </span>
             {saveState === "saved" && (
               <span className="ml-3 text-primary">Draft saved</span>

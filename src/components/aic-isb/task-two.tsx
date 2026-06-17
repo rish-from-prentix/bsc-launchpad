@@ -13,6 +13,8 @@ import {
   Flame,
   Target,
   Save,
+  Trophy,
+  X,
 } from "lucide-react";
 import { cn, getFirstName } from "@/lib/utils";
 import { THEMES, type ThemeId, type Startup } from "./startups-data";
@@ -24,6 +26,52 @@ type Evaluation = {
   rating: number; // 1–10, 0 = unset
   shortlisted: boolean;
 };
+
+/** Compute auto-shortlist from ratings. Returns the two recommended IDs, or
+ * flags a tie-breaker when the boundary between slot 2 and slot 3 is tied. */
+function computeShortlist(
+  startups: Startup[],
+  evals: Record<string, Evaluation>,
+  manualPicks: string[],
+): {
+  shortlist: string[];
+  needsTiebreak: boolean;
+  tied: string[];
+  confirmed: string[];
+  slotsNeeded: number;
+} {
+  const allRated = startups.every((s) => evals[s.id].rating > 0);
+  if (!allRated) {
+    return { shortlist: [], needsTiebreak: false, tied: [], confirmed: [], slotsNeeded: 0 };
+  }
+  const sorted = [...startups].sort((a, b) => evals[b.id].rating - evals[a.id].rating);
+  const result: string[] = [];
+  let i = 0;
+  while (result.length < 2 && i < sorted.length) {
+    const score = evals[sorted[i].id].rating;
+    const sameScore = sorted.filter((s) => evals[s.id].rating === score).map((s) => s.id);
+    const slotsNeeded = 2 - result.length;
+    if (sameScore.length <= slotsNeeded) {
+      result.push(...sameScore);
+      i += sameScore.length;
+    } else {
+      // Tie at the boundary. Require manual picks among the tied set.
+      const picks = manualPicks.filter((id) => sameScore.includes(id)).slice(0, slotsNeeded);
+      if (picks.length < slotsNeeded) {
+        return {
+          shortlist: [],
+          needsTiebreak: true,
+          tied: sameScore,
+          confirmed: result,
+          slotsNeeded,
+        };
+      }
+      result.push(...picks);
+      break;
+    }
+  }
+  return { shortlist: result, needsTiebreak: false, tied: [], confirmed: [], slotsNeeded: 0 };
+}
 
 export function AicIsbTaskTwo({
   candidateName,
@@ -53,15 +101,37 @@ export function AicIsbTaskTwo({
   });
   const [saveState, setSaveState] = useState<"idle" | "saved">("idle");
   const savedTimer = useRef<number | null>(null);
-  const [limitWarning, setLimitWarning] = useState(false);
-  const warningTimer = useRef<number | null>(null);
+  const [manualPicks, setManualPicks] = useState<string[]>([]);
+  const [tieModalOpen, setTieModalOpen] = useState(false);
 
-  const shortlistCount = Object.values(evals).filter((e) => e.shortlisted).length;
   const allRated = bundle.startups.every((s) => evals[s.id].rating > 0);
-  const canSubmit = allRated && shortlistCount === 2;
+  const { shortlist, needsTiebreak, tied, confirmed, slotsNeeded } = useMemo(
+    () => computeShortlist(bundle.startups, evals, manualPicks),
+    [bundle.startups, evals, manualPicks],
+  );
+  const shortlistedIds = shortlist;
+  const canSubmit = allRated && !needsTiebreak && shortlistedIds.length === 2;
+
+  // Auto-open tie-breaker once all ratings are in and a boundary tie exists.
+  useEffect(() => {
+    if (allRated && needsTiebreak) setTieModalOpen(true);
+  }, [allRated, needsTiebreak]);
+
+  // Ranking by rating (desc), used for #1 / #2 indicators.
+  const rankById = useMemo(() => {
+    const map: Record<string, number> = {};
+    shortlistedIds.forEach((id, idx) => {
+      map[id] = idx + 1;
+    });
+    return map;
+  }, [shortlistedIds]);
 
   function updateEval(id: string, patch: Partial<Evaluation>) {
     setEvals((prev) => ({ ...prev, [id]: { ...prev[id], ...patch } }));
+    if (patch.rating !== undefined) {
+      // Ratings changed — invalidate any previous tie-break decision.
+      setManualPicks([]);
+    }
   }
 
   function handleSaveDraft() {
@@ -82,23 +152,16 @@ export function AicIsbTaskTwo({
     };
   }, []);
 
-  function toggleShortlist(id: string) {
-    setEvals((prev) => {
-      const cur = prev[id];
-      const count = Object.values(prev).filter((e) => e.shortlisted).length;
-      if (!cur.shortlisted && count >= 2) {
-        // Trigger warning toast
-        setLimitWarning(true);
-        if (warningTimer.current) window.clearTimeout(warningTimer.current);
-        warningTimer.current = window.setTimeout(() => setLimitWarning(false), 4200);
-        return prev;
-      }
-      return { ...prev, [id]: { ...cur, shortlisted: !cur.shortlisted } };
-    });
-  }
-
   function handleSubmit() {
     if (!canSubmit) return;
+    // Stamp the final shortlist onto evals so downstream phases can read it.
+    setEvals((prev) => {
+      const next: Record<string, Evaluation> = {};
+      for (const s of bundle.startups) {
+        next[s.id] = { ...prev[s.id], shortlisted: shortlistedIds.includes(s.id) };
+      }
+      return next;
+    });
     setPhase("loading");
     window.setTimeout(() => setPhase("result"), 1800);
   }
@@ -122,11 +185,8 @@ export function AicIsbTaskTwo({
       <ResultPhase
         bundle={bundle}
         evals={evals}
-        onContinue={() =>
-          onComplete?.(
-            bundle.startups.filter((s) => evals[s.id].shortlisted).map((s) => s.id),
-          )
-        }
+        shortlistedIds={shortlistedIds}
+        onContinue={() => onComplete?.(shortlistedIds)}
       />
     );
   }
@@ -138,17 +198,30 @@ export function AicIsbTaskTwo({
       themeLabel={bundle.label}
       startups={bundle.startups}
       evals={evals}
-      shortlistCount={shortlistCount}
+      rankById={rankById}
       allRated={allRated}
       canSubmit={canSubmit}
       onUpdate={updateEval}
-      onToggleShortlist={toggleShortlist}
       onSubmit={handleSubmit}
       saveState={saveState}
       onSaveDraft={handleSaveDraft}
-      limitWarning={limitWarning}
-      onDismissWarning={() => setLimitWarning(false)}
+      needsTiebreak={needsTiebreak}
+      onOpenTiebreak={() => setTieModalOpen(true)}
       />
+      {tieModalOpen && needsTiebreak && (
+        <TieBreakerModal
+          startups={bundle.startups}
+          tiedIds={tied}
+          confirmedIds={confirmed}
+          slotsNeeded={slotsNeeded}
+          evals={evals}
+          onConfirm={(picks) => {
+            setManualPicks(picks);
+            setTieModalOpen(false);
+          }}
+          onClose={() => setTieModalOpen(false)}
+        />
+      )}
     </>
   );
 }
@@ -250,31 +323,31 @@ function Dashboard({
   themeLabel,
   startups,
   evals,
-  shortlistCount,
+  rankById,
   allRated,
   canSubmit,
   onUpdate,
-  onToggleShortlist,
   onSubmit,
   saveState,
   onSaveDraft,
-  limitWarning,
-  onDismissWarning,
+  needsTiebreak,
+  onOpenTiebreak,
 }: {
   themeLabel: string;
   startups: Startup[];
   evals: Record<string, Evaluation>;
-  shortlistCount: number;
+  rankById: Record<string, number>;
   allRated: boolean;
   canSubmit: boolean;
   onUpdate: (id: string, patch: Partial<Evaluation>) => void;
-  onToggleShortlist: (id: string) => void;
   onSubmit: () => void;
   saveState: "idle" | "saved";
   onSaveDraft: () => void;
-  limitWarning: boolean;
-  onDismissWarning: () => void;
+  needsTiebreak: boolean;
+  onOpenTiebreak: () => void;
 }) {
+  const ratedCount = Object.values(evals).filter((e) => e.rating > 0).length;
+  const shortlistCount = Object.keys(rankById).length;
   return (
     <div className="mx-auto max-w-4xl px-5 sm:px-8 py-10 sm:py-14 pb-40 relative">
       <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
@@ -284,7 +357,7 @@ function Dashboard({
         Accelerator Cohort Evaluation
       </h1>
       <p className="mt-3 text-[15px] text-muted-foreground">
-        Evaluate all 8 startups and select the top 2 for the cohort.
+        Rate every startup out of 10. The top 2 highest-rated are auto-shortlisted for the cohort.
       </p>
 
       <div className="mt-6 glass rounded-xl p-4 sm:p-5 text-sm text-foreground/85 flex gap-3">
@@ -303,32 +376,30 @@ function Dashboard({
             index={i + 1}
             startup={s}
             evaluation={evals[s.id]}
-            shortlistFull={shortlistCount >= 2}
+            rank={rankById[s.id]}
             onUpdate={(patch) => onUpdate(s.id, patch)}
-            onToggleShortlist={() => onToggleShortlist(s.id)}
           />
         ))}
       </div>
 
-      {/* Shortlist limit warning toast */}
-      {limitWarning && (
+      {/* Tie-breaker alert */}
+      {allRated && needsTiebreak && (
         <div
           role="alert"
-          className="fixed left-1/2 -translate-x-1/2 bottom-24 z-40 max-w-md w-[92%] rounded-xl border border-[oklch(0.78_0.13_70)]/50 bg-[oklch(0.18_0.02_70)]/95 backdrop-blur-xl px-4 py-3 shadow-[0_18px_48px_-10px_rgba(0,0,0,0.6)]"
-          style={{ animation: "fadeSlide 280ms ease-out" }}
+          className="mt-6 rounded-xl border border-[oklch(0.78_0.13_70)]/50 bg-[oklch(0.78_0.13_70)]/5 px-4 py-3"
         >
           <div className="flex items-start gap-3">
             <AlertTriangle className="h-4 w-4 text-[oklch(0.78_0.13_70)] mt-0.5 shrink-0" />
-            <div className="text-sm text-foreground/90 leading-relaxed">
-              You've already locked in your final 2 picks. Want to back a different startup? Simply remove one from your shortlist first.
+            <div className="text-sm text-foreground/90 leading-relaxed flex-1">
+              Multiple startups are tied at the shortlist boundary. The committee needs your final
+              recommendation.
             </div>
             <button
               type="button"
-              onClick={onDismissWarning}
-              className="text-xs text-muted-foreground hover:text-foreground"
-              aria-label="Dismiss"
+              onClick={onOpenTiebreak}
+              className="rounded-lg border border-[oklch(0.78_0.13_70)]/60 px-3 py-1.5 text-xs font-semibold text-[oklch(0.78_0.13_70)] hover:bg-[oklch(0.78_0.13_70)]/10"
             >
-              ✕
+              Resolve tie
             </button>
           </div>
         </div>
@@ -339,11 +410,11 @@ function Dashboard({
         <div className="mx-auto max-w-4xl px-5 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
           <div className="text-xs text-muted-foreground">
             <span className={cn(allRated ? "text-primary" : "")}>
-              {Object.values(evals).filter((e) => e.rating > 0).length}/8 evaluated
+              {ratedCount}/{startups.length} rated
             </span>
             <span className="mx-2 text-border">·</span>
             <span className={cn(shortlistCount === 2 ? "text-primary" : "")}>
-              {shortlistCount}/2 shortlisted
+              {shortlistCount}/2 auto-shortlisted
             </span>
             {saveState === "saved" && (
               <span className="ml-3 text-primary">Draft saved</span>
@@ -380,25 +451,23 @@ function StartupCard({
   index,
   startup,
   evaluation,
-  shortlistFull,
+  rank,
   onUpdate,
-  onToggleShortlist,
 }: {
   index: number;
   startup: Startup;
   evaluation: Evaluation;
-  shortlistFull: boolean;
+  rank?: number;
   onUpdate: (patch: Partial<Evaluation>) => void;
-  onToggleShortlist: () => void;
 }) {
-  const isShortlisted = evaluation.shortlisted;
   const rating = evaluation.rating;
   const isGraded = rating > 0;
+  const isShortlisted = rank !== undefined;
 
   return (
     <article
       className={cn(
-        "glass rounded-2xl p-5 sm:p-6 transition-all",
+        "glass rounded-2xl p-5 sm:p-6 transition-all relative",
         isShortlisted && "ring-1 ring-primary/60",
         !isGraded &&
           !isShortlisted &&
@@ -416,6 +485,13 @@ function StartupCard({
             : undefined
       }
     >
+      {isShortlisted && (
+        <div className="absolute -top-3 left-5 flex items-center gap-2">
+          <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-primary-foreground shadow-[0_4px_12px_rgba(93,196,254,0.45)]">
+            <Trophy className="h-3 w-3" /> #{rank} · Accelerator Recommended
+          </span>
+        </div>
+      )}
       <header className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
@@ -444,11 +520,11 @@ function StartupCard({
         >
           {isGraded ? (
             <>
-              <CheckCircle2 className="h-3 w-3" /> Graded
+              <CheckCircle2 className="h-3 w-3" /> Rated
             </>
           ) : (
             <>
-              <AlertTriangle className="h-3 w-3" /> Not Graded Yet
+              <AlertTriangle className="h-3 w-3" /> Rating Pending
             </>
           )}
         </span>
@@ -515,39 +591,16 @@ function StartupCard({
       )}
 
       {/* Rating + reason + shortlist */}
-      <div className="mt-6 pt-5 border-t border-border space-y-4">
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
-              Your rating
-            </label>
-            <span className="text-sm font-mono text-muted-foreground">
-              {rating > 0 ? `${rating.toFixed(1)} / 10` : "—"}
-            </span>
-          </div>
-          <RatingControl value={rating} onChange={(v) => onUpdate({ rating: v })} />
+      <div className="mt-6 pt-5 border-t border-border">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
+            Your rating
+          </label>
+          <StarRating
+            value={rating}
+            onChange={(v) => onUpdate({ rating: v })}
+          />
         </div>
-
-        <button
-          onClick={onToggleShortlist}
-          className={cn(
-            "inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition w-full sm:w-auto",
-            isShortlisted
-              ? "btn-primary-glow"
-              : "border border-primary/40 text-primary hover:bg-primary/10",
-            !isShortlisted && shortlistFull && "opacity-60 hover:bg-transparent",
-          )}
-        >
-          {isShortlisted ? (
-            <>
-              <CheckCircle2 className="h-4 w-4" /> Added to Accelerator Shortlist
-            </>
-          ) : (
-            <>
-              <Star className="h-4 w-4" /> Add to Accelerator Shortlist
-            </>
-          )}
-        </button>
       </div>
     </article>
   );
@@ -605,15 +658,17 @@ function LoadingPhase() {
 function ResultPhase({
   bundle,
   evals,
+  shortlistedIds,
   onContinue,
 }: {
   bundle: (typeof THEMES)[ThemeId];
   evals: Record<string, Evaluation>;
+  shortlistedIds: string[];
   onContinue: () => void;
 }) {
   const { startups, bestIds, weakIds } = bundle;
 
-  const shortlisted = startups.filter((s) => evals[s.id].shortlisted);
+  const shortlisted = startups.filter((s) => shortlistedIds.includes(s.id));
   const hasWeakInShortlist = shortlisted.some((s) => weakIds.includes(s.id));
 
   // Board feedback should only reference the startups the student actually selected.
@@ -622,7 +677,7 @@ function ResultPhase({
   );
   // Missed conviction = strong startups the student did NOT shortlist.
   const underratedStrong = startups.filter(
-    (s) => bestIds.includes(s.id) && !evals[s.id].shortlisted,
+    (s) => bestIds.includes(s.id) && !shortlistedIds.includes(s.id),
   );
 
   const accuracy = useMemo(() => {
@@ -765,77 +820,251 @@ function StatCard({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-function RatingControl({ value, onChange }: { value: number; onChange: (v: number) => void }) {
-  const [text, setText] = useState<string>(value > 0 ? value.toFixed(1) : "");
-  const [error, setError] = useState(false);
+/* ---------------- Star Rating (1–10) ---------------- */
 
-  useEffect(() => {
-    setText(value > 0 ? value.toFixed(1) : "");
-  }, [value]);
-
-  const commit = (raw: string) => {
-    setText(raw);
-    if (raw.trim() === "") {
-      setError(false);
-      onChange(0);
-      return;
-    }
-    const n = Number(raw);
-    if (Number.isNaN(n)) {
-      setError(true);
-      return;
-    }
-    const clamped = Math.max(1, Math.min(10, n));
-    const rounded = Math.round(clamped * 10) / 10;
-    setError(n < 1 || n > 10);
-    onChange(rounded);
-  };
+function StarRating({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  const [hover, setHover] = useState(0);
+  const display = hover || value;
 
   return (
     <div className="flex items-center gap-3">
-      <input
-        type="range"
-        min={1}
-        max={10}
-        step={0.1}
-        value={value > 0 ? value : 1}
-        onChange={(e) => {
-          const v = Math.round(Number(e.target.value) * 10) / 10;
-          onChange(v);
-          setError(false);
-        }}
-        className="flex-1 accent-[#5dc4fe] cursor-pointer"
-        style={{ filter: value > 0 ? "drop-shadow(0 0 6px rgba(93,196,254,0.5))" : "none" }}
-      />
       <div
-        className={cn(
-          "flex items-center gap-1 rounded-xl border bg-background/40 backdrop-blur px-3 py-1.5 transition",
-          error ? "border-destructive/60 ring-1 ring-destructive/40" : "border-border focus-within:border-primary/60 focus-within:ring-1 focus-within:ring-primary/40",
-        )}
+        className="flex items-center gap-0.5"
+        onMouseLeave={() => setHover(0)}
+        role="radiogroup"
+        aria-label="Rate this startup from 1 to 10"
       >
-        <input
-          type="number"
-          min={1}
-          max={10}
-          step={0.1}
-          inputMode="decimal"
-          value={text}
-          placeholder="—"
-          onChange={(e) => commit(e.target.value)}
-          onBlur={(e) => {
-            if (e.target.value.trim() === "") return;
-            const n = Number(e.target.value);
-            if (!Number.isNaN(n)) {
-              const clamped = Math.max(1, Math.min(10, n));
-              const rounded = Math.round(clamped * 10) / 10;
-              setText(rounded.toFixed(1));
-              setError(false);
-              onChange(rounded);
-            }
-          }}
-          className="w-12 bg-transparent text-right text-sm font-mono text-foreground outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-        />
-        <span className="text-xs text-muted-foreground font-mono">/ 10</span>
+        {Array.from({ length: 10 }, (_, i) => {
+          const n = i + 1;
+          const active = n <= display;
+          return (
+            <button
+              key={n}
+              type="button"
+              role="radio"
+              aria-checked={value === n}
+              aria-label={`${n} of 10`}
+              onMouseEnter={() => setHover(n)}
+              onFocus={() => setHover(n)}
+              onBlur={() => setHover(0)}
+              onClick={() => onChange(n)}
+              className="p-0.5 rounded transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+            >
+              <Star
+                className={cn(
+                  "h-5 w-5 transition-colors",
+                  active
+                    ? "fill-primary text-primary drop-shadow-[0_0_4px_rgba(93,196,254,0.55)]"
+                    : "text-muted-foreground/40",
+                )}
+              />
+            </button>
+          );
+        })}
+      </div>
+      <div className="text-sm font-mono tabular-nums min-w-[56px] text-right">
+        {value > 0 ? (
+          <span className="text-foreground">
+            {value.toFixed(1)}
+            <span className="text-muted-foreground">/10</span>
+          </span>
+        ) : (
+          <span className="text-muted-foreground">—/10</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Tie-Breaker Modal ---------------- */
+
+function TieBreakerModal({
+  startups,
+  tiedIds,
+  confirmedIds,
+  slotsNeeded,
+  evals,
+  onConfirm,
+  onClose,
+}: {
+  startups: Startup[];
+  tiedIds: string[];
+  confirmedIds: string[];
+  slotsNeeded: number;
+  evals: Record<string, Evaluation>;
+  onConfirm: (picks: string[]) => void;
+  onClose: () => void;
+}) {
+  const [selected, setSelected] = useState<string[]>([]);
+  const tied = tiedIds
+    .map((id) => startups.find((s) => s.id === id)!)
+    .filter(Boolean);
+  const confirmed = confirmedIds
+    .map((id) => startups.find((s) => s.id === id)!)
+    .filter(Boolean);
+  const tiedScore = tied.length > 0 ? evals[tied[0].id].rating.toFixed(1) : "";
+
+  function toggle(id: string) {
+    setSelected((prev) => {
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+      if (prev.length >= slotsNeeded) return [...prev.slice(1), id];
+      return [...prev, id];
+    });
+  }
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+      style={{ animation: "fadeSlide 220ms ease-out" }}
+    >
+      <div className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-card shadow-2xl">
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute top-4 right-4 rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        <div className="p-6 sm:p-8 border-b border-border">
+          <div className="text-[10px] uppercase tracking-[0.22em] text-[oklch(0.78_0.13_70)] font-semibold flex items-center gap-2">
+            <AlertTriangle className="h-3.5 w-3.5" /> Selection committee · Tie-breaker
+          </div>
+          <h2 className="mt-2 text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
+            Multiple startups have received identical investment scores.
+          </h2>
+          <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">
+            {tied.length} startups are tied at <span className="text-foreground font-mono">{tiedScore}/10</span>.
+            The selection committee requires a final recommendation — pick{" "}
+            <span className="text-foreground font-semibold">
+              {slotsNeeded} startup{slotsNeeded > 1 ? "s" : ""}
+            </span>{" "}
+            to advance into the accelerator cohort.
+          </p>
+
+          {confirmed.length > 0 && (
+            <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
+              <span className="text-muted-foreground uppercase tracking-[0.18em]">
+                Already secured:
+              </span>
+              {confirmed.map((s) => (
+                <span
+                  key={s.id}
+                  className="inline-flex items-center gap-1 rounded-full bg-primary/10 border border-primary/30 px-2 py-0.5 text-primary"
+                >
+                  <Trophy className="h-3 w-3" /> {s.name} · {evals[s.id].rating.toFixed(1)}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="p-6 sm:p-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {tied.map((s) => {
+            const isPicked = selected.includes(s.id);
+            return (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => toggle(s.id)}
+                className={cn(
+                  "text-left rounded-xl border p-4 transition-all",
+                  isPicked
+                    ? "border-primary bg-primary/5 shadow-[0_0_0_1px_rgba(93,196,254,0.5),0_12px_32px_rgba(93,196,254,0.18)]"
+                    : "border-border bg-background/40 hover:border-primary/40",
+                )}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="text-base font-semibold text-foreground">{s.name}</div>
+                    <div className="text-xs text-muted-foreground line-clamp-2">{s.tagline}</div>
+                  </div>
+                  {isPicked && (
+                    <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                  )}
+                </div>
+
+                <dl className="mt-3 space-y-1 text-xs">
+                  <div className="flex gap-2">
+                    <dt className="text-muted-foreground min-w-[72px]">Founders</dt>
+                    <dd className="text-foreground/85">{s.founders.join(", ")}</dd>
+                  </div>
+                  <div className="flex gap-2">
+                    <dt className="text-muted-foreground min-w-[72px]">Stage</dt>
+                    <dd className="text-foreground/85">{s.stage}</dd>
+                  </div>
+                  <div className="flex gap-2">
+                    <dt className="text-muted-foreground min-w-[72px]">Funding</dt>
+                    <dd className="text-foreground/85">{s.funding}</dd>
+                  </div>
+                  {s.mrr && (
+                    <div className="flex gap-2">
+                      <dt className="text-muted-foreground min-w-[72px]">MRR</dt>
+                      <dd className="text-foreground/85">{s.mrr}</dd>
+                    </div>
+                  )}
+                </dl>
+
+                <div className="mt-3">
+                  <div className="text-[10px] uppercase tracking-[0.18em] text-primary font-semibold mb-1">
+                    Strengths
+                  </div>
+                  <ul className="space-y-1 text-xs text-foreground/85">
+                    {s.strengths.slice(0, 3).map((x) => (
+                      <li key={x} className="flex gap-1.5">
+                        <span className="mt-1 h-1 w-1 rounded-full bg-[oklch(0.72_0.14_155)] shrink-0" />
+                        {x}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mt-3">
+                  <div className="text-[10px] uppercase tracking-[0.18em] text-[oklch(0.72_0.16_25)] font-semibold mb-1">
+                    Risks
+                  </div>
+                  <ul className="space-y-1 text-xs text-foreground/85">
+                    {s.risks.slice(0, 3).map((x) => (
+                      <li key={x} className="flex gap-1.5">
+                        <span className="mt-1 h-1 w-1 rounded-full bg-[oklch(0.72_0.16_25)] shrink-0" />
+                        {x}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="sticky bottom-0 border-t border-border bg-card/95 backdrop-blur p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+          <div className="text-xs text-muted-foreground">
+            {selected.length}/{slotsNeeded} selected
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-xl border border-border bg-card hover:bg-secondary px-4 py-2 text-xs font-medium text-foreground/90"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={selected.length !== slotsNeeded}
+              onClick={() => onConfirm(selected)}
+              className={cn(
+                "btn-primary-glow inline-flex items-center gap-2 rounded-xl px-5 py-2 text-sm font-semibold",
+                selected.length !== slotsNeeded && "opacity-40 pointer-events-none",
+              )}
+            >
+              Confirm Recommendation <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

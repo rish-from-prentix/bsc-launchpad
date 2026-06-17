@@ -608,8 +608,7 @@ function EmailCard({
           ))}
         </div>
         <p className="mt-4">
-          Take your time, do the research, and come back with something you'd genuinely
-          stand behind.
+          There is no single right answer—we're interested in seeing your reasoning, judgment, and ability to identify compelling opportunities.
         </p>
         <p className="mt-3">Looking forward to seeing your thinking.</p>
         <p className="mt-5 text-foreground font-medium">Animesh</p>

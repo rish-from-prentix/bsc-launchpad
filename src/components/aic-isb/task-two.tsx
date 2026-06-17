@@ -182,15 +182,9 @@ Good job on the investment thesis — the board agrees with your direction and r
 
 The board has approved the launch of applications for the upcoming accelerator cohort.
 
-
-
 We're expecting a large volume of submissions, so our screening team will conduct the initial review and prepare a shortlist of the most promising startups. Once that's complete, the shortlisted companies will land on your desk.
 
-
-
-
 Your job will be simple: identify the founders and businesses you believe have the strongest potential to succeed within the accelerator.
-
 
 No pressure — trust your instincts.
 

@@ -81,22 +81,22 @@ Can we find time?
             hint: "Focus on what happens after someone signs up.",
           },
           {
-            id: "B",
+            id: "C",
             title: "Product Usage & Retention",
             description: "Feature adoption, onboarding, activation, churn signals",
             outcome: "correct",
             feedback:
               "Smart call. Churn rising while acquisition stays healthy is a classic retention signal.",
-          },
+        },
           {
-            id: "C",
+            id: "B",
             title: "Sales Team Performance",
             description: "Demo quality, closing scripts, CRM pipeline",
             outcome: "wrong",
             feedback:
               "Sales is only slightly underperforming and can't explain rising churn post-purchase. You're looking at the wrong stage.",
             hint: "The problem persists after the sale is closed.",
-          },
+        },
           {
             id: "D",
             title: "Competitive Landscape",
@@ -115,13 +115,13 @@ Can we find time?
         tip: "Behavior data leads. Complaint data lags. Pick the earliest signal you can.",
         options: [
           {
-            id: "A",
+            id: "D",
             title: "Feature Adoption Rate",
             description: "Which core features are users actually turning on?",
             outcome: "correct",
             feedback:
               "Right move. Most users stop engaging after Day 3 and advanced features are barely touched.",
-          },
+        },
           {
             id: "B",
             title: "Support Ticket Volume",
@@ -141,14 +141,14 @@ Can we find time?
             hint: "Focus on in-product behavior.",
           },
           {
-            id: "D",
+            id: "A",
             title: "Revenue Per Account",
             description: "ACV trends, expansion revenue, upsell rates",
             outcome: "wrong",
             feedback:
               "Revenue confirms there's a problem but doesn't explain why.",
             hint: "Diagnose behavior first, then link to revenue.",
-          },
+        },
         ],
       },
       {
@@ -158,22 +158,22 @@ Can we find time?
         tip: "Where in the first-week journey are users actually dropping off?",
         options: [
           {
-            id: "A",
+            id: "B",
             title: "Onboarding Completion Rate",
             description: "How many users finish setup and integrate their workflows?",
             outcome: "correct",
             feedback:
               "Found it. Only 28% of customers complete onboarding. Most abandon before integrating any workflows.",
-          },
+        },
           {
-            id: "B",
+            id: "A",
             title: "Pricing Sensitivity",
             description: "Are customers leaving because of cost?",
             outcome: "wrong",
             feedback:
               "Cost isn't the issue — they're leaving before they've fully used the product.",
             hint: "Look at the first week, not renewal time.",
-          },
+        },
           {
             id: "C",
             title: "API Integration Quality",
@@ -201,13 +201,13 @@ Can we find time?
         tip: "What single explanation accounts for the timing, the scale, and the behavior?",
         options: [
           {
-            id: "A",
+            id: "C",
             title: "Product is too complex at first use",
             description: "Setup friction stops users before they see real value",
             outcome: "correct",
             feedback:
               "Confirmed. Customers fail to reach the 'aha moment' because initial setup is too hard. This explains everything: churn timing, low adoption, early drop-off.",
-          },
+        },
           {
             id: "B",
             title: "Wrong customer segment",
@@ -218,14 +218,14 @@ Can we find time?
             hint: "The problem is activation, not qualification.",
           },
           {
-            id: "C",
+            id: "A",
             title: "Market is too competitive",
             description: "Customers have better alternatives",
             outcome: "wrong",
             feedback:
               "Customers are churning before fully using the product — they're not leaving for competitors, they're leaving before giving it a real chance.",
             hint: "Churn is happening too early to be competitive switching.",
-          },
+        },
           {
             id: "D",
             title: "Not enough post-sale support",
@@ -244,22 +244,22 @@ Can we find time?
         tip: "Fix the leak before filling the bucket. Where does one move move the most metrics?",
         options: [
           {
-            id: "A",
+            id: "B",
             title: "Increase ad spend",
             description: "Acquire more customers to offset churn",
             outcome: "wrong",
             feedback:
               "Pouring more customers into a broken funnel burns cash and worsens LTV. Fix the leak before filling the bucket.",
             hint: "Solve retention before scaling acquisition.",
-          },
+        },
           {
-            id: "B",
+            id: "A",
             title: "Redesign onboarding with guided setup and templates",
             description: "Simplify first-run experience, reduce time-to-value",
             outcome: "correct",
             feedback:
               "This directly addresses the 72% abandonment. AI-guided setup, prebuilt workflow templates, and faster activation are the right moves.",
-          },
+        },
           {
             id: "C",
             title: "Hire more salespeople",
@@ -316,13 +316,13 @@ I keep asking the team why, and I keep getting different answers. Marketing says
         tip: "Execution went well. The question is whether the strategy behind the execution was right.",
         options: [
           {
-            id: "A",
+            id: "D",
             title: "Expansion Strategy & Site Selection",
             description: "Where were stations placed, and based on what?",
             outcome: "correct",
             feedback:
               "Good starting point. The operational rollout went well — the real question is whether stations were placed where demand actually exists.",
-          },
+        },
           {
             id: "B",
             title: "Brand Awareness & Marketing",
@@ -342,14 +342,14 @@ I keep asking the team why, and I keep getting different answers. Marketing says
             hint: "The stations are working. Drivers just aren't going to them.",
           },
           {
-            id: "D",
+            id: "A",
             title: "Investor & Financial Pressure",
             description: "Is pressure from investors forcing rushed decisions?",
             outcome: "wrong",
             feedback:
               "Investor concern reflects the problem — it doesn't cause it.",
             hint: "Look for the strategic decision that created the utilization gap.",
-          },
+        },
         ],
       },
       {
@@ -359,13 +359,13 @@ I keep asking the team why, and I keep getting different answers. Marketing says
         tip: "Compare what's working to what's not. Cohorts often reveal the strategic mistake.",
         options: [
           {
-            id: "A",
+            id: "C",
             title: "Utilization by Station Cohort",
             description: "Compare old vs new station performance over time",
             outcome: "correct",
             feedback:
               "Key finding: older stations perform well. Newly launched stations have extremely low utilization. This cohort split is the critical clue.",
-          },
+        },
           {
             id: "B",
             title: "Customer Satisfaction Scores",
@@ -376,14 +376,14 @@ I keep asking the team why, and I keep getting different answers. Marketing says
             hint: "You need demand data, not experience data.",
           },
           {
-            id: "C",
+            id: "A",
             title: "PR & Media Coverage",
             description: "Sentiment and volume of press mentions",
             outcome: "wrong",
             feedback:
               "Media coverage is positive. Strong awareness can't compensate for weak location demand.",
             hint: "The problem isn't perception — it's location.",
-          },
+        },
           {
             id: "D",
             title: "Charging Speed Benchmarks",
@@ -402,22 +402,22 @@ I keep asking the team why, and I keep getting different answers. Marketing says
         tip: "Charging only happens where EVs already are. What fundamental demand signal might have been ignored?",
         options: [
           {
-            id: "A",
+            id: "B",
             title: "EV Ownership Density Near Each Station",
             description: "How many EVs are registered in the catchment area?",
             outcome: "correct",
             feedback:
               "Found it. Most low-performing stations are in areas with very low EV ownership. No marketing can create charging demand where EVs don't exist.",
-          },
+        },
           {
-            id: "B",
+            id: "A",
             title: "Proximity to Competitor Stations",
             description: "Are rival chargers nearby stealing traffic?",
             outcome: "wrong",
             feedback:
               "In the underperforming zones, there are very few EVs — competition is irrelevant when demand doesn't exist.",
             hint: "Think about the fundamental demand driver.",
-          },
+        },
           {
             id: "C",
             title: "Visual Branding & Station Design",
@@ -445,13 +445,13 @@ I keep asking the team why, and I keep getting different answers. Marketing says
         tip: "Separate strategy failures from execution failures. Where exactly did the wrong call get made?",
         options: [
           {
-            id: "A",
+            id: "D",
             title: "Poor demand forecasting at site selection",
             description: "Expansion wasn't driven by EV ownership data",
             outcome: "correct",
             feedback:
               "Confirmed. GreenLoop expanded at speed without validating sufficient EV density in target areas. Execution was excellent — strategy was not.",
-          },
+        },
           {
             id: "B",
             title: "Weak brand in new markets",
@@ -471,14 +471,14 @@ I keep asking the team why, and I keep getting different answers. Marketing says
             hint: "The problem is strategic, not operational.",
           },
           {
-            id: "D",
+            id: "A",
             title: "Insufficient capital for expansion",
             description: "Fundraising constraints are limiting rollout quality",
             outcome: "wrong",
             feedback:
               "GreenLoop expanded ahead of schedule. Capital isn't the constraint — how it was deployed is.",
             hint: "They have the resources. The question is how they used them.",
-          },
+        },
         ],
       },
       {
@@ -488,22 +488,22 @@ I keep asking the team why, and I keep getting different answers. Marketing says
         tip: "Don't just stop the bleeding — build the capability that prevents the next bad bet.",
         options: [
           {
-            id: "A",
+            id: "B",
             title: "Pause all expansion",
             description: "Stop new installs until the model is fixed",
             outcome: "partial",
             feedback:
               "A pause might be part of the answer, but it's not enough. You need to build the capability that tells you where to go next.",
             hint: "Don't just stop — build the forecasting process.",
-          },
+        },
           {
-            id: "B",
+            id: "A",
             title: "Build an EV density scoring model and prioritize high-demand zones",
             description: "Data-gate future expansion; double down on proven corridors",
             outcome: "correct",
             feedback:
               "Correct. Prioritize utilization in high-performing zones, pilot new sites with EV density scoring before committing, and partner with malls, offices, and highways in proven demand corridors.",
-          },
+        },
           {
             id: "C",
             title: "Relocate underperforming stations",
@@ -560,22 +560,22 @@ I need clarity before our renewal season starts. What went wrong, and what do we
         tip: "When existing customers go quiet, the answer is usually in their daily experience — not in sales or marketing.",
         options: [
           {
-            id: "A",
+            id: "B",
             title: "Clinical Workflow Integration",
             description: "How does the platform fit into doctors' daily routine?",
             outcome: "correct",
             feedback:
               "Right framing. When existing users disengage (not new customers), the most likely cause is friction in their day-to-day experience.",
-          },
+        },
           {
-            id: "B",
+            id: "A",
             title: "Pricing & Contract Terms",
             description: "Are hospitals resisting cost at renewal?",
             outcome: "wrong",
             feedback:
               "The CEO explicitly said pricing isn't the issue. Hospitals are disengaging, not negotiating harder.",
             hint: "Rule out what you already know.",
-          },
+        },
           {
             id: "C",
             title: "Brand & Marketing Campaigns",
@@ -603,13 +603,13 @@ I need clarity before our renewal season starts. What went wrong, and what do we
         tip: "Behavior comes before survey results. What doctors do is more honest than what they say.",
         options: [
           {
-            id: "A",
+            id: "D",
             title: "Daily Active Doctor Login Rate",
             description: "Are doctors opening the platform regularly?",
             outcome: "correct",
             feedback:
               "Confirmed: doctors are logging in less frequently every month. This is the behavioral signature of disengagement — and it's getting worse.",
-          },
+        },
           {
             id: "B",
             title: "Patient Outcome Data",
@@ -629,14 +629,14 @@ I need clarity before our renewal season starts. What went wrong, and what do we
             hint: "Look at what doctors actually do, not what they say.",
           },
           {
-            id: "D",
+            id: "A",
             title: "Press & Analyst Coverage",
             description: "How is MediSync perceived in healthtech media?",
             outcome: "wrong",
             feedback:
               "Media perception is positive. This is an internal product experience problem.",
             hint: "Renewal decisions are driven by daily workflow friction, not press coverage.",
-          },
+        },
         ],
       },
       {
@@ -646,13 +646,13 @@ I need clarity before our renewal season starts. What went wrong, and what do we
         tip: "Think about cognitive load on a busy hospital shift. What part of the experience could quietly become unbearable?",
         options: [
           {
-            id: "A",
+            id: "C",
             title: "Alert Volume & Quality",
             description: "Are doctors being overwhelmed by notifications?",
             outcome: "correct",
             feedback:
               "Found it. Doctors receive hundreds of low-priority, repetitive alerts daily. They're tuning the platform out entirely to escape the noise.",
-          },
+        },
           {
             id: "B",
             title: "Patient Data Accuracy",
@@ -663,14 +663,14 @@ I need clarity before our renewal season starts. What went wrong, and what do we
             hint: "The pattern suggests friction, not errors.",
           },
           {
-            id: "C",
+            id: "A",
             title: "EHR System Integration",
             description: "Is the platform hard to connect with hospital systems?",
             outcome: "partial",
             feedback:
               "Integration friction could contribute — but doctors are already onboarded. The declining engagement is happening within existing use.",
             hint: "The friction is in daily use, not initial setup.",
-          },
+        },
           {
             id: "D",
             title: "Dashboard Design",
@@ -741,22 +741,22 @@ I need clarity before our renewal season starts. What went wrong, and what do we
             hint: "Think about personalization and clinical context.",
           },
           {
-            id: "B",
+            id: "C",
             title: "AI-based alert prioritization with custom preferences",
             description: "Smart severity scoring + doctor-configurable settings",
             outcome: "correct",
             feedback:
               "Correct. AI prioritization reduces noise dynamically, and custom preferences let doctors tune alerts for their specific patient population. This eliminates fatigue at the root.",
-          },
+        },
           {
-            id: "C",
+            id: "B",
             title: "More monitoring dashboards and data views",
             description: "Give doctors richer data access",
             outcome: "wrong",
             feedback:
               "More data adds cognitive load — the opposite of what doctors need. The problem is information overload, not scarcity.",
             hint: "Reduce burden, don't add more.",
-          },
+        },
           {
             id: "D",
             title: "Raise prices and expand the CS team",

@@ -820,77 +820,251 @@ function StatCard({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-function RatingControl({ value, onChange }: { value: number; onChange: (v: number) => void }) {
-  const [text, setText] = useState<string>(value > 0 ? value.toFixed(1) : "");
-  const [error, setError] = useState(false);
+/* ---------------- Star Rating (1–10) ---------------- */
 
-  useEffect(() => {
-    setText(value > 0 ? value.toFixed(1) : "");
-  }, [value]);
-
-  const commit = (raw: string) => {
-    setText(raw);
-    if (raw.trim() === "") {
-      setError(false);
-      onChange(0);
-      return;
-    }
-    const n = Number(raw);
-    if (Number.isNaN(n)) {
-      setError(true);
-      return;
-    }
-    const clamped = Math.max(1, Math.min(10, n));
-    const rounded = Math.round(clamped * 10) / 10;
-    setError(n < 1 || n > 10);
-    onChange(rounded);
-  };
+function StarRating({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  const [hover, setHover] = useState(0);
+  const display = hover || value;
 
   return (
     <div className="flex items-center gap-3">
-      <input
-        type="range"
-        min={1}
-        max={10}
-        step={0.1}
-        value={value > 0 ? value : 1}
-        onChange={(e) => {
-          const v = Math.round(Number(e.target.value) * 10) / 10;
-          onChange(v);
-          setError(false);
-        }}
-        className="flex-1 accent-[#5dc4fe] cursor-pointer"
-        style={{ filter: value > 0 ? "drop-shadow(0 0 6px rgba(93,196,254,0.5))" : "none" }}
-      />
       <div
-        className={cn(
-          "flex items-center gap-1 rounded-xl border bg-background/40 backdrop-blur px-3 py-1.5 transition",
-          error ? "border-destructive/60 ring-1 ring-destructive/40" : "border-border focus-within:border-primary/60 focus-within:ring-1 focus-within:ring-primary/40",
-        )}
+        className="flex items-center gap-0.5"
+        onMouseLeave={() => setHover(0)}
+        role="radiogroup"
+        aria-label="Rate this startup from 1 to 10"
       >
-        <input
-          type="number"
-          min={1}
-          max={10}
-          step={0.1}
-          inputMode="decimal"
-          value={text}
-          placeholder="—"
-          onChange={(e) => commit(e.target.value)}
-          onBlur={(e) => {
-            if (e.target.value.trim() === "") return;
-            const n = Number(e.target.value);
-            if (!Number.isNaN(n)) {
-              const clamped = Math.max(1, Math.min(10, n));
-              const rounded = Math.round(clamped * 10) / 10;
-              setText(rounded.toFixed(1));
-              setError(false);
-              onChange(rounded);
-            }
-          }}
-          className="w-12 bg-transparent text-right text-sm font-mono text-foreground outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-        />
-        <span className="text-xs text-muted-foreground font-mono">/ 10</span>
+        {Array.from({ length: 10 }, (_, i) => {
+          const n = i + 1;
+          const active = n <= display;
+          return (
+            <button
+              key={n}
+              type="button"
+              role="radio"
+              aria-checked={value === n}
+              aria-label={`${n} of 10`}
+              onMouseEnter={() => setHover(n)}
+              onFocus={() => setHover(n)}
+              onBlur={() => setHover(0)}
+              onClick={() => onChange(n)}
+              className="p-0.5 rounded transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+            >
+              <Star
+                className={cn(
+                  "h-5 w-5 transition-colors",
+                  active
+                    ? "fill-primary text-primary drop-shadow-[0_0_4px_rgba(93,196,254,0.55)]"
+                    : "text-muted-foreground/40",
+                )}
+              />
+            </button>
+          );
+        })}
+      </div>
+      <div className="text-sm font-mono tabular-nums min-w-[56px] text-right">
+        {value > 0 ? (
+          <span className="text-foreground">
+            {value.toFixed(1)}
+            <span className="text-muted-foreground">/10</span>
+          </span>
+        ) : (
+          <span className="text-muted-foreground">—/10</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Tie-Breaker Modal ---------------- */
+
+function TieBreakerModal({
+  startups,
+  tiedIds,
+  confirmedIds,
+  slotsNeeded,
+  evals,
+  onConfirm,
+  onClose,
+}: {
+  startups: Startup[];
+  tiedIds: string[];
+  confirmedIds: string[];
+  slotsNeeded: number;
+  evals: Record<string, Evaluation>;
+  onConfirm: (picks: string[]) => void;
+  onClose: () => void;
+}) {
+  const [selected, setSelected] = useState<string[]>([]);
+  const tied = tiedIds
+    .map((id) => startups.find((s) => s.id === id)!)
+    .filter(Boolean);
+  const confirmed = confirmedIds
+    .map((id) => startups.find((s) => s.id === id)!)
+    .filter(Boolean);
+  const tiedScore = tied.length > 0 ? evals[tied[0].id].rating.toFixed(1) : "";
+
+  function toggle(id: string) {
+    setSelected((prev) => {
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+      if (prev.length >= slotsNeeded) return [...prev.slice(1), id];
+      return [...prev, id];
+    });
+  }
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+      style={{ animation: "fadeSlide 220ms ease-out" }}
+    >
+      <div className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-card shadow-2xl">
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute top-4 right-4 rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        <div className="p-6 sm:p-8 border-b border-border">
+          <div className="text-[10px] uppercase tracking-[0.22em] text-[oklch(0.78_0.13_70)] font-semibold flex items-center gap-2">
+            <AlertTriangle className="h-3.5 w-3.5" /> Selection committee · Tie-breaker
+          </div>
+          <h2 className="mt-2 text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
+            Multiple startups have received identical investment scores.
+          </h2>
+          <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">
+            {tied.length} startups are tied at <span className="text-foreground font-mono">{tiedScore}/10</span>.
+            The selection committee requires a final recommendation — pick{" "}
+            <span className="text-foreground font-semibold">
+              {slotsNeeded} startup{slotsNeeded > 1 ? "s" : ""}
+            </span>{" "}
+            to advance into the accelerator cohort.
+          </p>
+
+          {confirmed.length > 0 && (
+            <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
+              <span className="text-muted-foreground uppercase tracking-[0.18em]">
+                Already secured:
+              </span>
+              {confirmed.map((s) => (
+                <span
+                  key={s.id}
+                  className="inline-flex items-center gap-1 rounded-full bg-primary/10 border border-primary/30 px-2 py-0.5 text-primary"
+                >
+                  <Trophy className="h-3 w-3" /> {s.name} · {evals[s.id].rating.toFixed(1)}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="p-6 sm:p-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {tied.map((s) => {
+            const isPicked = selected.includes(s.id);
+            return (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => toggle(s.id)}
+                className={cn(
+                  "text-left rounded-xl border p-4 transition-all",
+                  isPicked
+                    ? "border-primary bg-primary/5 shadow-[0_0_0_1px_rgba(93,196,254,0.5),0_12px_32px_rgba(93,196,254,0.18)]"
+                    : "border-border bg-background/40 hover:border-primary/40",
+                )}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="text-base font-semibold text-foreground">{s.name}</div>
+                    <div className="text-xs text-muted-foreground line-clamp-2">{s.tagline}</div>
+                  </div>
+                  {isPicked && (
+                    <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                  )}
+                </div>
+
+                <dl className="mt-3 space-y-1 text-xs">
+                  <div className="flex gap-2">
+                    <dt className="text-muted-foreground min-w-[72px]">Founders</dt>
+                    <dd className="text-foreground/85">{s.founders.join(", ")}</dd>
+                  </div>
+                  <div className="flex gap-2">
+                    <dt className="text-muted-foreground min-w-[72px]">Stage</dt>
+                    <dd className="text-foreground/85">{s.stage}</dd>
+                  </div>
+                  <div className="flex gap-2">
+                    <dt className="text-muted-foreground min-w-[72px]">Funding</dt>
+                    <dd className="text-foreground/85">{s.funding}</dd>
+                  </div>
+                  {s.mrr && (
+                    <div className="flex gap-2">
+                      <dt className="text-muted-foreground min-w-[72px]">MRR</dt>
+                      <dd className="text-foreground/85">{s.mrr}</dd>
+                    </div>
+                  )}
+                </dl>
+
+                <div className="mt-3">
+                  <div className="text-[10px] uppercase tracking-[0.18em] text-primary font-semibold mb-1">
+                    Strengths
+                  </div>
+                  <ul className="space-y-1 text-xs text-foreground/85">
+                    {s.strengths.slice(0, 3).map((x) => (
+                      <li key={x} className="flex gap-1.5">
+                        <span className="mt-1 h-1 w-1 rounded-full bg-[oklch(0.72_0.14_155)] shrink-0" />
+                        {x}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mt-3">
+                  <div className="text-[10px] uppercase tracking-[0.18em] text-[oklch(0.72_0.16_25)] font-semibold mb-1">
+                    Risks
+                  </div>
+                  <ul className="space-y-1 text-xs text-foreground/85">
+                    {s.risks.slice(0, 3).map((x) => (
+                      <li key={x} className="flex gap-1.5">
+                        <span className="mt-1 h-1 w-1 rounded-full bg-[oklch(0.72_0.16_25)] shrink-0" />
+                        {x}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="sticky bottom-0 border-t border-border bg-card/95 backdrop-blur p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+          <div className="text-xs text-muted-foreground">
+            {selected.length}/{slotsNeeded} selected
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-xl border border-border bg-card hover:bg-secondary px-4 py-2 text-xs font-medium text-foreground/90"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={selected.length !== slotsNeeded}
+              onClick={() => onConfirm(selected)}
+              className={cn(
+                "btn-primary-glow inline-flex items-center gap-2 rounded-xl px-5 py-2 text-sm font-semibold",
+                selected.length !== slotsNeeded && "opacity-40 pointer-events-none",
+              )}
+            >
+              Confirm Recommendation <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

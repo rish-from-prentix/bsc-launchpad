@@ -186,7 +186,7 @@ Take a moment — that matters.
 
  WHAT HAPPENS NEXT
 
-We're officially launching applications for the upcoming accelerator cohort. We're expecting a high volume of submissions — hundreds of founders who believe they have what it takes to be part of AIC Mohali.
+We're officially launching applications for the upcoming accelerator cohort. We're expecting a high volume of submissions — hundreds of founders who believe they have what it takes to be part of AIC x ISB Cohort.
 
 Our screening team will run the first pass. They'll comb through the pile, filter out the noise, and prepare a shortlist of the most promising startups.
 
@@ -194,17 +194,13 @@ And then those companies land on your desk.
 
  YOUR ROLE
 
-From the shortlist, your job is to identify the founders and businesses you believe have the strongest potential to succeed within the accelerator.
-
-Not the flashiest decks. Not the buzziest sectors.
+From the shortlist, your job is to identify the founders and businesses you believe have the strongest potential to succeed within the accelerator.Not the flashiest decks. Not the buzziest sectors.
 
 The ones with real grit, a solvable problem, and a founder who'll still be standing when things get hard.
 
 This is exactly the kind of decision that separates a good program manager from a great one. You've earned the shot at it.
 
-More details on the shortlist timeline coming soon.
-
-Let's find the next big ones
+More details on the shortlist timeline coming soon.Let's find the next big ones
 
 Regards,
 Animesh Sharma

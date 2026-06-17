@@ -52,11 +52,15 @@ export const INVESTIGATIONS: Record<ThemeId, InvestigationCase> = {
       timestamp: "Today · 09:42 AM",
       body: `Hi,
 
-I've been staring at our numbers for two months and I still don't have a clear answer. On paper, things look fine. Our marketing is generating leads. Demos are happening. New signups keep coming in.
+I need a fresh pair of eyes and I think you're the right person.
 
-But here's what's keeping me up at night: our paying customers are leaving. Month after month, renewal rates are dropping — and churn is climbing even among teams that were genuinely excited when they signed up.
+On the surface, things look fine — leads, demos, signups. But our paying customers are quietly walking out. Renewal rates have dropped two months straight, including teams who were excited when they signed up.
 
-We've argued internally about whether this is a sales problem, a product problem, or just the market getting more competitive. Nobody agrees. I need someone to look at this fresh and tell me: what is actually going wrong, and what do we fix first?
+Internally, we've gone in circles — sales problem, product problem, market problem. No clear answer.
+
+I've been too close to this for too long. Your cross-cohort experience gives you a perspective I don't have right now. 
+
+Can we find time?
 
 — Aarav`,
     },

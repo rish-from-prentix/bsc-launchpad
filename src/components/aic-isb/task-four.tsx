@@ -187,8 +187,7 @@ function EmailScreen({
           Go save your startups now{firstName ? `, ${firstName}` : ""}.
         </h1>
         <p className="mt-5 text-[17px] text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-          Real startup crises. Structured problem solving. Find the root cause before
-          the company collapses.
+          This Is the Moment Founders Wish They Had Someone Like You
         </p>
       </div>
 

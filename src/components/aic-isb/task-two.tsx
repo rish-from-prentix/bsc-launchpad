@@ -13,6 +13,8 @@ import {
   Flame,
   Target,
   Save,
+  Trophy,
+  X,
 } from "lucide-react";
 import { cn, getFirstName } from "@/lib/utils";
 import { THEMES, type ThemeId, type Startup } from "./startups-data";
@@ -24,6 +26,52 @@ type Evaluation = {
   rating: number; // 1–10, 0 = unset
   shortlisted: boolean;
 };
+
+/** Compute auto-shortlist from ratings. Returns the two recommended IDs, or
+ * flags a tie-breaker when the boundary between slot 2 and slot 3 is tied. */
+function computeShortlist(
+  startups: Startup[],
+  evals: Record<string, Evaluation>,
+  manualPicks: string[],
+): {
+  shortlist: string[];
+  needsTiebreak: boolean;
+  tied: string[];
+  confirmed: string[];
+  slotsNeeded: number;
+} {
+  const allRated = startups.every((s) => evals[s.id].rating > 0);
+  if (!allRated) {
+    return { shortlist: [], needsTiebreak: false, tied: [], confirmed: [], slotsNeeded: 0 };
+  }
+  const sorted = [...startups].sort((a, b) => evals[b.id].rating - evals[a.id].rating);
+  const result: string[] = [];
+  let i = 0;
+  while (result.length < 2 && i < sorted.length) {
+    const score = evals[sorted[i].id].rating;
+    const sameScore = sorted.filter((s) => evals[s.id].rating === score).map((s) => s.id);
+    const slotsNeeded = 2 - result.length;
+    if (sameScore.length <= slotsNeeded) {
+      result.push(...sameScore);
+      i += sameScore.length;
+    } else {
+      // Tie at the boundary. Require manual picks among the tied set.
+      const picks = manualPicks.filter((id) => sameScore.includes(id)).slice(0, slotsNeeded);
+      if (picks.length < slotsNeeded) {
+        return {
+          shortlist: [],
+          needsTiebreak: true,
+          tied: sameScore,
+          confirmed: result,
+          slotsNeeded,
+        };
+      }
+      result.push(...picks);
+      break;
+    }
+  }
+  return { shortlist: result, needsTiebreak: false, tied: [], confirmed: [], slotsNeeded: 0 };
+}
 
 export function AicIsbTaskTwo({
   candidateName,
@@ -53,15 +101,37 @@ export function AicIsbTaskTwo({
   });
   const [saveState, setSaveState] = useState<"idle" | "saved">("idle");
   const savedTimer = useRef<number | null>(null);
-  const [limitWarning, setLimitWarning] = useState(false);
-  const warningTimer = useRef<number | null>(null);
+  const [manualPicks, setManualPicks] = useState<string[]>([]);
+  const [tieModalOpen, setTieModalOpen] = useState(false);
 
-  const shortlistCount = Object.values(evals).filter((e) => e.shortlisted).length;
   const allRated = bundle.startups.every((s) => evals[s.id].rating > 0);
-  const canSubmit = allRated && shortlistCount === 2;
+  const { shortlist, needsTiebreak, tied, confirmed, slotsNeeded } = useMemo(
+    () => computeShortlist(bundle.startups, evals, manualPicks),
+    [bundle.startups, evals, manualPicks],
+  );
+  const shortlistedIds = shortlist;
+  const canSubmit = allRated && !needsTiebreak && shortlistedIds.length === 2;
+
+  // Auto-open tie-breaker once all ratings are in and a boundary tie exists.
+  useEffect(() => {
+    if (allRated && needsTiebreak) setTieModalOpen(true);
+  }, [allRated, needsTiebreak]);
+
+  // Ranking by rating (desc), used for #1 / #2 indicators.
+  const rankById = useMemo(() => {
+    const map: Record<string, number> = {};
+    shortlistedIds.forEach((id, idx) => {
+      map[id] = idx + 1;
+    });
+    return map;
+  }, [shortlistedIds]);
 
   function updateEval(id: string, patch: Partial<Evaluation>) {
     setEvals((prev) => ({ ...prev, [id]: { ...prev[id], ...patch } }));
+    if (patch.rating !== undefined) {
+      // Ratings changed — invalidate any previous tie-break decision.
+      setManualPicks([]);
+    }
   }
 
   function handleSaveDraft() {
@@ -82,23 +152,16 @@ export function AicIsbTaskTwo({
     };
   }, []);
 
-  function toggleShortlist(id: string) {
-    setEvals((prev) => {
-      const cur = prev[id];
-      const count = Object.values(prev).filter((e) => e.shortlisted).length;
-      if (!cur.shortlisted && count >= 2) {
-        // Trigger warning toast
-        setLimitWarning(true);
-        if (warningTimer.current) window.clearTimeout(warningTimer.current);
-        warningTimer.current = window.setTimeout(() => setLimitWarning(false), 4200);
-        return prev;
-      }
-      return { ...prev, [id]: { ...cur, shortlisted: !cur.shortlisted } };
-    });
-  }
-
   function handleSubmit() {
     if (!canSubmit) return;
+    // Stamp the final shortlist onto evals so downstream phases can read it.
+    setEvals((prev) => {
+      const next: Record<string, Evaluation> = {};
+      for (const s of bundle.startups) {
+        next[s.id] = { ...prev[s.id], shortlisted: shortlistedIds.includes(s.id) };
+      }
+      return next;
+    });
     setPhase("loading");
     window.setTimeout(() => setPhase("result"), 1800);
   }
@@ -122,11 +185,8 @@ export function AicIsbTaskTwo({
       <ResultPhase
         bundle={bundle}
         evals={evals}
-        onContinue={() =>
-          onComplete?.(
-            bundle.startups.filter((s) => evals[s.id].shortlisted).map((s) => s.id),
-          )
-        }
+        shortlistedIds={shortlistedIds}
+        onContinue={() => onComplete?.(shortlistedIds)}
       />
     );
   }
@@ -138,17 +198,30 @@ export function AicIsbTaskTwo({
       themeLabel={bundle.label}
       startups={bundle.startups}
       evals={evals}
-      shortlistCount={shortlistCount}
+      rankById={rankById}
       allRated={allRated}
       canSubmit={canSubmit}
       onUpdate={updateEval}
-      onToggleShortlist={toggleShortlist}
       onSubmit={handleSubmit}
       saveState={saveState}
       onSaveDraft={handleSaveDraft}
-      limitWarning={limitWarning}
-      onDismissWarning={() => setLimitWarning(false)}
+      needsTiebreak={needsTiebreak}
+      onOpenTiebreak={() => setTieModalOpen(true)}
       />
+      {tieModalOpen && needsTiebreak && (
+        <TieBreakerModal
+          startups={bundle.startups}
+          tiedIds={tied}
+          confirmedIds={confirmed}
+          slotsNeeded={slotsNeeded}
+          evals={evals}
+          onConfirm={(picks) => {
+            setManualPicks(picks);
+            setTieModalOpen(false);
+          }}
+          onClose={() => setTieModalOpen(false)}
+        />
+      )}
     </>
   );
 }

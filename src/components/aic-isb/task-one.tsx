@@ -408,6 +408,10 @@ export function AicIsbTaskOne({
           <h2 className="mt-2 text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
             Build Your Investment Thesis
           </h2>
+          <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-2xl">
+            Select one of the sectors below and create an Accelerator Investment Thesis for it.
+            Please review the example thesis for guidance, then upload your own thesis based on the chosen theme. We're looking for a clear perspective on the opportunity, why it matters now, and the kinds of startups you would choose to back.
+          </p>
 
           <div className="mt-6 grid sm:grid-cols-3 gap-3">
             {SECTORS.map((s) => {

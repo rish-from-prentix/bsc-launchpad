@@ -484,7 +484,9 @@ export function AicIsbTaskOne({
           className="mt-16 scroll-mt-8"
           style={{ animation: "fadeSlide 500ms ease-out" }}
         >
-          <UploadDeckSection
+          <ReferenceDeck />
+          <div className="mt-8">
+            <UploadDeckSection
             file={uploadedFile}
             status={uploadStatus}
             onFile={(f) => {

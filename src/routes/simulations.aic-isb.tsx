@@ -12,6 +12,7 @@ import { AicIsbInboxPanel } from "@/components/aic-isb/inbox-panel";
 import { EmailReader } from "@/components/aic-isb/email-reader";
 import { AIC_INBOX } from "@/components/aic-isb/phase-meta";
 import { THEMES, type ThemeId } from "@/components/aic-isb/startups-data";
+import { INVESTIGATIONS } from "@/components/aic-isb/rca-investigation-data";
 
 export const Route = createFileRoute("/simulations/aic-isb")({
   head: () => ({
@@ -72,8 +73,26 @@ function AicIsbPage() {
     return <AicIsbIntroScreen onStart={(n) => setName(n)} />;
   }
 
-  const openEmail = openEmailId
+  const baseEmail = openEmailId
     ? AIC_INBOX.find((m) => m.id === openEmailId) ?? null
+    : null;
+  // For Phase 4 the brief comes from the struggling cohort founder, not Animesh.
+  const openEmail = baseEmail
+    ? baseEmail.phase === 4
+      ? (() => {
+          const inv = INVESTIGATIONS[effectiveSector];
+          return {
+            ...baseEmail,
+            senderName: inv.ceo.name,
+            senderEmail: inv.ceo.email,
+            senderRole: inv.ceo.role,
+            initials: inv.ceo.initials,
+            subject: inv.email.subject,
+            body: inv.email.body,
+            timestamp: inv.email.timestamp,
+          };
+        })()
+      : baseEmail
     : null;
 
   const handleOpenEmail = (id: string) => {
@@ -137,6 +156,8 @@ function AicIsbPage() {
             onClose={() => setOpenEmailId(null)}
             ctaLabel={openEmail.phase === 2 ? "Review Shortlisted Startups" : openEmail.phase === 3 ? "Start Mentor Mapping" : openEmail.phase === 4 ? "Start your investigation" : openEmail.phase === 5 ? "Begin Evaluation" : `Start Phase ${openEmail.phase}`}
             onCta={() => setOpenEmailId(null)}
+            heroTitle={openEmail.phase === 4 ? "Go save your startups now, {name}." : undefined}
+            heroSubtitle={openEmail.phase === 4 ? "This Is the Moment Founders Wish They Had Someone Like You" : undefined}
           />
         ) : (
           <>

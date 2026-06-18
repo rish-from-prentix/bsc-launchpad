@@ -1,38 +1,25 @@
 ## Goal
 
-Make the right inbox a slim list-only rail (Gmail-style). Open the full email in the main center pane as a realistic email view (header strip, avatar, sender + address, "to me", date, subject, formatted body, reply box at bottom). Keep all existing phase content working.
+Show each phase's briefing email **only once** — in the new `EmailReader` at the route level, with the "Ready when you are / Start Phase N" CTA block we just added. Remove the duplicate `InboxEmail`/`EmailPhase` mail that currently appears again inside each task component.
 
 ## Changes
 
-### 1. Right panel (`src/components/aic-isb/inbox-panel.tsx`) — list only
-- Narrow from `w-[340px]` to `w-[260px]`.
-- Remove `EmailDetail` and `ReplyBox` from this file.
-- Keep only the inbox header (Inbox icon, unread count) + scrollable message list.
-- Each row: small avatar, sender name, timestamp, subject, 1-line preview, unread dot + bold styling. Active/selected row gets a subtle highlight.
-- Clicking a row calls a new `onOpen(messageId)` prop passed in from the route — no internal "open" state.
+1. **Tasks 1–5 — drop the in-task email screen, jump straight to workspace**
+   - `src/components/aic-isb/task-one.tsx` — remove the `EmailCard` render and the `phase === "loading" | "email"` gating; start in the sector-selection workspace state. Delete the now-unused `EmailCard`/`ReceivingState` helpers and the `handleBegin` flow.
+   - `src/components/aic-isb/task-two.tsx` — remove `EmailPhase` and the initial `"email"` phase; render the evaluation workspace immediately.
+   - `src/components/aic-isb/task-three.tsx` — same: drop `EmailPhase`, start at `"dashboard"`.
+   - `src/components/aic-isb/task-four.tsx` — drop the `EmailScreen` step, start in the investigation workspace.
+   - `src/components/aic-isb/task-five.tsx` — drop `EmailPhase`, start at workspace.
+   - In each file: remove the `import { InboxEmail } from "./inbox-email"` line that becomes unused.
 
-### 2. Route (`src/routes/simulations.aic-isb.tsx`) — center email overlay
-- Track `openEmailId` state at the route level.
-- Default `openEmailId` to the current phase's email when `currentPhase` changes (so the brief shows up automatically), but the user can close it to reveal the phase workspace beneath.
-- Pass `openEmailId` + setter into both the inbox panel and a new `<EmailReader />` rendered in the center column.
-- When an email is open: render `<EmailReader />` at the top of the main column, above the phase task component. When closed (X button): show the phase content alone.
+2. **Route — keep EmailReader as the single source of the brief**
+   - `src/routes/simulations.aic-isb.tsx` stays as-is: auto-opens the current phase's email in `EmailReader`, "Start Phase N" CTA closes the reader and reveals the (now email-free) task workspace.
+   - No layout/state changes here.
 
-### 3. New `src/components/aic-isb/email-reader.tsx` — realistic email UI
-Centered card, max-width ~760px, looks like a Gmail/Outlook message:
-- Top toolbar: back/close button, star, archive, reply icons (visual only).
-- Subject as large header.
-- Sender row: round avatar (accent-tinted), bold sender name + grey `<email@domain>`, "to me" line, full date/time, role line beneath in muted small text.
-- Body: serif-or-clean body font, generous line height, paragraph spacing, preserves greeting / paragraphs / sign-off (already in data).
-- Footer: real reply composer — "Reply" button that expands a textarea + Send button (visual only, clears on submit). Inline "Reply" / "Reply all" / "Forward" chips above the composer like Gmail.
+3. **Cleanup**
+   - Leave `src/components/aic-isb/inbox-email.tsx` in place for now (small, unused after these edits) — safe to delete in a follow-up if nothing else imports it.
 
-### 4. Visual polish
-- Use existing semantic tokens (`bg-card`, `border-border`, `text-foreground`, `primary`) so it fits the indigo-on-light theme.
-- Subtle shadow + rounded-2xl on the email card; clean spacing, no dark gradient backgrounds.
+## Out of scope
 
-## Files
-
-- edit `src/components/aic-isb/inbox-panel.tsx` (strip detail view, slim down, controlled selection)
-- add `src/components/aic-isb/email-reader.tsx` (center email + reply composer)
-- edit `src/routes/simulations.aic-isb.tsx` (lift open-email state, render reader above phase content)
-
-No changes to phase 1–5 task components or `phase-meta.ts` data.
+- No changes to `EmailReader`, the inbox panel, the task navigator, the progress bar, or phase metadata.
+- No changes to scoring, sector selection logic, or downstream task flows other than removing the email gating step.

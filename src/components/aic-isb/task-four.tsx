@@ -89,22 +89,12 @@ export function AicIsbTaskFour({
   const data = INVESTIGATIONS[sector];
   const firstName = getFirstName(candidateName);
 
-  const [phase, setPhase] = useState<Phase>("email");
+  const [phase, setPhase] = useState<Phase>("investigate");
   const [stepIndex, setStepIndex] = useState(0);
   const [records, setRecords] = useState<(StepRecord | null)[]>(() =>
     Array(data.steps.length).fill(null),
   );
   const [reviewMode, setReviewMode] = useState(false);
-
-  if (phase === "email") {
-    return (
-      <EmailScreen
-        firstName={firstName}
-        data={data}
-        onStart={() => setPhase("investigate")}
-      />
-    );
-  }
 
   if (phase === "results") {
     return (

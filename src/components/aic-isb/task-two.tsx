@@ -84,7 +84,7 @@ export function AicIsbTaskTwo({
 }) {
   const bundle = THEMES[sector];
   const storageKey = `aic-isb:task2:${sector}`;
-  const [phase, setPhase] = useState<Phase>("email");
+  const [phase, setPhase] = useState<Phase>("notification");
   const [evals, setEvals] = useState<Record<string, Evaluation>>(() => {
     const empty = Object.fromEntries(
       bundle.startups.map((s) => [s.id, { rating: 0, shortlisted: false }]),
@@ -164,16 +164,6 @@ export function AicIsbTaskTwo({
     });
     setPhase("loading");
     window.setTimeout(() => setPhase("result"), 1800);
-  }
-
-  if (phase === "email") {
-    return (
-      <EmailPhase
-        name={getFirstName(candidateName)}
-        themeLabel={bundle.label}
-        onStart={() => setPhase("notification")}
-      />
-    );
   }
 
   if (phase === "loading") {

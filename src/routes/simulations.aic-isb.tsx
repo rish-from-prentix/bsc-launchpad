@@ -135,6 +135,8 @@ function AicIsbPage() {
             message={openEmail}
             candidateName={name}
             onClose={() => setOpenEmailId(null)}
+            ctaLabel={`Start Phase ${openEmail.phase}`}
+            onCta={() => setOpenEmailId(null)}
           />
         ) : (
           <>

@@ -207,13 +207,17 @@ function AicIsbPage() {
           </>
         )}
         </main>
-        <AicIsbInboxPanel
-          currentPhase={currentPhase}
-          maxReached={maxReached}
-          openId={openEmailId}
-          readIds={readEmailIds}
-          onOpen={handleOpenEmail}
-        />
+        <aside className="hidden lg:flex w-[260px] shrink-0 flex-col border-l border-border sticky top-[105px] self-start max-h-[calc(100vh-105px)]">
+          <div id="aic-isb-side-rail" className="shrink-0 max-h-[55vh] overflow-y-auto" />
+          <AicIsbInboxPanel
+            currentPhase={currentPhase}
+            maxReached={maxReached}
+            openId={openEmailId}
+            readIds={readEmailIds}
+            onOpen={handleOpenEmail}
+            embedded
+          />
+        </aside>
       </div>
     </div>
   );

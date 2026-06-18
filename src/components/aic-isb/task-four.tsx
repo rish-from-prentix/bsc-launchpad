@@ -341,9 +341,11 @@ function Investigation({
             </div>
           )}
 
-          {/* Options 2x2 */}
+          {/* Options 2x2 — always shown in A, B, C, D order */}
           <div className="mt-3 grid sm:grid-cols-2 gap-3.5">
-            {step.options.map((opt) => {
+            {[...step.options]
+              .sort((a, b) => a.id.localeCompare(b.id))
+              .map((opt) => {
               const attempt = attempts.find((a) => a.id === opt.id);
               const isCorrectOpt = opt.outcome === "correct";
               const isFirstWrong =
@@ -465,16 +467,12 @@ function Investigation({
           <div className="lg:sticky lg:top-[170px] space-y-4">
             <div className="rounded-xl border border-border bg-card p-4">
               <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-                Your investigation so far
+                Investigation flow
               </div>
               <ol className="mt-3 space-y-2.5">
                 {data.steps.map((s, i) => {
                   const r = records[i];
                   const isCurrent = i === stepIndex;
-                  const correctOpt = s.options.find((o) => o.outcome === "correct")!;
-                  const firstChoice = r
-                    ? s.options.find((o) => o.id === r.firstOptionId)
-                    : null;
                   const gotFirstTry = r && r.tries === 1;
                   return (
                     <li
@@ -502,13 +500,11 @@ function Investigation({
                       </span>
                       <span className={cn(r && "opacity-90")}>
                         <span className="font-medium">
-                          Step {i + 1}: {correctOpt.title}
+                          Step {i + 1}: {s.title}
                         </span>
                         {r && (
                           <span className="block text-[11.5px] text-muted-foreground">
-                            {gotFirstTry
-                              ? "(your answer)"
-                              : `(correct answer — you chose ${firstChoice?.title ?? r.firstOptionId})`}
+                            {gotFirstTry ? "Solved first try" : `Solved in ${r.tries} tries`}
                           </span>
                         )}
                       </span>
@@ -520,7 +516,7 @@ function Investigation({
 
             <div className="rounded-xl border border-border bg-card/60 p-4">
               <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-                <Lightbulb className="h-3.5 w-3.5" /> At this step, think about
+                <Lightbulb className="h-3.5 w-3.5" /> Hint for this step
               </div>
               <p className="mt-2 text-[13px] leading-relaxed text-foreground/75">{step.tip}</p>
             </div>

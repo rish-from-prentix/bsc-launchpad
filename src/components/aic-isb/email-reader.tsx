@@ -27,15 +27,21 @@ export function EmailReader({
   onClose,
   ctaLabel,
   onCta,
+  heroTitle,
+  heroSubtitle,
 }: {
   message: InboxMessage;
   candidateName: string;
   onClose: () => void;
   ctaLabel?: string;
   onCta?: () => void;
+  heroTitle?: string;
+  heroSubtitle?: string;
 }) {
   const firstName = getFirstName(candidateName) || "there";
   const body = message.body.replaceAll("{name}", firstName);
+  const subject = message.subject.replaceAll("{name}", firstName);
+  const hero = heroTitle?.replaceAll("{name}", firstName);
   const [showCompose, setShowCompose] = useState(false);
   const [replyText, setReplyText] = useState("");
   const [sent, setSent] = useState(false);
@@ -48,6 +54,20 @@ export function EmailReader({
 
   return (
     <div className="mx-auto max-w-[760px] px-5 sm:px-8 pt-8 pb-4">
+      {(hero || heroSubtitle) && (
+        <div className="mb-6 text-center">
+          {hero && (
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
+              {hero}
+            </h1>
+          )}
+          {heroSubtitle && (
+            <p className="mt-3 text-[15px] sm:text-[16px] text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+              {heroSubtitle}
+            </p>
+          )}
+        </div>
+      )}
       <article
         className="rounded-2xl border border-border bg-card overflow-hidden"
         style={{ boxShadow: "0 10px 36px -16px rgba(15, 23, 42, 0.35)" }}
@@ -81,7 +101,7 @@ export function EmailReader({
         {/* Subject */}
         <div className="px-7 pt-6 pb-3">
           <h1 className="text-[22px] sm:text-[24px] font-semibold text-foreground leading-tight tracking-tight">
-            {message.subject}
+            {subject}
           </h1>
           <div className="mt-1.5 inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.16em] text-primary">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />

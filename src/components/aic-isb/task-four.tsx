@@ -173,8 +173,8 @@ function EmailScreen({
         <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
           Phase 4 · Root Cause Investigation
         </div>
-        <h1 className="mt-3 text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
-          Go save your startups now{firstName ? `, ${firstName}` : ""}.
+        <h1 className="mt-3 text-4xl sm:text-5xl font-bold tracking-tight text-foreground whitespace-pre">
+          {"\n"}
         </h1>
         <p className="mt-5 text-[17px] text-muted-foreground leading-relaxed max-w-2xl mx-auto">
           This Is the Moment Founders Wish They Had Someone Like You

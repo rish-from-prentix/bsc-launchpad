@@ -175,8 +175,7 @@ export function AicIsbTaskOne({
   candidateName: string;
   onComplete?: (sector: Sector) => void;
 }) {
-  const [phase, setPhase] = useState<"loading" | "ready">("loading");
-  const [revealSector, setRevealSector] = useState(false);
+  const [revealSector, setRevealSector] = useState(true);
   const [revealBuilder, setRevealBuilder] = useState(false);
   const [sector, setSector] = useState<Sector | null>(null);
   const [answers, setAnswers] = useState<Answers>(EMPTY_ANSWERS);
@@ -217,11 +216,6 @@ export function AicIsbTaskOne({
       if (wordCount(p.answers[s.id]) >= MIN_WORDS) done.add(s.id);
     });
     setSubmittedSteps(done);
-  }, []);
-
-  useEffect(() => {
-    const t = window.setTimeout(() => setPhase("ready"), 1100);
-    return () => window.clearTimeout(t);
   }, []);
 
   // Autosave
@@ -391,18 +385,6 @@ export function AicIsbTaskOne({
           Estimated Time: 20–30 mins
         </div>
       </div>
-
-      {/* Email */}
-      {phase === "loading" ? (
-        <ReceivingState />
-      ) : (
-        <EmailCard
-          candidateName={greetingName}
-          timestamp={todayLabel}
-          onBegin={handleBegin}
-          begun={revealSector}
-        />
-      )}
 
       {/* Sector selection */}
       {revealSector && (

@@ -47,7 +47,7 @@ export function AicIsbTaskThree({
   const mentors = mentorsForSector(sector);
   const storageKey = `aic-isb:task3:${sector}:${shortlistedIds.join(",")}`;
 
-  const [phase, setPhase] = useState<Phase>("email");
+  const [phase, setPhase] = useState<Phase>("dashboard");
   const [assignments, setAssignments] = useState<Record<string, Assignment>>(() => {
     const empty = Object.fromEntries(
       selectedStartups.map((s) => [s.id, { primaryId: null, secondaryId: null, reason: "" }]),
@@ -94,9 +94,6 @@ export function AicIsbTaskThree({
     window.setTimeout(() => setPhase("result"), 1700);
   }
 
-  if (phase === "email") {
-    return <EmailPhase name={getFirstName(candidateName)} onStart={() => setPhase("dashboard")} />;
-  }
   if (phase === "loading") return <Loading text="Accelerator board reviewing mentor assignments…" />;
   if (phase === "result") {
     return (

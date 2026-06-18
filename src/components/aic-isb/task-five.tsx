@@ -69,7 +69,7 @@ export function AicIsbTaskFive({
   );
   const storageKey = `aic-isb:task5:${sector}:${shortlistedIds.join(",")}`;
 
-  const [phase, setPhase] = useState<Phase>("email");
+  const [phase, setPhase] = useState<Phase>("workspace");
   // One startup is assigned directly — no selection step.
   const selectedId = cohortStartups[0]?.id ?? null;
   const [answers, setAnswers] = useState<Answers>(() => {
@@ -126,9 +126,6 @@ export function AicIsbTaskFive({
   }
 
   useEffect(() => () => { if (savedTimer.current) window.clearTimeout(savedTimer.current); }, []);
-
-  if (phase === "email")
-    return <EmailPhase name={getFirstName(candidateName)} onStart={() => setPhase("workspace")} />;
 
   if (phase === "loading")
     return <Loading text="Investment committee reviewing your memo…" />;

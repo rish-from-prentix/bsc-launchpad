@@ -28,8 +28,7 @@ import {
 } from "lucide-react";
 import { AicIsbLogo } from "./aic-logo";
 import { cn, getFirstName } from "@/lib/utils";
-import { useServerFn } from "@tanstack/react-start";
-import { scoreThesis, type ThesisScores } from "@/lib/score-thesis.functions";
+import { type ThesisScores } from "@/lib/score-thesis.functions";
 import { ReferenceDeck } from "./reference-deck";
 
 type Sector = "ai" | "climate" | "health";
@@ -206,8 +205,6 @@ export function AicIsbTaskOne({
   const sectorRef = useRef<HTMLDivElement | null>(null);
   const builderRef = useRef<HTMLDivElement | null>(null);
   const evalRef = useRef<HTMLDivElement | null>(null);
-
-  const callScore = useServerFn(scoreThesis);
 
   // Hydrate
   useEffect(() => {

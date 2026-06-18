@@ -15,12 +15,14 @@ export function AicIsbInboxPanel({
   openId,
   readIds,
   onOpen,
+  embedded = false,
 }: {
   currentPhase: number;
   maxReached: number;
   openId: string | null;
   readIds: Set<string>;
   onOpen: (id: string) => void;
+  embedded?: boolean;
 }) {
   const visible = useMemo(
     () => AIC_INBOX.filter((m) => m.phase <= Math.max(currentPhase, maxReached + 1)),
@@ -28,9 +30,9 @@ export function AicIsbInboxPanel({
   );
   const unread = visible.filter((m) => !readIds.has(m.id)).length;
 
-  return (
-    <aside className="hidden lg:flex w-[260px] shrink-0 flex-col border-l border-border bg-card/40 sticky top-[105px] self-start max-h-[calc(100vh-105px)]">
-      <div className="px-3.5 pt-4 pb-3 border-b border-border flex items-center gap-2">
+  const body = (
+    <>
+      <div className="px-3.5 pt-4 pb-3 border-b border-border flex items-center gap-2 shrink-0">
         <div className="grid h-7 w-7 place-items-center rounded-md bg-primary/10 text-primary">
           <Inbox className="h-3.5 w-3.5" />
         </div>
@@ -116,6 +118,16 @@ export function AicIsbInboxPanel({
             );
           })}
       </ul>
+    </>
+  );
+
+  if (embedded) {
+    return <div className="flex-1 min-h-0 flex flex-col bg-card/40">{body}</div>;
+  }
+
+  return (
+    <aside className="hidden lg:flex w-[260px] shrink-0 flex-col border-l border-border bg-card/40 sticky top-[105px] self-start max-h-[calc(100vh-105px)]">
+      {body}
     </aside>
   );
 }

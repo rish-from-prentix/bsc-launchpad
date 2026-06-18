@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   ArrowRight,
   ArrowLeft,
@@ -317,7 +318,7 @@ function Investigation({
 
       <div className="mx-auto max-w-6xl px-5 sm:px-8 py-8 sm:py-10 grid lg:grid-cols-5 gap-6 lg:gap-8">
         {/* Main */}
-        <div className="lg:col-span-3 animate-[fadeSlide_0.35s_ease-out]">
+        <div className="lg:col-span-5 animate-[fadeSlide_0.35s_ease-out]">
           <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
             Step {stepIndex + 1}
           </div>
@@ -463,13 +464,13 @@ function Investigation({
         </div>
 
         {/* Sidebar */}
-        <aside className="lg:col-span-2 order-first lg:order-none">
-          <div className="lg:sticky lg:top-[170px] space-y-4">
-            <div className="rounded-xl border border-border bg-card p-4">
+        <RightRailPortal>
+          <div className="p-3.5 space-y-3 border-b border-border">
+            <div className="rounded-xl border border-border bg-card p-3.5">
               <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
                 Investigation flow
               </div>
-              <ol className="mt-3 space-y-2.5">
+              <ol className="mt-2.5 space-y-2">
                 {data.steps.map((s, i) => {
                   const r = records[i];
                   const isCurrent = i === stepIndex;
@@ -514,17 +515,27 @@ function Investigation({
               </ol>
             </div>
 
-            <div className="rounded-xl border border-border bg-card/60 p-4">
+            <div className="rounded-xl border border-border bg-card/60 p-3.5">
               <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
                 <Lightbulb className="h-3.5 w-3.5" /> Hint for this step
               </div>
-              <p className="mt-2 text-[13px] leading-relaxed text-foreground/75">{step.tip}</p>
+              <p className="mt-2 text-[12.5px] leading-relaxed text-foreground/75">{step.tip}</p>
             </div>
           </div>
-        </aside>
+        </RightRailPortal>
       </div>
     </div>
   );
+}
+
+function RightRailPortal({ children }: { children: React.ReactNode }) {
+  const [el, setEl] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    const node = document.getElementById("aic-isb-side-rail");
+    setEl(node);
+  }, []);
+  if (!el) return null;
+  return createPortal(children, el);
 }
 
 function outcomeRing(outcome: Outcome) {

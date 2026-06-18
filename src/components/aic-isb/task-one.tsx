@@ -515,6 +515,21 @@ export function AicIsbTaskOne({
             onChangeSector={handleChangeSector}
             evalLoading={evalState === "loading"}
           />
+          <div className="mt-8">
+            <UploadDeckSection
+              file={uploadedFile}
+              status={uploadStatus}
+              onFile={(f) => {
+                setUploadStatus("uploading");
+                setUploadedFile({ name: f.name, size: f.size, type: f.type });
+                window.setTimeout(() => setUploadStatus("done"), 700);
+              }}
+              onClear={() => {
+                setUploadedFile(null);
+                setUploadStatus("idle");
+              }}
+            />
+          </div>
         </section>
       )}
 
@@ -529,6 +544,8 @@ export function AicIsbTaskOne({
             state={evalState}
             scores={scores}
             passed={passed}
+            candidateName={greetingName}
+            sectorName={sectorMeta?.name ?? ""}
             linkedInPost={linkedInPost}
             onCopyPost={copyPost}
             postCopied={postCopied}

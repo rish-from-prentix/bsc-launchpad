@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AicIsbIntroScreen } from "@/components/aic-isb/intro-screen";
 import { AicIsbProgressBar, type ProgressTask } from "@/components/aic-isb/progress-bar";
@@ -9,6 +9,8 @@ import { AicIsbTaskFour } from "@/components/aic-isb/task-four";
 import { AicIsbTaskFive } from "@/components/aic-isb/task-five";
 import { AicIsbTaskNavigator } from "@/components/aic-isb/task-navigator";
 import { AicIsbInboxPanel } from "@/components/aic-isb/inbox-panel";
+import { EmailReader } from "@/components/aic-isb/email-reader";
+import { AIC_INBOX } from "@/components/aic-isb/phase-meta";
 import type { ThemeId } from "@/components/aic-isb/startups-data";
 
 export const Route = createFileRoute("/simulations/aic-isb")({
@@ -41,10 +43,42 @@ function AicIsbPage() {
   const [currentPhase, setCurrentPhase] = useState(1);
   const [sector, setSector] = useState<ThemeId | null>(null);
   const [shortlistedIds, setShortlistedIds] = useState<string[]>([]);
+  const [openEmailId, setOpenEmailId] = useState<string | null>(null);
+  const [readEmailIds, setReadEmailIds] = useState<Set<string>>(() => new Set());
+
+  // Auto-open the brief for the current phase as it becomes active.
+  useEffect(() => {
+    if (!name) return;
+    const m = AIC_INBOX.find((e) => e.phase === currentPhase);
+    if (m) {
+      setOpenEmailId(m.id);
+      setReadEmailIds((s) => {
+        if (s.has(m.id)) return s;
+        const n = new Set(s);
+        n.add(m.id);
+        return n;
+      });
+    }
+  }, [currentPhase, name]);
 
   if (!name) {
     return <AicIsbIntroScreen onStart={(n) => setName(n)} />;
   }
+
+  const openEmail = openEmailId
+    ? AIC_INBOX.find((m) => m.id === openEmailId) ?? null
+    : null;
+
+  const handleOpenEmail = (id: string) => {
+    setOpenEmailId(id);
+    setReadEmailIds((s) => {
+      if (s.has(id)) return s;
+      const n = new Set(s);
+      n.add(id);
+      return n;
+    });
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   // Progress bar shows phases as done when student has moved past them.
   // `active` = whichever phase is currently rendered.
@@ -91,6 +125,13 @@ function AicIsbPage() {
           key={currentPhase}
           className="flex-1 min-w-0 animate-[fadeSlide_0.35s_ease-out]"
         >
+        {openEmail && (
+          <EmailReader
+            message={openEmail}
+            candidateName={name}
+            onClose={() => setOpenEmailId(null)}
+          />
+        )}
         {currentPhase === 1 && (
           <AicIsbTaskOne
             candidateName={name}
@@ -136,9 +177,11 @@ function AicIsbPage() {
         )}
         </main>
         <AicIsbInboxPanel
-          candidateName={name}
           currentPhase={currentPhase}
           maxReached={maxReached}
+          openId={openEmailId}
+          readIds={readEmailIds}
+          onOpen={handleOpenEmail}
         />
       </div>
     </div>

@@ -341,9 +341,11 @@ function Investigation({
             </div>
           )}
 
-          {/* Options 2x2 */}
+          {/* Options 2x2 — always shown in A, B, C, D order */}
           <div className="mt-3 grid sm:grid-cols-2 gap-3.5">
-            {step.options.map((opt) => {
+            {[...step.options]
+              .sort((a, b) => a.id.localeCompare(b.id))
+              .map((opt) => {
               const attempt = attempts.find((a) => a.id === opt.id);
               const isCorrectOpt = opt.outcome === "correct";
               const isFirstWrong =

@@ -28,8 +28,7 @@ import {
 } from "lucide-react";
 import { AicIsbLogo } from "./aic-logo";
 import { cn, getFirstName } from "@/lib/utils";
-import { useServerFn } from "@tanstack/react-start";
-import { scoreThesis, type ThesisScores } from "@/lib/score-thesis.functions";
+import { type ThesisScores } from "@/lib/score-thesis.functions";
 import { ReferenceDeck } from "./reference-deck";
 
 type Sector = "ai" | "climate" | "health";
@@ -207,8 +206,6 @@ export function AicIsbTaskOne({
   const builderRef = useRef<HTMLDivElement | null>(null);
   const evalRef = useRef<HTMLDivElement | null>(null);
 
-  const callScore = useServerFn(scoreThesis);
-
   // Hydrate
   useEffect(() => {
     const p = loadPersisted();
@@ -298,22 +295,18 @@ export function AicIsbTaskOne({
       () => evalRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
       80,
     );
-    try {
-      const res = await callScore({ data: { sector, answers } });
-      setScores(res);
-      setEvalState("done");
-    } catch (e) {
-      console.error(e);
+    // Upload-based evaluation: simulate review of the submitted deck.
+    window.setTimeout(() => {
       setScores({
-        market: 0,
-        opportunity: 0,
-        recommendation: 0,
-        overall: 0,
-        feedback: "Something went wrong. Please try again.",
-        error: "network_error",
+        market: 9,
+        opportunity: 8,
+        recommendation: 9,
+        overall: 9,
+        feedback:
+          "Strong sector framing and a clear point of view on where to back founders. Your thesis communicates conviction, evidence, and a credible bar for selection.",
       });
       setEvalState("done");
-    }
+    }, 1400);
   }
 
   function handleTryAgain() {
@@ -497,38 +490,47 @@ export function AicIsbTaskOne({
           className="mt-16 scroll-mt-8"
           style={{ animation: "fadeSlide 500ms ease-out" }}
         >
-          <SlideBuilder
-            sectorMeta={sectorMeta}
-            stepIdx={stepIdx}
-            answers={answers}
-            currentWords={currentWords}
-            meetsMin={meetsMin}
-            onChange={handleAnswer}
-            onNext={handleNext}
-            onBack={() => stepIdx > 0 && setStepIdx((i) => i - 1)}
-            submittedSteps={submittedSteps}
-            linkedInPost={linkedInPost}
-            onCopyPost={copyPost}
-            postCopied={postCopied}
-            saveState={saveState}
-            onSaveDraft={handleSaveDraft}
-            onChangeSector={handleChangeSector}
-            evalLoading={evalState === "loading"}
+          <UploadDeckSection
+            file={uploadedFile}
+            status={uploadStatus}
+            onFile={(f) => {
+              setUploadStatus("uploading");
+              setUploadedFile({ name: f.name, size: f.size, type: f.type });
+              window.setTimeout(() => setUploadStatus("done"), 700);
+            }}
+            onClear={() => {
+              setUploadedFile(null);
+              setUploadStatus("idle");
+            }}
           />
-          <div className="mt-8">
-            <UploadDeckSection
-              file={uploadedFile}
-              status={uploadStatus}
-              onFile={(f) => {
-                setUploadStatus("uploading");
-                setUploadedFile({ name: f.name, size: f.size, type: f.type });
-                window.setTimeout(() => setUploadStatus("done"), 700);
-              }}
-              onClear={() => {
-                setUploadedFile(null);
-                setUploadStatus("idle");
-              }}
-            />
+          <div className="mt-6 flex items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={handleChangeSector}
+              className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2"
+            >
+              Change sector
+            </button>
+            <button
+              type="button"
+              disabled={uploadStatus !== "done" || evalState === "loading"}
+              onClick={runEvaluation}
+              className={cn(
+                "inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition",
+                (uploadStatus !== "done" || evalState === "loading") &&
+                  "opacity-40 cursor-not-allowed",
+              )}
+            >
+              {evalState === "loading" ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> Evaluating…
+                </>
+              ) : (
+                <>
+                  Submit for Evaluation <ArrowRight className="h-4 w-4" />
+                </>
+              )}
+            </button>
           </div>
         </section>
       )}

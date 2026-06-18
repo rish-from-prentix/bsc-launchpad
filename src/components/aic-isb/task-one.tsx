@@ -411,13 +411,7 @@ export function AicIsbTaskOne({
           className="mt-16 scroll-mt-8"
           style={{ animation: "fadeSlide 500ms ease-out" }}
         >
-          <div className="mb-8">
-            <ReferenceDeck />
-          </div>
-          <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-            {"\n"}
-          </div>
-          <h2 className="mt-2 text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
             Build Your Investment Thesis
           </h2>
           <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-2xl">
@@ -490,7 +484,9 @@ export function AicIsbTaskOne({
           className="mt-16 scroll-mt-8"
           style={{ animation: "fadeSlide 500ms ease-out" }}
         >
-          <UploadDeckSection
+          <ReferenceDeck />
+          <div className="mt-8">
+            <UploadDeckSection
             file={uploadedFile}
             status={uploadStatus}
             onFile={(f) => {
@@ -531,6 +527,7 @@ export function AicIsbTaskOne({
                 </>
               )}
             </button>
+          </div>
           </div>
         </section>
       )}

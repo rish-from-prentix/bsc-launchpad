@@ -20,11 +20,17 @@ import {
   Send as SendIcon,
   Lock,
   Linkedin,
+  Upload,
+  FileText,
+  Trophy,
+  Sparkles,
+  X,
 } from "lucide-react";
 import { AicIsbLogo } from "./aic-logo";
 import { cn, getFirstName } from "@/lib/utils";
 import { useServerFn } from "@tanstack/react-start";
 import { scoreThesis, type ThesisScores } from "@/lib/score-thesis.functions";
+import { ReferenceDeck } from "./reference-deck";
 
 type Sector = "ai" | "climate" | "health";
 
@@ -186,6 +192,16 @@ export function AicIsbTaskOne({
   const [scores, setScores] = useState<ThesisScores | null>(null);
   const [postCopied, setPostCopied] = useState(false);
   const saveTimer = useRef<number | null>(null);
+
+  // Uploaded thesis deck (local-only metadata)
+  const [uploadedFile, setUploadedFile] = useState<{
+    name: string;
+    size: number;
+    type: string;
+  } | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<"idle" | "uploading" | "done">(
+    "idle",
+  );
 
   const sectorRef = useRef<HTMLDivElement | null>(null);
   const builderRef = useRef<HTMLDivElement | null>(null);
@@ -402,6 +418,9 @@ export function AicIsbTaskOne({
           className="mt-16 scroll-mt-8"
           style={{ animation: "fadeSlide 500ms ease-out" }}
         >
+          <div className="mb-8">
+            <ReferenceDeck />
+          </div>
           <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
             {"\n"}
           </div>
@@ -496,6 +515,21 @@ export function AicIsbTaskOne({
             onChangeSector={handleChangeSector}
             evalLoading={evalState === "loading"}
           />
+          <div className="mt-8">
+            <UploadDeckSection
+              file={uploadedFile}
+              status={uploadStatus}
+              onFile={(f) => {
+                setUploadStatus("uploading");
+                setUploadedFile({ name: f.name, size: f.size, type: f.type });
+                window.setTimeout(() => setUploadStatus("done"), 700);
+              }}
+              onClear={() => {
+                setUploadedFile(null);
+                setUploadStatus("idle");
+              }}
+            />
+          </div>
         </section>
       )}
 
@@ -510,6 +544,8 @@ export function AicIsbTaskOne({
             state={evalState}
             scores={scores}
             passed={passed}
+            candidateName={greetingName}
+            sectorName={sectorMeta?.name ?? ""}
             linkedInPost={linkedInPost}
             onCopyPost={copyPost}
             postCopied={postCopied}
@@ -934,6 +970,8 @@ function EvaluationPanel({
   state,
   scores,
   passed,
+  candidateName,
+  sectorName,
   linkedInPost,
   onCopyPost,
   postCopied,
@@ -943,6 +981,8 @@ function EvaluationPanel({
   state: "loading" | "done";
   scores: ThesisScores | null;
   passed: boolean;
+  candidateName: string;
+  sectorName: string;
   linkedInPost: { sections: Array<{ emoji: string; tag: string; text: string }>; hashtags: string[]; plain: string };
   onCopyPost: () => void;
   postCopied: boolean;
@@ -950,10 +990,38 @@ function EvaluationPanel({
   onSubmit: () => void;
 }) {
   const showLoading = state === "loading" || !scores;
+  const overall = scores?.overall ?? 0;
+  const ratingWord =
+    overall >= 9
+      ? "Excellent"
+      : overall >= 7
+        ? "Strong"
+        : overall >= 6
+          ? "Solid"
+          : overall >= 4
+            ? "Developing"
+            : "Needs work";
+  const percentile = overall >= 9 ? 1 : overall >= 7 ? 5 : overall >= 6 ? 15 : null;
+  const boardFeedback = scores?.feedback?.trim() || "";
+  const achievementCopy =
+    percentile === 1
+      ? `You ranked among the top 1% of students who completed this simulation.`
+      : percentile === 5
+        ? `You ranked among the top 5% of students in strategic investment analysis.`
+        : percentile === 15
+          ? `You ranked in the top 15% of students who passed this simulation.`
+          : null;
+  const linkedInShareText = passed
+    ? `Excited to have completed the AIC \u00D7 ISB Accelerator Investment Simulation${
+        percentile ? ` and ranked among the top ${percentile}% of participants` : ""
+      }.\n\nThe experience involved building an investment thesis${
+        sectorName ? ` in ${sectorName}` : ""
+      }, evaluating startups, and making accelerator selection decisions based on real-world criteria.\n\n#VentureCapital #StartupEcosystem #InvestmentAnalysis #AICxISB #Prentix`
+    : linkedInPost.plain;
   return (
     <div className="rounded-2xl border border-border bg-card p-5 sm:p-7">
       <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
-        AI evaluation
+        {showLoading ? "AI evaluation" : "Investment Thesis Evaluation Complete"}
       </div>
       <h3 className="mt-1 text-xl font-semibold text-foreground tracking-tight">
         {showLoading
@@ -966,6 +1034,38 @@ function EvaluationPanel({
         Scored on market understanding, opportunity clarity, and recommendation
         strength. Pass threshold is 6/10.
       </p>
+
+      {!showLoading && (
+        <div className="mt-5 grid sm:grid-cols-[auto_1fr] gap-4 items-stretch">
+          <div
+            className={cn(
+              "rounded-2xl border px-6 py-5 flex flex-col items-center justify-center min-w-[160px]",
+              passed
+                ? "border-primary/40 bg-primary/5"
+                : "border-border bg-background/40",
+            )}
+          >
+            <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+              Score
+            </div>
+            <div className="mt-1 font-mono text-4xl text-foreground tabular-nums">
+              {overall}
+              <span className="text-lg text-muted-foreground">/10</span>
+            </div>
+            <div className="mt-1 text-xs text-primary font-semibold uppercase tracking-[0.18em]">
+              {ratingWord}
+            </div>
+          </div>
+          <div className="rounded-2xl border border-border bg-background/40 p-5">
+            <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+              Board Feedback
+            </div>
+            <p className="mt-2 text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
+              {boardFeedback || "\u201CYour thesis demonstrated strong market understanding, clear investment reasoning, and a well-structured approach to startup selection.\u201D"}
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="mt-5 grid sm:grid-cols-3 gap-3">
         <ScoreTile
@@ -1010,10 +1110,8 @@ function EvaluationPanel({
         </div>
       </div>
 
-      {!showLoading && scores!.feedback && (
-        <div className="mt-4 rounded-xl border border-border bg-background/40 px-4 py-3 text-sm text-foreground/85 leading-relaxed whitespace-pre-wrap">
-          {scores!.feedback}
-        </div>
+      {!showLoading && passed && achievementCopy && (
+        <AchievementCard percentile={percentile!} message={achievementCopy} />
       )}
 
       {!showLoading && (
@@ -1029,18 +1127,24 @@ function EvaluationPanel({
               </button>
               <a
                 href={`https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent(
-                  linkedInPost.plain,
+                  linkedInShareText,
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={onCopyPost}
+                onClick={() => {
+                  navigator.clipboard?.writeText(linkedInShareText).catch(() => {});
+                  onCopyPost();
+                }}
                 className="inline-flex items-center gap-2 rounded-lg bg-[#0a66c2] px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition"
               >
-                <Linkedin className="h-4 w-4" /> Post on LinkedIn
+                <Linkedin className="h-4 w-4" /> Share Achievement on LinkedIn
               </a>
               <button
                 type="button"
-                onClick={onCopyPost}
+                onClick={() => {
+                  navigator.clipboard?.writeText(linkedInShareText).catch(() => {});
+                  onCopyPost();
+                }}
                 className="inline-flex items-center gap-2 rounded-lg border border-border bg-card hover:bg-secondary px-3.5 py-2 text-xs text-foreground/90 transition"
               >
                 {postCopied ? (
@@ -1049,7 +1153,7 @@ function EvaluationPanel({
                   </>
                 ) : (
                   <>
-                    <Copy className="h-3.5 w-3.5" /> Copy LinkedIn post
+                    <Copy className="h-3.5 w-3.5" /> Copy post
                   </>
                 )}
               </button>
@@ -1069,9 +1173,175 @@ function EvaluationPanel({
       {!showLoading && passed && (
         <div className="mt-6 pt-5 border-t border-border">
           <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold mb-3">
-            Final LinkedIn post
+            LinkedIn post preview
           </div>
-          <LinkedInPreview post={linkedInPost} />
+          <div className="rounded-xl border border-border bg-card p-4 text-[13px] leading-[1.7] text-foreground/90 whitespace-pre-wrap">
+            {linkedInShareText}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AchievementCard({
+  percentile,
+  message,
+}: {
+  percentile: number;
+  message: string;
+}) {
+  return (
+    <div
+      className="mt-5 relative overflow-hidden rounded-2xl border border-primary/40 p-5 sm:p-6"
+      style={{
+        background:
+          "linear-gradient(135deg, oklch(0.22 0.04 80) 0%, oklch(0.18 0.02 60) 100%)",
+        boxShadow: "0 12px 36px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04)",
+      }}
+    >
+      <div
+        className="absolute -top-12 -right-12 h-40 w-40 rounded-full opacity-30 blur-3xl"
+        style={{ background: "oklch(0.78 0.16 80)" }}
+        aria-hidden
+      />
+      <div className="relative flex items-start gap-4">
+        <div className="h-12 w-12 rounded-xl bg-primary/15 border border-primary/40 flex items-center justify-center text-primary shrink-0">
+          <Trophy className="h-6 w-6" />
+        </div>
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+              Achievement Unlocked
+            </span>
+            <Sparkles className="h-3 w-3 text-primary" />
+          </div>
+          <div className="mt-1 text-lg font-semibold text-foreground tracking-tight">
+            🏆 Top Performer · Top {percentile}%
+          </div>
+          <p className="mt-1.5 text-sm text-foreground/80 leading-relaxed">
+            {message}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Upload deck section ---------------- */
+
+function UploadDeckSection({
+  file,
+  status,
+  onFile,
+  onClear,
+}: {
+  file: { name: string; size: number; type: string } | null;
+  status: "idle" | "uploading" | "done";
+  onFile: (f: File) => void;
+  onClear: () => void;
+}) {
+  const inputId = "thesis-deck-upload";
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    const okTypes = [
+      "application/pdf",
+      "application/vnd.ms-powerpoint",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ];
+    const okExt = /\.(pdf|ppt|pptx)$/i.test(f.name);
+    if (!okTypes.includes(f.type) && !okExt) {
+      window.alert("Please upload a PPT, PPTX, or PDF file.");
+      e.target.value = "";
+      return;
+    }
+    onFile(f);
+    e.target.value = "";
+  }
+
+  return (
+    <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+      <div className="flex items-center gap-2">
+        <Upload className="h-3.5 w-3.5 text-primary" />
+        <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+          Upload Your Investment Thesis Deck
+        </span>
+      </div>
+      <p className="mt-2 text-sm text-foreground/85 leading-relaxed max-w-2xl">
+        Once you've built your thesis above, upload your deck here. Accepted
+        formats: PPT, PPTX, PDF.
+      </p>
+
+      {!file ? (
+        <label
+          htmlFor={inputId}
+          className="mt-5 flex flex-col items-center justify-center text-center rounded-xl border-2 border-dashed border-border hover:border-primary/60 bg-background/30 hover:bg-background/50 cursor-pointer transition px-6 py-10"
+        >
+          <div className="h-12 w-12 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center text-primary">
+            <Upload className="h-5 w-5" />
+          </div>
+          <div className="mt-3 text-sm font-semibold text-foreground">
+            Upload Thesis Deck
+          </div>
+          <div className="mt-1 text-xs text-muted-foreground">
+            PPT, PPTX or PDF · Max 25 MB
+          </div>
+          <span className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground">
+            <Upload className="h-3.5 w-3.5" /> Choose file
+          </span>
+          <input
+            id={inputId}
+            type="file"
+            accept=".ppt,.pptx,.pdf,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+            className="sr-only"
+            onChange={handleChange}
+          />
+        </label>
+      ) : (
+        <div className="mt-5 rounded-xl border border-border bg-background/40 p-4 flex items-center gap-3">
+          <div className="h-10 w-10 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center text-primary shrink-0">
+            <FileText className="h-5 w-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="text-sm font-semibold text-foreground truncate">
+              {file.name}
+            </div>
+            <div className="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-2">
+              <span>{(file.size / 1024 / 1024).toFixed(2)} MB</span>
+              <span>·</span>
+              {status === "uploading" ? (
+                <span className="inline-flex items-center gap-1 text-primary">
+                  <Loader2 className="h-3 w-3 animate-spin" /> Uploading…
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 text-[oklch(0.78_0.14_155)]">
+                  <CheckCircle2 className="h-3 w-3" /> Upload successful
+                </span>
+              )}
+            </div>
+          </div>
+          <label
+            htmlFor={inputId}
+            className="text-xs text-primary hover:underline cursor-pointer"
+          >
+            Replace
+          </label>
+          <button
+            type="button"
+            onClick={onClear}
+            className="h-8 w-8 rounded-md border border-border hover:bg-secondary flex items-center justify-center text-muted-foreground"
+            aria-label="Remove file"
+          >
+            <X className="h-4 w-4" />
+          </button>
+          <input
+            id={inputId}
+            type="file"
+            accept=".ppt,.pptx,.pdf,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+            className="sr-only"
+            onChange={handleChange}
+          />
         </div>
       )}
     </div>

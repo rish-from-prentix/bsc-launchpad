@@ -20,11 +20,17 @@ import {
   Send as SendIcon,
   Lock,
   Linkedin,
+  Upload,
+  FileText,
+  Trophy,
+  Sparkles,
+  X,
 } from "lucide-react";
 import { AicIsbLogo } from "./aic-logo";
 import { cn, getFirstName } from "@/lib/utils";
 import { useServerFn } from "@tanstack/react-start";
 import { scoreThesis, type ThesisScores } from "@/lib/score-thesis.functions";
+import { ReferenceDeck } from "./reference-deck";
 
 type Sector = "ai" | "climate" | "health";
 

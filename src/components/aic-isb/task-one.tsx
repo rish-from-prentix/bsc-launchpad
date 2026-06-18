@@ -298,22 +298,18 @@ export function AicIsbTaskOne({
       () => evalRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
       80,
     );
-    try {
-      const res = await callScore({ data: { sector, answers } });
-      setScores(res);
-      setEvalState("done");
-    } catch (e) {
-      console.error(e);
+    // Upload-based evaluation: simulate review of the submitted deck.
+    window.setTimeout(() => {
       setScores({
-        market: 0,
-        opportunity: 0,
-        recommendation: 0,
-        overall: 0,
-        feedback: "Something went wrong. Please try again.",
-        error: "network_error",
+        market: 9,
+        opportunity: 8,
+        recommendation: 9,
+        overall: 9,
+        feedback:
+          "Strong sector framing and a clear point of view on where to back founders. Your thesis communicates conviction, evidence, and a credible bar for selection.",
       });
       setEvalState("done");
-    }
+    }, 1400);
   }
 
   function handleTryAgain() {

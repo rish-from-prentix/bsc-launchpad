@@ -7,6 +7,8 @@ import { AicIsbTaskTwo } from "@/components/aic-isb/task-two";
 import { AicIsbTaskThree } from "@/components/aic-isb/task-three";
 import { AicIsbTaskFour } from "@/components/aic-isb/task-four";
 import { AicIsbTaskFive } from "@/components/aic-isb/task-five";
+import { AicIsbTaskNavigator } from "@/components/aic-isb/task-navigator";
+import { AicIsbInboxPanel } from "@/components/aic-isb/inbox-panel";
 import type { ThemeId } from "@/components/aic-isb/startups-data";
 
 export const Route = createFileRoute("/simulations/aic-isb")({
@@ -77,7 +79,18 @@ function AicIsbPage() {
         onPhaseSelect={(p) => setCurrentPhase(p)}
         canGoPrevious={canGoPrevious}
       />
-      <main key={currentPhase} className="animate-[fadeSlide_0.35s_ease-out]">
+      <div className="flex">
+        <AicIsbTaskNavigator
+          currentPhase={currentPhase}
+          maxReached={maxReached}
+          onJump={(p) => {
+            if (p <= maxReached + 1) setCurrentPhase(p);
+          }}
+        />
+        <main
+          key={currentPhase}
+          className="flex-1 min-w-0 animate-[fadeSlide_0.35s_ease-out]"
+        >
         {currentPhase === 1 && (
           <AicIsbTaskOne
             candidateName={name}
@@ -121,7 +134,13 @@ function AicIsbPage() {
             onComplete={() => setMaxReached((m) => Math.max(m, 5))}
           />
         )}
-      </main>
+        </main>
+        <AicIsbInboxPanel
+          candidateName={name}
+          currentPhase={currentPhase}
+          maxReached={maxReached}
+        />
+      </div>
     </div>
   );
 }

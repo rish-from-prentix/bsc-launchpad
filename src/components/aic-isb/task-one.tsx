@@ -528,6 +528,7 @@ export function AicIsbTaskOne({
               )}
             </button>
           </div>
+          </div>
         </section>
       )}
 

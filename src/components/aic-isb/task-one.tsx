@@ -414,6 +414,20 @@ export function AicIsbTaskOne({
           <div className="mb-8">
             <ReferenceDeck />
           </div>
+
+          <div className="mt-6 mb-10">
+            <button
+              type="button"
+              disabled={!sector}
+              onClick={handleBuildThesis}
+              className={cn(
+                "inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition",
+                !sector && "opacity-40 cursor-not-allowed",
+              )}
+            >
+              Build my thesis <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
           <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
             {"\n"}
           </div>
@@ -467,19 +481,6 @@ export function AicIsbTaskOne({
             })}
           </div>
 
-          <div className="mt-6">
-            <button
-              type="button"
-              disabled={!sector}
-              onClick={handleBuildThesis}
-              className={cn(
-                "inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition",
-                !sector && "opacity-40 cursor-not-allowed",
-              )}
-            >
-              Build my thesis <ArrowRight className="h-4 w-4" />
-            </button>
-          </div>
         </section>
       )}
 

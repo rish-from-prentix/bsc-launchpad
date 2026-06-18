@@ -73,11 +73,8 @@ export function AicIsbProgressBar({
             return (
               <li
                 key={t.index}
-                className={cn(
-                  "flex flex-col gap-1.5",
-                  !isLocked && "cursor-pointer group"
-                )}
-                onClick={() => !isLocked && onPhaseSelect?.(t.index)}
+                className="flex flex-col gap-1.5 cursor-pointer group"
+                onClick={() => onPhaseSelect?.(t.index)}
               >
                 <div
                   className={cn(

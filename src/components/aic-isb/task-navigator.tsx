@@ -44,7 +44,7 @@ export function AicIsbTaskNavigator({
         {AIC_PHASES.map((p) => {
           const isCurrent = p.index === currentPhase;
           const isDone = p.index <= maxReached;
-          const isLocked = p.index > maxReached + 1;
+          const isLocked = false;
           const isOpen = expanded === p.index;
           return (
             <li key={p.index}>

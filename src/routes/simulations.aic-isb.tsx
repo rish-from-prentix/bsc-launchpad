@@ -11,7 +11,7 @@ import { AicIsbTaskNavigator } from "@/components/aic-isb/task-navigator";
 import { AicIsbInboxPanel } from "@/components/aic-isb/inbox-panel";
 import { EmailReader } from "@/components/aic-isb/email-reader";
 import { AIC_INBOX } from "@/components/aic-isb/phase-meta";
-import type { ThemeId } from "@/components/aic-isb/startups-data";
+import { THEMES, type ThemeId } from "@/components/aic-isb/startups-data";
 
 export const Route = createFileRoute("/simulations/aic-isb")({
   head: () => ({
@@ -43,6 +43,13 @@ function AicIsbPage() {
   const [currentPhase, setCurrentPhase] = useState(1);
   const [sector, setSector] = useState<ThemeId | null>(null);
   const [shortlistedIds, setShortlistedIds] = useState<string[]>([]);
+  // Free-navigation fallbacks so any phase is reachable even before earlier
+  // phases have been completed.
+  const effectiveSector: ThemeId = sector ?? "ai";
+  const effectiveShortlist =
+    shortlistedIds.length > 0
+      ? shortlistedIds
+      : THEMES[effectiveSector].bestIds;
   const [openEmailId, setOpenEmailId] = useState<string | null>(null);
   const [readEmailIds, setReadEmailIds] = useState<Set<string>>(() => new Set());
 
@@ -80,13 +87,13 @@ function AicIsbPage() {
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Progress bar shows phases as done when student has moved past them.
-  // `active` = whichever phase is currently rendered.
+  // Free navigation: nothing is locked. Completed phases show as done,
+  // the current one is active, everything else is selectable.
   const tasks: ProgressTask[] = TASK_TITLES.map((title, i) => {
     const index = i + 1;
-    let state: ProgressTask["state"] = "locked";
+    let state: ProgressTask["state"] = "done";
     if (index === currentPhase) state = "active";
-    else if (i < maxReached) state = "done";
+    else if (i >= maxReached) state = "locked"; // visual only — still clickable below
     return { index, title, state };
   });
 
@@ -117,21 +124,20 @@ function AicIsbPage() {
         <AicIsbTaskNavigator
           currentPhase={currentPhase}
           maxReached={maxReached}
-          onJump={(p) => {
-            if (p <= maxReached + 1) setCurrentPhase(p);
-          }}
+          onJump={(p) => setCurrentPhase(p)}
         />
         <main
           key={currentPhase}
           className="flex-1 min-w-0 animate-[fadeSlide_0.35s_ease-out]"
         >
-        {openEmail && (
+        {openEmail ? (
           <EmailReader
             message={openEmail}
             candidateName={name}
             onClose={() => setOpenEmailId(null)}
           />
-        )}
+        ) : (
+          <>
         {currentPhase === 1 && (
           <AicIsbTaskOne
             candidateName={name}
@@ -141,39 +147,41 @@ function AicIsbPage() {
             }}
           />
         )}
-        {currentPhase === 2 && sector && (
+        {currentPhase === 2 && (
           <AicIsbTaskTwo
             candidateName={name}
-            sector={sector}
+            sector={effectiveSector}
             onComplete={(ids) => {
               setShortlistedIds(ids);
               advance(2);
             }}
           />
         )}
-        {currentPhase === 3 && sector && shortlistedIds.length > 0 && (
+        {currentPhase === 3 && (
           <AicIsbTaskThree
             candidateName={name}
-            sector={sector}
-            shortlistedIds={shortlistedIds}
+            sector={effectiveSector}
+            shortlistedIds={effectiveShortlist}
             onComplete={() => advance(3)}
           />
         )}
-        {currentPhase === 4 && sector && shortlistedIds.length > 0 && (
+        {currentPhase === 4 && (
           <AicIsbTaskFour
             candidateName={name}
-            sector={sector}
-            shortlistedIds={shortlistedIds}
+            sector={effectiveSector}
+            shortlistedIds={effectiveShortlist}
             onComplete={() => advance(4)}
           />
         )}
-        {currentPhase === 5 && sector && shortlistedIds.length > 0 && (
+        {currentPhase === 5 && (
           <AicIsbTaskFive
             candidateName={name}
-            sector={sector}
-            shortlistedIds={shortlistedIds}
+            sector={effectiveSector}
+            shortlistedIds={effectiveShortlist}
             onComplete={() => setMaxReached((m) => Math.max(m, 5))}
           />
+        )}
+          </>
         )}
         </main>
         <AicIsbInboxPanel

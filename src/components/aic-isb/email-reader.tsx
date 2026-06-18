@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   Archive,
   ArrowLeft,
+  ArrowRight,
   CornerUpLeft,
   Forward,
   Printer,
@@ -24,10 +25,14 @@ export function EmailReader({
   message,
   candidateName,
   onClose,
+  ctaLabel,
+  onCta,
 }: {
   message: InboxMessage;
   candidateName: string;
   onClose: () => void;
+  ctaLabel?: string;
+  onCta?: () => void;
 }) {
   const firstName = getFirstName(candidateName) || "there";
   const body = message.body.replaceAll("{name}", firstName);
@@ -121,8 +126,30 @@ export function EmailReader({
             {body}
           </div>
 
+          {/* Primary CTA — opens the phase workspace */}
+          {onCta && (
+            <div className="mt-7 flex items-center justify-between gap-3 rounded-xl border border-primary/25 bg-primary/5 px-4 py-3">
+              <div className="min-w-0">
+                <div className="text-[10.5px] uppercase tracking-[0.18em] text-primary font-semibold">
+                  Ready when you are
+                </div>
+                <div className="text-[12.5px] text-foreground/80 mt-0.5">
+                  Open the Phase {message.phase} workspace to get started.
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={onCta}
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-[12.5px] font-semibold text-primary-foreground hover:brightness-110 transition shadow-[0_6px_18px_-6px_oklch(0.55_0.18_265/_0.7)]"
+              >
+                {ctaLabel ?? `Start Phase ${message.phase}`}
+                <ArrowRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          )}
+
           {/* Quick action chips */}
-          <div className="mt-7 flex flex-wrap items-center gap-2">
+          <div className="mt-5 flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={() => setShowCompose(true)}

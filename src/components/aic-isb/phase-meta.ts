@@ -130,7 +130,7 @@ CEO, AIC × ISB`,
     accent: "teal",
     body: `Hi {name},
 
-First — well done. Completing the startup evaluation process is no small feat, and the quality of thinking you brought to it didn't go unnoticed.
+First, well done. Completing the startup evaluation process is no small feat, and the quality of thinking you brought to it didn't go unnoticed.
 
 But here's the truth: that was the warm-up.
 

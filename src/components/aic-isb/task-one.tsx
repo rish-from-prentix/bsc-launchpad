@@ -193,6 +193,16 @@ export function AicIsbTaskOne({
   const [postCopied, setPostCopied] = useState(false);
   const saveTimer = useRef<number | null>(null);
 
+  // Uploaded thesis deck (local-only metadata)
+  const [uploadedFile, setUploadedFile] = useState<{
+    name: string;
+    size: number;
+    type: string;
+  } | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<"idle" | "uploading" | "done">(
+    "idle",
+  );
+
   const sectorRef = useRef<HTMLDivElement | null>(null);
   const builderRef = useRef<HTMLDivElement | null>(null);
   const evalRef = useRef<HTMLDivElement | null>(null);
@@ -408,6 +418,9 @@ export function AicIsbTaskOne({
           className="mt-16 scroll-mt-8"
           style={{ animation: "fadeSlide 500ms ease-out" }}
         >
+          <div className="mb-8">
+            <ReferenceDeck />
+          </div>
           <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
             {"\n"}
           </div>

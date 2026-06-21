@@ -329,7 +329,7 @@ function Workspace({
             <TextArea
               label="Tell Us Why"
               value={answers.recReason}
-              rows={3}
+              minRows={4}
               placeholder="As an accelerator investment associate, explain why you would — or wouldn't — invest."
               onChange={(v) => onUpdate({ recReason: v })}
               helper="Back up your recommendation with evidence straight from the investment brief."

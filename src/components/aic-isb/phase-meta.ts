@@ -175,7 +175,7 @@ CEO, AIC × ISB`,
     senderEmail: "vikram@aicventures.in",
     senderRole: "Board Member, AIC Ventures",
     initials: "VS",
-    subject: "Independent Assessment Required — Investment Review",
+    subject: "Your Investment Take",
     preview:
       "We're reviewing a potential investment opportunity and need an independent assessment before the board discussion…",
     timestamp: "Today · 4:42 PM",

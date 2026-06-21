@@ -58,7 +58,7 @@ const ai: Mentor[] = [
     years: 14,
     sector: "ai",
     journey:
-      "Meera has spent her career inside large research and healthcare AI organisations — NVIDIA, academic institutions, established clinical systems. She understands how AI gets deployed inside complex organisations. She has not personally run a startup with limited runway and a small team.",
+      "Meera has spent her career inside large research and healthcare AI organisations, NVIDIA, academic institutions, established clinical systems. She understands how AI gets deployed inside complex organisations. She has not personally run a startup with limited runway and a small team.",
     addsValue: [
       "Navigating clinical compliance and validation pathways",
       "Designing AI products that fit institutional buyer expectations",

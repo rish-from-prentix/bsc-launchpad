@@ -65,20 +65,20 @@ export const AIC_INBOX: InboxMessage[] = [
     senderEmail: "animesh@aic-isb.in",
     senderRole: "CEO, AIC × ISB",
     initials: "AS",
-    subject: "Your first brief — pick a sector, build a thesis",
+    subject: "Your first brief - pick a sector, build a thesis",
     preview:
       "Really glad to have you on board. As a first step, select one of three sectors and build your Accelerator Investment Thesis…",
     timestamp: "Today · 9:30 AM",
     accent: "indigo",
     body: `Hi {name},
 
-Really glad to have you on board. You're joining at an exciting time — we're shaping the next AIC × ISB cohort, and I want fresh thinking involved from day one.
+Really glad to have you on board. You're joining at an exciting time, we're shaping the next AIC × ISB cohort, and I want fresh thinking involved from day one.
 
 As a first step, select one of the three sectors in the workspace and build an Accelerator Investment Thesis around it.
 
 Consider where you believe the most promising opportunities lie, what market trends or shifts are creating momentum today, and what qualities would make a startup stand out as a strong investment candidate.
 
-There is no single right answer — we're interested in seeing your reasoning, judgment, and ability to identify compelling opportunities.
+There is no single right answer, we're interested in seeing your reasoning, judgment, and ability to identify compelling opportunities.
 
 Best,
 Animesh Sharma

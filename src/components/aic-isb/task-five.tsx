@@ -510,6 +510,7 @@ function MultBand({ label, range, tone }: { label: string; range: string; tone: 
 }
 
 function ExamplesPanel({ sector, examples }: { sector: ThemeId; examples: Startup[] }) {
+  void getRcaCase; // keep import used elsewhere if needed
   if (examples.length === 0) return null;
   const label =
     sector === "ai"

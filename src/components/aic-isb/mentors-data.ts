@@ -116,7 +116,7 @@ const ai: Mentor[] = [
     years: 16,
     sector: "ai",
     journey:
-      "Priya scaled operations at Uber and Stripe — both companies that already had strong product-market fit and significant capital. She is world-class at building systems, processes, and workflows at scale. She has not experienced the ambiguity of building before the model is proven.",
+      "Priya scaled operations at Uber and Stripe, both companies that already had strong product-market fit and significant capital. She is world-class at building systems, processes, and workflows at scale. She has not experienced the ambiguity of building before the model is proven.",
     addsValue: [
       "Bringing order to fast-growing teams that are already winning",
       "Designing process for marketplaces and high-volume workflows",

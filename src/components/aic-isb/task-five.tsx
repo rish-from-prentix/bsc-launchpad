@@ -17,9 +17,12 @@ import {
   Copy,
   Check,
   Save,
+  FileText,
+  Eye,
+  X,
 } from "lucide-react";
 import { cn, getFirstName } from "@/lib/utils";
-import { THEMES, type ThemeId, type Startup } from "./startups-data";
+import { THEMES, THEME_LABELS, type ThemeId, type Startup } from "./startups-data";
 import { getRcaCase } from "./rca-data";
 import {
   getValuation,
@@ -28,6 +31,15 @@ import {
   type Valuation,
 } from "./valuation-data";
 import aicLogoUrl from "@/assets/aic-isb-logo-blue.png";
+import briefAi from "@/assets/brief-ai.pdf.asset.json";
+import briefClimate from "@/assets/brief-climate.pdf.asset.json";
+import briefHealth from "@/assets/brief-health.pdf.asset.json";
+
+const BRIEF_PDFS: Record<ThemeId, { url: string; filename: string }> = {
+  ai: { url: briefAi.url, filename: "AI-and-SaaS-Brief.pdf" },
+  climate: { url: briefClimate.url, filename: "ClimateTech-Brief.pdf" },
+  health: { url: briefHealth.url, filename: "HealthTech-Brief.pdf" },
+};
 
 type Phase = "email" | "workspace" | "loading" | "result" | "earned";
 

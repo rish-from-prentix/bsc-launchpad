@@ -236,7 +236,6 @@ function Workspace({
   saveState: "idle" | "saved";
   onSaveDraft: () => void;
 }) {
-  const rca = getRcaCase(startup);
   const examples = THEMES[sector].startups
     .filter((s) => s.id !== startup.id && !cohort.some((c) => c.id === s.id))
     .slice(0, 2);
@@ -254,11 +253,11 @@ function Workspace({
         {startup.tagline}
       </p>
 
+      <InvestmentBriefCard startup={startup} sector={sector} />
+
       <div className="mt-8 grid lg:grid-cols-3 gap-6">
         {/* LEFT — startup data panel */}
         <div className="lg:col-span-2 space-y-6">
-          <StartupDataPanel startup={startup} rcaSummary={rca.rootCauseLabel} />
-
           <LearningPanel />
 
           <ExamplesPanel sector={sector} examples={examples} />
@@ -272,48 +271,48 @@ function Workspace({
             </div>
             <div className="mt-4 space-y-4">
               <NumericField
-                label="Recommended ARR multiple (x)"
+                label="Recommended ARR Multiple (x)"
                 value={answers.multiple}
-                placeholder="e.g. 8 — what multiple fits this startup?"
+                placeholder="e.g., 8"
                 suffix="x"
                 onChange={(v) => onUpdate({ multiple: v })}
-                helper="Reference sector comparables below."
+                helper="Based on this startup's growth, retention, market opportunity, and risk profile, what ARR multiple would you recommend? Feel free to reference the sector comparables shared in your investment brief."
               />
               <NumericField
-                label="Estimated valuation ($M)"
+                label="Estimated Valuation ($M)"
                 value={answers.valuation}
-                placeholder="e.g. 25.2 — ARR × your multiple"
+                placeholder="e.g., 25.2"
                 suffix="$M"
                 onChange={(v) => onUpdate({ valuation: v })}
-                helper="Use the formula: ARR × Multiple."
+                helper="Now let's put a number on it — estimate the valuation using ARR × Multiple. Formula: Valuation = ARR × ARR Multiple."
               />
               <TextArea
-                label="Why does this valuation make sense?"
+                label="Why Does This Valuation Make Sense?"
                 value={answers.rationale}
                 rows={3}
-                placeholder="In 2–4 lines, justify the multiple — tie it to ARR, growth, retention, and risk."
+                placeholder="Write 2–4 short lines explaining your logic."
                 onChange={(v) => onUpdate({ rationale: v })}
-                helper="Recommended: 2–4 concise lines, reasoning over summary."
+                helper="Walk us through your thinking — how do ARR, growth rate, retention, market size, competitive position, and operational risk all come together to support this number?"
               />
               <TextArea
-                label="Strengths of the startup"
+                label="What Makes This Startup Attractive?"
                 value={answers.strengths}
-                rows={2}
-                placeholder="Briefly list the strongest positives (moat, retention, market, founder quality) in 2–4 lines."
+                rows={3}
+                placeholder={"You might think about:\n• Market opportunity\n• Retention\n• Competitive moat\n• Founder quality\n• Scalability"}
                 onChange={(v) => onUpdate({ strengths: v })}
-                helper="Focus on what makes the business defensible."
+                helper="From an investor's lens, what stands out as a strength here?"
               />
               <TextArea
-                label="Biggest investment risks"
+                label="What Are the Biggest Risks?"
                 value={answers.risks}
-                rows={2}
-                placeholder="Summarise the biggest risks affecting long-term scalability — burn, churn, regulation, competition."
+                rows={3}
+                placeholder={"You might think about:\n• Burn rate\n• Competition\n• Regulation\n• Operational bottlenecks\n• Adoption challenges"}
                 onChange={(v) => onUpdate({ risks: v })}
-                helper="Be specific — which risk would actually break the thesis?"
+                helper="Every investment has risk — what could get in the way of this startup's long-term success?"
               />
               <div>
                 <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
-                  Investment recommendation
+                  What's Your Investment Recommendation?
                 </label>
                 <select
                   value={answers.recommendation}
@@ -330,12 +329,12 @@ function Workspace({
                 </select>
               </div>
               <TextArea
-                label="Why this recommendation?"
+                label="Tell Us Why"
                 value={answers.recReason}
-                rows={2}
-                placeholder="Would you invest? Briefly justify your decision with strategic reasoning."
+                rows={3}
+                placeholder="As an accelerator investment associate, explain why you would — or wouldn't — invest."
                 onChange={(v) => onUpdate({ recReason: v })}
-                helper="Support your recommendation with evidence, not adjectives."
+                helper="Back up your recommendation with evidence straight from the investment brief."
               />
             </div>
           </div>

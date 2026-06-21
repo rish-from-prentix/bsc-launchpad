@@ -374,6 +374,105 @@ function Workspace({
   );
 }
 
+function InvestmentBriefCard({ startup, sector }: { startup: Startup; sector: ThemeId }) {
+  const brief = BRIEF_PDFS[sector];
+  const [previewOpen, setPreviewOpen] = useState(false);
+
+  return (
+    <div className="mt-6 glass rounded-2xl p-5 sm:p-6 border border-primary/20">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+            Investment Brief
+          </div>
+          <h2 className="mt-1 text-lg font-semibold text-foreground">
+            Review the startup briefing document
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Review the startup briefing document before preparing your investment recommendation.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-5 rounded-xl border border-border bg-background/40 p-4 sm:p-5">
+        <div className="flex items-start gap-4">
+          <div className="h-12 w-12 shrink-0 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center">
+            <FileText className="h-6 w-6 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold text-foreground">Startup Investment Brief</div>
+            <div className="mt-2 grid sm:grid-cols-3 gap-3 text-xs">
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Startup</div>
+                <div className="mt-0.5 text-sm text-foreground">{startup.name}</div>
+              </div>
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Theme</div>
+                <div className="mt-0.5 text-sm text-foreground">{THEME_LABELS[sector]}</div>
+              </div>
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">File</div>
+                <div className="mt-0.5 text-sm text-foreground truncate">{brief.filename}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          <a
+            href={brief.url}
+            download={brief.filename}
+            className="btn-primary-glow inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold"
+          >
+            <Download className="h-4 w-4" /> Download Brief
+          </a>
+          <button
+            type="button"
+            onClick={() => setPreviewOpen(true)}
+            className="inline-flex items-center gap-2 rounded-xl border border-border bg-card hover:bg-secondary px-4 py-2 text-sm font-medium text-foreground/90 transition"
+          >
+            <Eye className="h-4 w-4" /> Preview Brief
+          </button>
+        </div>
+      </div>
+
+      {previewOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setPreviewOpen(false)}
+        >
+          <div
+            className="bg-background border border-border rounded-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+              <div className="text-sm font-semibold text-foreground">{brief.filename}</div>
+              <div className="flex items-center gap-2">
+                <a
+                  href={brief.url}
+                  download={brief.filename}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card hover:bg-secondary px-3 py-1.5 text-xs font-medium text-foreground/90"
+                >
+                  <Download className="h-3.5 w-3.5" /> Download
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setPreviewOpen(false)}
+                  className="rounded-lg p-1.5 hover:bg-secondary text-foreground/80"
+                  aria-label="Close preview"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+            <iframe src={brief.url} title={brief.filename} className="flex-1 w-full bg-white" />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function StartupDataPanel({ startup, rcaSummary }: { startup: Startup; rcaSummary: string }) {
   // Retained for legacy reference — no longer rendered in Phase 5 (the briefing
   // PDF now carries this information). Kept to avoid breaking other call sites.

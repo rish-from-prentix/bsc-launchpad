@@ -65,7 +65,7 @@ export const AIC_INBOX: InboxMessage[] = [
     senderEmail: "animesh@aic-isb.in",
     senderRole: "CEO, AIC × ISB",
     initials: "AS",
-    subject: "Your first brief - pick a sector, build a thesis",
+    subject: "Welcome to Your First Brief",
     preview:
       "Really glad to have you on board. As a first step, select one of three sectors and build your Accelerator Investment Thesis…",
     timestamp: "Today · 9:30 AM",

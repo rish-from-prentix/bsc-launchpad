@@ -338,7 +338,7 @@ function Investigation({
           {/* Retry hint shown after a wrong/partial pick, before landing correct */}
           {!reviewMode && attempts.length > 0 && !landedCorrect && (
             <div className="mt-5 text-[12px] uppercase tracking-[0.18em] text-muted-foreground font-semibold">
-              Have another look — pick again
+              HAVE ANOTHER LOOK, PICK AGAIN
             </div>
           )}
 

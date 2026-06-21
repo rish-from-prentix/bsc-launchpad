@@ -287,7 +287,7 @@ function Workspace({
             <TextArea
               label="Why Does This Valuation Make Sense?"
               value={answers.rationale}
-              rows={3}
+              minRows={3}
               placeholder="Write 2–4 short lines explaining your logic."
               onChange={(v) => onUpdate({ rationale: v })}
               helper="Walk us through your thinking — how do ARR, growth rate, retention, market size, competitive position, and operational risk all come together to support this number?"
@@ -295,7 +295,7 @@ function Workspace({
             <TextArea
               label="What Makes This Startup Attractive?"
               value={answers.strengths}
-              rows={3}
+              minRows={6}
               placeholder={"You might think about:\n• Market opportunity\n• Retention\n• Competitive moat\n• Founder quality\n• Scalability"}
               onChange={(v) => onUpdate({ strengths: v })}
               helper="From an investor's lens, what stands out as a strength here?"
@@ -303,7 +303,7 @@ function Workspace({
             <TextArea
               label="What Are the Biggest Risks?"
               value={answers.risks}
-              rows={3}
+              minRows={6}
               placeholder={"You might think about:\n• Burn rate\n• Competition\n• Regulation\n• Operational bottlenecks\n• Adoption challenges"}
               onChange={(v) => onUpdate({ risks: v })}
               helper="Every investment has risk — what could get in the way of this startup's long-term success?"
@@ -329,7 +329,7 @@ function Workspace({
             <TextArea
               label="Tell Us Why"
               value={answers.recReason}
-              rows={3}
+              minRows={4}
               placeholder="As an accelerator investment associate, explain why you would — or wouldn't — invest."
               onChange={(v) => onUpdate({ recReason: v })}
               helper="Back up your recommendation with evidence straight from the investment brief."
@@ -756,29 +756,40 @@ function NumericField({
 function TextArea({
   label,
   value,
-  rows,
+  minRows = 5,
   placeholder,
   onChange,
   helper,
 }: {
   label: string;
   value: string;
-  rows: number;
+  minRows?: number;
   placeholder: string;
   onChange: (v: string) => void;
   helper?: string;
 }) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+  }, [value]);
+
   return (
     <div>
       <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
         {label}
       </label>
       <textarea
+        ref={ref}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        rows={rows}
+        rows={minRows}
         placeholder={placeholder}
-        className="mt-2 w-full rounded-xl border border-border bg-background/40 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/60 resize-y"
+        className="mt-2 w-full rounded-xl border border-border bg-background/40 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/60 resize-none overflow-hidden"
+        style={{ height: "auto" }}
       />
       {helper && (
         <p className="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug">{helper}</p>

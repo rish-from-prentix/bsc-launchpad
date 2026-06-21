@@ -375,6 +375,9 @@ function Workspace({
 }
 
 function StartupDataPanel({ startup, rcaSummary }: { startup: Startup; rcaSummary: string }) {
+  // Retained for legacy reference — no longer rendered in Phase 5 (the briefing
+  // PDF now carries this information). Kept to avoid breaking other call sites.
+  void rcaSummary;
   return (
     <div className="glass rounded-2xl p-5 sm:p-6">
       <div className="flex items-start justify-between gap-4">

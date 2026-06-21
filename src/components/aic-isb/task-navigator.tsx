@@ -17,7 +17,7 @@ export function AicIsbTaskNavigator({
   const pct = Math.round((completed / AIC_PHASES.length) * 100);
 
   return (
-    <aside className="hidden md:flex w-[280px] shrink-0 flex-col border-r border-border bg-card/40 sticky top-[105px] self-start max-h-[calc(100vh-105px)]">
+    <aside className="hidden md:flex w-[220px] shrink-0 flex-col border-r border-border bg-card/40 sticky top-[105px] self-start max-h-[calc(100vh-105px)]">
       <div className="px-5 pt-5 pb-4 border-b border-border">
         <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
           Internship Tracker

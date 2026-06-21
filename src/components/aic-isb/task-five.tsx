@@ -569,7 +569,6 @@ function LearningPanel() {
       <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold flex items-center gap-2">
         <BookOpen className="h-3.5 w-3.5" /> How early-stage valuation works
       </div>
-      {/* placeholder for InvestmentBriefCard insertion below */}
       <p className="mt-3 text-sm text-foreground/85 leading-relaxed">
         Early-stage valuation is not based only on revenue. Investors weigh growth, retention,
         market size, founder quality, differentiation, scalability, operational risk, and

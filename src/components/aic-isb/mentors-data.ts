@@ -46,7 +46,7 @@ const ai: Mentor[] = [
     lessUsefulTags: ["First customer discovery", "Pre-revenue ICP search", "Core product pivots"],
     founderQuote: "Rajiv helped us reduce enterprise sales cycles by nearly 40%.",
     quoteContext:
-      "This founder had already closed early enterprise deals and needed help making the motion repeatable — different from cold-start customer discovery.",
+      "This founder had already closed early enterprise deals and needed help making the motion repeatable , different from cold-start customer discovery.",
     expertise: ["Enterprise GTM", "SaaS scaling", "International expansion", "Revenue operations"],
     bestFor: ["neuralforge", "quantedge", "synapseflow"],
   },

@@ -287,7 +287,7 @@ function Workspace({
             <TextArea
               label="Why Does This Valuation Make Sense?"
               value={answers.rationale}
-              rows={3}
+              minRows={3}
               placeholder="Write 2–4 short lines explaining your logic."
               onChange={(v) => onUpdate({ rationale: v })}
               helper="Walk us through your thinking — how do ARR, growth rate, retention, market size, competitive position, and operational risk all come together to support this number?"
@@ -295,7 +295,7 @@ function Workspace({
             <TextArea
               label="What Makes This Startup Attractive?"
               value={answers.strengths}
-              rows={3}
+              minRows={6}
               placeholder={"You might think about:\n• Market opportunity\n• Retention\n• Competitive moat\n• Founder quality\n• Scalability"}
               onChange={(v) => onUpdate({ strengths: v })}
               helper="From an investor's lens, what stands out as a strength here?"
@@ -303,7 +303,7 @@ function Workspace({
             <TextArea
               label="What Are the Biggest Risks?"
               value={answers.risks}
-              rows={3}
+              minRows={6}
               placeholder={"You might think about:\n• Burn rate\n• Competition\n• Regulation\n• Operational bottlenecks\n• Adoption challenges"}
               onChange={(v) => onUpdate({ risks: v })}
               helper="Every investment has risk — what could get in the way of this startup's long-term success?"

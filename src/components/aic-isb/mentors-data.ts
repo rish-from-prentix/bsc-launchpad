@@ -46,7 +46,7 @@ const ai: Mentor[] = [
     lessUsefulTags: ["First customer discovery", "Pre-revenue ICP search", "Core product pivots"],
     founderQuote: "Rajiv helped us reduce enterprise sales cycles by nearly 40%.",
     quoteContext:
-      "This founder had already closed early enterprise deals and needed help making the motion repeatable — different from cold-start customer discovery.",
+      "This founder had already closed early enterprise deals and needed help making the motion repeatable , different from cold-start customer discovery.",
     expertise: ["Enterprise GTM", "SaaS scaling", "International expansion", "Revenue operations"],
     bestFor: ["neuralforge", "quantedge", "synapseflow"],
   },
@@ -58,7 +58,7 @@ const ai: Mentor[] = [
     years: 14,
     sector: "ai",
     journey:
-      "Meera has spent her career inside large research and healthcare AI organisations — NVIDIA, academic institutions, established clinical systems. She understands how AI gets deployed inside complex organisations. She has not personally run a startup with limited runway and a small team.",
+      "Meera has spent her career inside large research and healthcare AI organisations, NVIDIA, academic institutions, established clinical systems. She understands how AI gets deployed inside complex organisations. She has not personally run a startup with limited runway and a small team.",
     addsValue: [
       "Navigating clinical compliance and validation pathways",
       "Designing AI products that fit institutional buyer expectations",
@@ -116,7 +116,7 @@ const ai: Mentor[] = [
     years: 16,
     sector: "ai",
     journey:
-      "Priya scaled operations at Uber and Stripe — both companies that already had strong product-market fit and significant capital. She is world-class at building systems, processes, and workflows at scale. She has not experienced the ambiguity of building before the model is proven.",
+      "Priya scaled operations at Uber and Stripe,both companies that already had strong product-market fit and significant capital. She is world-class at building systems, processes, and workflows at scale. She has not experienced the ambiguity of building before the model is proven.",
     addsValue: [
       "Bringing order to fast-growing teams that are already winning",
       "Designing process for marketplaces and high-volume workflows",
@@ -145,7 +145,7 @@ const ai: Mentor[] = [
     years: 20,
     sector: "ai",
     journey:
-      "Arvind has spent two decades evaluating and investing in DeepTech startups as a partner and consultant. He understands what makes a DeepTech company fundable and defensible. He has advised from the outside — he has not personally been a founder building with limited resources.",
+      "Arvind has spent two decades evaluating and investing in DeepTech startups as a partner and consultant. He understands what makes a DeepTech company fundable and defensible. He has advised from the outside, he has not personally been a founder building with limited resources.",
     addsValue: [
       "Sharpening defensibility, moats, and long-term strategic positioning",
       "Preparing DeepTech companies for institutional fundraising",

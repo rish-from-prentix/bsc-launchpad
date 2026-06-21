@@ -54,15 +54,15 @@ export const INVESTIGATIONS: Record<ThemeId, InvestigationCase> = {
 
 I need a fresh pair of eyes and I think you're the right person.
 
-On the surface, things look fine — leads, demos, signups. But our paying customers are quietly walking out. Renewal rates have dropped two months straight, including teams who were excited when they signed up.
+On the surface, things look fine, leads, demos, signups. But our paying customers are quietly walking out. Renewal rates have dropped two months straight, including teams who were excited when they signed up.
 
-Internally, we've gone in circles — sales problem, product problem, market problem. No clear answer.
+Internally, we've gone in circles, sales problem, product problem, market problem. No clear answer.
 
 I've been too close to this for too long. Your cross-cohort experience gives you a perspective I don't have right now. 
 
 Can we find time?
 
-— Aarav`,
+ Aarav`,
     },
     steps: [
       {

@@ -145,7 +145,7 @@ const ai: Mentor[] = [
     years: 20,
     sector: "ai",
     journey:
-      "Arvind has spent two decades evaluating and investing in DeepTech startups as a partner and consultant. He understands what makes a DeepTech company fundable and defensible. He has advised from the outside — he has not personally been a founder building with limited resources.",
+      "Arvind has spent two decades evaluating and investing in DeepTech startups as a partner and consultant. He understands what makes a DeepTech company fundable and defensible. He has advised from the outside, he has not personally been a founder building with limited resources.",
     addsValue: [
       "Sharpening defensibility, moats, and long-term strategic positioning",
       "Preparing DeepTech companies for institutional fundraising",

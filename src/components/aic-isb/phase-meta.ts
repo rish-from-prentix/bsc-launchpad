@@ -91,7 +91,7 @@ CEO, AIC × ISB`,
     senderEmail: "animesh@aic-isb.in",
     senderRole: "CEO, AIC × ISB",
     initials: "AS",
-    subject: "Review Shortlisted Startups — ready when you are",
+    subject: "Review Shortlisted Startups, ready when you are",
     preview:
       "The board reviewed your investment thesis. They agree with your direction. Take a moment — that matters…",
     timestamp: "Today · 11:04 AM",
@@ -100,7 +100,7 @@ CEO, AIC × ISB`,
 
 The board reviewed your investment thesis. They agree with your direction. Your recommendations are approved.
 
-Take a moment — that matters.
+Take a moment, that matters.
 
 WHAT HAPPENS NEXT
 

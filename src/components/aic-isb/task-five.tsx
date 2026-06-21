@@ -756,29 +756,40 @@ function NumericField({
 function TextArea({
   label,
   value,
-  rows,
+  minRows = 5,
   placeholder,
   onChange,
   helper,
 }: {
   label: string;
   value: string;
-  rows: number;
+  minRows?: number;
   placeholder: string;
   onChange: (v: string) => void;
   helper?: string;
 }) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+  }, [value]);
+
   return (
     <div>
       <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
         {label}
       </label>
       <textarea
+        ref={ref}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        rows={rows}
+        rows={minRows}
         placeholder={placeholder}
-        className="mt-2 w-full rounded-xl border border-border bg-background/40 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/60 resize-y"
+        className="mt-2 w-full rounded-xl border border-border bg-background/40 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/60 resize-none overflow-hidden"
+        style={{ height: "auto" }}
       />
       {helper && (
         <p className="mt-1.5 text-[11px] text-muted-foreground/80 leading-snug">{helper}</p>

@@ -268,30 +268,6 @@ function Workspace({
             <DollarSign className="h-3.5 w-3.5" /> Your Investment Recommendation
           </div>
           <div className="mt-6 mx-auto max-w-2xl space-y-5">
-            <NumericField
-              label="Recommended ARR Multiple (x)"
-              value={answers.multiple}
-              placeholder="e.g., 8"
-              suffix="x"
-              onChange={(v) => onUpdate({ multiple: v })}
-              helper="Based on this startup's growth, retention, market opportunity, and risk profile, what ARR multiple would you recommend? Feel free to reference the sector comparables shared in your investment brief."
-            />
-            <NumericField
-              label="Estimated Valuation ($M)"
-              value={answers.valuation}
-              placeholder="e.g., 25.2"
-              suffix="$M"
-              onChange={(v) => onUpdate({ valuation: v })}
-              helper="Now let's put a number on it — estimate the valuation using ARR × Multiple. Formula: Valuation = ARR × ARR Multiple."
-            />
-            <TextArea
-              label="Why Does This Valuation Make Sense?"
-              value={answers.rationale}
-              minRows={3}
-              placeholder="Write 2–4 short lines explaining your logic."
-              onChange={(v) => onUpdate({ rationale: v })}
-              helper="Walk us through your thinking — how do ARR, growth rate, retention, market size, competitive position, and operational risk all come together to support this number?"
-            />
             <TextArea
               label="What Makes This Startup Attractive?"
               value={answers.strengths}
@@ -306,7 +282,31 @@ function Workspace({
               minRows={6}
               placeholder={"You might think about:\n• Burn rate\n• Competition\n• Regulation\n• Operational bottlenecks\n• Adoption challenges"}
               onChange={(v) => onUpdate({ risks: v })}
-              helper="Every investment has risk — what could get in the way of this startup's long-term success?"
+              helper="Every investment has risk. What could get in the way of this startup's long-term success?"
+            />
+            <NumericField
+              label="Recommended ARR Multiple (x)"
+              value={answers.multiple}
+              placeholder="e.g., 8"
+              suffix="x"
+              onChange={(v) => onUpdate({ multiple: v })}
+              helper="Based on this startup's growth, retention, market opportunity, and risk profile, what ARR multiple would you recommend? Feel free to reference the sector comparables shared in your investment brief."
+            />
+            <NumericField
+              label="Estimated Valuation ($M)"
+              value={answers.valuation}
+              placeholder="e.g., 25.2"
+              suffix="$M"
+              onChange={(v) => onUpdate({ valuation: v })}
+              helper="Now let's put a number on it. Estimate the valuation using ARR x Multiple. Formula: Valuation = ARR x ARR Multiple."
+            />
+            <TextArea
+              label="Why Does This Valuation Make Sense?"
+              value={answers.rationale}
+              minRows={3}
+              placeholder="Write 2-4 short lines explaining your logic."
+              onChange={(v) => onUpdate({ rationale: v })}
+              helper="Walk us through your thinking. How do ARR, growth rate, retention, market size, competitive position, and operational risk all come together to support this number?"
             />
             <div>
               <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
@@ -319,7 +319,7 @@ function Workspace({
                 }
                 className="mt-2 w-full rounded-xl border border-border bg-background/40 px-3.5 py-2.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/60"
               >
-                <option value="">Select recommendation…</option>
+                <option value="">Select recommendation...</option>
                 <option value="Strong Invest">Strong Invest</option>
                 <option value="Moderate Invest">Moderate Invest</option>
                 <option value="Observe Further">Observe Further</option>
@@ -330,7 +330,7 @@ function Workspace({
               label="Tell Us Why"
               value={answers.recReason}
               minRows={4}
-              placeholder="As an accelerator investment associate, explain why you would — or wouldn't — invest."
+              placeholder="As an accelerator investment associate, explain why you would, or wouldn't, invest."
               onChange={(v) => onUpdate({ recReason: v })}
               helper="Back up your recommendation with evidence straight from the investment brief."
             />

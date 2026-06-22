@@ -129,7 +129,7 @@ export function AicIsbTaskTwo({
   function updateEval(id: string, patch: Partial<Evaluation>) {
     setEvals((prev) => ({ ...prev, [id]: { ...prev[id], ...patch } }));
     if (patch.rating !== undefined) {
-      // Ratings changed — invalidate any previous tie-break decision.
+      // Ratings changed, invalidate any previous tie-break decision.
       setManualPicks([]);
     }
   }
@@ -233,8 +233,8 @@ function EmailPhase({
       senderName="Animesh Sharma"
       senderRole="CEO, AIC × ISB"
       senderInitials="AS"
-      subject="Review Shortlisted Startups — ready when you are"
-      preview={`Hi ${name}, good job on the investment thesis — the board has approved the launch of applications…`}
+      subject="Review Shortlisted Startups, ready when you are"
+      preview={`Hi ${name}, good job on the investment thesis, the board has approved the launch of applications…`}
       timestamp="Today · 11:04 AM"
       ctaLabel="Review Shortlisted Startups"
       onCta={onStart}
@@ -245,11 +245,11 @@ The board reviewed your investment thesis.
 
 They agree with your direction. Your recommendations are approved.
 
-Take a moment — that matters.
+Take a moment, that matters.
 
  WHAT HAPPENS NEXT
 
-We're officially launching applications for the upcoming accelerator cohort. We're expecting a high volume of submissions — hundreds of founders who believe they have what it takes to be part of AIC x ISB Cohort.
+We're officially launching applications for the upcoming accelerator cohort. We're expecting a high volume of submissions, hundreds of founders who believe they have what it takes to be part of AIC x ISB Cohort.
 
 Our screening team will run the first pass. They'll comb through the pile, filter out the noise, and prepare a shortlist of the most promising startups.
 
@@ -859,7 +859,7 @@ function StarRating({ value, onChange }: { value: number; onChange: (v: number) 
             <span className="text-muted-foreground">/10</span>
           </span>
         ) : (
-          <span className="text-muted-foreground">—/10</span>
+          <span className="text-muted-foreground">,/10</span>
         )}
       </div>
     </div>
@@ -928,7 +928,7 @@ function TieBreakerModal({
           </h2>
           <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">
             {tied.length} startups are tied at <span className="text-foreground font-mono">{tiedScore}/10</span>.
-            The selection committee requires a final recommendation — pick{" "}
+            The selection committee requires a final recommendation, pick{" "}
             <span className="text-foreground font-semibold">
               {slotsNeeded} startup{slotsNeeded > 1 ? "s" : ""}
             </span>{" "}

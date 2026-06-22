@@ -82,7 +82,7 @@ export function AicIsbTaskFive({
   const storageKey = `aic-isb:task5:${sector}:${shortlistedIds.join(",")}`;
 
   const [phase, setPhase] = useState<Phase>("workspace");
-  // One startup is assigned directly — no selection step.
+  // One startup is assigned directly, no selection step.
   const selectedId = cohortStartups[0]?.id ?? null;
   const [answers, setAnswers] = useState<Answers>(() => {
     if (typeof window === "undefined") return emptyAnswers;
@@ -261,37 +261,13 @@ function Workspace({
       {/* B. VALUATION COMPARABLES */}
       <ExamplesPanel sector={sector} examples={examples} />
 
-      {/* ANSWER SECTION — YOUR INVESTMENT RECOMMENDATION */}
+      {/* ANSWER SECTION, YOUR INVESTMENT RECOMMENDATION */}
       <div className="mt-10">
         <div className="glass rounded-2xl p-5 sm:p-6">
           <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold flex items-center gap-2">
             <DollarSign className="h-3.5 w-3.5" /> Your Investment Recommendation
           </div>
           <div className="mt-6 mx-auto max-w-2xl space-y-5">
-            <NumericField
-              label="Recommended ARR Multiple (x)"
-              value={answers.multiple}
-              placeholder="e.g., 8"
-              suffix="x"
-              onChange={(v) => onUpdate({ multiple: v })}
-              helper="Based on this startup's growth, retention, market opportunity, and risk profile, what ARR multiple would you recommend? Feel free to reference the sector comparables shared in your investment brief."
-            />
-            <NumericField
-              label="Estimated Valuation ($M)"
-              value={answers.valuation}
-              placeholder="e.g., 25.2"
-              suffix="$M"
-              onChange={(v) => onUpdate({ valuation: v })}
-              helper="Now let's put a number on it — estimate the valuation using ARR × Multiple. Formula: Valuation = ARR × ARR Multiple."
-            />
-            <TextArea
-              label="Why Does This Valuation Make Sense?"
-              value={answers.rationale}
-              minRows={3}
-              placeholder="Write 2–4 short lines explaining your logic."
-              onChange={(v) => onUpdate({ rationale: v })}
-              helper="Walk us through your thinking — how do ARR, growth rate, retention, market size, competitive position, and operational risk all come together to support this number?"
-            />
             <TextArea
               label="What Makes This Startup Attractive?"
               value={answers.strengths}
@@ -306,7 +282,31 @@ function Workspace({
               minRows={6}
               placeholder={"You might think about:\n• Burn rate\n• Competition\n• Regulation\n• Operational bottlenecks\n• Adoption challenges"}
               onChange={(v) => onUpdate({ risks: v })}
-              helper="Every investment has risk — what could get in the way of this startup's long-term success?"
+              helper="Every investment has risk. What could get in the way of this startup's long-term success?"
+            />
+            <NumericField
+              label="Recommended ARR Multiple (x)"
+              value={answers.multiple}
+              placeholder="e.g., 8"
+              suffix="x"
+              onChange={(v) => onUpdate({ multiple: v })}
+              helper="Based on this startup's growth, retention, market opportunity, and risk profile, what ARR multiple would you recommend? Feel free to reference the sector comparables shared in your investment brief."
+            />
+            <NumericField
+              label="Estimated Valuation ($M)"
+              value={answers.valuation}
+              placeholder="e.g., 25.2"
+              suffix="$M"
+              onChange={(v) => onUpdate({ valuation: v })}
+              helper="Now let's put a number on it. Estimate the valuation using ARR x Multiple. Formula: Valuation = ARR x ARR Multiple."
+            />
+            <TextArea
+              label="Why Does This Valuation Make Sense?"
+              value={answers.rationale}
+              minRows={3}
+              placeholder="Write 2-4 short lines explaining your logic."
+              onChange={(v) => onUpdate({ rationale: v })}
+              helper="Walk us through your thinking. How do ARR, growth rate, retention, market size, competitive position, and operational risk all come together to support this number?"
             />
             <div>
               <label className="text-[11px] uppercase tracking-[0.18em] text-primary font-semibold">
@@ -319,7 +319,7 @@ function Workspace({
                 }
                 className="mt-2 w-full rounded-xl border border-border bg-background/40 px-3.5 py-2.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/60"
               >
-                <option value="">Select recommendation…</option>
+                <option value="">Select recommendation...</option>
                 <option value="Strong Invest">Strong Invest</option>
                 <option value="Moderate Invest">Moderate Invest</option>
                 <option value="Observe Further">Observe Further</option>
@@ -330,7 +330,7 @@ function Workspace({
               label="Tell Us Why"
               value={answers.recReason}
               minRows={4}
-              placeholder="As an accelerator investment associate, explain why you would — or wouldn't — invest."
+              placeholder="As an accelerator investment associate, explain why you would, or wouldn't, invest."
               onChange={(v) => onUpdate({ recReason: v })}
               helper="Back up your recommendation with evidence straight from the investment brief."
             />
@@ -471,7 +471,7 @@ function InvestmentBriefCard({ startup, sector }: { startup: Startup; sector: Th
 }
 
 function StartupDataPanel({ startup, rcaSummary }: { startup: Startup; rcaSummary: string }) {
-  // Retained for legacy reference — no longer rendered in Phase 5 (the briefing
+  // Retained for legacy reference, no longer rendered in Phase 5 (the briefing
   // PDF now carries this information). Kept to avoid breaking other call sites.
   void rcaSummary;
   return (
@@ -492,12 +492,12 @@ function StartupDataPanel({ startup, rcaSummary }: { startup: Startup; rcaSummar
       </div>
 
       <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <Metric label="MRR" value={startup.mrr ?? "—"} />
-        <Metric label="Growth" value={startup.growth ?? "—"} />
-        <Metric label="Retention" value={startup.retention ?? "—"} />
-        <Metric label="Burn" value={startup.burn ?? "—"} />
-        <Metric label="Runway" value={startup.runway ?? "—"} />
-        <Metric label="Customers" value={startup.customers ?? "—"} />
+        <Metric label="MRR" value={startup.mrr ?? "-"} />
+        <Metric label="Growth" value={startup.growth ?? "-"} />
+        <Metric label="Retention" value={startup.retention ?? "-"} />
+        <Metric label="Burn" value={startup.burn ?? "-"} />
+        <Metric label="Runway" value={startup.runway ?? "-"} />
+        <Metric label="Customers" value={startup.customers ?? "-"} />
       </div>
 
       <div className="mt-5 grid md:grid-cols-2 gap-4">
@@ -903,7 +903,7 @@ function ResultPhase({
             <div className="mt-1 text-foreground">
               <div className="text-2xl font-semibold">${studentVal}M</div>
               <div className="text-xs text-muted-foreground">
-                {studentMult}x ARR · {answers.recommendation || "—"}
+                {studentMult}x ARR · {answers.recommendation || "-"}
               </div>
             </div>
           </div>
@@ -1395,7 +1395,7 @@ function EarnedPhase({
           Skills you can add to your resume and LinkedIn
         </div>
         <p className="mt-4 text-center text-[14px] text-muted-foreground leading-relaxed">
-          Years of boardrooms, bad calls, and hard lessons — you just lived all of it in a few
+          Years of boardrooms, bad calls, and hard lessons, you just lived all of it in a few
           hours.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2.5">

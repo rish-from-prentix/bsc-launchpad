@@ -146,7 +146,7 @@ export function EmailReader({
             {body}
           </div>
 
-          {/* Primary CTA — opens the phase workspace */}
+          {/* Primary CTA, opens the phase workspace */}
           {onCta && (
             <div className="mt-7 flex items-center justify-between gap-3 rounded-xl border border-primary/25 bg-primary/5 px-4 py-3">
               <div className="min-w-0">

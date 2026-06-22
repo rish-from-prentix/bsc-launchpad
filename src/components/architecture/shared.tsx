@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Architecture internship surface tokens — tuned to mirror the HTML reference
+// Architecture internship surface tokens, tuned to mirror the HTML reference
 // (Meridian Studio intern portal) but with AIC cyan as the accent.
 const SURFACE = "bg-[#161616]";
 const SURFACE_2 = "bg-[#1e1e1e]";

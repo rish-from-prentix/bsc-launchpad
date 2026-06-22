@@ -333,7 +333,7 @@ video::-webkit-media-controls-panel {
 }
 
 /*
- * Architecture internship surface — locally overrides shadcn-style tokens so
+ * Architecture internship surface, locally overrides shadcn-style tokens so
  * components using bg-card/border-border/text-foreground render against the
  * Meridian Studio HTML palette (deep #0f0f0f frame, surface #161616, mono
  * accents) while keeping AIC cyan as the primary.

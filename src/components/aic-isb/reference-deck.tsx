@@ -16,11 +16,11 @@ const SLIDES = [slide1, slide2, slide3, slide4, slide5, slide6, slide7, slide8].
 
 const TIPS = [
   "Before you write anything, find three real things: a recent regulation or shift in the sector, a startup or deal from the last year, and one number that surprised you.",
-  "Open with why now is different — point to something specific that changed recently, not \u201Cthe market is growing.\u201D",
-  "Get your bet down to one sentence. If it takes a paragraph, you haven't decided yet — name the customer, the problem, and why it couldn't have been built three years ago.",
-  "Show you've looked at who else is already in this space — real companies, real investors, real recent deals. Then point to the gap nobody's claimed yet.",
+  "Open with why now is different, point to something specific that changed recently, not \u201Cthe market is growing.\u201D",
+  "Get your bet down to one sentence. If it takes a paragraph, you haven't decided yet, name the customer, the problem, and why it couldn't have been built three years ago.",
+  "Show you've looked at who else is already in this space, real companies, real investors, real recent deals. Then point to the gap nobody's claimed yet.",
   "Pick the risk that genuinely worries you, not the easy one. If your counter feels too convenient, you picked the wrong risk.",
-  "Close with one line you could say out loud with no slides behind you — it should sound like a decision, not a summary.",
+  "Close with one line you could say out loud with no slides behind you, it should sound like a decision, not a summary.",
   "It's fine to admit what you don't know. That usually lands better than sounding certain about everything.",
 ];
 
@@ -56,7 +56,7 @@ export function ReferenceDeck() {
         but should demonstrate similar strategic thinking.
       </p>
 
-      {/* Thumbnails — horizontal scroll */}
+      {/* Thumbnails, horizontal scroll */}
       <div className="mt-5 -mx-1 overflow-x-auto pb-2">
         <div className="flex gap-3 px-1">
           {SLIDES.map((src, i) => (

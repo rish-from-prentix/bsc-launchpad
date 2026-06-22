@@ -17,7 +17,7 @@ import { INVESTIGATIONS } from "@/components/aic-isb/rca-investigation-data";
 export const Route = createFileRoute("/simulations/aic-isb")({
   head: () => ({
     meta: [
-      { title: "Program Manager Internship — AIC × ISB" },
+      { title: "Program Manager Internship, AIC × ISB" },
       {
         name: "description",
         content:
@@ -112,7 +112,7 @@ function AicIsbPage() {
     const index = i + 1;
     let state: ProgressTask["state"] = "done";
     if (index === currentPhase) state = "active";
-    else if (i >= maxReached) state = "locked"; // visual only — still clickable below
+    else if (i >= maxReached) state = "locked"; // visual only, still clickable below
     return { index, title, state };
   });
 

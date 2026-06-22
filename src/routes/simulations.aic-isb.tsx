@@ -7,7 +7,7 @@ import { AicIsbTaskTwo } from "@/components/aic-isb/task-two";
 import { AicIsbTaskThree } from "@/components/aic-isb/task-three";
 import { AicIsbTaskFour } from "@/components/aic-isb/task-four";
 import { AicIsbTaskFive } from "@/components/aic-isb/task-five";
-import { AicIsbTaskNavigator } from "@/components/aic-isb/task-navigator";
+
 import { AicIsbInboxPanel } from "@/components/aic-isb/inbox-panel";
 import { EmailReader } from "@/components/aic-isb/email-reader";
 import { AIC_INBOX } from "@/components/aic-isb/phase-meta";
@@ -140,11 +140,6 @@ function AicIsbPage() {
         canGoPrevious={canGoPrevious}
       />
       <div className="flex">
-        <AicIsbTaskNavigator
-          currentPhase={currentPhase}
-          maxReached={maxReached}
-          onJump={(p) => setCurrentPhase(p)}
-        />
         <main
           key={currentPhase}
           className="flex-1 min-w-0 animate-[fadeSlide_0.35s_ease-out]"

@@ -7,14 +7,12 @@ const linkClass =
 export function LandingNav() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
-      <div className="mx-auto max-w-6xl px-5 sm:px-8 h-16 flex items-center justify-between">
-        <Link to="/" className="inline-flex items-center gap-2.5 rounded-full border border-primary/40 bg-primary/5 px-3.5 py-1.5">
-          <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-            {"\n"}
-          </span>
+      <div className="mx-auto max-w-6xl px-5 sm:px-8 h-16 grid grid-cols-[1fr_auto_1fr] items-center">
+        <div />
+        <Link to="/" className="inline-flex items-center gap-2.5 rounded-full border border-primary/40 bg-primary/5 px-3.5 py-1.5 justify-self-center">
           <BrandMark brand="prentix" height={18} />
         </Link>
-        <nav className="hidden md:flex items-center gap-7">
+        <nav className="hidden md:flex items-center gap-7 justify-self-end">
           <Link to="/" className={linkClass} activeOptions={{ exact: true }} activeProps={{ className: "text-foreground" }}>
             Home
           </Link>

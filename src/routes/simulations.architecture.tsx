@@ -139,7 +139,7 @@ function NavFooter({
     : "Final task";
   return (
     <div className="mx-auto max-w-[860px] px-6 sm:px-8 pb-10 pt-2">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#2a2a2a] pt-5 font-['IBM_Plex_Mono',ui-monospace,monospace]">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#2a2a2a] pt-5 ">
         <button
           type="button"
           onClick={onPrev}

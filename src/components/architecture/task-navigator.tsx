@@ -2,7 +2,7 @@ import { CheckCircle2, Circle, Dot } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ARCH_TASKS, type ArchTaskMeta } from "./arch-data";
 
-const MONO = "font-['IBM_Plex_Mono',ui-monospace,monospace]";
+const MONO = "";
 
 export function ArchTaskNavigator({
   currentPhase,

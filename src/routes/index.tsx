@@ -4,6 +4,7 @@ import { LandingHero } from "@/components/landing/landing-hero";
 import { LandingNav } from "@/components/landing/landing-nav";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { SimulationsSection } from "@/components/landing/simulations-section";
+import { TrustedCompanies } from "@/components/landing/trusted-companies";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,6 +31,7 @@ function HomePage() {
     <main className="min-h-screen bg-background text-foreground">
       <LandingNav />
       <LandingHero />
+      <TrustedCompanies />
       <SimulationsSection />
       <HowItWorks />
       <LandingFooter />

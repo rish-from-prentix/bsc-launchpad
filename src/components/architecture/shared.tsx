@@ -93,6 +93,7 @@ export function VoiceNote({
   timestamp,
   children,
   tone = "default",
+  audioUrl,
 }: {
   initials: string;
   name: string;
@@ -100,6 +101,7 @@ export function VoiceNote({
   timestamp: string;
   children: ReactNode;
   tone?: "default" | "urgent";
+  audioUrl?: string;
 }) {
   const key = initials.toLowerCase();
   const avatarCls =
@@ -138,15 +140,25 @@ export function VoiceNote({
           <span className={cn("text-[10px]", MONO, MUTED)}>{role}</span>
           <span className={cn("text-[10px] ml-auto", MONO, DIM)}>{timestamp}</span>
         </div>
-        <div className={cn("flex items-center gap-[2px] h-5 mb-[6px]")}>
-          {[6, 14, 10, 18, 8, 20, 12, 16, 9, 14, 19, 11].map((h, i) => (
-            <span
-              key={i}
-              className="w-[3px] rounded-[2px] bg-primary/50"
-              style={{ height: `${h}px` }}
-            />
-          ))}
-        </div>
+        {audioUrl ? (
+          <audio
+            controls
+            src={audioUrl}
+            className="w-full h-8 mb-[8px] [&::-webkit-media-controls-panel]:bg-[#1d2a5a]"
+          >
+            Your browser does not support audio playback.
+          </audio>
+        ) : (
+          <div className={cn("flex items-center gap-[2px] h-5 mb-[6px]")}>
+            {[6, 14, 10, 18, 8, 20, 12, 16, 9, 14, 19, 11].map((h, i) => (
+              <span
+                key={i}
+                className="w-[3px] rounded-[2px] bg-primary/50"
+                style={{ height: `${h}px` }}
+              />
+            ))}
+          </div>
+        )}
         <div className={cn("text-[12px] leading-[1.6] italic", MUTED, "[&_strong]:text-[#e6ecff] [&_strong]:not-italic [&_b]:text-[#e6ecff] [&_b]:not-italic")}>{children}</div>
       </div>
     </div>

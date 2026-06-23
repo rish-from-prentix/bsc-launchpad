@@ -73,7 +73,7 @@ export function ArchTaskOne({ onComplete }: { onComplete: () => void }) {
         timestamp="Mon 08:12 · voice note"
         audioUrl={priyaVoiceNote.url}
       >
-        Hello. So, just to set expectations on budget , it's firm at 8.1 crore, that's excluding fees, furniture, and IT. I do want to flag, the Corporation won't be revisiting this figure, so I'd ask that we work within it from the start. Planning submission is due in 12 weeks. A couple of things I need locked in the café has to be NGO-operated, and the entrance should face DP Road. One area where there's a bit of room , co-working seat count can flex slightly if that helps balance things on your end. If you could just confirm you've understood the constraints before we move ahead, that would be great. Thank you.
+        Good Morning. So, just to set expectations on budget , it's firm at 8.1 crore, that's excluding fees, furniture, and IT. I do want to flag, the Corporation won't be revisiting this figure, so I'd ask that we work within it from the start. Planning submission is due in 12 weeks. A couple of things I need locked in the café has to be NGO-operated, and the entrance should face DP Road. One area where there's a bit of room , co-working seat count can flex slightly if that helps balance things on your end. If you could just confirm you've understood the constraints before we move ahead, that would be great. Thank you.
       </VoiceNote>
 
       <DataCard label="Client Brief Extract, Priya Nair, PMC">

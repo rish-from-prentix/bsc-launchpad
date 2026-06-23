@@ -4,13 +4,13 @@ import { cn } from "@/lib/utils";
 
 // Architecture internship surface tokens, tuned to mirror the HTML reference
 // (Meridian Studio intern portal) but with AIC cyan as the accent.
-const SURFACE = "bg-[#161616]";
-const SURFACE_2 = "bg-[#1e1e1e]";
-const BORDER = "border-[#2a2a2a]";
-const BORDER_LIGHT = "border-[#333]";
-const MUTED = "text-[#7a756c]";
-const DIM = "text-[#4a4640]";
-const TEXT = "text-[#e8e4dc]";
+const SURFACE = "bg-[#0f1a3e]";
+const SURFACE_2 = "bg-[#152149]";
+const BORDER = "border-[#1d2a5a]";
+const BORDER_LIGHT = "border-[#2a3a72]";
+const MUTED = "text-[#94a3c4]";
+const DIM = "text-[#3a4670]";
+const TEXT = "text-[#e6ecff]";
 // Match AIC internship typography (Inter throughout, no serif/mono accents).
 const MONO = "";
 const SERIF = "";
@@ -147,7 +147,7 @@ export function VoiceNote({
             />
           ))}
         </div>
-        <div className={cn("text-[12px] leading-[1.6] italic", MUTED, "[&_strong]:text-[#e8e4dc] [&_strong]:not-italic [&_b]:text-[#e8e4dc] [&_b]:not-italic")}>{children}</div>
+        <div className={cn("text-[12px] leading-[1.6] italic", MUTED, "[&_strong]:text-[#e6ecff] [&_strong]:not-italic [&_b]:text-[#e6ecff] [&_b]:not-italic")}>{children}</div>
       </div>
     </div>
   );
@@ -163,7 +163,7 @@ export function DataCard({ label, children }: { label: string; children: ReactNo
       <div className={cn("text-[9px] uppercase tracking-[0.1em] mb-[7px] text-primary", MONO)}>
         {label}
       </div>
-      <div className={cn("text-[12px] leading-[1.7] space-y-1", MUTED, "[&_strong]:text-[#e8e4dc] [&_b]:text-[#e8e4dc]")}>
+      <div className={cn("text-[12px] leading-[1.7] space-y-1", MUTED, "[&_strong]:text-[#e6ecff] [&_b]:text-[#e6ecff]")}>
         {children}
       </div>
     </div>
@@ -175,7 +175,7 @@ export function SectionHeader({ children, hint }: { children: ReactNode; hint?: 
     <div className="mt-[14px] mb-[5px]">
       <div className={cn("flex items-center gap-[7px] text-[10px] uppercase tracking-[0.1em]", MONO, DIM)}>
         <span>{children}</span>
-        <span className={cn("flex-1 h-px", "bg-[#2a2a2a]")} />
+        <span className={cn("flex-1 h-px", "bg-[#1d2a5a]")} />
       </div>
       {hint && <p className={cn("mt-[6px] text-[11px]", MUTED)}>{hint}</p>}
     </div>
@@ -211,7 +211,7 @@ export function SubmitBar({
         onClick={onSubmit}
         disabled={loading}
         className={cn(
-          "inline-flex items-center gap-[5px] rounded-[4px] bg-primary px-[18px] py-[8px] text-[12px] font-semibold text-[#000] hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed border border-primary shadow-[0_0_18px_rgba(167,139,250,0.25)]",
+          "inline-flex items-center gap-[5px] rounded-[4px] bg-primary px-[18px] py-[8px] text-[12px] font-semibold text-[#000] hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed border border-primary shadow-[0_0_18px_rgba(93,196,254,0.25)]",
           MONO,
         )}
       >
@@ -257,7 +257,7 @@ export function FeedbackPanel({
           Score {score}/10
         </span>
       </div>
-      <p className={cn("mt-[10px] text-[12px] leading-[1.7] whitespace-pre-line", MUTED, "[&_strong]:text-[#e8e4dc]")}>
+      <p className={cn("mt-[10px] text-[12px] leading-[1.7] whitespace-pre-line", MUTED, "[&_strong]:text-[#e6ecff]")}>
         {feedback}
       </p>
       <div className="mt-[13px] flex flex-wrap gap-[7px]">
@@ -293,7 +293,7 @@ export function FeedbackPanel({
 
 export function TaskFrame({ children }: { children: ReactNode }) {
   return (
-    <div className="mx-auto max-w-[860px] px-6 sm:px-8 py-6 space-y-[13px] bg-[#0f0f0f] min-h-[calc(100vh-130px)]">
+    <div className="mx-auto max-w-[860px] px-6 sm:px-8 py-6 space-y-[13px] bg-[#070a1c] min-h-[calc(100vh-130px)]">
       {children}
     </div>
   );

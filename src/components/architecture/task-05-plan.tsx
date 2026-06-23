@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { Upload, FileCheck2 } from "lucide-react";
 import {
   TaskFrame,
   TaskHeader,
@@ -16,6 +17,10 @@ const STATUSES = ["Resolved", "Risk noted", "Not addressed"] as const;
 export function ArchTaskFive({ onComplete }: { onComplete: () => void }) {
   const [statuses, setStatuses] = useState<Record<string, string>>({});
   const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const [planFile, setPlanFile] = useState<File | null>(null);
+  const [massingFile, setMassingFile] = useState<File | null>(null);
+  const planRef = useRef<HTMLInputElement>(null);
+  const massingRef = useRef<HTMLInputElement>(null);
 
   const allReviewed = DESIGN_CHECKS.every((c) => statuses[c.check]);
   const noneUnaddressed = !Object.values(statuses).some((s) => s === "Not addressed");
@@ -93,6 +98,63 @@ export function ArchTaskFive({ onComplete }: { onComplete: () => void }) {
             />
             <span className="text-foreground/85">{a}</span>
           </label>
+        ))}
+      </div>
+
+      <SectionHeader hint="Upload your scaled floor plan and 3D massing model as separate files.">
+        Deliverable Uploads
+      </SectionHeader>
+      <div className="grid sm:grid-cols-2 gap-3">
+        {[
+          {
+            label: "Scaled Floor Plan",
+            hint: "PDF, DWG, or PNG · 1:100 or 1:200",
+            file: planFile,
+            ref: planRef,
+            accept: ".pdf,.dwg,.png,.jpg,.jpeg",
+            onChange: setPlanFile,
+          },
+          {
+            label: "3D Massing Model",
+            hint: "SKP, RVT, 3DM, OBJ, or rendered views (PNG/JPG)",
+            file: massingFile,
+            ref: massingRef,
+            accept: ".skp,.rvt,.3dm,.obj,.blend,.png,.jpg,.jpeg,.pdf",
+            onChange: setMassingFile,
+          },
+        ].map((u) => (
+          <div
+            key={u.label}
+            className={cn(
+              "rounded-lg border bg-card p-4 flex flex-col gap-3",
+              u.file ? "border-primary/50" : "border-border",
+            )}
+          >
+            <div>
+              <div className="text-sm font-medium text-foreground/90">{u.label}</div>
+              <div className="text-xs text-muted-foreground">{u.hint}</div>
+            </div>
+            <input
+              ref={u.ref}
+              type="file"
+              accept={u.accept}
+              className="hidden"
+              onChange={(e) => u.onChange(e.target.files?.[0] ?? null)}
+            />
+            <button
+              type="button"
+              onClick={() => u.ref.current?.click()}
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-border bg-background/40 px-3 py-2 text-sm font-medium hover:bg-background/70 transition-colors"
+            >
+              {u.file ? <FileCheck2 className="h-4 w-4 text-primary" /> : <Upload className="h-4 w-4" />}
+              {u.file ? "Replace File" : `Upload ${u.label}`}
+            </button>
+            {u.file && (
+              <div className="text-xs text-muted-foreground truncate">
+                {u.file.name} · {(u.file.size / 1024).toFixed(0)} KB
+              </div>
+            )}
+          </div>
         ))}
       </div>
 

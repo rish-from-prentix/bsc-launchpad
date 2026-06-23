@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-const MONO = "font-['IBM_Plex_Mono',ui-monospace,monospace]";
+const MONO = "";
 
 type Popup = {
   icon: string;

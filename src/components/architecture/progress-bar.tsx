@@ -32,7 +32,7 @@ export function ArchProgressBar({
       className="sticky top-0 z-30 border-b border-[#2a2a2a] bg-[#0a0a0a]"
       style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.5)" }}
     >
-      <div className="mx-auto max-w-[1080px] px-5 sm:px-6 py-3 font-['IBM_Plex_Mono',ui-monospace,monospace]">
+      <div className="mx-auto max-w-[1080px] px-5 sm:px-6 py-3 ">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <button

@@ -11,8 +11,9 @@ const BORDER_LIGHT = "border-[#333]";
 const MUTED = "text-[#7a756c]";
 const DIM = "text-[#4a4640]";
 const TEXT = "text-[#e8e4dc]";
-const MONO = "font-['IBM_Plex_Mono',ui-monospace,monospace]";
-const SERIF = "font-['Playfair_Display',serif]";
+// Match AIC internship typography (Inter throughout, no serif/mono accents).
+const MONO = "";
+const SERIF = "";
 
 export function TaskHeader({
   week,

@@ -20,7 +20,7 @@ const POPUPS: Record<string, Popup> = {
     av: "KM",
     avc: "km",
     nm: "Kiran Mehta",
-    ro: "Principal Architect, Meridian Architecture Studio",
+    ro: "Principal Architect, MERIDIAN ARCHITECTURE\u00a0",
     msg: "Keep your Week 1 analysis close, <strong>every design decision must trace back to it</strong>. Site data, personas, brief constraints. If you can't cite evidence for a decision, it's not a decision yet.<br/><br/>Don't be afraid to flag gaps. A question at brief stage costs nothing. A missed requirement at planning submission costs everything.",
   },
   pn: {

@@ -52,7 +52,7 @@ export function ArchProgressBar({
             </button>
             <div>
               <div className="text-[10px] uppercase tracking-[0.12em] text-primary font-medium">
-                Meridian Architecture Studio
+                MERIDIAN ARCHITECTURE{"\u00a0"}
               </div>
               <div className="mt-0.5 text-[11px] text-[#e6ecff]">
                 {firstName ? `${firstName}` : "Intern"} ·{" "}

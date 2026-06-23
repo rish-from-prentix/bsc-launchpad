@@ -66,7 +66,7 @@ export function ArchTaskOne({ onComplete }: { onComplete: () => void }) {
         Architects do not start with software. They start by understanding people, place and constraints. Every design decision in the following weeks must trace back to what is learned this week.
       </MentorPrinciple>
       <VoiceNote initials="PN" name="Priya Nair" role="Deputy Commissioner · PMC" timestamp="Mon 08:12 · email">
-        Good morning. Budget is <strong>firm at INR 8.1 crore</strong>, fees, furniture and IT excluded. The Corporation will not revisit this. Planning submission in 12 weeks. The café <strong>must be NGO operated</strong> and the entrance must face DP Road. Co-working seat count can flex slightly if it helps the budget. Confirm you have understood all constraints before we proceed.
+        Hello. So, just to set expectations on budget , it's firm at 8.1 crore, that's excluding fees, furniture, and IT. I do want to flag, the Corporation won't be revisiting this figure, so I'd ask that we work within it from the start. Planning submission is due in 12 weeks. A couple of things I need locked in the café has to be NGO-operated, and the entrance should face DP Road. One area where there's a bit of room , co-working seat count can flex slightly if that helps balance things on your end. If you could just confirm you've understood the constraints before we move ahead, that would be great. Thank you.
       </VoiceNote>
 
       <DataCard label="Client Brief Extract, Priya Nair, PMC">

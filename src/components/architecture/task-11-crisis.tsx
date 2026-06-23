@@ -56,7 +56,7 @@ export function ArchTaskEleven({ onComplete }: { onComplete: () => void }) {
             You have worked through all 11 tasks of the Community Learning Hub project, from client brief to crisis resolution. This is the full architecture design workflow.
           </p>
           <div className="mt-6 text-xs font-mono text-muted-foreground/70">
-            Community Learning Hub · Survey 147, Aundh, Pune · Meridian Architecture Studio · CLHA-2024
+            Community Learning Hub · Survey 147, Aundh, Pune · MERIDIAN ARCHITECTURE{"\u00a0"} · CLHA-2024
           </div>
         </div>
       </TaskFrame>

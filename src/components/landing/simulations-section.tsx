@@ -37,15 +37,12 @@ const SIMS = [
         </div>
         <div className="leading-tight">
           <div className="text-[11px] uppercase tracking-[0.18em] text-foreground/90 font-semibold">
-            Meridian
-          </div>
-          <div className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-            Architecture Studio
+            MERIDIAN ARCHITECTURE{"\u00a0"}
           </div>
         </div>
       </div>
     ),
-    company: "Meridian Architecture Studio",
+    company: "MERIDIAN ARCHITECTURE\u00a0",
     role: "Architecture Internship",
     to: "/simulations/architecture",
     tags: [

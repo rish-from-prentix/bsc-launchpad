@@ -74,7 +74,7 @@ function ArchitecturePage() {
   };
 
   return (
-    <div className="arch-surface min-h-screen bg-[#0f0f0f] text-[#e8e4dc]">
+    <div className="arch-surface min-h-screen bg-[#070a1c] text-[#e6ecff]">
       <ArchProgressBar
         candidateName={name}
         tasks={ARCH_TASKS}
@@ -139,24 +139,24 @@ function NavFooter({
     : "Final task";
   return (
     <div className="mx-auto max-w-[860px] px-6 sm:px-8 pb-10 pt-2">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#2a2a2a] pt-5 ">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#1d2a5a] pt-5 ">
         <button
           type="button"
           onClick={onPrev}
           disabled={!canPrev}
-          className="inline-flex items-center gap-2 rounded-[4px] border border-[#333] px-4 py-2 text-[11.5px] text-[#b8b3a8] hover:border-primary/50 hover:text-primary transition disabled:opacity-30 disabled:cursor-not-allowed"
+          className="inline-flex items-center gap-2 rounded-[4px] border border-[#2a3a72] px-4 py-2 text-[11.5px] text-[#c4cfe6] hover:border-primary/50 hover:text-primary transition disabled:opacity-30 disabled:cursor-not-allowed"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Previous Task
         </button>
-        <span className="text-[10px] uppercase tracking-[0.18em] text-[#5a554d]">
+        <span className="text-[10px] uppercase tracking-[0.18em] text-[#5a6a92]">
           Free navigation: skip, revisit, or edit any task
         </span>
         <button
           type="button"
           onClick={onNext}
           disabled={!canNext}
-          className="inline-flex items-center gap-2 rounded-[4px] bg-primary px-5 py-2 text-[12px] font-semibold text-black hover:brightness-110 transition disabled:opacity-30 disabled:cursor-not-allowed border border-primary shadow-[0_0_20px_rgba(167,139,250,0.3)]"
+          className="inline-flex items-center gap-2 rounded-[4px] bg-primary px-5 py-2 text-[12px] font-semibold text-black hover:brightness-110 transition disabled:opacity-30 disabled:cursor-not-allowed border border-primary shadow-[0_0_20px_rgba(93,196,254,0.3)]"
         >
           Next Task: {nextLabel}
           <ArrowRight className="h-3.5 w-3.5" />

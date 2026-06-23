@@ -29,7 +29,7 @@ export function ArchProgressBar({
 
   return (
     <header
-      className="sticky top-0 z-30 border-b border-[#2a2a2a] bg-[#0a0a0a]"
+      className="sticky top-0 z-30 border-b border-[#1d2a5a] bg-[#070a1c]"
       style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.5)" }}
     >
       <div className="mx-auto max-w-[1080px] px-5 sm:px-6 py-3 ">
@@ -42,8 +42,8 @@ export function ArchProgressBar({
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-[3px] border px-[10px] py-[4px] text-[10px] uppercase tracking-wider transition",
                 canGoPrevious
-                  ? "border-[#333] text-[#7a756c] hover:border-primary/60 hover:text-primary"
-                  : "border-[#2a2a2a] text-[#4a4640] cursor-not-allowed",
+                  ? "border-[#2a3a72] text-[#94a3c4] hover:border-primary/60 hover:text-primary"
+                  : "border-[#1d2a5a] text-[#3a4670] cursor-not-allowed",
               )}
               aria-label="Previous task"
             >
@@ -54,20 +54,20 @@ export function ArchProgressBar({
               <div className="text-[10px] uppercase tracking-[0.12em] text-primary font-medium">
                 Meridian Architecture Studio
               </div>
-              <div className="mt-0.5 text-[11px] text-[#e8e4dc]">
+              <div className="mt-0.5 text-[11px] text-[#e6ecff]">
                 {firstName ? `${firstName}` : "Intern"} ·{" "}
-                <span className="text-[#7a756c]">
+                <span className="text-[#94a3c4]">
                   Week {active.week} · Task {active.index} · Day {active.index}
                 </span>
               </div>
             </div>
           </div>
-          <div className="text-[10px] text-[#7a756c]">
+          <div className="text-[10px] text-[#94a3c4]">
             {completed} / {total} · {pct}%
           </div>
         </div>
 
-        <div className="mt-3 h-[3px] w-full rounded-[2px] bg-[#2a2a2a] overflow-hidden">
+        <div className="mt-3 h-[3px] w-full rounded-[2px] bg-[#1d2a5a] overflow-hidden">
           <div
             className="h-full transition-all duration-500"
             style={{
@@ -77,10 +77,10 @@ export function ArchProgressBar({
           />
         </div>
         <div className="mt-[6px] flex items-center justify-between text-[9px] uppercase tracking-[0.12em]">
-          <span className="text-[#e8e4dc]">
+          <span className="text-[#e6ecff]">
             Phase {active.index}: {active.title}
           </span>
-          <span className="text-[#4a4640]">Week {active.week}</span>
+          <span className="text-[#3a4670]">Week {active.week}</span>
         </div>
       </div>
     </header>

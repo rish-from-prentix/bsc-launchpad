@@ -24,14 +24,14 @@ export function ArchTaskNavigator({
   const weeks = Array.from(byWeek.keys()).sort((a, b) => a - b);
 
   return (
-    <aside className="hidden md:block w-[230px] shrink-0 border-r border-[#2a2a2a] bg-[#0c0c0c] sticky top-[78px] self-start max-h-[calc(100vh-78px)] overflow-y-auto">
+    <aside className="hidden md:block w-[230px] shrink-0 border-r border-[#1d2a5a] bg-[#0a1024] sticky top-[78px] self-start max-h-[calc(100vh-78px)] overflow-y-auto">
       <div className={cn("px-4 py-4 text-[9px] uppercase tracking-[0.18em] text-primary border-b border-[#1f1f1f]", MONO)}>
         Task Navigator
       </div>
       <div className="px-2 py-3 space-y-4">
         {weeks.map((w) => (
           <div key={w}>
-            <div className={cn("px-3 mb-1 text-[9px] uppercase tracking-[0.16em] text-[#5a554d]", MONO)}>
+            <div className={cn("px-3 mb-1 text-[9px] uppercase tracking-[0.16em] text-[#5a6a92]", MONO)}>
               Week {w}
             </div>
             <ul className="space-y-0.5">
@@ -48,7 +48,7 @@ export function ArchTaskNavigator({
                         "group w-full text-left flex items-start gap-2 rounded-[4px] px-3 py-2 transition",
                         isCurrent
                           ? "bg-primary/10 border border-primary/40"
-                          : "border border-transparent hover:bg-[#161616] hover:border-[#2a2a2a]",
+                          : "border border-transparent hover:bg-[#0f1a3e] hover:border-[#1d2a5a]",
                       )}
                     >
                       <span className="mt-[2px] shrink-0">
@@ -64,7 +64,7 @@ export function ArchTaskNavigator({
                         <span className={cn("block text-[10px] tracking-wider", MONO, isCurrent ? "text-primary" : "text-[#6a655d]")}>
                           Task {t.index}
                         </span>
-                        <span className={cn("block text-[11.5px] leading-snug", isCurrent ? "text-[#f5f1e8]" : "text-[#b8b3a8] group-hover:text-[#e8e4dc]")}>
+                        <span className={cn("block text-[11.5px] leading-snug", isCurrent ? "text-[#ffffff]" : "text-[#c4cfe6] group-hover:text-[#e6ecff]")}>
                           {t.title}
                         </span>
                         <span className={cn("block mt-0.5 text-[9px] uppercase tracking-wider", MONO,

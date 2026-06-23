@@ -56,7 +56,7 @@ export function ArchRightPanel() {
     <>
       <aside
         className={cn(
-          "w-[230px] shrink-0 border-l border-[#2a2a2a] bg-[#161616] p-[10px] overflow-y-auto",
+          "w-[230px] shrink-0 border-l border-[#1d2a5a] bg-[#0f1a3e] p-[10px] overflow-y-auto",
           "hidden lg:block",
         )}
       >
@@ -75,10 +75,10 @@ export function ArchRightPanel() {
         </Section>
 
         <Section label="Project Data">
-          <div className={cn("text-[10.5px] leading-[2.1]", MONO, "text-[#7a756c]")}>
-            <div>Site: <span className="text-[#e8e4dc]">Survey 147, Aundh</span></div>
-            <div>GFA: <span className="text-[#e8e4dc]">12–15,000 sq.ft.</span></div>
-            <div>Budget: <span className="text-[#e8e4dc]">INR 8.1 crore</span></div>
+          <div className={cn("text-[10.5px] leading-[2.1]", MONO, "text-[#94a3c4]")}>
+            <div>Site: <span className="text-[#e6ecff]">Survey 147, Aundh</span></div>
+            <div>GFA: <span className="text-[#e6ecff]">12–15,000 sq.ft.</span></div>
+            <div>Budget: <span className="text-[#e6ecff]">INR 8.1 crore</span></div>
             <div>Soil: <span className="text-[#e0b752]">Black cotton, raft fdn</span></div>
             <div>Trees: <span className="text-[#52c47a]">3× neem (TPO)</span></div>
             <div>Noise: <span className="text-[#e05252]">DP Rd 68–72 dB</span></div>
@@ -94,7 +94,7 @@ export function ArchRightPanel() {
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="mb-4">
-      <div className={cn("text-[9px] uppercase tracking-[0.12em] text-[#4a4640] mb-2", MONO)}>
+      <div className={cn("text-[9px] uppercase tracking-[0.12em] text-[#3a4670] mb-2", MONO)}>
         {label}
       </div>
       {children}
@@ -120,7 +120,7 @@ function NoteItem({
       type="button"
       onClick={onClick}
       className={cn(
-        "relative w-full text-left bg-[#1e1e1e] border border-[#2a2a2a] rounded-[5px] px-[10px] py-[8px] mb-[5px] text-[11px] text-[#7a756c] leading-[1.5] hover:border-[#333] transition",
+        "relative w-full text-left bg-[#152149] border border-[#1d2a5a] rounded-[5px] px-[10px] py-[8px] mb-[5px] text-[11px] text-[#94a3c4] leading-[1.5] hover:border-[#2a3a72] transition",
         unread && "pl-[16px]",
       )}
     >
@@ -129,7 +129,7 @@ function NoteItem({
       )}
       <div className={cn("text-[9px] text-primary mb-0.5 flex justify-between", MONO)}>
         <span>{from}</span>
-        <span className="text-[#4a4640]">{time}</span>
+        <span className="text-[#3a4670]">{time}</span>
       </div>
       <div>{body}</div>
     </button>
@@ -138,10 +138,10 @@ function NoteItem({
 
 function Dl({ k, title, body, danger }: { k: string; title: string; body: string; danger?: boolean }) {
   return (
-    <div className="flex items-center gap-[6px] py-[5px] border-b border-[#2a2a2a] last:border-b-0">
+    <div className="flex items-center gap-[6px] py-[5px] border-b border-[#1d2a5a] last:border-b-0">
       <div className={cn("text-[15px] font-bold w-6 shrink-0 leading-none text-primary", MONO)}>{k}</div>
-      <div className="text-[11px] text-[#7a756c] leading-[1.4]">
-        <strong className={cn("block text-[11.5px]", danger ? "text-[#e05252]" : "text-[#e8e4dc]")}>
+      <div className="text-[11px] text-[#94a3c4] leading-[1.4]">
+        <strong className={cn("block text-[11.5px]", danger ? "text-[#e05252]" : "text-[#e6ecff]")}>
           {title}
         </strong>
         {body}
@@ -158,19 +158,19 @@ function PopupModal({ popup, onClose }: { popup: Popup; onClose: () => void }) {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-[#161616] border border-[#333] rounded-[10px] w-[440px] max-w-[95vw] shadow-[0_20px_60px_rgba(0,0,0,0.8)] overflow-hidden">
-        <div className="flex items-center px-3 py-[10px] bg-[#111] border-b border-[#2a2a2a] gap-[7px]">
+      <div className="bg-[#0f1a3e] border border-[#2a3a72] rounded-[10px] w-[440px] max-w-[95vw] shadow-[0_20px_60px_rgba(0,0,0,0.8)] overflow-hidden">
+        <div className="flex items-center px-3 py-[10px] bg-[#0b1336] border-b border-[#1d2a5a] gap-[7px]">
           <span className="text-[14px]">{popup.icon}</span>
-          <span className={cn("text-[11.5px] text-[#e8e4dc] font-medium", MONO)}>{popup.title}</span>
+          <span className={cn("text-[11.5px] text-[#e6ecff] font-medium", MONO)}>{popup.title}</span>
           <button
             onClick={onClose}
-            className="ml-auto w-[18px] h-[18px] rounded-full bg-[#252525] text-[#7a756c] hover:bg-[#e05252] hover:text-white flex items-center justify-center text-[10px] transition"
+            className="ml-auto w-[18px] h-[18px] rounded-full bg-[#1c2b5e] text-[#94a3c4] hover:bg-[#e05252] hover:text-white flex items-center justify-center text-[10px] transition"
           >
             ✕
           </button>
         </div>
         <div className="p-4">
-          <div className="flex items-center gap-2 mb-3 pb-[10px] border-b border-[#2a2a2a]">
+          <div className="flex items-center gap-2 mb-3 pb-[10px] border-b border-[#1d2a5a]">
             <div
               className={cn(
                 "w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-semibold border",
@@ -181,12 +181,12 @@ function PopupModal({ popup, onClose }: { popup: Popup; onClose: () => void }) {
               {popup.av}
             </div>
             <div>
-              <div className="text-[12px] font-semibold text-[#e8e4dc]">{popup.nm}</div>
-              <div className={cn("text-[10px] text-[#7a756c]", MONO)}>{popup.ro}</div>
+              <div className="text-[12px] font-semibold text-[#e6ecff]">{popup.nm}</div>
+              <div className={cn("text-[10px] text-[#94a3c4]", MONO)}>{popup.ro}</div>
             </div>
           </div>
           <div
-            className="text-[12px] text-[#7a756c] leading-[1.7] [&_strong]:text-[#e8e4dc]"
+            className="text-[12px] text-[#94a3c4] leading-[1.7] [&_strong]:text-[#e6ecff]"
             dangerouslySetInnerHTML={{ __html: popup.msg }}
           />
           <div className="flex gap-2 mt-3">
@@ -202,7 +202,7 @@ function PopupModal({ popup, onClose }: { popup: Popup; onClose: () => void }) {
             <button
               onClick={onClose}
               className={cn(
-                "inline-flex items-center gap-1 rounded-[4px] border border-[#333] text-[#7a756c] px-[15px] py-[7px] text-[11.5px] font-medium hover:border-primary/40 hover:text-primary",
+                "inline-flex items-center gap-1 rounded-[4px] border border-[#2a3a72] text-[#94a3c4] px-[15px] py-[7px] text-[11.5px] font-medium hover:border-primary/40 hover:text-primary",
                 MONO,
               )}
             >

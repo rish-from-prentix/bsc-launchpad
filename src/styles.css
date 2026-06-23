@@ -339,26 +339,29 @@ video::-webkit-media-controls-panel {
  * accents) while keeping AIC cyan as the primary.
  */
 .arch-surface {
-  --card: #161616;
-  --card-foreground: #e8e4dc;
-  --background: #0f0f0f;
-  --foreground: #e8e4dc;
-  --muted: #1e1e1e;
-  --muted-foreground: #7a756c;
-  --secondary: #1e1e1e;
-  --secondary-foreground: #e8e4dc;
-  --border: #2a2a2a;
-  --input: #2a2a2a;
-  --popover: #161616;
-  --popover-foreground: #e8e4dc;
-  --accent: #1e1e1e;
-  --accent-foreground: #e8e4dc;
-  color: #e8e4dc;
+  --card: oklch(0.22 0.08 265 / 0.55);
+  --card-foreground: oklch(0.985 0.005 240);
+  --background: #070a1c;
+  --foreground: oklch(0.985 0.005 240);
+  --muted: oklch(0.25 0.06 265 / 0.5);
+  --muted-foreground: oklch(0.74 0.04 240);
+  --secondary: oklch(0.28 0.09 265 / 0.6);
+  --secondary-foreground: oklch(0.985 0.005 240);
+  --primary: #5dc4fe;
+  --primary-foreground: #07112a;
+  --border: rgba(93, 196, 254, 0.15);
+  --input: rgba(93, 196, 254, 0.2);
+  --popover: #0f172a;
+  --popover-foreground: oklch(0.985 0.005 240);
+  --accent: #5dc4fe;
+  --accent-foreground: #07112a;
+  --ring: #5dc4fe;
+  color: oklch(0.985 0.005 240);
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 .arch-surface input,
 .arch-surface textarea,
 .arch-surface select {
-  background: #1e1e1e;
-  color: #e8e4dc;
+  background: rgba(15, 23, 42, 0.55);
+  color: oklch(0.985 0.005 240);
 }

@@ -10,7 +10,7 @@ export function LandingNav() {
       <div className="mx-auto max-w-6xl px-5 sm:px-8 h-16 flex items-center justify-between">
         <Link to="/" className="inline-flex items-center gap-2.5 rounded-full border border-primary/40 bg-primary/5 px-3.5 py-1.5">
           <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-            Powered by
+            {"\n"}
           </span>
           <BrandMark brand="prentix" height={18} />
         </Link>

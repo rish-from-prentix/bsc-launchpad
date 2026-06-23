@@ -63,7 +63,7 @@ export function AppShell({
                             </div>
               <div className="flex items-center gap-2.5">
                 <span className="hidden sm:inline text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                  Powered by
+                  {"\n"}
                 </span>
                 <BrandMark brand="prentix" height={20} />
               </div>

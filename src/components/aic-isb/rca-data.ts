@@ -16,9 +16,9 @@ export type RcaCase = {
 };
 
 const cases: Record<string, RcaCase> = {
-  neuralforge: {
+  neuralai: {
     problem:
-      "Over the last two quarters, NeuralForge AI has continued generating strong enterprise interest, with inbound leads increasing significantly after several successful pilot deployments. However, despite rising demand, revenue growth has slowed and deal closures have become inconsistent. Several enterprise customers delayed final contract signings after technical evaluations, while existing customers reported frustration regarding onboarding timelines and implementation delays. The sales team believes market demand remains strong, but the implementation team raised concerns around increasing customization requests and engineering dependency.",
+      "Over the last two quarters, Neural AI has continued generating strong enterprise interest, with inbound leads increasing significantly after several successful pilot deployments. However, despite rising demand, revenue growth has slowed and deal closures have become inconsistent. Several enterprise customers delayed final contract signings after technical evaluations, while existing customers reported frustration regarding onboarding timelines and implementation delays. The sales team believes market demand remains strong, but the implementation team raised concerns around increasing customization requests and engineering dependency.",
     rootCauseLabel: "Operational scaling bottleneck, implementation & customization debt",
     keywords: ["implementation", "onboarding", "customization", "operational", "scaling", "delivery", "deployment", "engineering"],
     revenue: [40, 55, 70, 78, 80, 82],
@@ -44,9 +44,9 @@ const cases: Record<string, RcaCase> = {
       { label: "Net new ARR (Q-o-Q)", value: "+4%", trend: "down" },
     ],
   },
-  echomind: {
+  echolabs: {
     problem:
-      "EchoMind Labs experienced explosive user growth after a viral campaign generated millions of installs in a short period of time. Although downloads and signups remain strong, long-term engagement and subscription conversion rates have declined sharply over the past 3 months. The founders believe monetization strategy is the issue, while some advisors argue the deeper problem lies in retention and product stickiness.",
+      "Echo Labs experienced explosive user growth after a viral campaign generated millions of installs in a short period of time. Although downloads and signups remain strong, long-term engagement and subscription conversion rates have declined sharply over the past 3 months. The founders believe monetization strategy is the issue, while some advisors argue the deeper problem lies in retention and product stickiness.",
     rootCauseLabel: "Weak retention and unsustainable engagement",
     keywords: ["retention", "stickiness", "engagement", "habit", "churn", "d30", "weekly active"],
     revenue: [20, 26, 30, 32, 31, 28],
@@ -71,9 +71,9 @@ const cases: Record<string, RcaCase> = {
       { label: "Burn multiple", value: "6.2x", trend: "up" },
     ],
   },
-  visionpilot: {
+  visionpropilot: {
     problem:
-      "VisionPilot continues maintaining strong enterprise retention across retail clients, but expansion revenue from existing accounts has slowed significantly. While customers are satisfied with pilot deployments, multi-location rollouts have repeatedly been delayed due to installation complexity and operational dependencies.",
+      "Vision Pro Pilot continues maintaining strong enterprise retention across retail clients, but expansion revenue from existing accounts has slowed significantly. While customers are satisfied with pilot deployments, multi-location rollouts have repeatedly been delayed due to installation complexity and operational dependencies.",
     rootCauseLabel: "Hardware deployment scalability bottleneck",
     keywords: ["hardware", "deployment", "installation", "rollout", "operations", "field", "logistics"],
     revenue: [50, 65, 80, 88, 90, 91],

@@ -21,7 +21,7 @@ const SECTOR_MULTIPLES: Record<ThemeId, [number, number]> = {
 type Override = Omit<Valuation, "valuationLowM" | "valuationHighM">;
 
 const overrides: Record<string, Override> = {
-  neuralforge: {
+  neuralai: {
     arrUsdM: 1.14,
     multipleLow: 9,
     multipleHigh: 11,
@@ -34,7 +34,7 @@ const overrides: Record<string, Override> = {
     cautions: ["Long enterprise sales cycles", "Complex onboarding & implementation"],
     why: "Strong enterprise traction and defensibility justify premium valuation despite operational complexity.",
   },
-  echomind: {
+  echolabs: {
     arrUsdM: 0.264,
     multipleLow: 4,
     multipleHigh: 5,
@@ -42,7 +42,7 @@ const overrides: Record<string, Override> = {
     cautions: ["Weak retention (19%)", "Poor monetization", "Unsustainable engagement"],
     why: "User growth alone is insufficient without strong retention and monetization.",
   },
-  atlasmind: {
+  mindrobotics: {
     arrUsdM: 3,
     multipleLow: 8,
     multipleHigh: 10,
@@ -50,7 +50,7 @@ const overrides: Record<string, Override> = {
     cautions: ["High burn rate", "Hardware-heavy scaling"],
     why: "Strong defensibility and market opportunity justify higher valuation despite capital intensity.",
   },
-  visionpilot: {
+  visionpropilot: {
     arrUsdM: 2.16,
     multipleLow: 8,
     multipleHigh: 10,
@@ -58,7 +58,7 @@ const overrides: Record<string, Override> = {
     cautions: ["Hardware installation dependency", "Field deployment bottleneck"],
     why: "Sticky enterprise retention and proven ROI justify a premium SaaS multiple.",
   },
-  quantedge: {
+  quantechoai: {
     arrUsdM: 1.44,
     multipleLow: 9,
     multipleHigh: 11,

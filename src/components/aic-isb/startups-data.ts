@@ -39,7 +39,7 @@ export type ThemeBundle = {
 const ai: Startup[] = [
   {
     id: "neuralforge",
-    name: "NeuralForge AI",
+    name: "Neural AI",
     tagline: "AI copilots for smart manufacturing plants.",
     founders: ["Arjun Mehta (Ex-Siemens automation lead)", "Kavya Rao (MIT AI researcher)"],
     hq: "Bangalore, India",
@@ -64,7 +64,7 @@ const ai: Startup[] = [
   },
   {
     id: "echomind",
-    name: "EchoMind Labs",
+    name: "Echo Labs",
     tagline: "AI emotional wellness companion for Gen Z.",
     founders: ["Co-founders ex-consumer apps"],
     stage: "Seed",
@@ -81,7 +81,7 @@ const ai: Startup[] = [
   },
   {
     id: "visionpilot",
-    name: "VisionPilot",
+    name: "Vision Pro Pilot",
     tagline: "Computer vision theft prevention for retailers.",
     founders: ["Retail-tech operators"],
     stage: "Series A",
@@ -97,7 +97,7 @@ const ai: Startup[] = [
   },
   {
     id: "synapseflow",
-    name: "SynapseFlow",
+    name: "Synapse Flow AI",
     tagline: "AI workflow automation for SMEs.",
     founders: ["Ex-SaaS PMs"],
     stage: "Seed",
@@ -112,7 +112,7 @@ const ai: Startup[] = [
   },
   {
     id: "medpredict",
-    name: "MedPredict AI",
+    name: "MedPredict Labs AI",
     tagline: "AI diagnostics for hospitals.",
     founders: ["Clinician + ML researcher"],
     stage: "Series A",
@@ -127,7 +127,7 @@ const ai: Startup[] = [
   },
   {
     id: "scriptly",
-    name: "Scriptly AI",
+    name: "Scriptly Me AI",
     tagline: "AI content generation for marketers.",
     founders: ["Solo founder"],
     stage: "Pre-seed",
@@ -142,7 +142,7 @@ const ai: Startup[] = [
   },
   {
     id: "atlasmind",
-    name: "AtlasMind Robotics",
+    name: "Mind Robotics",
     tagline: "AI warehouse robotics optimization.",
     founders: ["Robotics PhDs"],
     stage: "Series A",
@@ -157,7 +157,7 @@ const ai: Startup[] = [
   },
   {
     id: "quantedge",
-    name: "QuantEdge AI",
+    name: "Quant Echo AI",
     tagline: "AI-powered financial forecasting engine.",
     founders: ["Ex-quant + ML lead"],
     stage: "Seed",

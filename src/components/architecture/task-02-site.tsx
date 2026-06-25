@@ -4,7 +4,6 @@ import { scoreArchitectureTask, type ArchScore } from "@/lib/score-architecture-
 import {
   TaskFrame,
   TaskHeader,
-  VoiceNote,
   DataCard,
   SectionHeader,
   HelperText,
@@ -54,10 +53,6 @@ export function ArchTaskTwo({ onComplete }: { onComplete: () => void }) {
         title={META.title}
         deliverable={META.deliverable}
       />
-      <VoiceNote initials="KM" name="Kiran Mehta" role="Principal Architect" timestamp="Mon 09:00 · voice msg">
-        The site has <strong>black cotton soil</strong>, flag it in your analysis, it will hit substructure budget hard. The three neem trees are under a TPO order. <strong>Touch them and we lose the project.</strong> And look carefully at DP Road noise, 68 to 72 dB(A). That is relevant to where you put the library.
-      </VoiceNote>
-
       <DataCard label="Site Data, Survey No. 147, Aundh, Pune">
         <p><strong>Area:</strong> 4,856 sq.m. Rectangular 68m x 71m, chamfered SW corner.</p>
         <p><strong>Boundaries:</strong> East, DP Road (18m, high footfall). North, Residential lane (6m). West, Public park. South, Commercial strip.</p>

@@ -74,7 +74,7 @@ export function SimulationsSection() {
               {SIMS.map((s) => (
                 <CarouselItem
                   key={s.key}
-                  className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+                  className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3"
                 >
                   <SimulationCard
                     logo={s.logo}

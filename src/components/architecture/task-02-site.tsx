@@ -293,15 +293,6 @@ export function ArchTaskTwo({ onComplete }: { onComplete: () => void }) {
             />
           </div>
         ))}
-        {constraints.length < 5 && (
-          <button
-            type="button"
-            onClick={() => setConstraints([...constraints, newConstraint()])}
-            className="inline-flex items-center gap-1 rounded-md border border-dashed border-[#2a3a72] px-3 py-1.5 text-[11.5px] text-[#94a3c4] hover:border-primary/60 hover:text-primary transition"
-          >
-            <Plus className="h-3.5 w-3.5" /> Add another (max 5)
-          </button>
-        )}
       </div>
       <HelperText>
         Each entry: a short label and a one-line design implication. Support with evidence from the layers above.

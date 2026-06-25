@@ -42,10 +42,10 @@ export const INVESTIGATIONS: Record<ThemeId, InvestigationCase> = {
   ai: {
     ceo: {
       name: "Aarav Mehta",
-      role: "Founder & CEO, Neuro AI",
+      role: "Founder & CEO, Neural AI",
       initials: "AM",
-      company: "Neuro AI",
-      email: "aarav@neuro.ai",
+      company: "Neural AI",
+      email: "aarav@neural.ai",
     },
     email: {
       subject: "I need fresh eyes on this",

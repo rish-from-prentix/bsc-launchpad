@@ -48,7 +48,7 @@ const ai: Mentor[] = [
     quoteContext:
       "This founder had already closed early enterprise deals and needed help making the motion repeatable , different from cold-start customer discovery.",
     expertise: ["Enterprise GTM", "SaaS scaling", "International expansion", "Revenue operations"],
-    bestFor: ["neuralforge", "quantedge", "synapseflow"],
+    bestFor: ["neuralai", "quantechoai", "synapseflowai"],
   },
   {
     id: "meera-khanna",
@@ -77,7 +77,7 @@ const ai: Mentor[] = [
     quoteContext:
       "This founder was already inside hospital pilots and needed institutional rigour, different from a pre-pilot team racing on runway.",
     expertise: ["Healthcare AI", "Clinical compliance", "AI productization", "Medical workflows"],
-    bestFor: ["medpredict", "visionpilot"],
+    bestFor: ["medpredictlabsai", "visionpropilot"],
   },
   {
     id: "kunal-shahani",
@@ -106,7 +106,7 @@ const ai: Mentor[] = [
     quoteContext:
       "This founder was running a consumer app where daily engagement was the entire business, his instincts mapped perfectly.",
     expertise: ["Viral acquisition", "Consumer retention", "Product engagement", "Growth loops"],
-    bestFor: ["echomind", "scriptly"],
+    bestFor: ["echolabs", "scriptlymeai"],
   },
   {
     id: "priya-sethi",
@@ -135,7 +135,7 @@ const ai: Mentor[] = [
     quoteContext:
       "This founder already had repeatable revenue and was breaking under their own growth, exactly the stage Priya's systems were built for.",
     expertise: ["Operational scaling", "Process optimization", "Marketplace systems", "Implementation workflows"],
-    bestFor: ["neuralforge", "visionpilot", "atlasmind"],
+    bestFor: ["neuralai", "visionpropilot", "mindrobotics"],
   },
   {
     id: "arvind-narang",
@@ -164,7 +164,7 @@ const ai: Mentor[] = [
     quoteContext:
       "This founder was preparing for institutional fundraising and needed long-horizon framing, different from a pre-seed team focused on survival.",
     expertise: ["DeepTech fundraising", "Robotics commercialization", "Investor strategy", "Enterprise scaling"],
-    bestFor: ["atlasmind", "medpredict"],
+    bestFor: ["mindrobotics", "medpredictlabsai"],
   },
 ];
 
@@ -344,7 +344,7 @@ const health: Mentor[] = [
     quoteContext:
       "This founder had a working product and was inside hospital pilots, exactly where Aisha's institutional lens compounds.",
     expertise: ["Clinical adoption", "Hospital workflows", "Healthcare systems integration"],
-    bestFor: ["pulsetrack", "caresync", "medpredict"],
+    bestFor: ["pulsetrack", "caresync", "medpredictlabsai"],
   },
   {
     id: "rohan-bedi",
@@ -460,7 +460,7 @@ const health: Mentor[] = [
     quoteContext:
       "This founder had hospital data partnerships and was hitting infrastructure ceilings, exactly Ethan's domain.",
     expertise: ["AI diagnostics", "Healthcare infrastructure", "Clinical AI systems"],
-    bestFor: ["nanocure", "pulsetrack", "medpredict"],
+    bestFor: ["nanocure", "pulsetrack", "medpredictlabsai"],
   },
 ];
 

@@ -38,7 +38,7 @@ export type ThemeBundle = {
 
 const ai: Startup[] = [
   {
-    id: "neuralforge",
+    id: "neuralai",
     name: "Neural AI",
     tagline: "AI copilots for smart manufacturing plants.",
     founders: ["Arjun Mehta (Ex-Siemens automation lead)", "Kavya Rao (MIT AI researcher)"],
@@ -63,7 +63,7 @@ const ai: Startup[] = [
     boardScore: 9.1,
   },
   {
-    id: "echomind",
+    id: "echolabs",
     name: "Echo Labs",
     tagline: "AI emotional wellness companion for Gen Z.",
     founders: ["Co-founders ex-consumer apps"],
@@ -80,7 +80,7 @@ const ai: Startup[] = [
     boardScore: 4.8,
   },
   {
-    id: "visionpilot",
+    id: "visionpropilot",
     name: "Vision Pro Pilot",
     tagline: "Computer vision theft prevention for retailers.",
     founders: ["Retail-tech operators"],
@@ -96,7 +96,7 @@ const ai: Startup[] = [
     boardScore: 8.8,
   },
   {
-    id: "synapseflow",
+    id: "synapseflowai",
     name: "Synapse Flow AI",
     tagline: "AI workflow automation for SMEs.",
     founders: ["Ex-SaaS PMs"],
@@ -111,7 +111,7 @@ const ai: Startup[] = [
     boardScore: 7.1,
   },
   {
-    id: "medpredict",
+    id: "medpredictlabsai",
     name: "MedPredict Labs AI",
     tagline: "AI diagnostics for hospitals.",
     founders: ["Clinician + ML researcher"],
@@ -126,7 +126,7 @@ const ai: Startup[] = [
     boardScore: 8.9,
   },
   {
-    id: "scriptly",
+    id: "scriptlymeai",
     name: "Scriptly Me AI",
     tagline: "AI content generation for marketers.",
     founders: ["Solo founder"],
@@ -141,7 +141,7 @@ const ai: Startup[] = [
     boardScore: 5.4,
   },
   {
-    id: "atlasmind",
+    id: "mindrobotics",
     name: "Mind Robotics",
     tagline: "AI warehouse robotics optimization.",
     founders: ["Robotics PhDs"],
@@ -156,7 +156,7 @@ const ai: Startup[] = [
     boardScore: 8.2,
   },
   {
-    id: "quantedge",
+    id: "quantechoai",
     name: "Quant Echo AI",
     tagline: "AI-powered financial forecasting engine.",
     founders: ["Ex-quant + ML lead"],
@@ -408,8 +408,8 @@ export const THEMES: Record<ThemeId, ThemeBundle> = {
     id: "ai",
     label: THEME_LABELS.ai,
     startups: ai,
-    bestIds: ["neuralforge", "visionpilot", "quantedge"],
-    weakIds: ["echomind", "scriptly"],
+    bestIds: ["neuralai", "visionpropilot", "quantechoai"],
+    weakIds: ["echolabs", "scriptlymeai"],
   },
   climate: {
     id: "climate",

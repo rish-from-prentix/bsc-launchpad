@@ -29,7 +29,6 @@ export function ArchTaskOne({ onComplete }: { onComplete: () => void }) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ArchScore | null>(null);
-  const [sketch, setSketch] = useState("");
 
   const allFilled = FIELDS.every((f) => (values[f.key] || "").trim().length >= 8);
 
@@ -40,12 +39,7 @@ export function ArchTaskOne({ onComplete }: { onComplete: () => void }) {
         data: {
           taskTitle: META.title,
           taskBrief: META.deliverable,
-          submission: [
-            ...FIELDS.map((f) => ({ label: f.label, value: values[f.key] || "" })),
-            ...(sketch.trim()
-              ? [{ label: "Priority Adjacency Sketch (optional)", value: sketch }]
-              : []),
-          ],
+          submission: FIELDS.map((f) => ({ label: f.label, value: values[f.key] || "" })),
         },
       });
       setResult(r);
@@ -116,20 +110,6 @@ export function ArchTaskOne({ onComplete }: { onComplete: () => void }) {
             <HelperText>Focus on reasoning, not summaries.</HelperText>
           </div>
         ))}
-      </div>
-
-      <div className="rounded-lg border border-border bg-card p-4">
-        <label className="block text-xs uppercase tracking-[0.18em] text-muted-foreground font-semibold">
-          Priority Adjacency Sketch (optional)
-        </label>
-        <textarea
-          rows={3}
-          value={sketch}
-          onChange={(e) => setSketch(e.target.value)}
-          placeholder="Which spaces should sit near each other, and why? (e.g. café near entrance for NGO visibility)"
-          className="mt-2 w-full rounded-md bg-background/40 border border-border px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/40"
-        />
-        <HelperText>2-3 lines. This will carry into Task 2.</HelperText>
       </div>
 
       {result ? (

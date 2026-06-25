@@ -4,7 +4,6 @@ import { scoreArchitectureTask, type ArchScore } from "@/lib/score-architecture-
 import {
   TaskFrame,
   TaskHeader,
-  VoiceNote,
   DataCard,
   SectionHeader,
   HelperText,

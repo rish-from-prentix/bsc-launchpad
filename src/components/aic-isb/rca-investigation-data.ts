@@ -45,7 +45,7 @@ export const INVESTIGATIONS: Record<ThemeId, InvestigationCase> = {
       role: "Founder & CEO, Neuro AI",
       initials: "AM",
       company: "Neuro AI",
-      email: "aarav@neuropilot.ai",
+      email: "aarav@neuro.ai",
     },
     email: {
       subject: "I need fresh eyes on this",

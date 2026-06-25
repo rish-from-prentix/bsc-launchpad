@@ -1,21 +1,25 @@
 import { useState } from "react";
+import { FileText, Download, Eye, X, BookOpen } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { scoreArchitectureTask, type ArchScore } from "@/lib/score-architecture-task.functions";
 import {
   TaskFrame,
   TaskHeader,
   VoiceNote,
-  DataCard,
   SectionHeader,
   HelperText,
   SubmitBar,
   FeedbackPanel,
   MentorPrinciple,
 } from "./shared";
-import { ARCH_TASKS, PERSONAS } from "./arch-data";
+import { ARCH_TASKS } from "./arch-data";
 import priyaVoiceNote from "@/assets/priya-voice-note.mp3.asset.json";
+import briefPdf from "@/assets/PMC-client-brief.pdf.asset.json";
 
 const META = ARCH_TASKS[0];
+const BRIEF_TITLE = "PMC Client Brief";
+const BRIEF_FILENAME = "PMC-client-brief.pdf";
+const BRIEF_PAGES = 5;
 
 const FIELDS = [
   { key: "musts", label: "Must-have requirements", placeholder: "What the client has stated as non-negotiable..." },
@@ -29,6 +33,7 @@ export function ArchTaskOne({ onComplete }: { onComplete: () => void }) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ArchScore | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const allFilled = FIELDS.every((f) => (values[f.key] || "").trim().length >= 8);
 
@@ -60,6 +65,9 @@ export function ArchTaskOne({ onComplete }: { onComplete: () => void }) {
       <MentorPrinciple>
         Architects do not start with software. They start by understanding people, place and constraints. Every design decision in the following weeks must trace back to what is learned this week.
       </MentorPrinciple>
+
+      <BriefDocumentCard onPreview={() => setPreviewOpen(true)} />
+
       <VoiceNote
         initials="PN"
         name="Priya Nair"
@@ -70,29 +78,11 @@ export function ArchTaskOne({ onComplete }: { onComplete: () => void }) {
         Good Morning. So, just to set expectations on budget , it's firm at 8.1 crore, that's excluding fees, furniture, and IT. I do want to flag, the Corporation won't be revisiting this figure, so I'd ask that we work within it from the start. Planning submission is due in 12 weeks. A couple of things I need locked in the café has to be NGO-operated, and the entrance should face DP Road. One area where there's a bit of room , co-working seat count can flex slightly if that helps balance things on your end. If you could just confirm you've understood the constraints before we move ahead, that would be great. Thank you.
       </VoiceNote>
 
-      <DataCard label="Client Brief Extract, Priya Nair, PMC">
-        <p><strong>Programme:</strong> Library (8,000 volumes, 40 reading seats), Co-working (60 workstations), Hall (300 persons, theatre), Café (30 covers, NGO operated), Outdoor gathering space (ideally shaded, exact area flexible), Accessible toilets, Storage + plant room.</p>
-        <p><strong>Budget:</strong> INR 8.1 crore firm (fees, furniture, IT excluded).</p>
-        <p><strong>Timeline:</strong> Planning in 12 weeks. Site possession confirmed for Q2 2026. Construction Q1 2026. Completion Q4 2026.</p>
-        <p><strong>Constraints:</strong> Max 3 storeys, min 20% soft landscaping, NBC 2016, entrance faces DP Road (east), solar panels not visible from street.</p>
-      </DataCard>
-
-      <SectionHeader>User Personas</SectionHeader>
-      <div className="grid sm:grid-cols-2 gap-3">
-        {PERSONAS.map((p) => (
-          <div key={p.name} className="rounded-lg border border-border bg-card p-4">
-            <div className="text-sm font-semibold text-foreground">{p.name}</div>
-            <div className="text-xs text-muted-foreground mt-0.5">{p.profile}</div>
-            <div className="text-[13px] text-foreground/85 mt-2">{p.need}</div>
-          </div>
-        ))}
-      </div>
-
       <SectionHeader hint="Capture your decoding of the brief. Stay concise: 2 to 4 lines per cell.">
         Brief Decoding Matrix
       </SectionHeader>
       <HelperText>
-        Your must-have and nice-to-have entries must each reference at least one persona by name.
+        Read the Project Brief Document above and complete each cell based on what you find.
       </HelperText>
       <div className="space-y-3">
         {FIELDS.map((f) => (
@@ -129,6 +119,111 @@ export function ArchTaskOne({ onComplete }: { onComplete: () => void }) {
           hint={allFilled ? "Mentor will review and score." : "Fill every cell to submit."}
         />
       )}
+
+      {!previewOpen && (
+        <button
+          type="button"
+          onClick={() => setPreviewOpen(true)}
+          className="fixed bottom-6 right-6 z-40 inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 px-4 py-2.5 text-sm font-semibold hover:opacity-90 transition"
+        >
+          <BookOpen className="h-4 w-4" /> Open Brief
+        </button>
+      )}
+
+      {previewOpen && (
+        <BriefPreviewModal onClose={() => setPreviewOpen(false)} />
+      )}
     </TaskFrame>
+  );
+}
+
+function BriefDocumentCard({ onPreview }: { onPreview: () => void }) {
+  return (
+    <div className="rounded-2xl border border-primary/20 bg-card/60 p-5 sm:p-6">
+      <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+        Project Brief Document
+      </div>
+      <h2 className="mt-1 text-lg font-semibold text-foreground">
+        Read the brief before decoding
+      </h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        The full client brief from Pune Municipal Corporation. Use it as the source for every cell in the decoding matrix below.
+      </p>
+
+      <div className="mt-5 rounded-xl border border-border bg-background/40 p-4 sm:p-5">
+        <div className="flex items-start gap-4">
+          <div className="h-14 w-12 shrink-0 rounded-md bg-primary/10 border border-primary/30 flex items-center justify-center">
+            <FileText className="h-6 w-6 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold text-foreground truncate">{BRIEF_TITLE}</div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              PDF · {BRIEF_PAGES} pages · {BRIEF_FILENAME}
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={onPreview}
+                className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-3.5 py-2 text-sm font-semibold hover:opacity-90 transition"
+              >
+                <Eye className="h-4 w-4" /> Preview PDF
+              </button>
+              <a
+                href={briefPdf.url}
+                download={BRIEF_FILENAME}
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-card hover:bg-secondary px-3.5 py-2 text-sm font-medium text-foreground/90 transition"
+              >
+                <Download className="h-4 w-4" /> Download PDF
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BriefPreviewModal({ onClose }: { onClose: () => void }) {
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-background border border-border rounded-2xl w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+          <div className="min-w-0">
+            <div className="text-sm font-semibold text-foreground truncate">{BRIEF_TITLE}</div>
+            <div className="text-[11px] text-muted-foreground">
+              {BRIEF_PAGES} pages · use the viewer toolbar for page navigation and zoom
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <a
+              href={briefPdf.url}
+              download={BRIEF_FILENAME}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card hover:bg-secondary px-3 py-1.5 text-xs font-medium text-foreground/90"
+            >
+              <Download className="h-3.5 w-3.5" /> Download
+            </a>
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg p-1.5 hover:bg-secondary text-foreground/80"
+              aria-label="Close preview"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+        <iframe
+          src={`${briefPdf.url}#toolbar=1&navpanes=1&view=FitH`}
+          title={BRIEF_TITLE}
+          className="flex-1 w-full bg-white"
+        />
+      </div>
+    </div>
   );
 }

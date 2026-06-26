@@ -299,7 +299,14 @@ export function ArchTaskSeven({ onComplete }: { onComplete: () => void }) {
         <button
           type="button"
           disabled={!canSubmit}
-          onClick={() => setSubmitted(true)}
+          onClick={() => {
+            try {
+              if (typeof window !== "undefined") {
+                window.localStorage.setItem("arch.task7.selected", JSON.stringify(selectedIds));
+              }
+            } catch {}
+            setSubmitted(true);
+          }}
           className="inline-flex items-center gap-[5px] rounded-[4px] bg-primary px-[18px] py-[8px] text-[12px] font-semibold text-[#000] hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed border border-primary shadow-[0_0_18px_rgba(93,196,254,0.25)]"
         >
           Submit Sustainability Plan <ArrowRight className="h-[14px] w-[14px]" />

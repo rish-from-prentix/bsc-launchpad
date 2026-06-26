@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { CheckCircle2, Circle, Lock, Sparkles, Loader2, XCircle } from "lucide-react";
 import {
@@ -25,7 +25,7 @@ const FOOTPRINTS: {
   consequence: string;
   reaction: string;
   // SVG footprint coords inside 200x200 site box (site = 10..190)
-  draw: (color: string) => JSX.Element;
+  draw: (color: string) => ReactNode;
 }[] = [
   {
     id: "compact",

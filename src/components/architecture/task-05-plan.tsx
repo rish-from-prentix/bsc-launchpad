@@ -1,6 +1,6 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { CheckCircle2, Circle, Lock, Sparkles, Loader2, XCircle } from "lucide-react";
+import { CheckCircle2, Circle, Lock, Upload, XCircle, X as XIcon } from "lucide-react";
 import {
   TaskFrame,
   TaskHeader,
@@ -704,80 +704,154 @@ function Step4({
   placements: Record<PlacementKey, ZoneId>;
   onSubmit: () => void;
 }) {
-  const [plan, setPlan] = useState<"idle" | "loading" | "done">("idle");
-  const [massing, setMassing] = useState<"idle" | "loading" | "done">("idle");
+  const [planFile, setPlanFile] = useState<File | null>(null);
+  const [planPreview, setPlanPreview] = useState<string | null>(null);
+  const [massFile, setMassFile] = useState<File | null>(null);
+  const [massPreview, setMassPreview] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const run = (set: (s: "idle" | "loading" | "done") => void) => {
-    set("loading");
-    setTimeout(() => set("done"), 2000);
+  const ready = !!planFile && !!massFile;
+
+  const handleFile = (
+    file: File | undefined,
+    setFile: (f: File | null) => void,
+    setPreview: (s: string | null) => void,
+  ) => {
+    setError(null);
+    if (!file) return;
+    const okTypes = ["image/png", "image/jpeg", "image/jpg", "application/pdf"];
+    if (!okTypes.includes(file.type)) {
+      setError("Unsupported file. Use PNG, JPG, or PDF.");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setError("File too large. Max 10MB.");
+      return;
+    }
+    setFile(file);
+    if (file.type.startsWith("image/")) {
+      const url = URL.createObjectURL(file);
+      setPreview(url);
+    } else {
+      setPreview(null);
+    }
   };
 
-  const ready = plan === "done" && massing === "done";
-  const fp = FOOTPRINTS.find((f) => f.id === footprint)!;
-
-  const planNotes = useMemo(() => {
-    const items: string[] = [];
-    if (placements.lobby) items.push(`Main lobby anchors ${ZONES.find((z) => z.id === placements.lobby)!.label}, facing DP Road.`);
-    if (placements.hall) items.push(`Hall placed in ${ZONES.find((z) => z.id === placements.hall)!.label} with independent access.`);
-    if (placements.library) items.push(`Library held in ${ZONES.find((z) => z.id === placements.library)!.label}, buffered from the hall.`);
-    return items.slice(0, 3);
-  }, [placements]);
-
-  const massNotes = [
-    `Footprint reads as ${fp.label.toLowerCase()} (${fp.storeys}).`,
-    "Neem trees protected on the west boundary.",
-    "Entrance canopy faces DP Road on the east elevation.",
+  const uploads: {
+    id: string;
+    label: string;
+    helper: string;
+    reference: React.ReactNode;
+    referenceCaption: string;
+    file: File | null;
+    preview: string | null;
+    onChange: (f: File | undefined) => void;
+    onClear: () => void;
+  }[] = [
+    {
+      id: "plan",
+      label: "Upload your schematic floor plan",
+      helper:
+        "No SketchUp or Revit? That's fine. You can generate this in ChatGPT, describe your zone layout from Step 2 and ask it to produce a labelled top-view floor plan. Screenshot or export it as PNG or PDF.",
+      reference: <GeneratedFloorPlan footprint={footprint} placements={placements} />,
+      referenceCaption: "Your target layout, does your uploaded plan match these placements?",
+      file: planFile,
+      preview: planPreview,
+      onChange: (f) => handleFile(f, setPlanFile, setPlanPreview),
+      onClear: () => {
+        if (planPreview) URL.revokeObjectURL(planPreview);
+        setPlanFile(null);
+        setPlanPreview(null);
+      },
+    },
+    {
+      id: "mass",
+      label: "Upload your 3D massing view",
+      helper:
+        "Ask ChatGPT or any AI image tool to generate a simple isometric massing diagram of your chosen footprint, label DP Road on the east, show the correct number of storeys, and mark the neem trees on the west boundary. Screenshot and upload.",
+      reference: <MassingView footprint={footprint} />,
+      referenceCaption: "Your target massing, 3 storeys, neem trees west, entry east.",
+      file: massFile,
+      preview: massPreview,
+      onChange: (f) => handleFile(f, setMassFile, setMassPreview),
+      onClear: () => {
+        if (massPreview) URL.revokeObjectURL(massPreview);
+        setMassFile(null);
+        setMassPreview(null);
+      },
+    },
   ];
 
   return (
     <div className="space-y-3">
       <div className="rounded-[7px] border border-primary/40 bg-primary/10 px-3 py-3 text-[12px] leading-[1.6] text-[#e6ecff]">
-        Professional drawings take years to master. What matters here is that your spatial thinking is correct. We'll generate a schematic visualisation based on your decisions in Steps 1–3.
+        Professional drawings take years to master. What matters here is that your spatial thinking is correct. Upload your own drawings against the reference visualisations generated from your decisions in Steps 1–3.
       </div>
-      <div className="grid sm:grid-cols-2 gap-3">
-        {[
-          { id: "plan", label: "Generate AI schematic floor plan", state: plan, onRun: () => run(setPlan), render: () => <GeneratedFloorPlan footprint={footprint} placements={placements} />, notes: planNotes.length ? planNotes : ["Lobby anchored on DP Road frontage.", "Hall placed with independent street access.", "Library buffered from the hall."] },
-          { id: "mass", label: "Generate AI 3D massing view", state: massing, onRun: () => run(setMassing), render: () => <MassingView footprint={footprint} />, notes: massNotes },
-        ].map((b) => (
-          <div key={b.id} className="rounded-[7px] border border-[#1d2a5a] bg-[#0f1a3e] p-3 flex flex-col gap-2">
-            {b.state === "idle" && (
-              <button
-                type="button"
-                onClick={b.onRun}
-                className="rounded border border-primary/40 bg-primary/10 px-3 py-6 text-[12px] font-semibold text-primary hover:bg-primary/20 inline-flex items-center justify-center gap-2"
-              >
-                <Sparkles className="h-4 w-4" />
-                {b.label}
-              </button>
-            )}
-            {b.state === "loading" && (
-              <div className="rounded border border-[#1d2a5a] bg-[#070a1c] px-3 py-10 text-[12px] text-[#94a3c4] inline-flex items-center justify-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Generating…
+      <div className="space-y-4">
+        {uploads.map((u) => (
+          <div key={u.id} className="rounded-[7px] border border-[#1d2a5a] bg-[#0f1a3e] p-3 space-y-3">
+            <div>
+              <div className="text-[12px] font-semibold text-[#e6ecff]">{u.label}</div>
+              <p className="mt-1 text-[10.5px] leading-[1.55] text-[#94a3c4]">{u.helper}</p>
+              <p className="mt-1 text-[10px] text-[#3a4670]">Accepted: PNG, JPG, PDF. Max 10MB.</p>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                {u.reference}
+                <p className="text-[10px] text-[#94a3c4] italic">{u.referenceCaption}</p>
               </div>
-            )}
-            {b.state === "done" && (
-              <>
-                {b.render()}
-                <div className="rounded border border-[#1d2a5a] bg-[#070a1c] px-3 py-2">
-                  <div className="text-[9px] uppercase tracking-[0.1em] text-primary mb-1">What your mentor sees</div>
-                  <ul className="text-[11px] text-[#94a3c4] space-y-0.5">
-                    {b.notes.map((n) => <li key={n}>· {n}</li>)}
-                  </ul>
-                </div>
-              </>
-            )}
+              <div className="space-y-1">
+                {u.file ? (
+                  <div className="relative rounded border border-[#1d2a5a] bg-[#070a1c] p-2 flex items-center justify-center min-h-[160px]">
+                    <button
+                      type="button"
+                      onClick={u.onClear}
+                      className="absolute top-1 right-1 rounded bg-[#0f1a3e] border border-[#1d2a5a] p-1 text-[#94a3c4] hover:text-[#e6ecff]"
+                      aria-label="Remove file"
+                    >
+                      <XIcon className="h-3 w-3" />
+                    </button>
+                    {u.preview ? (
+                      <img src={u.preview} alt="Uploaded preview" className="max-h-[180px] w-auto object-contain" />
+                    ) : (
+                      <div className="text-[11px] text-[#94a3c4] text-center px-2">
+                        <div className="font-semibold text-[#e6ecff] mb-1">PDF uploaded</div>
+                        <div className="truncate max-w-[200px]">{u.file.name}</div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center gap-2 rounded border border-dashed border-primary/40 bg-primary/5 hover:bg-primary/10 cursor-pointer min-h-[160px] px-3 py-4 text-center transition">
+                    <Upload className="h-5 w-5 text-primary" />
+                    <div className="text-[11.5px] font-semibold text-primary">Click to upload</div>
+                    <div className="text-[10px] text-[#94a3c4]">PNG, JPG, or PDF up to 10MB</div>
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,application/pdf"
+                      className="hidden"
+                      onChange={(e) => u.onChange(e.target.files?.[0])}
+                    />
+                  </label>
+                )}
+                <p className="text-[10px] text-[#3a4670] italic">
+                  {u.file ? `Uploaded: ${u.file.name}` : "Your upload appears here."}
+                </p>
+              </div>
+            </div>
           </div>
         ))}
       </div>
-      <p className="text-[10px] text-[#3a4670]">
-        In a real practice you would produce this in Revit or SketchUp. The spatial decisions you made in Steps 1–3 are what a schematic floor plan communicates, the software is just the drawing tool.
+      {error && (
+        <div className="rounded border border-[#5a1a1a] bg-[#1a0808] px-3 py-2 text-[11px] text-[#e05252]">{error}</div>
+      )}
+      <p className="text-[11px] text-[#94a3c4] italic">
+        The goal here is not a perfect drawing, it is proof that you understand where every space goes and why. Your placement decisions from Steps 1–3 are the real deliverable. The drawing makes them visible.
       </p>
       <SubmitBar
         label="Submit Schematic Floor Plan"
         onSubmit={onSubmit}
         disabled={!ready}
-        hint={ready ? "Both visuals generated." : "Generate both the floor plan and the massing view to submit."}
+        hint={ready ? "Both drawings uploaded." : "Upload both your floor plan and massing view to submit."}
       />
     </div>
   );

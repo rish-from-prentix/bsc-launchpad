@@ -102,7 +102,7 @@ export function ArchTaskEight({ onComplete }: { onComplete: () => void }) {
         I have logged three conflicts that <strong>need an architect decision before I can issue drawings</strong>. If these are not resolved, the contractor will be building to conflicting information.
       </VoiceNote>
 
-      <Stepper step={step} confirmed={confirmed} />
+      <Stepper step={step} confirmed={confirmed} outcomes={outcomes} />
 
       {!allDone && (
         <ConflictCard

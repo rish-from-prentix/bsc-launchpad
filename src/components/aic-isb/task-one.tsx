@@ -143,6 +143,19 @@ const EMPTY_ANSWERS: Answers = {
 
 const STORAGE_KEY = "aic-isb:task1:v1";
 
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      const idx = result.indexOf(",");
+      resolve(idx >= 0 ? result.slice(idx + 1) : result);
+    };
+    reader.onerror = () => reject(reader.error ?? new Error("read failed"));
+    reader.readAsDataURL(file);
+  });
+}
+
 type Persisted = {
   sector: Sector | null;
   answers: Answers;

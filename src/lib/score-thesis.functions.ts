@@ -1,66 +1,86 @@
 import { createServerFn } from "@tanstack/react-start";
 
 export type ThesisScores = {
+  clarity: number;
   market: number;
-  opportunity: number;
-  recommendation: number;
+  team: number;
+  risk: number;
+  originality: number;
   overall: number;
   feedback: string;
+  improvement: string;
+  justifications?: {
+    clarity?: string;
+    market?: string;
+    team?: string;
+    risk?: string;
+    originality?: string;
+  };
   error?: string;
 };
+
+type LegacyAlias = {
+  /** @deprecated kept so old call sites that referenced these names still type-check */
+  opportunity?: number;
+  /** @deprecated */
+  recommendation: number;
+};
+// Back-compat: some older UI code reads `scores.opportunity` / `scores.recommendation`.
+// They're no longer produced by the model; surface them as optional 0s if read.
+export type ThesisScoresWithLegacy = ThesisScores & Partial<LegacyAlias>;
 
 export const scoreThesis = createServerFn({ method: "POST" })
   .inputValidator(
     (input: {
       sector: string;
-      answers: {
-        overview: string;
-        problems: string;
-        activity: string;
-        risks: string;
-        recommendation: string;
-      };
+      fileName: string;
+      mimeType: string;
+      fileBase64: string;
     }) => input,
   )
   .handler(async ({ data }): Promise<ThesisScores> => {
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) {
       return {
+        clarity: 0,
         market: 0,
-        opportunity: 0,
-        recommendation: 0,
+        team: 0,
+        risk: 0,
+        originality: 0,
         overall: 0,
         feedback: "Scoring service is not configured.",
+        improvement: "",
         error: "missing_key",
       };
     }
 
-    const systemPrompt = `You are a senior partner at an Indian early-stage accelerator (AIC × ISB). You evaluate accelerator investment theses from incoming program-manager interns. Be honest, specific, and constructive. Score on a 0-10 integer scale.`;
+    const systemPrompt = `You are a strict and objective evaluator at a startup accelerator (AIC Mohali).
+Your job is to evaluate an intern's investment thesis document.
 
-    const userPrompt = `Sector chosen: ${data.sector}
+IMPORTANT RULES:
+- Do NOT default to high scores. A score of 9/10 should be rare and only given for truly exceptional work.
+- Evaluate ONLY based on what is actually written in the uploaded document.
+- If the document is vague, generic, or lacks depth — score it low (3-5).
+- If the document is partially structured but missing key elements — score it mid-range (5-7).
+- If the document is well-researched, specific, and clearly argued — score it high (7-9).
+- A 10/10 should almost never be given.
+- If the document is unreadable, empty, off-topic, or not an investment thesis, score everything 0-2 and say so honestly in the feedback.
 
-Q1, The opportunity (what's happening that makes the sector impossible to ignore):
-${data.answers.overview}
+EVALUATE ON THESE PARAMETERS (score each out of 10 as an integer):
+1. Clarity of thesis statement
+2. Market understanding and research depth
+3. Founder/team assessment quality
+4. Risk identification
+5. Originality of insight
 
-Q2, Where startups should play (specific bet a founder should take):
-${data.answers.problems}
+For each parameter, provide ONE specific one-line justification citing actual content from the document.
+Then give 2-3 lines of overall feedback citing actual content from the document.
+Then give ONE clear area of improvement.
+Do not be generous. Be honest.`;
 
-Q3, What the market is saying (active startups, investors, deals):
-${data.answers.activity}
+    const userPromptText = `Sector chosen by the intern: ${data.sector}.
 
-Q4, Risks worth taking (bear case + why upside still wins):
-${data.answers.risks}
-
-Q5, Recommendation to the AIC × ISB board:
-${data.answers.recommendation}
-
-Score the thesis on:
-- market: depth of market understanding (signal, data, named companies / investors / deals)
-- opportunity: clarity of the where-to-play bet (specific, underserved, solvable)
-- recommendation: strength of the final board-level conviction statement
-
-Then give a 2-4 line feedback paragraph addressed to the intern. Be direct.
-Pass threshold is 6 overall. overall = round((market + opportunity + recommendation) / 3).`;
+Please evaluate the attached investment thesis document strictly using the rubric.`;
 
     try {
       const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -70,10 +90,21 @@ Pass threshold is 6 overall. overall = round((market + opportunity + recommendat
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: "google/gemini-2.5-flash",
           messages: [
             { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
+            {
+              role: "user",
+              content: [
+                { type: "text", text: userPromptText },
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: `data:${data.mimeType};base64,${data.fileBase64}`,
+                  },
+                },
+              ],
+            },
           ],
           tools: [
             {
@@ -84,13 +115,33 @@ Pass threshold is 6 overall. overall = round((market + opportunity + recommendat
                 parameters: {
                   type: "object",
                   properties: {
+                    clarity: { type: "integer", minimum: 0, maximum: 10 },
                     market: { type: "integer", minimum: 0, maximum: 10 },
-                    opportunity: { type: "integer", minimum: 0, maximum: 10 },
-                    recommendation: { type: "integer", minimum: 0, maximum: 10 },
-                    overall: { type: "integer", minimum: 0, maximum: 10 },
+                    team: { type: "integer", minimum: 0, maximum: 10 },
+                    risk: { type: "integer", minimum: 0, maximum: 10 },
+                    originality: { type: "integer", minimum: 0, maximum: 10 },
+                    clarity_justification: { type: "string" },
+                    market_justification: { type: "string" },
+                    team_justification: { type: "string" },
+                    risk_justification: { type: "string" },
+                    originality_justification: { type: "string" },
                     feedback: { type: "string" },
+                    improvement: { type: "string" },
                   },
-                  required: ["market", "opportunity", "recommendation", "overall", "feedback"],
+                  required: [
+                    "clarity",
+                    "market",
+                    "team",
+                    "risk",
+                    "originality",
+                    "clarity_justification",
+                    "market_justification",
+                    "team_justification",
+                    "risk_justification",
+                    "originality_justification",
+                    "feedback",
+                    "improvement",
+                  ],
                   additionalProperties: false,
                 },
               },
@@ -114,11 +165,14 @@ Pass threshold is 6 overall. overall = round((market + opportunity + recommendat
               ? "AI credits are exhausted. Add credits in Settings → Workspace → Usage."
               : "The scoring service hit an unexpected error.";
         return {
+          clarity: 0,
           market: 0,
-          opportunity: 0,
-          recommendation: 0,
+          team: 0,
+          risk: 0,
+          originality: 0,
           overall: 0,
           feedback: msg,
+          improvement: "",
           error: code,
         };
       }
@@ -127,30 +181,44 @@ Pass threshold is 6 overall. overall = round((market + opportunity + recommendat
       const call = json.choices?.[0]?.message?.tool_calls?.[0];
       const args = call?.function?.arguments;
       if (!args) throw new Error("No tool call returned");
-      const parsed = JSON.parse(args) as Omit<ThesisScores, "error">;
+      const parsed = JSON.parse(args) as Record<string, unknown>;
       const clamp = (n: unknown) =>
         Math.max(0, Math.min(10, Math.round(Number(n) || 0)));
+      const clarity = clamp(parsed.clarity);
       const market = clamp(parsed.market);
-      const opportunity = clamp(parsed.opportunity);
-      const recommendation = clamp(parsed.recommendation);
-      const overall = clamp(
-        parsed.overall ?? Math.round((market + opportunity + recommendation) / 3),
-      );
+      const team = clamp(parsed.team);
+      const risk = clamp(parsed.risk);
+      const originality = clamp(parsed.originality);
+      const avg = (clarity + market + team + risk + originality) / 5;
+      const overall = Math.round(avg * 10) / 10;
       return {
+        clarity,
         market,
-        opportunity,
-        recommendation,
+        team,
+        risk,
+        originality,
         overall,
-        feedback: String(parsed.feedback || "").trim(),
+        feedback: String(parsed.feedback ?? "").trim(),
+        improvement: String(parsed.improvement ?? "").trim(),
+        justifications: {
+          clarity: String(parsed.clarity_justification ?? "").trim(),
+          market: String(parsed.market_justification ?? "").trim(),
+          team: String(parsed.team_justification ?? "").trim(),
+          risk: String(parsed.risk_justification ?? "").trim(),
+          originality: String(parsed.originality_justification ?? "").trim(),
+        },
       };
     } catch (e) {
       console.error("scoreThesis error", e);
       return {
+        clarity: 0,
         market: 0,
-        opportunity: 0,
-        recommendation: 0,
+        team: 0,
+        risk: 0,
+        originality: 0,
         overall: 0,
         feedback: "Couldn't reach the scoring service. Please try again.",
+        improvement: "",
         error: "network_error",
       };
     }

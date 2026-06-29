@@ -240,7 +240,7 @@ Can we find time?
       {
         title: "What do you fix first?",
         context:
-          "You've found the problem. Now make your recommendation. What's the highest-leverage thing NeuroPilot should do?",
+          "You've found the problem. Now make your recommendation. What's the highest-leverage thing Cortexynth should do?",
         tip: "Fix the leak before filling the bucket. Where does one move move the most metrics?",
         options: [
           {
@@ -282,7 +282,7 @@ Can we find time?
       },
     ],
     narrative:
-      "NeuroPilot wasn't losing customers because of marketing, sales, or competition, it was losing them inside the product. Acquisition was healthy, but only 28% of new customers ever completed onboarding. Most never reached the 'aha moment,' so churn climbed exactly as activation collapsed. The fix isn't more leads or more salespeople; it's a redesigned first-run experience that gets customers to value fast.",
+      "Cortexynth wasn't losing customers because of marketing, sales, or competition, it was losing them inside the product. Acquisition was healthy, but only 28% of new customers ever completed onboarding. Most never reached the 'aha moment,' so churn climbed exactly as activation collapsed. The fix isn't more leads or more salespeople; it's a redesigned first-run experience that gets customers to value fast.",
     takeaway:
       "When acquisition is strong and retention is weak, the answer is almost never 'more customers.' It's faster time-to-value.",
   },
@@ -326,10 +326,10 @@ I keep asking the team why, and I keep getting different answers. Marketing says
           {
             id: "B",
             title: "Brand Awareness & Marketing",
-            description: "Do EV drivers know about GreenLoop?",
+            description: "Do EV drivers know about Aerovantage?",
             outcome: "wrong",
             feedback:
-              "Brand awareness has actually improved. Drivers know about GreenLoop, they're just not using the new stations.",
+              "Brand awareness has actually improved. Drivers know about Aerovantage, they're just not using the new stations.",
             hint: "The problem is real-world usage, not visibility.",
           },
           {
@@ -387,7 +387,7 @@ I keep asking the team why, and I keep getting different answers. Marketing says
           {
             id: "D",
             title: "Charging Speed Benchmarks",
-            description: "How does GreenLoop compare to competitors on speed?",
+            description: "How does Aerovantage compare to competitors on speed?",
             outcome: "wrong",
             feedback:
               "Speed would matter in high-density areas. In low-demand zones, drivers aren't present at all.",
@@ -450,12 +450,12 @@ I keep asking the team why, and I keep getting different answers. Marketing says
             description: "Expansion wasn't driven by EV ownership data",
             outcome: "correct",
             feedback:
-              "Confirmed. GreenLoop expanded at speed without validating sufficient EV density in target areas. Execution was excellent, strategy was not.",
+              "Confirmed. Aerovantage expanded at speed without validating sufficient EV density in target areas. Execution was excellent, strategy was not.",
         },
           {
             id: "B",
             title: "Weak brand in new markets",
-            description: "Drivers in new cities don't know about GreenLoop",
+            description: "Drivers in new cities don't know about Aerovantage",
             outcome: "wrong",
             feedback:
               "Awareness is actually growing. Drivers know the brand, they just don't own EVs, or their routes take them elsewhere.",
@@ -476,7 +476,7 @@ I keep asking the team why, and I keep getting different answers. Marketing says
             description: "Fundraising constraints are limiting rollout quality",
             outcome: "wrong",
             feedback:
-              "GreenLoop expanded ahead of schedule. Capital isn't the constraint, how it was deployed is.",
+              "Aerovantage expanded ahead of schedule. Capital isn't the constraint, how it was deployed is.",
             hint: "They have the resources. The question is how they used them.",
         },
         ],
@@ -526,7 +526,7 @@ I keep asking the team why, and I keep getting different answers. Marketing says
       },
     ],
     narrative:
-      "GreenLoop's expansion looked flawless on the surface, on schedule, on budget, well-covered. But the team had optimized execution while skipping the most important strategic question: is there demand here? Cohort data showed older stations in proven EV corridors performed well, while new stations sat empty in low-EV-density zones. The fix is a real demand-forecasting capability, not more marketing or another rollout sprint.",
+      "Aerovantage's expansion looked flawless on the surface, on schedule, on budget, well-covered. But the team had optimized execution while skipping the most important strategic question: is there demand here? Cohort data showed older stations in proven EV corridors performed well, while new stations sat empty in low-EV-density zones. The fix is a real demand-forecasting capability, not more marketing or another rollout sprint.",
     takeaway:
       "Operational excellence doesn't fix a strategic miss. Validate demand before you scale the build.",
   },
@@ -588,7 +588,7 @@ I need clarity before our renewal season starts. What went wrong, and what do we
           {
             id: "D",
             title: "Hiring & Team Capacity",
-            description: "Is MediSync understaffed to support customers?",
+            description: "Is Vitalyne understaffed to support customers?",
             outcome: "wrong",
             feedback:
               "CS headcount is slightly low but not a full explanation. The issue appears structural.",
@@ -631,7 +631,7 @@ I need clarity before our renewal season starts. What went wrong, and what do we
           {
             id: "A",
             title: "Press & Analyst Coverage",
-            description: "How is MediSync perceived in healthtech media?",
+            description: "How is Vitalyne perceived in healthtech media?",
             outcome: "wrong",
             feedback:
               "Media perception is positive. This is an internal product experience problem.",
@@ -694,7 +694,7 @@ I need clarity before our renewal season starts. What went wrong, and what do we
             description: "Doctors are overwhelmed and tuning the platform out",
             outcome: "correct",
             feedback:
-              "Confirmed. Alert fatigue is a well-documented clinical phenomenon. MediSync is training doctors to ignore it, including the alerts that matter.",
+              "Confirmed. Alert fatigue is a well-documented clinical phenomenon. Vitalyne is training doctors to ignore it, including the alerts that matter.",
           },
           {
             id: "B",
@@ -770,7 +770,7 @@ I need clarity before our renewal season starts. What went wrong, and what do we
       },
     ],
     narrative:
-      "MediSync's platform worked, too well, in the wrong direction. Doctors were being buried under hundreds of low-priority alerts each shift, and they coped by tuning the entire system out. That's the textbook pattern of alert fatigue: gradual disengagement without complaints, especially when price isn't the issue. The right fix isn't more support or a premium tier, it's intelligent, doctor-configurable alert prioritization.",
+      "Vitalyne's platform worked, too well, in the wrong direction. Doctors were being buried under hundreds of low-priority alerts each shift, and they coped by tuning the entire system out. That's the textbook pattern of alert fatigue: gradual disengagement without complaints, especially when price isn't the issue. The right fix isn't more support or a premium tier, it's intelligent, doctor-configurable alert prioritization.",
     takeaway:
       "In clinical software, signal matters more than volume. Reducing noise is a feature.",
   },

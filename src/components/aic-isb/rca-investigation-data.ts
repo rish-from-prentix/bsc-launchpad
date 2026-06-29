@@ -293,7 +293,7 @@ Can we find time?
       role: "Founder & CEO, Aerovantage",
       initials: "RK",
       company: "Aerovantage",
-      email: "rhea@greenloop.energy",
+      email: "rhea@aerovantage.ai",
     },
     email: {
       subject: "Something isn't adding up",
@@ -537,7 +537,7 @@ I keep asking the team why, and I keep getting different answers. Marketing says
       role: "Founder & CEO, Wellforge",
       initials: "KS",
       company: "Wellforge",
-      email: "kavya@medisync.health",
+      email: "kavya@wellforge.ai",
     },
     email: {
       subject: "We're losing hospitals and I don't know why",

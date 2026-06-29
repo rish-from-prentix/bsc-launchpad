@@ -18,7 +18,7 @@ export type RcaCase = {
 const cases: Record<string, RcaCase> = {
   neuralai: {
     problem:
-      "Over the last two quarters, Neural AI has continued generating strong enterprise interest, with inbound leads increasing significantly after several successful pilot deployments. However, despite rising demand, revenue growth has slowed and deal closures have become inconsistent. Several enterprise customers delayed final contract signings after technical evaluations, while existing customers reported frustration regarding onboarding timelines and implementation delays. The sales team believes market demand remains strong, but the implementation team raised concerns around increasing customization requests and engineering dependency.",
+      "Over the last two quarters, Cortexynth has continued generating strong enterprise interest, with inbound leads increasing significantly after several successful pilot deployments. However, despite rising demand, revenue growth has slowed and deal closures have become inconsistent. Several enterprise customers delayed final contract signings after technical evaluations, while existing customers reported frustration regarding onboarding timelines and implementation delays. The sales team believes market demand remains strong, but the implementation team raised concerns around increasing customization requests and engineering dependency.",
     rootCauseLabel: "Operational scaling bottleneck, implementation & customization debt",
     keywords: ["implementation", "onboarding", "customization", "operational", "scaling", "delivery", "deployment", "engineering"],
     revenue: [40, 55, 70, 78, 80, 82],
@@ -46,7 +46,7 @@ const cases: Record<string, RcaCase> = {
   },
   echolabs: {
     problem:
-      "Echo Labs experienced explosive user growth after a viral campaign generated millions of installs in a short period of time. Although downloads and signups remain strong, long-term engagement and subscription conversion rates have declined sharply over the past 3 months. The founders believe monetization strategy is the issue, while some advisors argue the deeper problem lies in retention and product stickiness.",
+      "Synaptura experienced explosive user growth after a viral campaign generated millions of installs in a short period of time. Although downloads and signups remain strong, long-term engagement and subscription conversion rates have declined sharply over the past 3 months. The founders believe monetization strategy is the issue, while some advisors argue the deeper problem lies in retention and product stickiness.",
     rootCauseLabel: "Weak retention and unsustainable engagement",
     keywords: ["retention", "stickiness", "engagement", "habit", "churn", "d30", "weekly active"],
     revenue: [20, 26, 30, 32, 31, 28],
@@ -73,7 +73,7 @@ const cases: Record<string, RcaCase> = {
   },
   visionpropilot: {
     problem:
-      "Vision Pro Pilot continues maintaining strong enterprise retention across retail clients, but expansion revenue from existing accounts has slowed significantly. While customers are satisfied with pilot deployments, multi-location rollouts have repeatedly been delayed due to installation complexity and operational dependencies.",
+      "Inferenzo continues maintaining strong enterprise retention across retail clients, but expansion revenue from existing accounts has slowed significantly. While customers are satisfied with pilot deployments, multi-location rollouts have repeatedly been delayed due to installation complexity and operational dependencies.",
     rootCauseLabel: "Hardware deployment scalability bottleneck",
     keywords: ["hardware", "deployment", "installation", "rollout", "operations", "field", "logistics"],
     revenue: [50, 65, 80, 88, 90, 91],
@@ -100,7 +100,7 @@ const cases: Record<string, RcaCase> = {
   },
   carbonloop: {
     problem:
-      "CarbonLoop has experienced a sharp increase in inbound interest from large industrial manufacturers after several successful pilot deployments demonstrated measurable reductions in carbon emissions. Despite strong investor confidence and a rapidly growing enterprise pipeline, the startup has struggled to convert interest into long-term signed deployments. Procurement cycles have become significantly longer, implementation timelines are increasing, and several enterprise customers delayed expansion decisions despite positive pilot outcomes.",
+      "Carbonyx has experienced a sharp increase in inbound interest from large industrial manufacturers after several successful pilot deployments demonstrated measurable reductions in carbon emissions. Despite strong investor confidence and a rapidly growing enterprise pipeline, the startup has struggled to convert interest into long-term signed deployments. Procurement cycles have become significantly longer, implementation timelines are increasing, and several enterprise customers delayed expansion decisions despite positive pilot outcomes.",
     rootCauseLabel:
       "Enterprise procurement friction + infrastructure deployment complexity + capital intensity",
     keywords: ["procurement", "infrastructure", "deployment", "capital", "capex", "enterprise", "complexity"],
@@ -128,7 +128,7 @@ const cases: Record<string, RcaCase> = {
   },
   solvix: {
     problem:
-      "Solvix Energy expanded rapidly over the last year after signing multiple enterprise contracts for its AI-managed solar storage infrastructure platform. Although revenue growth remains strong and enterprise demand continues increasing, operational profitability has steadily declined. Infrastructure maintenance costs increased sharply over the past two quarters, customer support escalations doubled, and several enterprise customers reported inconsistent optimization performance across energy grids.",
+      "EcoVolta expanded rapidly over the last year after signing multiple enterprise contracts for its AI-managed solar storage infrastructure platform. Although revenue growth remains strong and enterprise demand continues increasing, operational profitability has steadily declined. Infrastructure maintenance costs increased sharply over the past two quarters, customer support escalations doubled, and several enterprise customers reported inconsistent optimization performance across energy grids.",
     rootCauseLabel: "Rapid scaling without infrastructure maturity and operational reliability",
     keywords: ["reliability", "infrastructure", "maintenance", "scaling", "operational", "maturity", "uptime", "sre"],
     revenue: [55, 72, 90, 110, 130, 150],
@@ -155,7 +155,7 @@ const cases: Record<string, RcaCase> = {
   },
   ecobyte: {
     problem:
-      "EcoByte initially experienced rapid enterprise adoption as ESG reporting requirements increased across large corporations. However, despite continued market interest in sustainability analytics, new customer acquisition slowed significantly this quarter and churn among mid-sized enterprise clients increased. Sales teams report that customers increasingly compare EcoByte against lower-cost competitors offering similar reporting features.",
+      "Greenovex initially experienced rapid enterprise adoption as ESG reporting requirements increased across large corporations. However, despite continued market interest in sustainability analytics, new customer acquisition slowed significantly this quarter and churn among mid-sized enterprise clients increased. Sales teams report that customers increasingly compare Greenovex against lower-cost competitors offering similar reporting features.",
     rootCauseLabel: "Weak differentiation and declining perceived value in a crowded SaaS market",
     keywords: ["differentiation", "positioning", "value", "commoditization", "competitive", "wedge", "moat"],
     revenue: [60, 78, 92, 100, 102, 100],
@@ -182,7 +182,7 @@ const cases: Record<string, RcaCase> = {
   },
   windsync: {
     problem:
-      "WindSync secured multiple large infrastructure partnerships this year, significantly increasing projected annual revenue and investor confidence. However, despite strong commercial traction, project deployment timelines have nearly doubled over the last two quarters. Internal operations reports show increasing delays in infrastructure implementation, field engineering coordination, and deployment approvals across enterprise partners.",
+      "Biomera secured multiple large infrastructure partnerships this year, significantly increasing projected annual revenue and investor confidence. However, despite strong commercial traction, project deployment timelines have nearly doubled over the last two quarters. Internal operations reports show increasing delays in infrastructure implementation, field engineering coordination, and deployment approvals across enterprise partners.",
     rootCauseLabel: "Infrastructure implementation complexity and immature operational scaling systems",
     keywords: ["implementation", "operations", "scaling", "systems", "field", "process", "coordination"],
     revenue: [50, 70, 88, 100, 112, 122],
@@ -209,7 +209,7 @@ const cases: Record<string, RcaCase> = {
   },
   pulsetrack: {
     problem:
-      "PulseTrack successfully expanded into several hospital networks this quarter, leading to strong enterprise growth and positive investor attention. However, despite increased hospital adoption, physician engagement with the platform has steadily declined. Doctors are dismissing alerts more frequently, session durations dropped significantly, and hospital administrators reported concerns regarding workflow fatigue.",
+      "Vitalyne successfully expanded into several hospital networks this quarter, leading to strong enterprise growth and positive investor attention. However, despite increased hospital adoption, physician engagement with the platform has steadily declined. Doctors are dismissing alerts more frequently, session durations dropped significantly, and hospital administrators reported concerns regarding workflow fatigue.",
     rootCauseLabel: "Workflow fatigue and poor workflow integration",
     keywords: ["workflow", "integration", "alert", "fatigue", "adoption", "clinical", "ehr"],
     revenue: [60, 78, 95, 110, 122, 130],
@@ -236,7 +236,7 @@ const cases: Record<string, RcaCase> = {
   },
   nanocure: {
     problem:
-      "NanoCure Labs continues receiving strong investor attention after recent clinical breakthroughs. Despite scientific progress, commercial partnerships with pharmaceutical companies continue facing delays, procurement timelines are increasing, and the startup’s burn rate has accelerated significantly.",
+      "Sanavex continues receiving strong investor attention after recent clinical breakthroughs. Despite scientific progress, commercial partnerships with pharmaceutical companies continue facing delays, procurement timelines are increasing, and the startup’s burn rate has accelerated significantly.",
     rootCauseLabel: "Commercialization and healthcare procurement bottlenecks",
     keywords: ["commercialization", "procurement", "partnerships", "pharma", "regulatory", "go-to-market", "gtm"],
     revenue: [40, 50, 60, 68, 72, 75],

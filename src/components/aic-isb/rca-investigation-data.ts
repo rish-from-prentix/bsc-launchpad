@@ -42,9 +42,9 @@ export const INVESTIGATIONS: Record<ThemeId, InvestigationCase> = {
   ai: {
     ceo: {
       name: "Aarav Mehta",
-      role: "Founder & CEO, Neural AI",
+      role: "Founder & CEO, Cortexynth",
       initials: "AM",
-      company: "Neural AI",
+      company: "Cortexynth",
       email: "aarav@neural.ai",
     },
     email: {
@@ -290,9 +290,9 @@ Can we find time?
   climate: {
     ceo: {
       name: "Rhea Kapoor",
-      role: "Founder & CEO, GreenLoop Energy",
+      role: "Founder & CEO, Aerovantage",
       initials: "RK",
-      company: "GreenLoop Energy",
+      company: "Aerovantage",
       email: "rhea@greenloop.energy",
     },
     email: {
@@ -534,9 +534,9 @@ I keep asking the team why, and I keep getting different answers. Marketing says
   health: {
     ceo: {
       name: "Dr. Kavya Sharma",
-      role: "Founder & CEO, MediSync Health",
+      role: "Founder & CEO, Wellforge",
       initials: "KS",
-      company: "MediSync Health",
+      company: "Wellforge",
       email: "kavya@medisync.health",
     },
     email: {

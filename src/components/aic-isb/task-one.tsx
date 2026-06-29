@@ -1376,7 +1376,15 @@ function UploadDeckSection({
   );
 }
 
-function ScoreTile({ label, value }: { label: string; value: number | null }) {
+function ScoreTile({
+  label,
+  value,
+  note,
+}: {
+  label: string;
+  value: number | null;
+  note?: string;
+}) {
   return (
     <div className="rounded-xl border border-border bg-background/40 p-4">
       <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
@@ -1390,6 +1398,11 @@ function ScoreTile({ label, value }: { label: string; value: number | null }) {
           </>
         )}
       </div>
+      {note && (
+        <p className="mt-2 text-[11px] text-muted-foreground leading-relaxed">
+          {note}
+        </p>
+      )}
     </div>
   );
 }

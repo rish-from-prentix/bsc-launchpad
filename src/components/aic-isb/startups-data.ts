@@ -39,7 +39,7 @@ export type ThemeBundle = {
 const ai: Startup[] = [
   {
     id: "neuralai",
-    name: "Neural AI",
+    name: "Cortexynth",
     tagline: "AI copilots for smart manufacturing plants.",
     founders: ["Arjun Mehta (Ex-Siemens automation lead)", "Kavya Rao (MIT AI researcher)"],
     hq: "Bangalore, India",
@@ -64,7 +64,7 @@ const ai: Startup[] = [
   },
   {
     id: "echolabs",
-    name: "Echo Labs",
+    name: "Synaptura",
     tagline: "AI emotional wellness companion for Gen Z.",
     founders: ["Co-founders ex-consumer apps"],
     stage: "Seed",
@@ -81,7 +81,7 @@ const ai: Startup[] = [
   },
   {
     id: "visionpropilot",
-    name: "Vision Pro Pilot",
+    name: "Inferenzo",
     tagline: "Computer vision theft prevention for retailers.",
     founders: ["Retail-tech operators"],
     stage: "Series A",
@@ -97,7 +97,7 @@ const ai: Startup[] = [
   },
   {
     id: "synapseflowai",
-    name: "Synapse Flow AI",
+    name: "Cognivolt",
     tagline: "AI workflow automation for SMEs.",
     founders: ["Ex-SaaS PMs"],
     stage: "Seed",
@@ -112,7 +112,7 @@ const ai: Startup[] = [
   },
   {
     id: "medpredictlabsai",
-    name: "MedPredict Labs AI",
+    name: "Vectramind",
     tagline: "AI diagnostics for hospitals.",
     founders: ["Clinician + ML researcher"],
     stage: "Series A",
@@ -127,7 +127,7 @@ const ai: Startup[] = [
   },
   {
     id: "scriptlymeai",
-    name: "Scriptly Me AI",
+    name: "Thinkonyx",
     tagline: "AI content generation for marketers.",
     founders: ["Solo founder"],
     stage: "Pre-seed",
@@ -142,7 +142,7 @@ const ai: Startup[] = [
   },
   {
     id: "mindrobotics",
-    name: "Mind Robotics",
+    name: "Axiomyra",
     tagline: "AI warehouse robotics optimization.",
     founders: ["Robotics PhDs"],
     stage: "Series A",
@@ -157,7 +157,7 @@ const ai: Startup[] = [
   },
   {
     id: "quantechoai",
-    name: "Quant Echo AI",
+    name: "Neurelix",
     tagline: "AI-powered financial forecasting engine.",
     founders: ["Ex-quant + ML lead"],
     stage: "Seed",
@@ -175,7 +175,7 @@ const ai: Startup[] = [
 const climate: Startup[] = [
   {
     id: "carbonloop",
-    name: "CarbonLoop",
+    name: "Carbonyx",
     tagline: "Industrial carbon capture systems.",
     founders: ["Industrial engineers"],
     stage: "Series A",
@@ -190,7 +190,7 @@ const climate: Startup[] = [
   },
   {
     id: "aquagrid",
-    name: "AquaGrid",
+    name: "Verdaflux",
     tagline: "Smart water optimization for cities.",
     founders: ["GovTech operators"],
     stage: "Seed",
@@ -204,7 +204,7 @@ const climate: Startup[] = [
   },
   {
     id: "solvix",
-    name: "Solvix Energy",
+    name: "EcoVolta",
     tagline: "AI-managed solar storage grids.",
     founders: ["Energy + ML founders"],
     stage: "Series A",
@@ -218,7 +218,7 @@ const climate: Startup[] = [
   },
   {
     id: "greenchain",
-    name: "GreenChain Logistics",
+    name: "Terraluxe",
     tagline: "Carbon-neutral logistics optimization.",
     founders: ["Logistics operators"],
     stage: "Seed",
@@ -232,7 +232,7 @@ const climate: Startup[] = [
   },
   {
     id: "terrafuel",
-    name: "TerraFuel",
+    name: "Climatura",
     tagline: "Biofuel alternatives for aviation.",
     founders: ["Chemical engineers"],
     stage: "Series B",
@@ -246,7 +246,7 @@ const climate: Startup[] = [
   },
   {
     id: "ecobyte",
-    name: "EcoByte",
+    name: "Greenovex",
     tagline: "Climate analytics for enterprises.",
     founders: ["ESG consultants"],
     stage: "Seed",
@@ -260,7 +260,7 @@ const climate: Startup[] = [
   },
   {
     id: "puresoil",
-    name: "PureSoil Labs",
+    name: "Solenthia",
     tagline: "Soil regeneration biotechnology.",
     founders: ["Agri-bio researchers"],
     stage: "Seed",
@@ -273,7 +273,7 @@ const climate: Startup[] = [
   },
   {
     id: "windsync",
-    name: "WindSync",
+    name: "Biomera",
     tagline: "Wind turbine optimization platform.",
     founders: ["Energy infra operators"],
     stage: "Series A",
@@ -290,7 +290,7 @@ const climate: Startup[] = [
 const health: Startup[] = [
   {
     id: "pulsetrack",
-    name: "PulseTrack",
+    name: "Vitalyne",
     tagline: "Remote cardiac monitoring infrastructure.",
     founders: ["Cardiologist + engineer"],
     stage: "Series A",
@@ -305,7 +305,7 @@ const health: Startup[] = [
   },
   {
     id: "geneticore",
-    name: "GenetiCore",
+    name: "Carevolt",
     tagline: "AI genomics analysis platform.",
     founders: ["Genomics + ML founders"],
     stage: "Series A",
@@ -319,7 +319,7 @@ const health: Startup[] = [
   },
   {
     id: "caresync",
-    name: "CareSync",
+    name: "Pulsetheria",
     tagline: "Hospital workflow automation.",
     founders: ["Healthcare ops + SaaS"],
     stage: "Seed",
@@ -333,7 +333,7 @@ const health: Startup[] = [
   },
   {
     id: "vitasense",
-    name: "VitaSense",
+    name: "Mediquill",
     tagline: "Wearable health analytics.",
     founders: ["Consumer hardware team"],
     stage: "Seed",
@@ -347,7 +347,7 @@ const health: Startup[] = [
   },
   {
     id: "medilink",
-    name: "MediLink",
+    name: "Healthonyx",
     tagline: "Telemedicine SaaS infrastructure.",
     founders: ["Telehealth operators"],
     stage: "Series A",
@@ -361,7 +361,7 @@ const health: Startup[] = [
   },
   {
     id: "biopulse",
-    name: "BioPulse AI",
+    name: "Vivosphere",
     tagline: "AI-powered drug discovery.",
     founders: ["Computational biology PhDs"],
     stage: "Series A",
@@ -375,7 +375,7 @@ const health: Startup[] = [
   },
   {
     id: "healmate",
-    name: "HealMate",
+    name: "Curolyn",
     tagline: "Mental wellness subscription platform.",
     founders: ["Consumer founders"],
     stage: "Pre-seed",
@@ -389,7 +389,7 @@ const health: Startup[] = [
   },
   {
     id: "nanocure",
-    name: "NanoCure Labs",
+    name: "Sanavex",
     tagline: "Nano-tech cancer diagnostics.",
     founders: ["Bioengineering researchers"],
     stage: "Series A",

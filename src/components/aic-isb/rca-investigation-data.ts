@@ -293,7 +293,7 @@ Can we find time?
       role: "Founder & CEO, Aerovantage",
       initials: "RK",
       company: "Aerovantage",
-      email: "rhea@greenloop.energy",
+      email: "rhea@aerovantage.ai",
     },
     email: {
       subject: "Something isn't adding up",

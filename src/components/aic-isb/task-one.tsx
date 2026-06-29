@@ -1071,20 +1071,44 @@ function EvaluationPanel({
         </div>
       )}
 
-      <div className="mt-5 grid sm:grid-cols-3 gap-3">
+      <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
         <ScoreTile
-          label="Market understanding"
+          label="Clarity of thesis"
+          value={showLoading ? null : scores!.clarity}
+          note={scores?.justifications?.clarity}
+        />
+        <ScoreTile
+          label="Market & research"
           value={showLoading ? null : scores!.market}
+          note={scores?.justifications?.market}
         />
         <ScoreTile
-          label="Opportunity clarity"
-          value={showLoading ? null : scores!.opportunity}
+          label="Founder / team"
+          value={showLoading ? null : scores!.team}
+          note={scores?.justifications?.team}
         />
         <ScoreTile
-          label="Recommendation strength"
-          value={showLoading ? null : scores!.recommendation}
+          label="Risk identification"
+          value={showLoading ? null : scores!.risk}
+          note={scores?.justifications?.risk}
+        />
+        <ScoreTile
+          label="Originality of insight"
+          value={showLoading ? null : scores!.originality}
+          note={scores?.justifications?.originality}
         />
       </div>
+
+      {!showLoading && scores?.improvement && (
+        <div className="mt-4 rounded-2xl border border-border bg-background/40 p-5">
+          <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
+            Area of improvement
+          </div>
+          <p className="mt-2 text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
+            {scores.improvement}
+          </p>
+        </div>
+      )}
 
       <div className="mt-5 flex flex-wrap items-center gap-3">
         <div

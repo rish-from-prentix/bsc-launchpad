@@ -24,6 +24,7 @@ import {
 import { cn, getFirstName } from "@/lib/utils";
 import { THEMES, THEME_LABELS, type ThemeId, type Startup } from "./startups-data";
 import { getRcaCase } from "./rca-data";
+import { Confetti } from "@/components/architecture/confetti";
 import {
   getValuation,
   classifyValuation,
@@ -1277,6 +1278,16 @@ function EarnedPhase({
 
   const certificateRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
+  const [celebrationStage, setCelebrationStage] = useState<"confetti" | "headline" | "cert">("confetti");
+
+  useEffect(() => {
+    const t1 = window.setTimeout(() => setCelebrationStage("headline"), 600);
+    const t2 = window.setTimeout(() => setCelebrationStage("cert"), 2600);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, []);
 
   useEffect(() => {
     const id = "inter-bold-font-link";

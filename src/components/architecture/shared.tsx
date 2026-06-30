@@ -98,7 +98,7 @@ export function VoiceNote({
 }) {
   const id = useId();
   const ref = useRef<HTMLSpanElement>(null);
-  const { register } = useMessageCenter();
+  const { register, markRead } = useMessageCenter();
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -121,14 +121,23 @@ export function VoiceNote({
       fire();
       return;
     }
+    let registered = false;
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          fire();
-          io.disconnect();
+          if (!registered) {
+            fire();
+            registered = true;
+          }
+          // Sustained visibility marks the message as read.
+          const t = window.setTimeout(() => markRead(id), 1200);
+          (el as unknown as { __t?: number }).__t = t;
+        } else {
+          const t = (el as unknown as { __t?: number }).__t;
+          if (t) window.clearTimeout(t);
         }
       },
-      { threshold: 0.01 },
+      { threshold: 0.5 },
     );
     io.observe(el);
     return () => io.disconnect();

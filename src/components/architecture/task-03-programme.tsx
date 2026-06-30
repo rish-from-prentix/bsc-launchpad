@@ -126,7 +126,7 @@ export function ArchTaskThree({ onComplete }: { onComplete: () => void }) {
 
   const partAComplete =
     totalState === "ok" &&
-    ROWS.every((r) => (just[r.key] || "").trim().length >= 5) &&
+    ROWS.every((r) => r.tags.length === 0 || (just[r.key] || "").trim().length >= 5) &&
     ROWS.every((r) => (areas[r.key] || "").trim() !== "");
 
   // Part B state
@@ -276,8 +276,8 @@ export function ArchTaskThree({ onComplete }: { onComplete: () => void }) {
                 <tr>
                   <th className="text-left px-3 py-2">Space</th>
                   <th className="text-left px-3 py-2">Benchmark</th>
-                  <th className="text-left px-3 py-2 w-28">Allocation</th>
-                  <th className="text-left px-3 py-2">Justification (min 5 chars)</th>
+                  <th className="text-left px-3 py-2 w-40">Allocation</th>
+                  <th className="text-left px-3 py-2">Justification (tagged spaces only)</th>
                 </tr>
               </thead>
               <tbody>
@@ -313,13 +313,17 @@ export function ArchTaskThree({ onComplete }: { onComplete: () => void }) {
                       />
                     </td>
                     <td className="px-3 py-2 align-top">
-                      <input
-                        type="text"
-                        value={just[r.key] || ""}
-                        onChange={(e) => setJust({ ...just, [r.key]: e.target.value })}
-                        placeholder="Why this allocation?"
-                        className="w-full rounded bg-[#0a112c] border border-[#1d2a5a] px-2 py-1.5 text-[12px] focus:outline-none focus:ring-2 focus:ring-primary/40"
-                      />
+                      {r.tags.length > 0 ? (
+                        <input
+                          type="text"
+                          value={just[r.key] || ""}
+                          onChange={(e) => setJust({ ...just, [r.key]: e.target.value })}
+                          placeholder={justPlaceholder(r.tags)}
+                          className="w-full rounded bg-[#0a112c] border border-[#1d2a5a] px-2 py-1.5 text-[12px] focus:outline-none focus:ring-2 focus:ring-primary/40"
+                        />
+                      ) : (
+                        <span className="text-[10.5px] text-[#5a6a92] italic">Not required</span>
+                      )}
                     </td>
                   </tr>
                 ))}

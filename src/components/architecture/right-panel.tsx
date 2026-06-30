@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useMessageCenter } from "./message-center";
 
 const MONO = "";
 
@@ -13,44 +13,17 @@ type Popup = {
   msg: string;
 };
 
-const POPUPS: Record<string, Popup> = {
-  km: {
-    icon: "🎙",
-    title: "Voice Note, Kiran Mehta",
-    av: "KM",
-    avc: "km",
-    nm: "Kiran Mehta",
-    ro: "Principal Architect, MERIDIAN ARCHITECTURE\u00a0",
-    msg: "Keep your Week 1 analysis close, <strong>every design decision must trace back to it</strong>. Site data, personas, brief constraints. If you can't cite evidence for a decision, it's not a decision yet.<br/><br/>Don't be afraid to flag gaps. A question at brief stage costs nothing. A missed requirement at planning submission costs everything.",
-  },
-  pn: {
-    icon: "📧",
-    title: "Email, Priya Nair, PMC",
-    av: "PN",
-    avc: "pn",
-    nm: "Priya Nair",
-    ro: "Deputy Commissioner, Pune Municipal Corporation",
-    msg: "Budget is <strong>firm at INR 8.1 crore.</strong> Asha Foundation will operate the café from 8am daily, but they need <strong>independent access confirmed in drawings</strong> before signing the MOU. Planning submission window opens in 3 weeks. The ward councillors want welcoming, not institutional.",
-  },
-  aj: {
-    icon: "💰",
-    title: "Message, Arvind Joshi, QS",
-    av: "AJ",
-    avc: "aj",
-    nm: "Arvind Joshi",
-    ro: "QS, Bharat Cost Consultants",
-    msg: "<strong>Black cotton soil will push substructure to upper rate band (INR 2,400/sq.ft.)</strong>, factor this in early. Nashik removed passive cooling to hit budget. Their energy bills ran 27% over for 5 years. <strong>Do not repeat that trade-off</strong> without explicitly flagging it.",
-  },
-};
-
 const AVATAR_CLS: Record<string, string> = {
   km: "bg-[#1a2a1a] text-[#52c47a] border-[#52c47a]",
   pn: "bg-[#1a1a2a] text-[#5299e0] border-[#5299e0]",
   aj: "bg-[#2a1a1a] text-[#e05252] border-[#e05252]",
+  sr: "bg-[#1a1a2a] text-[#e0b752] border-[#e0b752]",
+  sm: "bg-[#1a1a2a] text-[#e0b752] border-[#e0b752]",
+  da: "bg-[#2a1a1a] text-[#e05252] border-[#e05252]",
 };
 
 export function ArchRightPanel() {
-  const [open, setOpen] = useState<Popup | null>(null);
+  const { archive, unread, open } = useMessageCenter();
 
   return (
     <>
@@ -60,10 +33,28 @@ export function ArchRightPanel() {
           "hidden lg:block",
         )}
       >
-        <Section label="Messages">
-          <NoteItem unread onClick={() => setOpen(POPUPS.km)} from="KIRAN MEHTA" time="Now" body="Check your active task brief" />
-          <NoteItem unread onClick={() => setOpen(POPUPS.pn)} from="PRIYA NAIR · PMC" time="08:12" body="Budget firm at INR 8.1cr · entrance must face DP Road" />
-          <NoteItem onClick={() => setOpen(POPUPS.aj)} from="ARVIND JOSHI · QS" time="09:15" body="Black cotton soil, substructure upper rate" />
+        <Section label={`Messages${archive.length ? ` (${archive.length})` : ""}`}>
+          {archive.length === 0 ? (
+            <div className="text-[10.5px] text-[#5a6a92] italic leading-[1.5] px-1 py-2">
+              Stakeholder messages will land here as they arrive.
+            </div>
+          ) : (
+            archive
+              .slice()
+              .reverse()
+              .map((m) => (
+                <NoteItem
+                  key={m.id}
+                  unread={unread.has(m.id)}
+                  onClick={() => open(m.id)}
+                  from={`${m.name.toUpperCase()}${
+                    m.role ? " · " + m.role.split(",")[0].split("·")[0].trim().slice(0, 14) : ""
+                  }`}
+                  time={m.timestamp.split("·")[0].trim()}
+                  body={m.preview}
+                />
+              ))
+          )}
         </Section>
 
         <Section label="Deadlines">
@@ -85,8 +76,6 @@ export function ArchRightPanel() {
           </div>
         </Section>
       </aside>
-
-      {open && <PopupModal popup={open} onClose={() => setOpen(null)} />}
     </>
   );
 }

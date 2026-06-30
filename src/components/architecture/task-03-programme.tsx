@@ -93,6 +93,22 @@ function wordCount(s: string) {
   return s.trim().split(/\s+/).filter(Boolean).length;
 }
 
+function justPlaceholder(tags: RowTag[]): string {
+  if (tags.length > 1) {
+    return "Justify adjacency, separation, and independent access together.";
+  }
+  switch (tags[0]) {
+    case "adj":
+      return "Which space must this sit next to, and why?";
+    case "sep":
+      return "What is this being separated from, and what risk does that avoid?";
+    case "indep":
+      return "How does this get independent access, separate door, service lane?";
+    default:
+      return "";
+  }
+}
+
 export function ArchTaskThree({ onComplete }: { onComplete: () => void }) {
   // Part A state
   const [areas, setAreas] = useState<Record<string, string>>({});

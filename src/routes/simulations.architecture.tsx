@@ -16,6 +16,7 @@ import { ArchTaskTen } from "@/components/architecture/task-10-audit";
 import { ArchTaskEleven } from "@/components/architecture/task-11-crisis";
 import { ArchRightPanel } from "@/components/architecture/right-panel";
 import { ArchTaskNavigator } from "@/components/architecture/task-navigator";
+import { MessageCenterProvider } from "@/components/architecture/message-center";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/simulations/architecture")({
@@ -74,7 +75,8 @@ function ArchitecturePage() {
   };
 
   return (
-    <div className="arch-surface min-h-screen bg-[#070a1c] text-[#e6ecff]">
+    <MessageCenterProvider>
+      <div className="arch-surface min-h-screen bg-[#070a1c] text-[#e6ecff]">
       <ArchProgressBar
         candidateName={name}
         tasks={ARCH_TASKS}
@@ -117,7 +119,8 @@ function ArchitecturePage() {
         </main>
         <ArchRightPanel />
       </div>
-    </div>
+      </div>
+    </MessageCenterProvider>
   );
 }
 

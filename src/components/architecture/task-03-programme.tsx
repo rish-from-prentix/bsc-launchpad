@@ -421,6 +421,9 @@ export function ArchTaskThree({ onComplete }: { onComplete: () => void }) {
                 type="button"
                 onClick={() => {
                   setConfirm(false);
+                  try {
+                    window.localStorage.setItem("arch.task3.adjScore", String(adjScore));
+                  } catch {}
                   onComplete();
                 }}
                 className="rounded px-4 py-1.5 text-[11.5px] font-semibold bg-primary text-black border border-primary"

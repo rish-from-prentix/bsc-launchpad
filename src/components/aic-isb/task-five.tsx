@@ -1347,6 +1347,27 @@ function EarnedPhase({
 
   const previewScale = 0.3;
 
+  if (celebrationStage !== "cert") {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
+        <Confetti />
+        {celebrationStage === "headline" && (
+          <div
+            className="text-center px-6"
+            style={{ animation: "fadeSlide 600ms ease-out" }}
+          >
+            <div className="text-5xl sm:text-6xl font-semibold tracking-tight text-foreground">
+              Internship complete
+            </div>
+            <div className="mt-4 text-xs sm:text-sm text-muted-foreground uppercase tracking-[0.22em]">
+              AIC × ISB · Program Manager
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div
       className="mx-auto max-w-[760px] px-5 sm:px-8 py-12 sm:py-16 space-y-16"

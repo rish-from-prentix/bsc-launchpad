@@ -24,6 +24,7 @@ import {
 import { cn, getFirstName } from "@/lib/utils";
 import { THEMES, THEME_LABELS, type ThemeId, type Startup } from "./startups-data";
 import { getRcaCase } from "./rca-data";
+import { Confetti } from "@/components/architecture/confetti";
 import {
   getValuation,
   classifyValuation,
@@ -1277,6 +1278,16 @@ function EarnedPhase({
 
   const certificateRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
+  const [celebrationStage, setCelebrationStage] = useState<"confetti" | "headline" | "cert">("confetti");
+
+  useEffect(() => {
+    const t1 = window.setTimeout(() => setCelebrationStage("headline"), 600);
+    const t2 = window.setTimeout(() => setCelebrationStage("cert"), 2600);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, []);
 
   useEffect(() => {
     const id = "inter-bold-font-link";
@@ -1335,6 +1346,27 @@ function EarnedPhase({
   }
 
   const previewScale = 0.3;
+
+  if (celebrationStage !== "cert") {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
+        <Confetti />
+        {celebrationStage === "headline" && (
+          <div
+            className="text-center px-6"
+            style={{ animation: "fadeSlide 600ms ease-out" }}
+          >
+            <div className="text-5xl sm:text-6xl font-semibold tracking-tight text-foreground">
+              Internship complete
+            </div>
+            <div className="mt-4 text-xs sm:text-sm text-muted-foreground uppercase tracking-[0.22em]">
+              AIC × ISB · Program Manager
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div

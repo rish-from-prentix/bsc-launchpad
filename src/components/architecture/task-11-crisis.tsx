@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Shuffle, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { scoreArchitectureTask, type ArchScore } from "@/lib/score-architecture-task.functions";
-import { TaskFrame, TaskHeader, VoiceNote, SectionHeader, HelperText, SubmitBar, FeedbackPanel, MentorPrinciple } from "./shared";
+import { TaskFrame, TaskHeader, VoiceNote, SectionHeader, HelperText, SubmitBar, MentorPrinciple } from "./shared";
 import { ARCH_TASKS, CRISIS_SCENARIOS, type CrisisScenario } from "./arch-data";
 import { cn } from "@/lib/utils";
 

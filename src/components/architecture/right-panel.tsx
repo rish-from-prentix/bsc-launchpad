@@ -90,15 +90,22 @@ function NoteItem({
       type="button"
       onClick={onClick}
       className={cn(
-        "relative w-full text-left bg-[#152149] border border-[#1d2a5a] rounded-[5px] px-[10px] py-[8px] mb-[5px] text-[11px] text-[#94a3c4] leading-[1.5] hover:border-[#2a3a72] transition",
-        unread && "pl-[16px]",
+        "relative w-full text-left rounded-[5px] px-[10px] py-[8px] mb-[5px] text-[11px] leading-[1.5] border transition",
+        unread
+          ? "bg-[#13265a] border-l-[3px] border-l-primary border-y-[#2a3a72] border-r-[#2a3a72] text-[#e6ecff]"
+          : "bg-[#152149] border-[#1d2a5a] text-[#94a3c4] hover:border-[#2a3a72]",
       )}
     >
-      {unread && (
-        <span className="absolute left-[5px] top-1/2 -translate-y-1/2 h-[5px] w-[5px] rounded-full bg-primary" />
-      )}
-      <div className={cn("text-[9px] text-primary mb-0.5 flex justify-between", MONO)}>
-        <span>{from}</span>
+      <div className={cn("text-[9px] text-primary mb-0.5 flex justify-between items-center gap-2", MONO)}>
+        <span className="flex items-center gap-[5px]">
+          {unread && (
+            <span
+              aria-label="Unread"
+              className="h-[7px] w-[7px] rounded-full border border-primary bg-transparent shrink-0"
+            />
+          )}
+          {from}
+        </span>
         <span className="text-[#3a4670]">{time}</span>
       </div>
       <div>{body}</div>

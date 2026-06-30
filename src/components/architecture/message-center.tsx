@@ -28,6 +28,7 @@ type Ctx = {
   archive: ArchMessage[];
   unread: Set<string>;
   open: (id: string) => void;
+  markRead: (id: string) => void;
 };
 
 const MessageCenterCtx = createContext<Ctx | null>(null);
@@ -42,6 +43,7 @@ export function useMessageCenter() {
       archive: [] as ArchMessage[],
       unread: new Set<string>(),
       open: () => {},
+      markRead: () => {},
     } satisfies Ctx;
   }
   return c;
@@ -128,6 +130,15 @@ export function MessageCenterProvider({ children }: { children: ReactNode }) {
     [archive, current],
   );
 
+  const markRead = useCallback((id: string) => {
+    setUnread((u) => {
+      if (!u.has(id)) return u;
+      const n = new Set(u);
+      n.delete(id);
+      return n;
+    });
+  }, []);
+
   // Escape closes modal first, then dismisses current toast
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -145,8 +156,8 @@ export function MessageCenterProvider({ children }: { children: ReactNode }) {
   }, [openMsg, current]);
 
   const value = useMemo<Ctx>(
-    () => ({ register: enqueue, fire: enqueue, archive, unread, open }),
-    [enqueue, archive, unread, open],
+    () => ({ register: enqueue, fire: enqueue, archive, unread, open, markRead }),
+    [enqueue, archive, unread, open, markRead],
   );
 
   return (
@@ -266,9 +277,9 @@ function MessageModal({ msg, onClose }: { msg: ArchMessage; onClose: () => void 
     >
       <div className="bg-[#0f1a3e] border border-[#2a3a72] rounded-[10px] w-[480px] max-w-[95vw] max-h-[85vh] overflow-auto shadow-[0_20px_60px_rgba(0,0,0,0.8)]">
         <div className="flex items-center px-3 py-[10px] bg-[#0b1336] border-b border-[#1d2a5a] gap-[7px] sticky top-0">
-          <span className="text-[14px]">{msg.audioUrl ? "🎙" : "💬"}</span>
+          <span className="text-[14px]">💬</span>
           <span className="text-[11.5px] text-[#e6ecff] font-medium">
-            {msg.audioUrl ? "Voice Note" : "Message"}, {msg.name}
+            Message, {msg.name}
           </span>
           {msg.tone === "urgent" && (
             <span className="text-[8.5px] uppercase tracking-[0.14em] px-1.5 py-0.5 rounded-sm bg-[#e05252]/15 text-[#e05252] border border-[#e05252]/40">
@@ -308,18 +319,8 @@ function MessageModal({ msg, onClose }: { msg: ArchMessage; onClose: () => void 
             >
               Your browser does not support audio playback.
             </audio>
-          ) : (
-            <div className="flex items-center gap-[2px] h-5 mb-3">
-              {[6, 14, 10, 18, 8, 20, 12, 16, 9, 14, 19, 11, 7, 15, 10].map((h, i) => (
-                <span
-                  key={i}
-                  className="w-[3px] rounded-[2px] bg-primary/50"
-                  style={{ height: `${h}px` }}
-                />
-              ))}
-            </div>
-          )}
-          <div className="text-[12.5px] leading-[1.7] italic text-[#94a3c4] [&_strong]:text-[#e6ecff] [&_strong]:not-italic [&_b]:text-[#e6ecff] [&_b]:not-italic">
+          ) : null}
+          <div className="text-[12.5px] leading-[1.7] text-[#c4cfe6] [&_strong]:text-[#e6ecff] [&_b]:text-[#e6ecff]">
             {msg.body}
           </div>
           <div className="mt-4 flex justify-end">

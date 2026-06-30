@@ -98,13 +98,13 @@ function ArchitecturePage() {
             <ArchTaskTwo onComplete={() => advance(2)} />,
             <ArchTaskThree onComplete={() => advance(3)} />,
             <ArchTaskFour onComplete={() => advance(4)} />,
-            <ArchTaskFive onComplete={() => advance(5)} />,
+            <ArchTaskFive onComplete={() => advance(5)} studentName={name} />,
             <ArchTaskSix onComplete={() => advance(6)} />,
             <ArchTaskSeven onComplete={() => advance(7)} />,
             <ArchTaskEight onComplete={() => advance(8)} />,
             <ArchTaskNine onComplete={() => advance(9)} />,
             <ArchTaskTen onComplete={() => advance(10)} />,
-            <ArchTaskEleven onComplete={() => setCompleted((c) => { const n = new Set(c); n.add(11); return n; })} />,
+            <ArchTaskEleven studentName={name} onComplete={() => setCompleted((c) => { const n = new Set(c); n.add(11); return n; })} />,
           ]).map((node, idx) => (
             <div key={idx} hidden={currentPhase !== idx + 1}>
               {node}

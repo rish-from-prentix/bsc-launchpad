@@ -5,6 +5,7 @@ import { scoreArchitectureTask, type ArchScore } from "@/lib/score-architecture-
 import { TaskFrame, TaskHeader, VoiceNote, SectionHeader, HelperText, SubmitBar, MentorPrinciple } from "./shared";
 import { ARCH_TASKS, CRISIS_SCENARIOS, type CrisisScenario } from "./arch-data";
 import { cn } from "@/lib/utils";
+import { ArchCompletion } from "./arch-completion";
 
 const META = ARCH_TASKS[10];
 
@@ -40,7 +41,7 @@ const CHALLENGE: Record<RiskKey, { from: string; text: string; expects: string[]
   },
 };
 
-export function ArchTaskEleven({ onComplete }: { onComplete: () => void }) {
+export function ArchTaskEleven({ onComplete, studentName }: { onComplete: () => void; studentName: string }) {
   const score = useServerFn(scoreArchitectureTask);
   const [scenario, setScenario] = useState<CrisisScenario | null>(null);
   const [risk, setRisk] = useState<RiskKey | "">("");
@@ -108,20 +109,7 @@ export function ArchTaskEleven({ onComplete }: { onComplete: () => void }) {
   }
 
   if (done) {
-    return (
-      <TaskFrame>
-        <div className="text-center py-16">
-          <div className="text-5xl mb-4">🎓</div>
-          <h2 className="text-3xl font-semibold text-primary">Internship Complete</h2>
-          <p className="mt-4 text-muted-foreground max-w-md mx-auto">
-            You have worked through all 11 tasks of the Community Learning Hub project, from client brief to crisis resolution. This is the full architecture design workflow.
-          </p>
-          <div className="mt-6 text-xs font-mono text-muted-foreground/70">
-            Community Learning Hub · Survey 147, Aundh, Pune · MERIDIAN ARCHITECTURE{"\u00a0"} · CLHA-2024
-          </div>
-        </div>
-      </TaskFrame>
-    );
+    return <ArchCompletion name={studentName} />;
   }
 
   return (

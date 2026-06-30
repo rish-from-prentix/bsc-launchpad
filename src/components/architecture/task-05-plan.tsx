@@ -1,6 +1,7 @@
-import { useState, type ReactNode } from "react";
+import { useState, useRef, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { CheckCircle2, Circle, Lock, Upload, XCircle, X as XIcon } from "lucide-react";
+import { CheckCircle2, Circle, Lock, Upload, XCircle, X as XIcon, Linkedin, Copy, Check, Download } from "lucide-react";
+import html2canvas from "html2canvas";
 import {
   TaskFrame,
   TaskHeader,
@@ -12,6 +13,14 @@ import {
 import { ARCH_TASKS } from "./arch-data";
 
 const META = ARCH_TASKS[4];
+
+const FLOORPLAN_CAPTION = `Just completed Phase 3 of my Architecture Design Internship simulation — designing a Community Learning Hub
+
+This is my schematic floor plan: a 12,000–15,000 sq.ft. building working around three protected neem trees, a strict 8.1cr budget, and a brief that demanded the entrance face DP Road while keeping the library acoustically separated from a 300-person multipurpose hall.
+
+Every space on this plan had to be justified against real site data, client personas, and adjacency rules before it could go anywhere near a drawing.
+
+#ArchitectureStudent #DesignThinking #Internship #Architecture #SpacePlanning`;
 
 type FootprintId = "compact" | "pavilion" | "lshape";
 
@@ -857,7 +866,186 @@ function Step4({
   );
 }
 
-export function ArchTaskFive({ onComplete }: { onComplete: () => void }) {
+function FloorPlanShare({
+  studentName,
+  footprint,
+  placements,
+}: {
+  studentName: string;
+  footprint: FootprintId;
+  placements: Record<PlacementKey, ZoneId>;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [busy, setBusy] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const name = studentName?.trim() || "Architecture Intern";
+
+  async function generateAndDownload(): Promise<void> {
+    if (!cardRef.current) return;
+    const canvas = await html2canvas(cardRef.current, {
+      scale: 1,
+      backgroundColor: "#0A1628",
+      width: 1200,
+      height: 627,
+      windowWidth: 1200,
+      windowHeight: 627,
+    });
+    const url = canvas.toDataURL("image/png");
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Meridian-FloorPlan-${name.replace(/\s+/g, "-")}.png`;
+    a.click();
+  }
+
+  async function shareOnLinkedIn() {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await generateAndDownload();
+    } catch {
+      /* noop */
+    } finally {
+      setBusy(false);
+    }
+    const shareUrl = typeof window !== "undefined" ? window.location.href : "https://prentix.ai";
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
+  }
+
+  function copyCaption() {
+    navigator.clipboard.writeText(FLOORPLAN_CAPTION).then(() => {
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    });
+  }
+
+  return (
+    <div className="rounded-[7px] border border-primary/30 bg-[#0f1a3e] p-4 mt-3">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <div className="text-[10px] uppercase tracking-[0.18em] text-primary font-semibold">
+            Share your floor plan
+          </div>
+          <p className="mt-1 text-[12px] text-[#94a3c4] max-w-md leading-[1.55]">
+            Generates a 1200×627 LinkedIn image card with your reference floor plan, your name, and the Meridian watermark. Then opens the LinkedIn share dialog, attach the downloaded PNG and paste the caption.
+          </p>
+        </div>
+      </div>
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={shareOnLinkedIn}
+          disabled={busy}
+          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-[12px] font-semibold text-black hover:brightness-110 disabled:opacity-50"
+        >
+          <Linkedin className="h-3.5 w-3.5" />
+          {busy ? "Generating…" : "Share on LinkedIn"}
+        </button>
+        <button
+          type="button"
+          onClick={generateAndDownload}
+          className="inline-flex items-center gap-2 rounded-md border border-[#2a3a72] px-4 py-2 text-[12px] text-[#e6ecff] hover:border-primary/50 hover:text-primary"
+        >
+          <Download className="h-3.5 w-3.5" /> Download image
+        </button>
+        <button
+          type="button"
+          onClick={copyCaption}
+          className="inline-flex items-center gap-2 rounded-md border border-[#2a3a72] px-4 py-2 text-[12px] text-[#94a3c4] hover:text-[#e6ecff]"
+        >
+          {copied ? <Check className="h-3.5 w-3.5 text-[#7ab87a]" /> : <Copy className="h-3.5 w-3.5" />}
+          {copied ? "Caption copied" : "Copy caption"}
+        </button>
+      </div>
+
+      {/* Hidden capture card */}
+      <div style={{ position: "fixed", left: -100000, top: 0, pointerEvents: "none" }} aria-hidden="true">
+        <div
+          ref={cardRef}
+          style={{
+            width: 1200,
+            height: 627,
+            background:
+              "linear-gradient(135deg,#070a1c 0%,#0A1628 55%,#13315c 100%)",
+            color: "#e6ecff",
+            fontFamily: "'Inter','Helvetica Neue',system-ui,sans-serif",
+            position: "relative",
+            padding: 56,
+            display: "flex",
+            gap: 40,
+            alignItems: "stretch",
+          }}
+        >
+          {/* watermark logo */}
+          <div style={{ position: "absolute", top: 32, right: 48, textAlign: "right" }}>
+            <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "0.04em", color: "#e6ecff" }}>
+              MERIDIAN
+            </div>
+            <div style={{ fontSize: 11, letterSpacing: "0.32em", color: "#5dc4fe", fontWeight: 600, marginTop: 2 }}>
+              ARCHITECTURE INTERNSHIP
+            </div>
+          </div>
+
+          {/* Floor plan panel */}
+          <div
+            style={{
+              width: 560,
+              flexShrink: 0,
+              background: "#070a1c",
+              border: "1px solid #1d2a5a",
+              borderRadius: 10,
+              padding: 14,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div style={{ fontSize: 11, letterSpacing: "0.18em", color: "#5dc4fe", fontWeight: 600 }}>
+              SCHEMATIC FLOOR PLAN
+            </div>
+            <div style={{ flex: 1, marginTop: 8 }}>
+              <ZoneGrid placements={placements} />
+            </div>
+            <div style={{ marginTop: 8, fontSize: 11, color: "#94a3c4" }}>
+              {footprint === "compact"
+                ? "Compact tower · 3 storeys"
+                : footprint === "pavilion"
+                  ? "Spread pavilion · 1 storey"
+                  : "L-shaped courtyard · 2 storeys"}{" "}
+              · Site 68m × 71m
+            </div>
+          </div>
+
+          {/* Copy panel */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", paddingTop: 64 }}>
+            <div style={{ fontSize: 13, letterSpacing: "0.22em", color: "#5dc4fe", fontWeight: 600 }}>
+              SCHEMATIC FLOOR PLAN — WEEK 3
+            </div>
+            <div style={{ marginTop: 16, fontSize: 44, fontWeight: 800, lineHeight: 1.1, color: "#ffffff" }}>
+              Community Learning Hub
+            </div>
+            <div style={{ marginTop: 14, fontSize: 17, color: "#c4cfe6", lineHeight: 1.5, maxWidth: 460 }}>
+              12,000–15,000 sq.ft · three protected neem trees · 8.1cr budget · entrance on DP Road · acoustically separated library.
+            </div>
+            <div style={{ marginTop: 26, paddingTop: 18, borderTop: "1px solid #1d2a5a" }}>
+              <div style={{ fontSize: 11, letterSpacing: "0.18em", color: "#94a3c4", fontWeight: 600 }}>
+                PRESENTED BY
+              </div>
+              <div style={{ marginTop: 4, fontSize: 24, fontWeight: 700, color: "#ffffff" }}>{name}</div>
+              <div style={{ marginTop: 2, fontSize: 13, color: "#94a3c4" }}>
+                Meridian Architecture Studio · Virtual Internship by Prentix
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function ArchTaskFive({ onComplete, studentName }: { onComplete: () => void; studentName: string }) {
   const [step, setStep] = useState(1);
   const [completed, setCompleted] = useState<Set<number>>(new Set());
   const [footprint, setFootprint] = useState<FootprintId | null>(null);
@@ -957,12 +1145,19 @@ export function ArchTaskFive({ onComplete }: { onComplete: () => void }) {
       </SectionHeader>
       {completed.has(3) && footprint && placements ? (
         submitted ? (
-          <div className="rounded-[7px] border border-primary/40 bg-primary/10 px-3 py-3">
-            <div className="text-[10px] uppercase tracking-[0.12em] text-primary mb-1">Kiran Mehta's reaction</div>
-            <p className="text-[12px] italic text-[#e6ecff] leading-[1.6]">
-              "{FOOTPRINTS.find((f) => f.id === footprint)!.reaction}"
-            </p>
-          </div>
+          <>
+            <div className="rounded-[7px] border border-primary/40 bg-primary/10 px-3 py-3">
+              <div className="text-[10px] uppercase tracking-[0.12em] text-primary mb-1">Kiran Mehta's reaction</div>
+              <p className="text-[12px] italic text-[#e6ecff] leading-[1.6]">
+                "{FOOTPRINTS.find((f) => f.id === footprint)!.reaction}"
+              </p>
+            </div>
+            <FloorPlanShare
+              studentName={studentName}
+              footprint={footprint}
+              placements={placements}
+            />
+          </>
         ) : (
           <Step4
             footprint={footprint}

@@ -1,6 +1,7 @@
-import { useState, type ReactNode } from "react";
+import { useState, useRef, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { CheckCircle2, Circle, Lock, Upload, XCircle, X as XIcon } from "lucide-react";
+import { CheckCircle2, Circle, Lock, Upload, XCircle, X as XIcon, Linkedin, Copy, Check, Download } from "lucide-react";
+import html2canvas from "html2canvas";
 import {
   TaskFrame,
   TaskHeader,
@@ -12,6 +13,14 @@ import {
 import { ARCH_TASKS } from "./arch-data";
 
 const META = ARCH_TASKS[4];
+
+const FLOORPLAN_CAPTION = `Just completed Phase 3 of my Architecture Design Internship simulation — designing a Community Learning Hub
+
+This is my schematic floor plan: a 12,000–15,000 sq.ft. building working around three protected neem trees, a strict 8.1cr budget, and a brief that demanded the entrance face DP Road while keeping the library acoustically separated from a 300-person multipurpose hall.
+
+Every space on this plan had to be justified against real site data, client personas, and adjacency rules before it could go anywhere near a drawing.
+
+#ArchitectureStudent #DesignThinking #Internship #Architecture #SpacePlanning`;
 
 type FootprintId = "compact" | "pavilion" | "lshape";
 

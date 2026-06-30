@@ -355,7 +355,7 @@ export function ArchTaskThree({ onComplete }: { onComplete: () => void }) {
                     </div>
                   </td>
                   <td className="px-3 py-2 align-top text-[11px] text-[#94a3c4]">
-                    Locked. Non-optional per brief.
+                    {"\n"}
                   </td>
                 </tr>
               </tbody>

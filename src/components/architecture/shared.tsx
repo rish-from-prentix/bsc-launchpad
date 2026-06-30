@@ -1,6 +1,7 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useId, useRef } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useMessageCenter, extractText } from "./message-center";
 
 // Architecture internship surface tokens, tuned to mirror the HTML reference
 // (Meridian Studio intern portal) but with AIC cyan as the accent.
@@ -94,6 +95,7 @@ export function VoiceNote({
   children,
   tone = "default",
   audioUrl,
+  preview,
 }: {
   initials: string;
   name: string;
@@ -102,67 +104,47 @@ export function VoiceNote({
   children: ReactNode;
   tone?: "default" | "urgent";
   audioUrl?: string;
+  preview?: string;
 }) {
-  const key = initials.toLowerCase();
-  const avatarCls =
-    tone === "urgent"
-      ? "bg-[#2a1a1a] text-[#e05252] border-[#e05252]"
-      : AVATAR_PALETTE[key] || "bg-[#1a2a1a] text-[#52c47a] border-[#52c47a]";
-  return (
-    <div
-      className={cn(
-        "relative flex gap-[10px] rounded-[7px] border px-[14px] py-[12px] mb-1 overflow-hidden",
-        SURFACE_2,
-        tone === "urgent" ? "border-[#5a1a1a]" : BORDER_LIGHT,
-      )}
-    >
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-[2px]"
-        style={{
-          background:
-            tone === "urgent"
-              ? "linear-gradient(90deg, #e05252, transparent)"
-              : "linear-gradient(90deg, var(--primary), transparent)",
-        }}
-      />
-      <div
-        className={cn(
-          "h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-[10px] font-semibold border",
-          MONO,
-          avatarCls,
-        )}
-      >
-        {initials}
-      </div>
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-x-[7px] gap-y-0.5 mb-[5px]">
-          <span className={cn("text-[11px] font-semibold", TEXT)}>{name}</span>
-          <span className={cn("text-[10px]", MONO, MUTED)}>{role}</span>
-          <span className={cn("text-[10px] ml-auto", MONO, DIM)}>{timestamp}</span>
-        </div>
-        {audioUrl ? (
-          <audio
-            controls
-            src={audioUrl}
-            className="w-full h-8 mb-[8px] [&::-webkit-media-controls-panel]:bg-[#1d2a5a]"
-          >
-            Your browser does not support audio playback.
-          </audio>
-        ) : (
-          <div className={cn("flex items-center gap-[2px] h-5 mb-[6px]")}>
-            {[6, 14, 10, 18, 8, 20, 12, 16, 9, 14, 19, 11].map((h, i) => (
-              <span
-                key={i}
-                className="w-[3px] rounded-[2px] bg-primary/50"
-                style={{ height: `${h}px` }}
-              />
-            ))}
-          </div>
-        )}
-        <div className={cn("text-[12px] leading-[1.6] italic", MUTED, "[&_strong]:text-[#e6ecff] [&_strong]:not-italic [&_b]:text-[#e6ecff] [&_b]:not-italic")}>{children}</div>
-      </div>
-    </div>
-  );
+  const id = useId();
+  const ref = useRef<HTMLSpanElement>(null);
+  const { register } = useMessageCenter();
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const fire = () => {
+      const raw = preview ?? extractText(children);
+      const trimmed = raw.trim().replace(/\s+/g, " ");
+      register({
+        id,
+        initials,
+        name,
+        role,
+        timestamp,
+        tone,
+        audioUrl,
+        body: children,
+        preview: trimmed.length > 80 ? trimmed.slice(0, 80).trimEnd() + "..." : trimmed,
+      });
+    };
+    if (typeof IntersectionObserver === "undefined") {
+      fire();
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          fire();
+          io.disconnect();
+        }
+      },
+      { threshold: 0.01 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+  return <span ref={ref} aria-hidden="true" className="block w-px h-px -m-px" />;
 }
 
 export function DataCard({ label, children }: { label: string; children: ReactNode }) {

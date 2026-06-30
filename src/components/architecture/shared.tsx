@@ -6,7 +6,6 @@ import { useMessageCenter, extractText } from "./message-center";
 // Architecture internship surface tokens, tuned to mirror the HTML reference
 // (Meridian Studio intern portal) but with AIC cyan as the accent.
 const SURFACE = "bg-[#0f1a3e]";
-const SURFACE_2 = "bg-[#152149]";
 const BORDER = "border-[#1d2a5a]";
 const BORDER_LIGHT = "border-[#2a3a72]";
 const MUTED = "text-[#94a3c4]";
@@ -77,15 +76,6 @@ export function MentorPrinciple({ children }: { children: ReactNode }) {
     </div>
   );
 }
-
-const AVATAR_PALETTE: Record<string, string> = {
-  km: "bg-[#1a2a1a] text-[#52c47a] border-[#52c47a]",
-  pn: "bg-[#1a1a2a] text-[#5299e0] border-[#5299e0]",
-  aj: "bg-[#2a1a1a] text-[#e05252] border-[#e05252]",
-  sm: "bg-[#1a1a2a] text-[#e0b752] border-[#e0b752]",
-  da: "bg-[#2a1a1a] text-[#e05252] border-[#e05252]",
-  sr: "bg-[#1a1a2a] text-[#e0b752] border-[#e0b752]",
-};
 
 export function VoiceNote({
   initials,

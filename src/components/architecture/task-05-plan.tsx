@@ -866,7 +866,7 @@ function Step4({
   );
 }
 
-export function ArchTaskFive({ onComplete }: { onComplete: () => void }) {
+export function ArchTaskFive({ onComplete, studentName }: { onComplete: () => void; studentName: string }) {
   const [step, setStep] = useState(1);
   const [completed, setCompleted] = useState<Set<number>>(new Set());
   const [footprint, setFootprint] = useState<FootprintId | null>(null);
@@ -966,12 +966,19 @@ export function ArchTaskFive({ onComplete }: { onComplete: () => void }) {
       </SectionHeader>
       {completed.has(3) && footprint && placements ? (
         submitted ? (
-          <div className="rounded-[7px] border border-primary/40 bg-primary/10 px-3 py-3">
-            <div className="text-[10px] uppercase tracking-[0.12em] text-primary mb-1">Kiran Mehta's reaction</div>
-            <p className="text-[12px] italic text-[#e6ecff] leading-[1.6]">
-              "{FOOTPRINTS.find((f) => f.id === footprint)!.reaction}"
-            </p>
-          </div>
+          <>
+            <div className="rounded-[7px] border border-primary/40 bg-primary/10 px-3 py-3">
+              <div className="text-[10px] uppercase tracking-[0.12em] text-primary mb-1">Kiran Mehta's reaction</div>
+              <p className="text-[12px] italic text-[#e6ecff] leading-[1.6]">
+                "{FOOTPRINTS.find((f) => f.id === footprint)!.reaction}"
+              </p>
+            </div>
+            <FloorPlanShare
+              studentName={studentName}
+              footprint={footprint}
+              placements={placements}
+            />
+          </>
         ) : (
           <Step4
             footprint={footprint}

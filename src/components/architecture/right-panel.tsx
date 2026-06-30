@@ -3,25 +3,6 @@ import { useMessageCenter } from "./message-center";
 
 const MONO = "";
 
-type Popup = {
-  icon: string;
-  title: string;
-  av: string;
-  avc: "km" | "pn" | "aj";
-  nm: string;
-  ro: string;
-  msg: string;
-};
-
-const AVATAR_CLS: Record<string, string> = {
-  km: "bg-[#1a2a1a] text-[#52c47a] border-[#52c47a]",
-  pn: "bg-[#1a1a2a] text-[#5299e0] border-[#5299e0]",
-  aj: "bg-[#2a1a1a] text-[#e05252] border-[#e05252]",
-  sr: "bg-[#1a1a2a] text-[#e0b752] border-[#e0b752]",
-  sm: "bg-[#1a1a2a] text-[#e0b752] border-[#e0b752]",
-  da: "bg-[#2a1a1a] text-[#e05252] border-[#e05252]",
-};
-
 export function ArchRightPanel() {
   const { archive, unread, open } = useMessageCenter();
 
@@ -134,71 +115,6 @@ function Dl({ k, title, body, danger }: { k: string; title: string; body: string
           {title}
         </strong>
         {body}
-      </div>
-    </div>
-  );
-}
-
-function PopupModal({ popup, onClose }: { popup: Popup; onClose: () => void }) {
-  return (
-    <div
-      className="fixed inset-0 z-[2000] bg-black/65 flex items-center justify-center p-4 animate-in fade-in duration-150"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div className="bg-[#0f1a3e] border border-[#2a3a72] rounded-[10px] w-[440px] max-w-[95vw] shadow-[0_20px_60px_rgba(0,0,0,0.8)] overflow-hidden">
-        <div className="flex items-center px-3 py-[10px] bg-[#0b1336] border-b border-[#1d2a5a] gap-[7px]">
-          <span className="text-[14px]">{popup.icon}</span>
-          <span className={cn("text-[11.5px] text-[#e6ecff] font-medium", MONO)}>{popup.title}</span>
-          <button
-            onClick={onClose}
-            className="ml-auto w-[18px] h-[18px] rounded-full bg-[#1c2b5e] text-[#94a3c4] hover:bg-[#e05252] hover:text-white flex items-center justify-center text-[10px] transition"
-          >
-            ✕
-          </button>
-        </div>
-        <div className="p-4">
-          <div className="flex items-center gap-2 mb-3 pb-[10px] border-b border-[#1d2a5a]">
-            <div
-              className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-semibold border",
-                MONO,
-                AVATAR_CLS[popup.avc],
-              )}
-            >
-              {popup.av}
-            </div>
-            <div>
-              <div className="text-[12px] font-semibold text-[#e6ecff]">{popup.nm}</div>
-              <div className={cn("text-[10px] text-[#94a3c4]", MONO)}>{popup.ro}</div>
-            </div>
-          </div>
-          <div
-            className="text-[12px] text-[#94a3c4] leading-[1.7] [&_strong]:text-[#e6ecff]"
-            dangerouslySetInnerHTML={{ __html: popup.msg }}
-          />
-          <div className="flex gap-2 mt-3">
-            <button
-              onClick={onClose}
-              className={cn(
-                "inline-flex items-center gap-1 rounded-[4px] bg-primary px-[15px] py-[7px] text-[11.5px] font-medium text-black border border-primary hover:brightness-110",
-                MONO,
-              )}
-            >
-              Got it
-            </button>
-            <button
-              onClick={onClose}
-              className={cn(
-                "inline-flex items-center gap-1 rounded-[4px] border border-[#2a3a72] text-[#94a3c4] px-[15px] py-[7px] text-[11.5px] font-medium hover:border-primary/40 hover:text-primary",
-                MONO,
-              )}
-            >
-              Reply later
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );

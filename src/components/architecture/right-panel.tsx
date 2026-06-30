@@ -1,56 +1,10 @@
-import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useMessageCenter } from "./message-center";
 
 const MONO = "";
 
-type Popup = {
-  icon: string;
-  title: string;
-  av: string;
-  avc: "km" | "pn" | "aj";
-  nm: string;
-  ro: string;
-  msg: string;
-};
-
-const POPUPS: Record<string, Popup> = {
-  km: {
-    icon: "🎙",
-    title: "Voice Note, Kiran Mehta",
-    av: "KM",
-    avc: "km",
-    nm: "Kiran Mehta",
-    ro: "Principal Architect, MERIDIAN ARCHITECTURE\u00a0",
-    msg: "Keep your Week 1 analysis close, <strong>every design decision must trace back to it</strong>. Site data, personas, brief constraints. If you can't cite evidence for a decision, it's not a decision yet.<br/><br/>Don't be afraid to flag gaps. A question at brief stage costs nothing. A missed requirement at planning submission costs everything.",
-  },
-  pn: {
-    icon: "📧",
-    title: "Email, Priya Nair, PMC",
-    av: "PN",
-    avc: "pn",
-    nm: "Priya Nair",
-    ro: "Deputy Commissioner, Pune Municipal Corporation",
-    msg: "Budget is <strong>firm at INR 8.1 crore.</strong> Asha Foundation will operate the café from 8am daily, but they need <strong>independent access confirmed in drawings</strong> before signing the MOU. Planning submission window opens in 3 weeks. The ward councillors want welcoming, not institutional.",
-  },
-  aj: {
-    icon: "💰",
-    title: "Message, Arvind Joshi, QS",
-    av: "AJ",
-    avc: "aj",
-    nm: "Arvind Joshi",
-    ro: "QS, Bharat Cost Consultants",
-    msg: "<strong>Black cotton soil will push substructure to upper rate band (INR 2,400/sq.ft.)</strong>, factor this in early. Nashik removed passive cooling to hit budget. Their energy bills ran 27% over for 5 years. <strong>Do not repeat that trade-off</strong> without explicitly flagging it.",
-  },
-};
-
-const AVATAR_CLS: Record<string, string> = {
-  km: "bg-[#1a2a1a] text-[#52c47a] border-[#52c47a]",
-  pn: "bg-[#1a1a2a] text-[#5299e0] border-[#5299e0]",
-  aj: "bg-[#2a1a1a] text-[#e05252] border-[#e05252]",
-};
-
 export function ArchRightPanel() {
-  const [open, setOpen] = useState<Popup | null>(null);
+  const { archive, unread, open } = useMessageCenter();
 
   return (
     <>
@@ -60,10 +14,28 @@ export function ArchRightPanel() {
           "hidden lg:block",
         )}
       >
-        <Section label="Messages">
-          <NoteItem unread onClick={() => setOpen(POPUPS.km)} from="KIRAN MEHTA" time="Now" body="Check your active task brief" />
-          <NoteItem unread onClick={() => setOpen(POPUPS.pn)} from="PRIYA NAIR · PMC" time="08:12" body="Budget firm at INR 8.1cr · entrance must face DP Road" />
-          <NoteItem onClick={() => setOpen(POPUPS.aj)} from="ARVIND JOSHI · QS" time="09:15" body="Black cotton soil, substructure upper rate" />
+        <Section label={`Messages${archive.length ? ` (${archive.length})` : ""}`}>
+          {archive.length === 0 ? (
+            <div className="text-[10.5px] text-[#5a6a92] italic leading-[1.5] px-1 py-2">
+              Stakeholder messages will land here as they arrive.
+            </div>
+          ) : (
+            archive
+              .slice()
+              .reverse()
+              .map((m) => (
+                <NoteItem
+                  key={m.id}
+                  unread={unread.has(m.id)}
+                  onClick={() => open(m.id)}
+                  from={`${m.name.toUpperCase()}${
+                    m.role ? " · " + m.role.split(",")[0].split("·")[0].trim().slice(0, 14) : ""
+                  }`}
+                  time={m.timestamp.split("·")[0].trim()}
+                  body={m.preview}
+                />
+              ))
+          )}
         </Section>
 
         <Section label="Deadlines">
@@ -85,8 +57,6 @@ export function ArchRightPanel() {
           </div>
         </Section>
       </aside>
-
-      {open && <PopupModal popup={open} onClose={() => setOpen(null)} />}
     </>
   );
 }
@@ -145,71 +115,6 @@ function Dl({ k, title, body, danger }: { k: string; title: string; body: string
           {title}
         </strong>
         {body}
-      </div>
-    </div>
-  );
-}
-
-function PopupModal({ popup, onClose }: { popup: Popup; onClose: () => void }) {
-  return (
-    <div
-      className="fixed inset-0 z-[2000] bg-black/65 flex items-center justify-center p-4 animate-in fade-in duration-150"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div className="bg-[#0f1a3e] border border-[#2a3a72] rounded-[10px] w-[440px] max-w-[95vw] shadow-[0_20px_60px_rgba(0,0,0,0.8)] overflow-hidden">
-        <div className="flex items-center px-3 py-[10px] bg-[#0b1336] border-b border-[#1d2a5a] gap-[7px]">
-          <span className="text-[14px]">{popup.icon}</span>
-          <span className={cn("text-[11.5px] text-[#e6ecff] font-medium", MONO)}>{popup.title}</span>
-          <button
-            onClick={onClose}
-            className="ml-auto w-[18px] h-[18px] rounded-full bg-[#1c2b5e] text-[#94a3c4] hover:bg-[#e05252] hover:text-white flex items-center justify-center text-[10px] transition"
-          >
-            ✕
-          </button>
-        </div>
-        <div className="p-4">
-          <div className="flex items-center gap-2 mb-3 pb-[10px] border-b border-[#1d2a5a]">
-            <div
-              className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-semibold border",
-                MONO,
-                AVATAR_CLS[popup.avc],
-              )}
-            >
-              {popup.av}
-            </div>
-            <div>
-              <div className="text-[12px] font-semibold text-[#e6ecff]">{popup.nm}</div>
-              <div className={cn("text-[10px] text-[#94a3c4]", MONO)}>{popup.ro}</div>
-            </div>
-          </div>
-          <div
-            className="text-[12px] text-[#94a3c4] leading-[1.7] [&_strong]:text-[#e6ecff]"
-            dangerouslySetInnerHTML={{ __html: popup.msg }}
-          />
-          <div className="flex gap-2 mt-3">
-            <button
-              onClick={onClose}
-              className={cn(
-                "inline-flex items-center gap-1 rounded-[4px] bg-primary px-[15px] py-[7px] text-[11.5px] font-medium text-black border border-primary hover:brightness-110",
-                MONO,
-              )}
-            >
-              Got it
-            </button>
-            <button
-              onClick={onClose}
-              className={cn(
-                "inline-flex items-center gap-1 rounded-[4px] border border-[#2a3a72] text-[#94a3c4] px-[15px] py-[7px] text-[11.5px] font-medium hover:border-primary/40 hover:text-primary",
-                MONO,
-              )}
-            >
-              Reply later
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );

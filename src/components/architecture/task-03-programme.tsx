@@ -369,6 +369,22 @@ export function ArchTaskThree({ onComplete }: { onComplete: () => void }) {
       )}
 
 
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#1d2a5a] pt-4 mt-4">
+        <p className="text-[11px] text-[#94a3c4]">
+          {allDone
+            ? "Both parts ready. Submit to advance."
+            : "Complete both parts to enable submission."}
+        </p>
+        <button
+          type="button"
+          onClick={() => setConfirm(true)}
+          disabled={!allDone}
+          className="inline-flex items-center gap-1.5 rounded-[4px] bg-primary px-[18px] py-[8px] text-[12px] font-semibold text-black hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed border border-primary shadow-[0_0_18px_rgba(93,196,254,0.25)]"
+        >
+          Submit Programme & Adjacency
+        </button>
+      </div>
+
       {confirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
           <div className="w-full max-w-md rounded-lg border border-[#2a3a72] bg-[#0f1a3e] p-5">

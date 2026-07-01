@@ -56,7 +56,14 @@ export function ArchTaskOne({ onComplete }: { onComplete: () => void }) {
       setResult(r);
     } finally {
       setLoading(false);
+  }
+
+  function dismissHint() {
+    setShowHint(false);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("hasSeenMessageHint", "true");
     }
+  }
   }
 
   return (

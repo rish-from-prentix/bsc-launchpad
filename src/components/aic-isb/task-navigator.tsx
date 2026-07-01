@@ -109,10 +109,12 @@ export function AicIsbTaskNavigator({
                     <p className="text-[11.5px] leading-relaxed text-muted-foreground">
                       {p.summary}
                     </p>
-                    <div className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/80">
-                      <Clock className="h-3 w-3" />
-                      {p.estimate}
-                    </div>
+                    {p.estimate && (
+                      <div className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/80">
+                        <Clock className="h-3 w-3" />
+                        {p.estimate}
+                      </div>
+                    )}
                   </div>
                 )}
               </button>

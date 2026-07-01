@@ -206,11 +206,11 @@ const CHECKS: {
     scenario:
       "Your library is in the north wing. The hall is directly south, one room away, sharing a wall with a storage room between them. Does this satisfy the acoustic separation rule?",
     options: [
-      { id: "A", text: "Yes, one room between is sufficient." },
-      { id: "B", text: "No, minimum 2 rooms required, or acoustic-rated partition to STC 50." },
+      { id: "A", text: "No, minimum 2 rooms required, or acoustic-rated partition to STC 50." },
+      { id: "B", text: "Yes, one room between is sufficient." },
       { id: "C", text: "It depends on the partition material." },
     ],
-    correct: "B",
+    correct: "A",
     explain:
       "NBC 2016 expects either 2 rooms of buffer or a partition rated to STC 50. One storage room alone leaks noise.",
   },
@@ -221,10 +221,10 @@ const CHECKS: {
       "Your total GFA is 13,500 sq.ft. You've allocated 3,100 sq.ft. to corridors, stairs, and structure. Is this within the 18–22% circulation target?",
     options: [
       { id: "A", text: "Yes, 3,100 is within range." },
-      { id: "B", text: "No, 3,100 is 23%, slightly over." },
-      { id: "C", text: "Yes, 22% is the floor not the ceiling." },
+      { id: "B", text: "Yes, 22% is the floor not the ceiling." },
+      { id: "C", text: "No, 3,100 is 23%, slightly over." },
     ],
-    correct: "B",
+    correct: "C",
     explain: "3,100 / 13,500 = 22.96%. You're 1% over, trim a corridor or widen a usable room.",
   },
   {
@@ -234,13 +234,13 @@ const CHECKS: {
       "Your hall holds 300 people. You have one 1,200mm exit door at the front and one 900mm emergency exit at the rear. Is this NBC 2016 compliant?",
     options: [
       { id: "A", text: "Yes, two exits are always sufficient." },
+      { id: "B", text: "Yes, as long as both doors open outward." },
       {
-        id: "B",
+        id: "C",
         text: "No, 300 occupants require minimum aggregate exit width of 1,500mm plus the exits must be on opposite sides.",
       },
-      { id: "C", text: "Yes, as long as both doors open outward." },
     ],
-    correct: "B",
+    correct: "C",
     explain:
       "Aggregate width = 300 × 5mm = 1,500mm minimum, and exits must be remote from each other. 1,200 + 900 = 2,100mm passes width, but the layout must be opposite-sided.",
   },
@@ -250,11 +250,11 @@ const CHECKS: {
     scenario:
       "You're using a 6m × 6m column grid. Your hall needs to be 30m × 18m column-free. What structural solution do you specify?",
     options: [
-      { id: "A", text: "Remove interior columns and use standard beams." },
-      { id: "B", text: "Specify a long-span roof truss or transfer structure and note it in the drawings." },
+      { id: "A", text: "Specify a long-span roof truss or transfer structure and note it in the drawings." },
+      { id: "B", text: "Remove interior columns and use standard beams." },
       { id: "C", text: "Break the hall into two 15m × 18m rooms with a column in the middle." },
     ],
-    correct: "B",
+    correct: "A",
     explain:
       "Standard beams won't span 18m. The hall stays column-free only with a long-span truss or transfer slab, and it must be on the drawings for the structural engineer.",
   },
@@ -265,13 +265,13 @@ const CHECKS: {
       "It is 7pm. A community group is using the hall. The café is open for event catering. Should reception staff be present?",
     options: [
       { id: "A", text: "Yes, reception must always be staffed when the building is occupied." },
+      { id: "B", text: "Only if more than 50 people are present." },
       {
-        id: "B",
+        id: "C",
         text: "No, the hall and café must have independent access so they operate without reception being open.",
       },
-      { id: "C", text: "Only if more than 50 people are present." },
     ],
-    correct: "B",
+    correct: "C",
     explain:
       "The brief calls for after-hours hall + café operation without staffing the main reception. Independent access is the whole point.",
   },

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FileText, Download, Eye, X, BookOpen } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { scoreArchitectureTask, type ArchScore } from "@/lib/score-architecture-task.functions";

@@ -215,22 +215,11 @@ export function ArchTaskThree({ onComplete }: { onComplete: () => void }) {
 
   const partBComplete = adjScore >= 7;
 
-  // Part C state
-  const [statement, setStatement] = useState("");
-  const wc = wordCount(statement);
-  const wcColor =
-    wc >= 90 && wc <= 120
-      ? "text-[#52c47a]"
-      : wc > 130
-        ? "text-[#e05252]"
-        : "text-[#94a3c4]";
-  const partCComplete = wc >= 90 && wc <= 120;
-
   // Tabs
-  const [tab, setTab] = useState<"a" | "b" | "c">("a");
+  const [tab, setTab] = useState<"a" | "b">("a");
   const [confirm, setConfirm] = useState(false);
 
-  const allDone = partAComplete && partBComplete && partCComplete;
+  const allDone = partAComplete && partBComplete;
 
   function labelFor(k: string) {
     return DEFAULT_BUBBLES.find((b) => b.key === k)?.label ?? k;

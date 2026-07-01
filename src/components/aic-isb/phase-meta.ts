@@ -11,35 +11,35 @@ export const AIC_PHASES: PhaseMeta[] = [
     title: "Thesis: The Basics",
     summary:
       "Choose a sector, study an example thesis deck, then upload your own Accelerator Investment Thesis.",
-    estimate: "20–30 min",
+    estimate: "",
   },
   {
     index: 2,
     title: "Startup Evaluation",
     summary:
       "Rate every shortlisted startup with the star system, compare finalists, and pick who advances into the cohort.",
-    estimate: "25–35 min",
+    estimate: "",
   },
   {
     index: 3,
     title: "Mentor Matching",
     summary:
       "Map the right mentor to each selected startup. A wrong pairing stalls momentum; the right one unlocks it.",
-    estimate: "15–20 min",
+    estimate: "",
   },
   {
     index: 4,
     title: "Operational Review",
     summary:
       "Run a root-cause investigation on a struggling cohort startup and recommend a path forward.",
-    estimate: "20–25 min",
+    estimate: "",
   },
   {
     index: 5,
     title: "Investment Memo",
     summary:
       "Deliver an independent investment assessment for the board's upcoming review discussion.",
-    estimate: "25–30 min",
+    estimate: "",
   },
 ];
 

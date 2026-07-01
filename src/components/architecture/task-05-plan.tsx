@@ -761,7 +761,7 @@ function Step4({
       id: "plan",
       label: "Upload your schematic floor plan",
       helper:
-        "No SketchUp or Revit? That's fine. You can generate this in ChatGPT, describe your zone layout from Step 2 and ask it to produce a labelled top-view floor plan. Screenshot or export it as PNG or PDF.",
+        "It doesn't matter what you build it with — SketchUp, Revit, hand-drawn, or anything else. Describe your zone layout from Step 2 and produce a labelled top-view floor plan. Screenshot it or export as PNG/PDF. What we're grading is your design sense, not your tool.",
       reference: <GeneratedFloorPlan footprint={footprint} placements={placements} />,
       referenceCaption: "Your target layout, does your uploaded plan match these placements?",
       file: planFile,

@@ -215,22 +215,11 @@ export function ArchTaskThree({ onComplete }: { onComplete: () => void }) {
 
   const partBComplete = adjScore >= 7;
 
-  // Part C state
-  const [statement, setStatement] = useState("");
-  const wc = wordCount(statement);
-  const wcColor =
-    wc >= 90 && wc <= 120
-      ? "text-[#52c47a]"
-      : wc > 130
-        ? "text-[#e05252]"
-        : "text-[#94a3c4]";
-  const partCComplete = wc >= 90 && wc <= 120;
-
   // Tabs
-  const [tab, setTab] = useState<"a" | "b" | "c">("a");
+  const [tab, setTab] = useState<"a" | "b">("a");
   const [confirm, setConfirm] = useState(false);
 
-  const allDone = partAComplete && partBComplete && partCComplete;
+  const allDone = partAComplete && partBComplete;
 
   function labelFor(k: string) {
     return DEFAULT_BUBBLES.find((b) => b.key === k)?.label ?? k;
@@ -257,7 +246,6 @@ export function ArchTaskThree({ onComplete }: { onComplete: () => void }) {
         {([
           { id: "a", label: "Part A · Area", done: partAComplete },
           { id: "b", label: "Part B · Bubbles", done: partBComplete },
-          { id: "c", label: "Part C · Justify", done: partCComplete },
         ] as const).map((t) => (
           <button
             key={t.id}
@@ -380,36 +368,22 @@ export function ArchTaskThree({ onComplete }: { onComplete: () => void }) {
         />
       )}
 
-      {tab === "c" && (
-        <div className="space-y-3 pt-1">
-          <textarea
-            rows={8}
-            value={statement}
-            onChange={(e) => setStatement(e.target.value)}
-            placeholder="Justify your 3 most consequential adjacency decisions with evidence from the brief and site analysis…"
-            className="w-full rounded-md bg-[#0a112c] border border-[#1d2a5a] px-3 py-2 text-[12.5px] leading-[1.7] text-[#e6ecff] placeholder:text-[#5a6a92] focus:outline-none focus:ring-2 focus:ring-primary/40"
-          />
-          <div className={cn("text-[11px]", wcColor)}>
-            {wc} words · target 90–120
-          </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#1d2a5a] pt-4 mt-4">
-            <p className="text-[11px] text-[#94a3c4]">
-              {allDone
-                ? "All three parts ready. Submit to advance."
-                : "Complete all three parts to enable submission."}
-            </p>
-            <button
-              type="button"
-              onClick={() => setConfirm(true)}
-              disabled={!allDone}
-              className="inline-flex items-center gap-1.5 rounded-[4px] bg-primary px-[18px] py-[8px] text-[12px] font-semibold text-black hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed border border-primary shadow-[0_0_18px_rgba(93,196,254,0.25)]"
-            >
-              Submit Programme & Adjacency
-            </button>
-          </div>
-        </div>
-      )}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#1d2a5a] pt-4 mt-4">
+        <p className="text-[11px] text-[#94a3c4]">
+          {allDone
+            ? "Both parts ready. Submit to advance."
+            : "Complete both parts to enable submission."}
+        </p>
+        <button
+          type="button"
+          onClick={() => setConfirm(true)}
+          disabled={!allDone}
+          className="inline-flex items-center gap-1.5 rounded-[4px] bg-primary px-[18px] py-[8px] text-[12px] font-semibold text-black hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed border border-primary shadow-[0_0_18px_rgba(93,196,254,0.25)]"
+        >
+          Submit Programme & Adjacency
+        </button>
+      </div>
 
       {confirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
@@ -423,10 +397,6 @@ export function ArchTaskThree({ onComplete }: { onComplete: () => void }) {
               <div className="flex justify-between border-b border-[#1d2a5a] pb-1.5">
                 <span className="text-[#94a3c4]">Adjacency score</span>
                 <span className="font-semibold">{adjScore} / 10</span>
-              </div>
-              <div className="flex justify-between border-b border-[#1d2a5a] pb-1.5">
-                <span className="text-[#94a3c4]">Justification word count</span>
-                <span className="font-semibold">{wc} words</span>
               </div>
             </div>
             <div className="mt-5 flex justify-end gap-2">

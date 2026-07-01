@@ -67,7 +67,26 @@ export function ArchTaskOne({ onComplete }: { onComplete: () => void }) {
   }
 
   return (
-    <TaskFrame>
+    <>
+      {showHint && (
+        <div className="fixed top-[120px] right-[235px] z-40 hidden lg:block">
+          <div className="relative rounded-[5px] border border-[#1d2a5a] bg-[#13265a] p-3 text-[11px] leading-[1.5] text-[#e6ecff] shadow-lg max-w-[200px]">
+            <div className="mb-2">
+              Messages from your team will pop up here — don't miss them
+            </div>
+            <button
+              type="button"
+              onClick={dismissHint}
+              className="rounded-[4px] bg-primary px-3 py-1.5 text-[11px] font-semibold text-black hover:brightness-110 transition"
+            >
+              Got it
+            </button>
+            <div className="absolute top-1/2 -right-[6px] -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-l-[6px] border-l-[#1d2a5a]" />
+            <div className="absolute top-1/2 -right-[5px] -translate-y-1/2 w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[5px] border-l-[#13265a]" />
+          </div>
+        </div>
+      )}
+      <TaskFrame>
       <TaskHeader
         week={META.week}
         taskNumber={META.index}

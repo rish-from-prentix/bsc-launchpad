@@ -56,6 +56,7 @@ export function ArchTaskOne({ onComplete }: { onComplete: () => void }) {
       setResult(r);
     } finally {
       setLoading(false);
+    }
   }
 
   function dismissHint() {
@@ -63,7 +64,6 @@ export function ArchTaskOne({ onComplete }: { onComplete: () => void }) {
     if (typeof window !== "undefined") {
       localStorage.setItem("hasSeenMessageHint", "true");
     }
-  }
   }
 
   return (

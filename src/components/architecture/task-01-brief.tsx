@@ -33,6 +33,13 @@ export function ArchTaskOne({ onComplete }: { onComplete: () => void }) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ArchScore | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setShowHint(localStorage.getItem("hasSeenMessageHint") !== "true");
+    }
+  }, []);
 
   const allFilled = FIELDS.every((f) => (values[f.key] || "").trim().length >= 8);
 

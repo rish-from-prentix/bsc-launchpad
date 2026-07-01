@@ -282,18 +282,6 @@ export function ArchTaskFour({ onComplete }: { onComplete: () => void }) {
             placeholder="Reference a risk shown on the card you selected"
           />
 
-          <div className="rounded-md border border-[#2a3a72] bg-[#152149] px-3 py-3 mt-2">
-            <div className="text-[9px] uppercase tracking-[0.18em] text-primary font-semibold mb-1">
-              Concept Statement Preview
-            </div>
-            <p className="text-[13px] leading-[1.7] text-[#e6ecff] min-h-[40px]">
-              {assembled || (
-                <span className="text-[#5a6a92] italic">
-                  Fill the three fields above to see your assembled statement.
-                </span>
-              )}
-            </p>
-          </div>
 
           {allFieldsFilled && (
             <>

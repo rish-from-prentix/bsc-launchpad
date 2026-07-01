@@ -777,7 +777,7 @@ function Step4({
       id: "mass",
       label: "Upload your 3D massing view",
       helper:
-        "Ask ChatGPT or any AI image tool to generate a simple isometric massing diagram of your chosen footprint, label DP Road on the east, show the correct number of storeys, and mark the neem trees on the west boundary. Screenshot and upload.",
+        "It doesn't matter what you build it with — SketchUp, Revit, hand-drawn, or anything else. Describe your zone layout from Step 2 and produce a labelled 3D massing-view floor plan. Screenshot it or export as PNG/PDF. What we're grading is your design sense, not your tool.",
       reference: <MassingView footprint={footprint} />,
       referenceCaption: "Your target massing, 3 storeys, neem trees west, entry east.",
       file: massFile,

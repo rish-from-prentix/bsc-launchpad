@@ -165,6 +165,7 @@ export function ArchTaskOne({ onComplete }: { onComplete: () => void }) {
         <BriefPreviewModal onClose={() => setPreviewOpen(false)} />
       )}
     </TaskFrame>
+  </>
   );
 }
 

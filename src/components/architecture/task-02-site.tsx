@@ -12,22 +12,60 @@ import {
   FeedbackPanel,
 } from "./shared";
 import { ARCH_TASKS, SITE_LAYERS } from "./arch-data";
-import { Plus, X } from "lucide-react";
+import { Plus, X, ChevronDown } from "lucide-react";
 
 const META = ARCH_TASKS[1];
 
-const SITE_FACTS: { label: string; insert: string }[] = [
-  { label: "Black cotton soil", insert: "black cotton soil (raft foundation, upper substructure rate)" },
-  { label: "3 protected neem trees (W)", insert: "3 protected neem trees on west boundary, 8m canopy, TPO order" },
-  { label: "DP Road noise 68 to 72 dB(A)", insert: "DP Road noise 68 to 72 dB(A) on east boundary" },
-  { label: "0.4m fall NE to SW", insert: "0.4m fall NE to SW (drainage direction)" },
-  { label: "Water table 4.5m", insert: "water table at 4.5m" },
-  { label: "Park on west", insert: "public park on west (visual + acoustic asset)" },
-  { label: "FAR 2.0 / Cov 40% / 15m", insert: "FAR 2.0, coverage 40%, height 15m" },
-  { label: "Setbacks E6 / W3 / sides 3", insert: "setbacks: east 6m, west 3m, sides 3m" },
-  { label: "Summer 38 to 42 C", insert: "summer 38 to 42°C, monsoon 580mm" },
-  { label: "PV 6.2 kWh/sq.m/day", insert: "PV potential 6.2 kWh/sq.m./day" },
-];
+const LAYER_CHIPS: Record<string, string[]> = {
+  "Physical & Topographic": [
+    "0.4m fall NE→SW",
+    "Black cotton soil",
+    "Raft foundation required",
+    "Shed 80 sq.m. NW (demolish)",
+    "3× neem trees W boundary",
+    "8m canopy each",
+    "TPO order",
+    "Water table 4.5m",
+  ],
+  "Climate & Solar": [
+    "Summer 38–42°C",
+    "Monsoon 580mm / 75–90% humidity",
+    "Winter 9–13°C",
+    "SW–NE monsoon wind",
+    "E–W dry season wind",
+    "Solar altitude 80° summer / 50° winter",
+    "Deep overhangs E+W required",
+    "PV 6.2 kWh/sq.m./day",
+  ],
+  "Urban Context": [
+    "DP Road east — 18m wide, high footfall",
+    "Residential lane north — 6m",
+    "Public park west",
+    "Commercial strip south — 2 storeys",
+    "Main entrance must face east",
+    "Chamfered SW corner",
+  ],
+  "Noise & Services": [
+    "DP Road 68–72 dB(A)",
+    "Residential lane 40–48 dB(A)",
+    "Park 42–55 dB(A)",
+    "Library must not face DP Road",
+    "Café / hall — noise tolerant",
+    "Service entrance separate",
+  ],
+  "Regulatory Envelope": [
+    "FAR 2.0 max",
+    "Ground coverage 40% max",
+    "Height 15m max",
+    "Front setback E 6m",
+    "Rear setback W 3m",
+    "Side setbacks 3m",
+    "Parking 1 per 50 sq.m.",
+    "R2 + Institutional overlay",
+    "Solar panels not visible from street",
+    "Min 20% soft landscaping",
+  ],
+};
 
 const LAYER_CUES: Record<string, { keywords: string[]; hint: string }> = {
   "Physical & Topographic": {
@@ -70,41 +108,67 @@ export function ArchTaskTwo({ onComplete }: { onComplete: () => void }) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ArchScore | null>(null);
   const layerRefs = useRef<Record<string, HTMLTextAreaElement | null>>({});
-  const [activeLayer, setActiveLayer] = useState<string | null>(null);
+  const [openLayer, setOpenLayer] = useState<string>(SITE_LAYERS[0].layer);
 
   const validConstraints = constraints.filter(
     (c) => c.label.trim().length >= 3 && c.implication.trim().length >= 8,
   );
-  const allFilled =
-    SITE_LAYERS.every((l) => (layers[l.layer] || "").trim().length >= 10) &&
-    validConstraints.length >= 3;
 
-  function insertFact(text: string) {
-    const target = activeLayer ?? SITE_LAYERS[0].layer;
-    const current = layers[target] || "";
+  function layerComplete(layer: string): boolean {
+    const val = (layers[layer] || "").trim();
+    if (val.length < 20) return false;
+    const chips = LAYER_CHIPS[layer] || [];
+    return chips.some((c) => val.toLowerCase().includes(c.toLowerCase()));
+  }
+  function layerStarted(layer: string): boolean {
+    return (layers[layer] || "").trim().length > 0;
+  }
+  const completedLayers = SITE_LAYERS.filter((l) => layerComplete(l.layer)).length;
+  const allFilled =
+    completedLayers === SITE_LAYERS.length && validConstraints.length >= 3;
+
+  function insertChip(layer: string, text: string) {
+    const el = layerRefs.current[layer];
+    const current = layers[layer] || "";
+    if (el && document.activeElement === el) {
+      const start = el.selectionStart ?? current.length;
+      const end = el.selectionEnd ?? current.length;
+      const before = current.slice(0, start);
+      const after = current.slice(end);
+      const needsLeadSpace = before.length > 0 && !/\s$/.test(before);
+      const insert = (needsLeadSpace ? " " : "") + text;
+      const next = before + insert + after;
+      setLayers({ ...layers, [layer]: next });
+      const caret = before.length + insert.length;
+      setTimeout(() => {
+        el.focus();
+        el.selectionStart = el.selectionEnd = caret;
+      }, 0);
+      return;
+    }
     const sep = current && !/\s$/.test(current) ? " " : "";
     const next = current + sep + text;
-    setLayers({ ...layers, [target]: next });
-    const el = layerRefs.current[target];
-    if (el) {
-      el.focus();
-      setTimeout(() => {
-        el.selectionStart = el.selectionEnd = next.length;
-        el.scrollTop = el.scrollHeight;
-      }, 0);
-    }
+    setLayers({ ...layers, [layer]: next });
+    setTimeout(() => {
+      const t = layerRefs.current[layer];
+      if (t) {
+        t.focus();
+        t.selectionStart = t.selectionEnd = next.length;
+        t.scrollTop = t.scrollHeight;
+      }
+    }, 0);
   }
 
   function constraintSuggestions() {
     const used = new Set(constraints.map((c) => c.label.toLowerCase().trim()).filter(Boolean));
     const fromLayers = Object.values(layers).join(" ").toLowerCase();
     if (!fromLayers.trim()) return [];
-    return SITE_FACTS
-      .filter((f) => {
-        const token = f.label.toLowerCase().split(" ").find((t) => t.length > 3) || "";
+    const all = Object.values(LAYER_CHIPS).flat();
+    return all
+      .filter((label) => {
+        const token = label.toLowerCase().split(/\s+/).find((t) => t.length > 3) || "";
         return token && fromLayers.includes(token);
       })
-      .map((f) => f.label)
       .filter((l) => !used.has(l.toLowerCase()))
       .slice(0, 6);
   }
@@ -162,58 +226,114 @@ export function ArchTaskTwo({ onComplete }: { onComplete: () => void }) {
       </SectionHeader>
 
       <div className="rounded-lg border border-[#1d2a5a] bg-[#0b1336] p-3">
-        <div className="text-[10px] uppercase tracking-[0.14em] text-[#5a6a92] mb-2">
-          Site facts, click to insert into{" "}
-          {activeLayer ? (
-            <span className="text-primary">{activeLayer}</span>
-          ) : (
-            <span className="text-[#94a3c4]">the active layer (focus a textarea first)</span>
-          )}
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {SITE_FACTS.map((f) => (
-            <button
-              key={f.label}
-              type="button"
-              onClick={() => insertFact(f.insert)}
-              className="inline-flex items-center gap-1 rounded-full border border-[#2a3a72] bg-[#152149] px-2.5 py-1 text-[11px] text-[#c4cfe6] hover:border-primary/60 hover:text-primary transition"
-            >
-              <Plus className="h-3 w-3" />
-              {f.label}
-            </button>
-          ))}
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="text-[11px] text-[#c4cfe6]">
+            <span className="font-semibold text-primary">{completedLayers} of {SITE_LAYERS.length}</span> layers complete
+          </div>
+          <div className="flex items-center gap-1.5">
+            {SITE_LAYERS.map((l) => {
+              const done = layerComplete(l.layer);
+              const started = layerStarted(l.layer);
+              return (
+                <span
+                  key={l.layer}
+                  className={`h-2.5 w-2.5 rounded-full ${
+                    done ? "bg-[#37c26b]" : started ? "bg-[#e0b752]" : "bg-[#2a3a72]"
+                  }`}
+                  title={l.layer}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {SITE_LAYERS.map((l) => {
           const val = layers[l.layer] || "";
           const cue = LAYER_CUES[l.layer];
           const lower = val.toLowerCase();
+          const isOpen = openLayer === l.layer;
+          const done = layerComplete(l.layer);
+          const started = layerStarted(l.layer);
           const showNudge =
             val.trim().length >= 10 &&
             cue &&
             !cue.keywords.some((k) => lower.includes(k));
+          const chips = LAYER_CHIPS[l.layer] || [];
+          const hasChip = chips.some((c) => lower.includes(c.toLowerCase()));
+          const showGroundPrompt = val.trim().length >= 20 && !hasChip;
           return (
-            <div key={l.layer} className="rounded-lg border border-border bg-card p-4">
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <div className="text-sm font-semibold text-foreground">{l.layer}</div>
-                <div className="text-xs text-muted-foreground">{l.focus}</div>
-              </div>
-              <textarea
-                rows={3}
-                ref={(el) => {
-                  layerRefs.current[l.layer] = el;
-                }}
-                value={val}
-                onChange={(e) => setLayers({ ...layers, [l.layer]: e.target.value })}
-                onFocus={() => setActiveLayer(l.layer)}
-                placeholder={l.placeholder}
-                className="mt-2 w-full rounded-md bg-background/40 border border-border px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/40"
-              />
-              {showNudge && (
-                <div className="mt-1.5 text-[11px] text-[#e0b752]">
-                  Nudge: {cue.hint}
+            <div
+              key={l.layer}
+              className={`rounded-lg border ${isOpen ? "border-primary/50" : "border-border"} bg-card`}
+            >
+              <button
+                type="button"
+                onClick={() => setOpenLayer(isOpen ? "" : l.layer)}
+                className="w-full flex items-center justify-between gap-3 px-4 py-3 text-left"
+                aria-expanded={isOpen}
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span
+                    className={`h-2.5 w-2.5 rounded-full shrink-0 ${
+                      done ? "bg-[#37c26b]" : started ? "bg-[#e0b752]" : "bg-[#2a3a72]"
+                    }`}
+                  />
+                  <span className="text-sm font-semibold text-foreground truncate">{l.layer}</span>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xs text-muted-foreground hidden sm:inline">{l.focus}</span>
+                  <ChevronDown
+                    className={`h-4 w-4 text-[#94a3c4] transition-transform ${isOpen ? "rotate-180" : ""}`}
+                  />
+                </div>
+              </button>
+              {isOpen && (
+                <div className="px-4 pb-4 space-y-3 border-t border-[#1d2a5a]/60 pt-3">
+                  <div className="text-[10px] uppercase tracking-[0.14em] text-[#5a6a92]">
+                    Site facts for this layer, click to insert
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {chips.map((c) => {
+                      const inserted = lower.includes(c.toLowerCase());
+                      return (
+                        <button
+                          key={c}
+                          type="button"
+                          onClick={() => insertChip(l.layer, c)}
+                          className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] transition ${
+                            inserted
+                              ? "border-[#2a3a72]/60 bg-[#152149]/40 text-[#94a3c4] opacity-60 hover:opacity-100"
+                              : "border-[#2a3a72] bg-[#152149] text-[#c4cfe6] hover:border-primary/60 hover:text-primary"
+                          }`}
+                        >
+                          <Plus className="h-3 w-3" />
+                          {c}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <textarea
+                    rows={4}
+                    ref={(el) => {
+                      layerRefs.current[l.layer] = el;
+                    }}
+                    value={val}
+                    onChange={(e) => setLayers({ ...layers, [l.layer]: e.target.value })}
+                    placeholder={l.placeholder}
+                    className="w-full rounded-md bg-background/40 border border-border px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/40"
+                  />
+                  {showGroundPrompt && (
+                    <div className="text-[11px] text-[#e0b752]">
+                      Ground your implication in a site fact, use a chip above.
+                    </div>
+                  )}
+                  {showNudge && (
+                    <div className="text-[11px] text-[#e0b752]">
+                      Nudge: {cue.hint}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

@@ -89,7 +89,9 @@ export function ReferenceDeck() {
       <details className="mt-5 group rounded-lg border border-border bg-background/40">
         <summary className="cursor-pointer list-none px-4 py-2.5 text-xs uppercase tracking-[0.18em] text-primary font-semibold flex items-center justify-between">
           How to think about it
-          <ChevronRight className="h-3.5 w-3.5 transition group-open:rotate-90" />
+          <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-primary/15 text-primary">
+            <ChevronRight className="h-3.5 w-3.5 transition group-open:rotate-90" />
+          </span>
         </summary>
         <ul className="px-5 pb-4 space-y-2 text-[13px] text-foreground/85 leading-relaxed list-disc">
           {TIPS.map((t, i) => (

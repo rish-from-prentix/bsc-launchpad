@@ -246,7 +246,6 @@ export function ArchTaskThree({ onComplete }: { onComplete: () => void }) {
         {([
           { id: "a", label: "Part A · Area", done: partAComplete },
           { id: "b", label: "Part B · Bubbles", done: partBComplete },
-          { id: "c", label: "Part C · Justify", done: partCComplete },
         ] as const).map((t) => (
           <button
             key={t.id}

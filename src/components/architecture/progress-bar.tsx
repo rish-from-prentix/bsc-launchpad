@@ -1,5 +1,6 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Lock, Check } from "lucide-react";
 import { cn, getFirstName } from "@/lib/utils";
+import { getPhaseName } from "./arch-data";
 
 export type ArchTask = {
   index: number;
@@ -12,6 +13,7 @@ export function ArchProgressBar({
   tasks,
   currentPhase,
   completed,
+  completedSet,
   onPrevious,
   canGoPrevious,
 }: {
@@ -19,6 +21,7 @@ export function ArchProgressBar({
   tasks: ArchTask[];
   currentPhase: number;
   completed: number;
+  completedSet?: Set<number>;
   onPrevious?: () => void;
   canGoPrevious?: boolean;
 }) {
@@ -26,6 +29,7 @@ export function ArchProgressBar({
   const pct = Math.round((completed / total) * 100);
   const firstName = getFirstName(candidateName);
   const active = tasks.find((t) => t.index === currentPhase) ?? tasks[0];
+  const activePhaseName = getPhaseName(active.week);
 
   return (
     <header
@@ -57,7 +61,7 @@ export function ArchProgressBar({
               <div className="mt-0.5 text-[11px] text-[#e6ecff]">
                 {firstName ? `${firstName}` : "Intern"} ·{" "}
                 <span className="text-[#94a3c4]">
-                  Week {active.week} · Task {active.index} · Day {active.index}
+                  Phase {active.week}: {activePhaseName} · Task {active.index}
                 </span>
               </div>
             </div>
@@ -78,11 +82,73 @@ export function ArchProgressBar({
         </div>
         <div className="mt-[6px] flex items-center justify-between text-[9px] uppercase tracking-[0.12em]">
           <span className="text-[#e6ecff]">
-            Phase {active.index}: {active.title}
+            Task {active.index}: {active.title}
           </span>
-          <span className="text-[#3a4670]">Week {active.week}</span>
         </div>
+
+        <PhaseStepper tasks={tasks} currentWeek={active.week} completedSet={completedSet} />
       </div>
     </header>
+  );
+}
+
+function PhaseStepper({
+  tasks,
+  currentWeek,
+  completedSet,
+}: {
+  tasks: ArchTask[];
+  currentWeek: number;
+  completedSet?: Set<number>;
+}) {
+  const phases = [1, 2, 3, 4, 5];
+  const maxReached = currentWeek;
+  return (
+    <div className="mt-3 grid grid-cols-5 gap-1.5">
+      {phases.map((p) => {
+        const tasksInPhase = tasks.filter((t) => t.week === p);
+        const allDone =
+          completedSet && tasksInPhase.length > 0 &&
+          tasksInPhase.every((t) => completedSet.has(t.index));
+        const isActive = p === currentWeek;
+        const isReached = p <= maxReached;
+        const name = getPhaseName(p);
+        return (
+          <div
+            key={p}
+            className={cn(
+              "flex items-center gap-1.5 rounded-[3px] border px-2 py-1.5 text-[9.5px] uppercase tracking-[0.14em] transition",
+              isActive
+                ? "border-primary/60 bg-primary/10 text-primary"
+                : allDone
+                  ? "border-[#2a4a3a] bg-[#0d1a12] text-[#52c47a]"
+                  : isReached
+                    ? "border-[#2a3a72] bg-[#0f1a3e] text-[#c4cfe6]"
+                    : "border-[#1d2a5a] bg-transparent text-[#3a4670]",
+            )}
+          >
+            <span className="shrink-0">
+              {allDone ? (
+                <Check className="h-3 w-3" />
+              ) : !isReached ? (
+                <Lock className="h-3 w-3" />
+              ) : (
+                <span
+                  className={cn(
+                    "grid h-3 w-3 place-items-center rounded-full border",
+                    isActive ? "border-primary" : "border-[#3a4670]",
+                  )}
+                >
+                  {isActive && <span className="h-1 w-1 rounded-full bg-primary" />}
+                </span>
+              )}
+            </span>
+            <span className="truncate">
+              {isActive ? `Phase ${p}: ${name}` : `Phase ${p}`}
+            </span>
+          </div>
+        );
+      })}
+    </div>
   );
 }

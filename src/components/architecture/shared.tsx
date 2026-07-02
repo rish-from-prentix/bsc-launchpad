@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useId, useRef } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMessageCenter, extractText } from "./message-center";
+import { getPhaseName } from "./arch-data";
 
 // Architecture internship surface tokens, tuned to mirror the HTML reference
 // (Meridian Studio intern portal) but with AIC cyan as the accent.
@@ -39,7 +40,7 @@ export function TaskHeader({
             MONO,
           )}
         >
-          Week {week} · Task {taskNumber} · Day {taskNumber}
+          Phase {week} · {getPhaseName(week)} · Task {taskNumber}
         </div>
         <h2 className={cn("text-[22px] font-bold leading-[1.2]", SERIF, TEXT)}>
           {title}

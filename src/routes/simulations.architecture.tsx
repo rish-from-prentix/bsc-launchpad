@@ -82,6 +82,7 @@ function ArchitecturePage() {
         tasks={ARCH_TASKS}
         currentPhase={currentPhase}
         completed={completed.size}
+        completedSet={completed}
         onPrevious={goPrevious}
         canGoPrevious={canGoPrevious}
       />

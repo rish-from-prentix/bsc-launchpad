@@ -1,6 +1,6 @@
 import { CheckCircle2, Circle, Dot } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ARCH_TASKS, type ArchTaskMeta } from "./arch-data";
+import { ARCH_TASKS, type ArchTaskMeta, getPhaseName } from "./arch-data";
 
 const MONO = "";
 
@@ -32,7 +32,7 @@ export function ArchTaskNavigator({
         {weeks.map((w) => (
           <div key={w}>
             <div className={cn("px-3 mb-1 text-[9px] uppercase tracking-[0.16em] text-[#5a6a92]", MONO)}>
-              Week {w}
+              Phase {w} · {getPhaseName(w)}
             </div>
             <ul className="space-y-0.5">
               {byWeek.get(w)!.map((t) => {

@@ -6,6 +6,18 @@ export type ArchTaskMeta = {
   deliverable: string;
 };
 
+export const PHASE_NAMES: Record<number, string> = {
+  1: "Understand",
+  2: "Design",
+  3: "Develop",
+  4: "Coordinate",
+  5: "Present & Defend",
+};
+
+export function getPhaseName(week: number): string {
+  return PHASE_NAMES[week] ?? "";
+}
+
 export const ARCH_TASKS: ArchTaskMeta[] = [
   {
     index: 1,

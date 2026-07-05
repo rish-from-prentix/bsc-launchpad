@@ -49,7 +49,7 @@ export function CarefirstOverview({
         {CAREFIRST_TASKS.map((t, idx) => {
           const isDone = submitted.has(t.id);
           const isActive = t.id === activeId && !isDone;
-          const isLocked = !isDone && !isActive;
+          const isLocked = false;
           return (
             <button
               key={t.id}

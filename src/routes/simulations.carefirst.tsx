@@ -6,6 +6,9 @@ import { CarefirstOverview } from "@/components/carefirst/overview";
 import { TaskZeroOnboarding } from "@/components/carefirst/task-00-onboarding";
 import { TaskOneProblemFraming } from "@/components/carefirst/task-01-problem-framing";
 import { TaskTwoJourneyMap } from "@/components/carefirst/task-02-journey-map";
+import { TaskThreeTimingAnalysis } from "@/components/carefirst/task-03-timing-analysis";
+import { TaskFourRootCause } from "@/components/carefirst/task-04-root-cause";
+import { TaskFiveRecommendInterventions } from "@/components/carefirst/task-05-recommend-interventions";
 import { TaskLockedPlaceholder } from "@/components/carefirst/task-locked";
 import { CAREFIRST_TASKS, TOTAL_TASKS } from "@/components/carefirst/tasks-data";
 
@@ -149,6 +152,33 @@ function TaskScreen({
   if (taskId === 2)
     return (
       <TaskTwoJourneyMap
+        submitted={submitted}
+        onSubmit={onSubmit}
+        onNext={onNext}
+        onBackToOverview={onBackToOverview}
+      />
+    );
+  if (taskId === 3)
+    return (
+      <TaskThreeTimingAnalysis
+        submitted={submitted}
+        onSubmit={onSubmit}
+        onNext={onNext}
+        onBackToOverview={onBackToOverview}
+      />
+    );
+  if (taskId === 4)
+    return (
+      <TaskFourRootCause
+        submitted={submitted}
+        onSubmit={onSubmit}
+        onNext={onNext}
+        onBackToOverview={onBackToOverview}
+      />
+    );
+  if (taskId === 5)
+    return (
+      <TaskFiveRecommendInterventions
         submitted={submitted}
         onSubmit={onSubmit}
         onNext={onNext}

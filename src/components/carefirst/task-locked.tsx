@@ -24,8 +24,8 @@ export function TaskLockedPlaceholder({
         {meta.title}
       </h1>
       <p className="mt-4 text-[14px] text-muted-foreground max-w-[440px] mx-auto leading-relaxed">
-        This task will be built in the next prompt. Once ready, it will unlock
-        here in sequence.
+        Tasks 06–14 will be built in the next prompt. Once ready, they will
+        unlock here in sequence.
       </p>
       <button
         onClick={onBackToOverview}

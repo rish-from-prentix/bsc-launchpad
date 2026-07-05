@@ -1,6 +1,6 @@
 import { BrandMark } from "@/components/brand-mark";
 import { AicIsbLogo } from "@/components/aic-isb/aic-logo";
-import { TrendingUp, Award } from "lucide-react";
+import { TrendingUp, Award, HeartPulse } from "lucide-react";
 import { SimulationCard } from "./simulation-card";
 import {
   Carousel,
@@ -49,6 +49,24 @@ const SIMS = [
       { icon: <TrendingUp className="h-3.5 w-3.5" />, label: "Advanced Level" },
       { icon: <Award className="h-3.5 w-3.5" />, label: "Certificate Included" },
     ],
+  },
+  {
+    key: "carefirst",
+    logo: (
+      <div className="flex items-center gap-2.5">
+        <div className="h-10 w-10 rounded-md border border-primary/40 bg-primary/5 flex items-center justify-center text-primary">
+          <HeartPulse className="h-5 w-5" />
+        </div>
+        <div className="leading-tight">
+          <div className="text-[11px] uppercase tracking-[0.18em] text-foreground/90 font-semibold">
+            CareFirst × PulseTech
+          </div>
+        </div>
+      </div>
+    ),
+    company: "CareFirst × PulseTech",
+    role: "Healthcare Business Analyst Intern",
+    to: "/simulations/carefirst",
   },
 ];
 

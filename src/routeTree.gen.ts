@@ -13,6 +13,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SimulationsCarefirstRouteImport } from './routes/simulations.carefirst'
 import { Route as SimulationsBscRouteImport } from './routes/simulations.bsc'
 import { Route as SimulationsArchitectureRouteImport } from './routes/simulations.architecture'
 import { Route as SimulationsAicIsbRouteImport } from './routes/simulations.aic-isb'
@@ -35,6 +36,11 @@ const AboutRoute = AboutRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SimulationsCarefirstRoute = SimulationsCarefirstRouteImport.update({
+  id: '/simulations/carefirst',
+  path: '/simulations/carefirst',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SimulationsBscRoute = SimulationsBscRouteImport.update({
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/simulations/aic-isb': typeof SimulationsAicIsbRoute
   '/simulations/architecture': typeof SimulationsArchitectureRoute
   '/simulations/bsc': typeof SimulationsBscRoute
+  '/simulations/carefirst': typeof SimulationsCarefirstRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/simulations/aic-isb': typeof SimulationsAicIsbRoute
   '/simulations/architecture': typeof SimulationsArchitectureRoute
   '/simulations/bsc': typeof SimulationsBscRoute
+  '/simulations/carefirst': typeof SimulationsCarefirstRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/simulations/aic-isb': typeof SimulationsAicIsbRoute
   '/simulations/architecture': typeof SimulationsArchitectureRoute
   '/simulations/bsc': typeof SimulationsBscRoute
+  '/simulations/carefirst': typeof SimulationsCarefirstRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/simulations/aic-isb'
     | '/simulations/architecture'
     | '/simulations/bsc'
+    | '/simulations/carefirst'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/simulations/aic-isb'
     | '/simulations/architecture'
     | '/simulations/bsc'
+    | '/simulations/carefirst'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/simulations/aic-isb'
     | '/simulations/architecture'
     | '/simulations/bsc'
+    | '/simulations/carefirst'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   SimulationsAicIsbRoute: typeof SimulationsAicIsbRoute
   SimulationsArchitectureRoute: typeof SimulationsArchitectureRoute
   SimulationsBscRoute: typeof SimulationsBscRoute
+  SimulationsCarefirstRoute: typeof SimulationsCarefirstRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -149,6 +162,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/simulations/carefirst': {
+      id: '/simulations/carefirst'
+      path: '/simulations/carefirst'
+      fullPath: '/simulations/carefirst'
+      preLoaderRoute: typeof SimulationsCarefirstRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/simulations/bsc': {
@@ -183,16 +203,8 @@ const rootRouteChildren: RootRouteChildren = {
   SimulationsAicIsbRoute: SimulationsAicIsbRoute,
   SimulationsArchitectureRoute: SimulationsArchitectureRoute,
   SimulationsBscRoute: SimulationsBscRoute,
+  SimulationsCarefirstRoute: SimulationsCarefirstRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

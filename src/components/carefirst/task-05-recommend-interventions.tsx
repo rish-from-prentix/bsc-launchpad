@@ -94,7 +94,10 @@ export function TaskFiveRecommendInterventions({
   const [billing, setBilling] = useState<Fix>(blank);
   const [stretch, setStretch] = useState<Fix>(blank);
 
-  const filled = (f: Fix) => f.intervention.trim() && f.rootCause.trim() && f.minutesSaved.trim();
+  const filled = (f: Fix) =>
+    f.intervention.trim().length > 0 &&
+    f.rootCause.trim().length > 0 &&
+    f.minutesSaved.trim().length > 0;
   const canSubmit = filled(bed) && filled(billing) && filled(stretch);
 
   return (

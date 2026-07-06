@@ -63,7 +63,7 @@ export function CarefirstSplash({ onBegin }: { onBegin: (name: string) => void }
               </div>
             </div>
             <p className="mt-3 text-xs text-muted-foreground">
-              Welcome message from Ritu Sharma, VP Operations — CareFirst Hospitals
+              Welcome message from Ritu Sharma, VP Operations, CareFirst Hospitals
             </p>
           </div>
 

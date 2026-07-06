@@ -23,25 +23,25 @@ export function TaskZeroOnboarding({
       submitLabel="Continue"
     >
       <CarefirstEmail senderName="Ritu Sharma" senderRole="VP Operations, CareFirst Hospitals" initials="RS">
-        {`Welcome to the team. CareFirst Hospitals is a 6-hospital chain across Delhi NCR and Mumbai — roughly 2,400 beds combined, about 9,000 OPD visits a day across the network.
+        {`Welcome to the team. CareFirst Hospitals is a 6-hospital chain across Delhi NCR and Mumbai, roughly 2,400 beds combined, about 9,000 OPD visits a day across the network.
 
-We have a digital patient app and back-end systems built and run by our partner, PulseTech — you'll meet them later once the project needs them.`}
+We have a digital patient app and back-end systems built and run by our partner, PulseTech. You'll meet them later once the project needs them.`}
       </CarefirstEmail>
 
       <TeachingBlock title="Quick glossary">
         <div>
           <span className="text-foreground font-semibold">OPD (Outpatient Department)</span>
-          {" — "}patients who come in for a consultation and leave the same day. Think:
+          {": "}patients who come in for a consultation and leave the same day. Think:
           scheduled visits, walk-ins, follow-ups.
         </div>
         <div>
           <span className="text-foreground font-semibold">IPD (Inpatient Department)</span>
-          {" — "}patients admitted to a bed for one or more nights. Think: surgeries,
+          {": "}patients admitted to a bed for one or more nights. Think: surgeries,
           serious illness, monitored recovery.
         </div>
         <div>
           <span className="text-foreground font-semibold">TAT (Turnaround Time)</span>
-          {" — "}how long a process takes end-to-end. E.g. lab TAT = time from sample
+          {": "}how long a process takes end-to-end. E.g. lab TAT = time from sample
           drawn to result available. Lower TAT usually means better care.
         </div>
       </TeachingBlock>

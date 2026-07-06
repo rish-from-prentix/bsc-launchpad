@@ -115,19 +115,19 @@ export function TaskFiveRecommendInterventions({
         initials="RS"
         subject="What would you actually change?"
       >
-        {`This is the part leadership cares about most. I've attached a short reference doc on how different types of operational changes tend to play out at hospitals like ours — use it to ground your recommendations in something realistic, not just guesses.
+        {`This is the part leadership cares about most. I've attached a short reference doc on how different types of operational changes tend to play out at hospitals like ours. Use it to ground your recommendations in something realistic, not just guesses.
 
-— Ritu`}
+Ritu`}
       </CarefirstEmail>
 
-      <AttachedSection title="Reference — how ops changes usually play out">
+      <AttachedSection title="Reference (how ops changes usually play out)">
         <BulletCard
           title="Rules of thumb (illustrative, not guarantees)"
           items={[
-            "Adding a second queue / counter for a bottlenecked step: typically cuts wait at that step by 30–45%, adds staffing cost.",
-            "Digitising a manual notification (e.g. bed-status system): typically cuts related delay by 50–70%, low ongoing cost after setup.",
-            "Adding staff during peak hours only: typically cuts delay by 20–30% at that step, moderate cost, fast to implement.",
-            "Centralising or co-locating a multi-department approval process: typically cuts delay by 40–60%, higher effort and cost, slower to implement.",
+            "Adding a second queue / counter for a bottlenecked step: typically cuts wait at that step by 30 to 45%, adds staffing cost.",
+            "Digitising a manual notification (e.g. bed-status system): typically cuts related delay by 50 to 70%, low ongoing cost after setup.",
+            "Adding staff during peak hours only: typically cuts delay by 20 to 30% at that step, moderate cost, fast to implement.",
+            "Centralising or co-locating a multi-department approval process: typically cuts delay by 40 to 60%, higher effort and cost, slower to implement.",
           ]}
         />
       </AttachedSection>

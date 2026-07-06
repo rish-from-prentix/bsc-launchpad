@@ -15,6 +15,7 @@ import { MonthFeedback } from "@/components/screens/month-feedback";
 import { FinalMoment } from "@/components/screens/final-moment";
 import { FinalProof } from "@/components/screens/final-proof";
 import { MONTH_0, type MonthData } from "@/lib/simulation";
+import { PrexChatbot, type PrexContext } from "@/components/prex/prex-chatbot";
 
 export const Route = createFileRoute("/simulations/bsc")({
   head: () => ({
@@ -260,6 +261,8 @@ function Index() {
 
   const showZ = screen.startsWith("primer-") || screen.startsWith("quiz-") || screen.startsWith("sim-");
 
+  const prexCtx: PrexContext = buildBscPrex(screen, ctx);
+
   const isSim = screen.startsWith("sim-") || screen.startsWith("feedback-");
   const isPrimer =
     screen.startsWith("primer-") || screen.startsWith("quiz-") || screen === "overview" || screen === "results";
@@ -394,6 +397,47 @@ function Index() {
       )}
 
       {showZ && <ZTableFloating />}
+      <PrexChatbot context={prexCtx} />
     </AppShell>
   );
+}
+
+function buildBscPrex(screen: Screen, label: string | undefined): PrexContext {
+  const base = label ?? "Bombay Shaving Company internship";
+  if (screen.startsWith("primer-") || screen.startsWith("quiz-")) {
+    return {
+      phaseLabel: base,
+      phaseDescription:
+        "Bombay Shaving Company Growth & Business Ops internship — the intern is working through a business concept primer or its quiz (Marketing Elasticity, Newsvendor, or Channel Strategy).",
+      suggestions: [
+        "Explain this concept in simple terms.",
+        "Walk me through the formula step by step.",
+        "Give me an intuition, not just math.",
+        "What's a common mistake on this question?",
+      ],
+    };
+  }
+  if (screen.startsWith("sim-") || screen.startsWith("feedback-")) {
+    return {
+      phaseLabel: base,
+      phaseDescription:
+        "BSC internship simulation month — the intern is making marketing spend, inventory, and channel-mix decisions and reviewing EBITDA feedback.",
+      suggestions: [
+        "How should I balance marketing spend vs inventory?",
+        "How do I decide D2C vs Quick Commerce mix?",
+        "How do I read this month's EBITDA feedback?",
+        "What would you do differently next month?",
+      ],
+    };
+  }
+  return {
+    phaseLabel: base,
+    phaseDescription: "Bombay Shaving Company Growth & Business Ops virtual internship overview screen.",
+    suggestions: [
+      "What will I learn in this internship?",
+      "How should I approach the primers?",
+      "What does success look like here?",
+      "Any tips before I start?",
+    ],
+  };
 }

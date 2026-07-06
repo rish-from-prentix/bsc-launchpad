@@ -1,6 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import { InboxEmail } from "./inbox-email";
 import {
   ArrowRight,
@@ -12,8 +10,6 @@ import {
   TrendingUp,
   DollarSign,
   BookOpen,
-  Download,
-  Linkedin,
   Copy,
   Check,
   Save,
@@ -32,6 +28,7 @@ import {
   type Valuation,
 } from "./valuation-data";
 import aicLogoUrl from "@/assets/aic-isb-logo-blue.png";
+import { CertificateTemplate } from "@/components/certificate/certificate-template";
 import briefAi from "@/assets/brief-ai.pdf.asset.json";
 import briefClimate from "@/assets/brief-climate.pdf.asset.json";
 import briefHealth from "@/assets/brief-health.pdf.asset.json";

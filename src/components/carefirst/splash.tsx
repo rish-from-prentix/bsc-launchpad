@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArrowRight, Play } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { BrandMark } from "@/components/brand-mark";
 
 export function CarefirstSplash({ onBegin }: { onBegin: (name: string) => void }) {
@@ -14,12 +15,12 @@ export function CarefirstSplash({ onBegin }: { onBegin: (name: string) => void }
       }}
     >
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8 pt-8 flex items-center justify-between">
-        <div className="inline-flex items-center gap-2.5 rounded-full border border-primary/40 bg-primary/5 px-3.5 py-1.5">
+        <Link to="/" aria-label="Prentix home" className="inline-flex items-center gap-2.5 rounded-full border border-primary/40 bg-primary/5 px-3.5 py-1.5">
           <span className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
             Powered by
           </span>
           <BrandMark brand="prentix" height={16} />
-        </div>
+        </Link>
         <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
           Virtual Internship · 2026
         </div>
@@ -98,12 +99,12 @@ export function CarefirstSplash({ onBegin }: { onBegin: (name: string) => void }
       </div>
 
       <footer className="border-t border-border">
-        <div className="mx-auto max-w-6xl px-5 sm:px-8 h-12 flex items-center justify-center gap-3 opacity-60">
+        <Link to="/" aria-label="Prentix home" className="mx-auto max-w-6xl px-5 sm:px-8 h-12 flex items-center justify-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
           <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
             An internship experience by
           </span>
           <BrandMark brand="prentix" height={16} />
-        </div>
+        </Link>
       </footer>
     </div>
   );

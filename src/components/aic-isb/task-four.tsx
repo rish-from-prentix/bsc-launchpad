@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { registerPhasePrev } from "./phase-prev-handler";
 import { createPortal } from "react-dom";
 import {
   ArrowRight,
@@ -96,6 +97,21 @@ export function AicIsbTaskFour({
     Array(data.steps.length).fill(null),
   );
   const [reviewMode, setReviewMode] = useState(false);
+
+  useEffect(() => {
+    return registerPhasePrev(() => {
+      if (phase === "results") {
+        setPhase("investigate");
+        setStepIndex(Math.max(0, data.steps.length - 1));
+        return true;
+      }
+      if (stepIndex > 0) {
+        setStepIndex((i) => Math.max(0, i - 1));
+        return true;
+      }
+      return false;
+    });
+  }, [phase, stepIndex, data.steps.length]);
 
   if (phase === "results") {
     return (

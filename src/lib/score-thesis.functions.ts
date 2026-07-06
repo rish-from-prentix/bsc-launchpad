@@ -55,33 +55,48 @@ export const scoreThesis = createServerFn({ method: "POST" })
       };
     }
 
-    const systemPrompt = `You are a strict and objective evaluator at a startup accelerator (AIC Mohali).
-Your job is to evaluate an intern's investment thesis document.
+    const sectorLabelMap: Record<string, string> = {
+      ai: "AI & SaaS (foundation models, vertical SaaS, agentic workflows)",
+      climate:
+        "ClimateTech & Sustainability (decarbonisation, circular economy, climate finance)",
+      health:
+        "HealthTech (digital health, diagnostics, care delivery models)",
+    };
+    const sectorLabel = sectorLabelMap[data.sector] ?? data.sector;
 
-IMPORTANT RULES:
-- Do NOT default to high scores. A score of 9/10 should be rare and only given for truly exceptional work.
-- Evaluate ONLY based on what is actually written in the uploaded document.
-- If the document is vague, generic, or lacks depth — score it low (3-5).
-- If the document is partially structured but missing key elements — score it mid-range (5-7).
-- If the document is well-researched, specific, and clearly argued — score it high (7-9).
+    const systemPrompt = `You are a strict and objective evaluator at a startup accelerator (AIC Mohali).
+Your job is to evaluate an intern's investment thesis document AGAINST THE SECTOR THEY CHOSE.
+
+THEME ALIGNMENT IS THE FIRST GATE — enforce it strictly:
+- Read the document and determine what sector it is actually about.
+- If the document's sector clearly does NOT match the chosen sector (for example, a fintech / payments / lending deck submitted for AI & SaaS, ClimateTech, or HealthTech), it is off-theme.
+- Off-theme submissions must be scored 0-2 on EVERY parameter, overall around 1-2, and the feedback must clearly state which sector the deck is actually about and that it does not match the chosen theme.
+- Adjacent/tangential overlap (e.g. an AI-powered health product for the HealthTech theme, or a climate-fintech for ClimateTech) can be on-theme — use judgement, but require the core thesis to serve the chosen sector.
+
+GENERAL SCORING RULES:
+- Do NOT default to high scores. A 9/10 should be rare and only given for truly exceptional work.
+- Evaluate ONLY based on what is actually written / shown in the uploaded document.
+- If the document is vague, generic, or lacks depth — score 3-5.
+- If the document is partially structured but missing key elements — score 5-7.
+- If the document is well-researched, specific, clearly argued, AND on-theme — score 7-9.
 - A 10/10 should almost never be given.
-- If the document is unreadable, empty, off-topic, or not an investment thesis, score everything 0-2 and say so honestly in the feedback.
+- If the document is unreadable, empty, or not an investment thesis, score everything 0-2 and say so honestly in the feedback.
 
 EVALUATE ON THESE PARAMETERS (score each out of 10 as an integer):
-1. Clarity of thesis statement
-2. Market understanding and research depth
+1. Clarity of thesis statement (for the CHOSEN sector)
+2. Market understanding and research depth (of the CHOSEN sector)
 3. Founder/team assessment quality
 4. Risk identification
 5. Originality of insight
 
-For each parameter, provide ONE specific one-line justification citing actual content from the document.
-Then give 2-3 lines of overall feedback citing actual content from the document.
+For each parameter, provide ONE specific one-line justification citing actual content from the document. If off-theme, say so explicitly in the justification.
+Then give 2-3 lines of overall feedback citing actual content from the document, and — if off-theme — call out what sector the deck is actually about.
 Then give ONE clear area of improvement.
 Do not be generous. Be honest.`;
 
-    const userPromptText = `Sector chosen by the intern: ${data.sector}.
+    const userPromptText = `Sector chosen by the intern: ${sectorLabel}.
 
-Please evaluate the attached investment thesis document strictly using the rubric.`;
+First check whether the attached document is actually about this sector. If it is off-theme, score it 0-2 on every parameter and explain in feedback what sector it is actually about. If it is on-theme, evaluate it strictly using the rubric.`;
 
     const isPdf = /pdf/i.test(data.mimeType) || /\.pdf$/i.test(data.fileName);
     const isImage = /^image\//i.test(data.mimeType);

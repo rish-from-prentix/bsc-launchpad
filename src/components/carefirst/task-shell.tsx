@@ -4,7 +4,6 @@ import { CAREFIRST_TASKS } from "./tasks-data";
 
 export function TaskShell({
   taskId,
-  onBackToOverview,
   submitted,
   onSubmit,
   onNext,
@@ -15,7 +14,7 @@ export function TaskShell({
   shareableCaption,
 }: {
   taskId: number;
-  onBackToOverview: () => void;
+  onBackToOverview?: () => void;
   submitted: boolean;
   onSubmit: () => void;
   onNext: () => void;
@@ -35,10 +34,6 @@ export function TaskShell({
       style={{ animation: "fadeSlide 250ms ease-out" }}
     >
       <div className="mb-6 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-        <button onClick={onBackToOverview} className="hover:text-foreground transition">
-          Tasks
-        </button>
-        <span className="mx-2 text-muted-foreground/40">/</span>
         <span className="text-foreground/80">
           Task {String(meta.id).padStart(2, "0")} · {meta.title}
         </span>
@@ -47,13 +42,7 @@ export function TaskShell({
       <div className="space-y-6">{children}</div>
 
       {!hideSubmit && !submitted && (
-        <div className="mt-10 flex items-center justify-between gap-4">
-          <button
-            onClick={onBackToOverview}
-            className="text-[12px] text-muted-foreground hover:text-foreground transition"
-          >
-            Save & exit
-          </button>
+        <div className="mt-10 flex items-center justify-end gap-4">
           <button
             onClick={onSubmit}
             disabled={!canSubmit}
@@ -77,7 +66,7 @@ export function TaskShell({
             <div>
               <div className="text-sm font-semibold text-foreground">Task Submitted</div>
               <div className="text-xs text-muted-foreground">
-                Nice work — Task {String(meta.id).padStart(2, "0")} complete.
+                Nice work. Task {String(meta.id).padStart(2, "0")} complete.
               </div>
             </div>
           </div>
@@ -106,7 +95,7 @@ export function TaskShell({
               onClick={onNext}
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition"
             >
-              {isLastTask ? "Back to Overview" : `Continue to Task ${String(taskId + 1).padStart(2, "0")}`}
+              {isLastTask ? "All tasks complete" : `Continue to Task ${String(taskId + 1).padStart(2, "0")}`}
               <ArrowRight className="h-4 w-4" />
             </button>
           </div>

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { BrandMark } from "@/components/brand-mark";
 import { AicIsbLogo } from "./aic-logo";
 
 export function AicIsbIntroScreen({ onStart }: { onStart: (name: string) => void }) {
@@ -8,6 +10,11 @@ export function AicIsbIntroScreen({ onStart }: { onStart: (name: string) => void
 
   return (
     <div className="min-h-screen w-full bg-background relative overflow-hidden">
+      <div className="absolute top-5 right-5 z-20">
+        <Link to="/" aria-label="Prentix home" className="inline-flex items-center">
+          <BrandMark brand="prentix" height={20} />
+        </Link>
+      </div>
       {/* Ambient glow */}
       <div
         className="pointer-events-none absolute inset-0"

@@ -1,4 +1,6 @@
 import { ArrowLeft, Check, Lock, RotateCcw } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { BrandMark } from "@/components/brand-mark";
 import { cn, getFirstName } from "@/lib/utils";
 
 export type TaskState = "active" | "locked" | "done";
@@ -76,6 +78,9 @@ export function AicIsbProgressBar({
             </div>
           </div>
           <div className="text-xs text-muted-foreground font-mono">{pct}%</div>
+          <Link to="/" aria-label="Prentix home" className="inline-flex items-center">
+            <BrandMark brand="prentix" height={18} />
+          </Link>
         </div>
 
         {/* Steps */}

@@ -1,4 +1,6 @@
 import { ArrowLeft, Lock, Check } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { BrandMark } from "@/components/brand-mark";
 import { cn, getFirstName } from "@/lib/utils";
 import { getPhaseName } from "./arch-data";
 
@@ -66,8 +68,13 @@ export function ArchProgressBar({
               </div>
             </div>
           </div>
-          <div className="text-[10px] text-[#94a3c4]">
-            {completed} / {total} · {pct}%
+          <div className="flex items-center gap-3">
+            <div className="text-[10px] text-[#94a3c4]">
+              {completed} / {total} · {pct}%
+            </div>
+            <Link to="/" aria-label="Prentix home" className="inline-flex items-center">
+              <BrandMark brand="prentix" height={16} />
+            </Link>
           </div>
         </div>
 

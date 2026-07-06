@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { CarefirstEmail } from "./email-card";
-import { AttachedSection, BulletCard, StatList } from "./attached-data";
+import { AttachedSection, StatList } from "./attached-data";
 import { TeachingBlock, WorkedExample } from "./teaching-block";
+import { OrgChart } from "./org-chart";
 import { TaskShell } from "./task-shell";
 import { DeliverableLabel, EditableTable, TableRow, TextArea } from "./inputs";
 
@@ -50,7 +51,7 @@ Leadership has asked me to bring it down by 30% by next quarter. Before we jump 
 
 Keep it to one page. I'll review it before we go further.
 
-— Ritu`}
+Ritu`}
       </CarefirstEmail>
 
       <AttachedSection>
@@ -65,18 +66,7 @@ Keep it to one page. I'll review it before we go further.
             },
           ]}
         />
-        <BulletCard
-          title="Org chart snippet"
-          items={[
-            "Reception",
-            "Nurses",
-            "Doctors",
-            "Lab technicians",
-            "IT / App team (PulseTech)",
-            "Hospital Administrator",
-            "Patients",
-          ]}
-        />
+        <OrgChart />
       </AttachedSection>
 
       <TeachingBlock title="How to frame a problem">
@@ -90,7 +80,7 @@ Keep it to one page. I'll review it before we go further.
           interested they are in the outcome. High-influence + high-interest people need the most
           attention.
         </div>
-        <WorkedExample title="Worked example — cafeteria queue">
+        <WorkedExample title="Worked example (cafeteria queue)">
           <div>
             <span className="text-foreground/90 font-semibold">Problem:</span>{" "}
             Office cafeteria lunch queue (Who) has grown from 6 min to 14 min over 3 months (What),
@@ -105,6 +95,25 @@ Keep it to one page. I'll review it before we go further.
             <span className="text-foreground/90 font-semibold">Stakeholders:</span>{" "}
             Kitchen staff (high influence, high interest), Facilities (high, medium), Employees
             (low, high), Vendor supplying trays (low, low).
+          </div>
+        </WorkedExample>
+      </TeachingBlock>
+
+      <TeachingBlock title="Why median can matter more than average">
+        <div>
+          When you pick a metric, watch out for a few very long waits pulling the{" "}
+          <span className="text-foreground font-semibold">average</span> upward.
+          The <span className="text-foreground font-semibold">median</span> tells you what a typical
+          patient actually experiences. If the two diverge a lot, you have outliers,
+          and median is usually the more honest number to quote to leadership.
+        </div>
+        <WorkedExample title="Tiny worked example">
+          <div>
+            Five patients wait: 20, 22, 25, 28, and 120 minutes.
+          </div>
+          <div>
+            Average = 43 min. Median = 25 min. Four of the five patients waited under 30 minutes,
+            but the average makes it sound like everyone waits closer to 45.
           </div>
         </WorkedExample>
       </TeachingBlock>

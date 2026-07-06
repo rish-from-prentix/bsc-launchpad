@@ -10,6 +10,8 @@ import {
   TrendingUp,
   DollarSign,
   BookOpen,
+  Download,
+  Linkedin,
   Copy,
   Check,
   Save,

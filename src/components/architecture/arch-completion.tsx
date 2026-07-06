@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import { Download, Linkedin, Copy, Check, BadgePlus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Linkedin, Copy, Check, BadgePlus } from "lucide-react";
 import { Confetti } from "./confetti";
+import { CertificateTemplate } from "@/components/certificate/certificate-template";
 
 const CERT_W = 1920;
 const CERT_H = 1361;
@@ -243,9 +242,7 @@ function CertificateNode({ name, scale = 1 }: { name: string; scale?: number }) 
 
 export function ArchCompletion({ name }: { name: string }) {
   const certName = name?.trim() || "Participant";
-  const certificateRef = useRef<HTMLDivElement>(null);
   const [stage, setStage] = useState<"confetti" | "headline" | "cert">("confetti");
-  const [downloading, setDownloading] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -257,65 +254,7 @@ export function ArchCompletion({ name }: { name: string }) {
     };
   }, []);
 
-  useEffect(() => {
-    const id = "inter-bold-font-link";
-    if (document.getElementById(id)) return;
-    const link = document.createElement("link");
-    link.id = id;
-    link.rel = "stylesheet";
-    link.href =
-      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap";
-    document.head.appendChild(link);
-  }, []);
-
-  async function downloadCertificate() {
-    if (!certificateRef.current || downloading) return;
-    setDownloading(true);
-    try {
-      const canvas = await html2canvas(certificateRef.current, {
-        scale: 1,
-        useCORS: true,
-        backgroundColor: "#0A1628",
-        width: CERT_W,
-        height: CERT_H,
-        windowWidth: CERT_W,
-        windowHeight: CERT_H,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "px",
-        format: [CERT_W, CERT_H],
-      });
-      pdf.addImage(imgData, "PNG", 0, 0, CERT_W, CERT_H);
-      pdf.save(`Meridian-Architecture-Internship-${certName}.pdf`);
-    } finally {
-      setDownloading(false);
-    }
-  }
-
-  async function shareCertOnLinkedIn() {
-    // Download a 1200x627 social share PNG of the certificate, then open LinkedIn share dialog.
-    if (certificateRef.current) {
-      try {
-        const canvas = await html2canvas(certificateRef.current, {
-          scale: 1200 / CERT_W,
-          useCORS: true,
-          backgroundColor: "#0A1628",
-          width: CERT_W,
-          height: CERT_H,
-          windowWidth: CERT_W,
-          windowHeight: CERT_H,
-        });
-        const url = canvas.toDataURL("image/png");
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `Meridian-Architecture-Certificate-${certName}.png`;
-        a.click();
-      } catch {
-        /* noop */
-      }
-    }
+  function shareCertOnLinkedIn() {
     const shareUrl = typeof window !== "undefined" ? window.location.href : "https://prentix.ai";
     window.open(
       `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
@@ -349,7 +288,11 @@ export function ArchCompletion({ name }: { name: string }) {
     });
   }
 
-  const previewScale = 0.3;
+  const now = new Date();
+  const monthYear = now.toLocaleString("en-US", { month: "long" }) + " " + now.getFullYear();
+  const archDescription =
+    `During ${monthYear}, the participant engaged with client brief decoding, site analysis, space programming, and concept direction, demonstrating the ability to make evidence-backed design decisions under uncertainty. ` +
+    `The experience involved navigating trade-offs across cost, sustainability, and construction constraints in a dynamic studio environment.`;
 
   return (
     <div className="mx-auto max-w-[820px] px-5 sm:px-8 py-10 sm:py-16">
@@ -380,31 +323,16 @@ export function ArchCompletion({ name }: { name: string }) {
             </p>
           </div>
 
-          <div className="flex justify-center">
-            <div
-              style={{
-                width: CERT_W * previewScale,
-                height: CERT_H * previewScale,
-                maxWidth: "100%",
-                overflow: "hidden",
-                borderRadius: 10,
-                boxShadow: "0 18px 60px rgba(0,0,0,0.55)",
-              }}
-              className="border border-primary/40"
-            >
-              <CertificateNode name={certName} scale={previewScale} />
-            </div>
-          </div>
+          <CertificateTemplate
+            recipientName={certName}
+            companyName="Meridian Architecture Studio"
+            internshipName="Virtual Internship: Architecture Design"
+            completionDate={now}
+            descriptionParagraph={archDescription}
+            downloadFileName={`Meridian-Architecture-Certificate-${certName}`}
+          />
 
           <div className="flex flex-wrap gap-3 justify-center">
-            <button
-              onClick={downloadCertificate}
-              disabled={downloading}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-black hover:brightness-110 disabled:opacity-60"
-            >
-              <Download className="h-4 w-4" />
-              {downloading ? "Generating PDF…" : "Download as PDF"}
-            </button>
             <button
               onClick={shareCertOnLinkedIn}
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary/40 bg-primary/5 px-5 py-3 text-sm font-semibold text-primary hover:bg-primary/10"
@@ -431,16 +359,6 @@ export function ArchCompletion({ name }: { name: string }) {
           </p>
         </div>
       )}
-
-      {/* Hidden full-size certificate for capture */}
-      <div
-        style={{ position: "fixed", left: -100000, top: 0, pointerEvents: "none" }}
-        aria-hidden="true"
-      >
-        <div ref={certificateRef}>
-          <CertificateNode name={certName} />
-        </div>
-      </div>
     </div>
   );
 }

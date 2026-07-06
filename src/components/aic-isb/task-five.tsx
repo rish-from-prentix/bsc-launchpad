@@ -1,6 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import { InboxEmail } from "./inbox-email";
 import {
   ArrowRight,
@@ -32,6 +30,7 @@ import {
   type Valuation,
 } from "./valuation-data";
 import aicLogoUrl from "@/assets/aic-isb-logo-blue.png";
+import { CertificateTemplate } from "@/components/certificate/certificate-template";
 import briefAi from "@/assets/brief-ai.pdf.asset.json";
 import briefClimate from "@/assets/brief-climate.pdf.asset.json";
 import briefHealth from "@/assets/brief-health.pdf.asset.json";
@@ -1257,8 +1256,6 @@ function EarnedPhase({
 }) {
   const certName = candidateName?.trim() || "Participant";
 
-  const certificateRef = useRef<HTMLDivElement>(null);
-  const [downloading, setDownloading] = useState(false);
   const [celebrationStage, setCelebrationStage] = useState<"confetti" | "headline" | "cert">("confetti");
 
   useEffect(() => {
@@ -1270,51 +1267,11 @@ function EarnedPhase({
     };
   }, []);
 
-  useEffect(() => {
-    const id = "inter-bold-font-link";
-    if (document.getElementById(id)) return;
-    const link = document.createElement("link");
-    link.id = id;
-    link.rel = "stylesheet";
-    link.href =
-      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap";
-    document.head.appendChild(link);
-  }, []);
-
-  async function downloadCertificate() {
-    if (!certificateRef.current || downloading) return;
-    setDownloading(true);
-    try {
-      const canvas = await html2canvas(certificateRef.current, {
-        scale: 1,
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: "#0A1628",
-        width: CERT_W,
-        height: CERT_H,
-        windowWidth: CERT_W,
-        windowHeight: CERT_H,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "px",
-        format: [CERT_W, CERT_H],
-      });
-      pdf.addImage(imgData, "PNG", 0, 0, CERT_W, CERT_H);
-      pdf.save(`AIC-ISB-Virtual-Internship-${certName}.pdf`);
-    } finally {
-      setDownloading(false);
-    }
-  }
-
-  function shareCertOnLinkedIn() {
-    window.open(
-      "https://www.linkedin.com/sharing/share-offsite/?url=https://prentix.ai",
-      "_blank",
-      "noopener,noreferrer",
-    );
-  }
+  const now = new Date();
+  const monthYear = now.toLocaleString("en-US", { month: "long" }) + " " + now.getFullYear();
+  const aicDescription =
+    `During ${monthYear}, the participant engaged with startup evaluation, mentor mapping, and investment analysis, demonstrating the ability to make evidence-backed decisions under uncertainty. ` +
+    `The experience involved navigating trade-offs across valuation, operational reasoning, and strategic recommendation in a dynamic accelerator environment. Final investment memo evaluated ${startup.name}.`;
 
   const [copiedSkill, setCopiedSkill] = useState<string | null>(null);
   function copySkill(skill: string) {
@@ -1325,8 +1282,6 @@ function EarnedPhase({
       }, 1500);
     });
   }
-
-  const previewScale = 0.3;
 
   if (celebrationStage !== "cert") {
     return (
@@ -1363,41 +1318,16 @@ function EarnedPhase({
           Congratulations, {getFirstName(candidateName)}.
         </h2>
 
-        <div className="mt-8 flex justify-center">
-          <div
-            style={{
-              width: CERT_W * previewScale,
-              height: CERT_H * previewScale,
-              maxWidth: "100%",
-              overflow: "hidden",
-              borderRadius: 10,
-              boxShadow: "0 18px 60px rgba(0,0,0,0.55)",
-            }}
-            className="border border-primary/40"
-          >
-            <CertificateNode
-              name={certName}
-              startupName={startup.name}
-              scale={previewScale}
-            />
-          </div>
-        </div>
-
-        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-          <button
-            onClick={downloadCertificate}
-            disabled={downloading}
-            className="btn-primary-glow inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold disabled:opacity-60"
-          >
-            <Download className="h-4 w-4" />
-            {downloading ? "Generating PDF…" : "Download Certificate (PDF)"}
-          </button>
-          <button
-            onClick={shareCertOnLinkedIn}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary/40 bg-primary/5 px-6 py-3 text-sm font-semibold text-primary hover:bg-primary/10 transition"
-          >
-            <Linkedin className="h-4 w-4" /> Share on LinkedIn
-          </button>
+        <div className="mt-8">
+          <CertificateTemplate
+            recipientName={certName}
+            companyLogoUrl={aicLogoUrl}
+            companyName="AIC × ISB"
+            internshipName="Virtual Internship: Program Manager"
+            completionDate={now}
+            descriptionParagraph={aicDescription}
+            downloadFileName={`AIC-ISB-Internship-Certificate-${certName}`}
+          />
         </div>
       </section>
 
@@ -1451,21 +1381,6 @@ function EarnedPhase({
         </a>
       </section>
 
-      {/* Hidden full-size certificate node for PDF capture */}
-      <div
-        style={{
-          position: "fixed",
-          left: -100000,
-          top: 0,
-          pointerEvents: "none",
-          opacity: 1,
-        }}
-        aria-hidden="true"
-      >
-        <div ref={certificateRef}>
-          <CertificateNode name={certName} startupName={startup.name} />
-        </div>
-      </div>
     </div>
   );
 }

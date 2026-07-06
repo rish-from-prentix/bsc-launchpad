@@ -67,7 +67,7 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
           aria-label="Ask Prex"
           className="btn-primary-glow group fixed bottom-6 right-6 z-[60] flex items-center gap-2 rounded-full pl-2.5 pr-3.5 py-1.5 text-sm font-semibold text-white shadow-[0_0_0_3px_rgba(93,196,254,0.2),0_0_20px_rgba(93,196,254,0.4)] hover:shadow-[0_0_0_5px_rgba(93,196,254,0.3),0_0_32px_rgba(93,196,254,0.6)] transition-shadow prex-pulse"
         >
-          <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-black/25 backdrop-blur">
+          <span className="relative flex h-6 w-6 items-center justify-center rounded-full bg-black/25 backdrop-blur">
             <Sparkles className="h-4 w-4" />
           </span>
           <span className="tracking-wide">Prex</span>
@@ -201,8 +201,8 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
 
       <style>{`
         @keyframes prex-pulse-glow {
-          0%, 100% { box-shadow: 0 0 0 4px rgba(139,92,246,0.18), 0 0 24px rgba(93,196,254,0.45); }
-          50% { box-shadow: 0 0 0 6px rgba(139,92,246,0.28), 0 0 40px rgba(93,196,254,0.75); }
+          0%, 100% { box-shadow: 0 0 0 3px rgba(93,196,254,0.2), 0 0 20px rgba(93,196,254,0.4); }
+          50% { box-shadow: 0 0 0 5px rgba(93,196,254,0.3), 0 0 32px rgba(93,196,254,0.6); }
         }
         .prex-pulse { animation: prex-pulse-glow 2.6s ease-in-out infinite; }
       `}</style>

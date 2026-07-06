@@ -27,7 +27,7 @@ export function CarefirstOverview({
         Welcome, {name}.
       </h1>
       <p className="mt-3 text-[15px] text-muted-foreground max-w-[560px] leading-relaxed">
-        You’ll work through 15 tasks — from framing the problem to recommending a
+        You’ll work through 15 tasks, from framing the problem to recommending a
         digital fix. Complete each one to unlock the next.
       </p>
 

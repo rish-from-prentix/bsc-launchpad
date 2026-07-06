@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { ChevronLeft } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { BrandMark } from "./brand-mark";
 
 export type Crumb = { label: string; onClick?: () => void };
@@ -65,7 +66,9 @@ export function AppShell({
                 <span className="hidden sm:inline text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
                   {"\n"}
                 </span>
-                <BrandMark brand="prentix" height={20} />
+                <Link to="/" aria-label="Prentix home" className="inline-flex items-center">
+                  <BrandMark brand="prentix" height={20} />
+                </Link>
               </div>
             </div>
             {(contextLabel || (crumbs && crumbs.length)) && (

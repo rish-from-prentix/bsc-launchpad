@@ -143,7 +143,6 @@ function buildArchPrex(phaseIndex: number): PrexContext {
       name: "Kiran",
       tagline: "Meridian",
     },
-    ],
   };
 }
 

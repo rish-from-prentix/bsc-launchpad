@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import JSZip from "jszip";
 
 export type ThesisScores = {
   clarity: number;
@@ -84,7 +85,14 @@ Please evaluate the attached investment thesis document strictly using the rubri
 
     const isPdf = /pdf/i.test(data.mimeType) || /\.pdf$/i.test(data.fileName);
     const isImage = /^image\//i.test(data.mimeType);
-    if (!isPdf && !isImage) {
+    const isPptx =
+      /\.pptx$/i.test(data.fileName) ||
+      /presentationml\.presentation/i.test(data.mimeType);
+    const isLegacyPpt =
+      /\.ppt$/i.test(data.fileName) ||
+      /ms-powerpoint/i.test(data.mimeType);
+
+    if (isLegacyPpt && !isPptx) {
       return {
         clarity: 0,
         market: 0,
@@ -93,26 +101,109 @@ Please evaluate the attached investment thesis document strictly using the rubri
         originality: 0,
         overall: 0,
         feedback:
-          "Please upload your thesis as a PDF. PowerPoint files aren't supported directly — export your deck to PDF and try again.",
+          "Legacy .ppt files aren't supported. Please save your deck as .pptx or export it as a PDF and try again.",
         improvement: "",
         error: "unsupported_type",
       };
     }
 
-    const attachment = isPdf
-      ? {
-          type: "file" as const,
-          file: {
-            filename: data.fileName || "thesis.pdf",
-            file_data: `data:application/pdf;base64,${data.fileBase64}`,
-          },
+    if (!isPdf && !isImage && !isPptx) {
+      return {
+        clarity: 0,
+        market: 0,
+        team: 0,
+        risk: 0,
+        originality: 0,
+        overall: 0,
+        feedback:
+          "Unsupported file type. Please upload a PDF or a .pptx deck.",
+        improvement: "",
+        error: "unsupported_type",
+      };
+    }
+
+    // For .pptx we extract slide text server-side (Worker-safe) and send as text.
+    let pptxText = "";
+    if (isPptx) {
+      try {
+        const bytes = Uint8Array.from(atob(data.fileBase64), (c) => c.charCodeAt(0));
+        const zip = await JSZip.loadAsync(bytes);
+        const slideFiles = Object.keys(zip.files)
+          .filter((n) => /^ppt\/slides\/slide\d+\.xml$/i.test(n))
+          .sort((a, b) => {
+            const na = parseInt(a.match(/slide(\d+)\.xml/i)?.[1] ?? "0", 10);
+            const nb = parseInt(b.match(/slide(\d+)\.xml/i)?.[1] ?? "0", 10);
+            return na - nb;
+          });
+        const parts: string[] = [];
+        for (const name of slideFiles) {
+          const xml = await zip.files[name].async("string");
+          const texts = Array.from(xml.matchAll(/<a:t[^>]*>([\s\S]*?)<\/a:t>/g)).map(
+            (m) =>
+              m[1]
+                .replace(/&amp;/g, "&")
+                .replace(/&lt;/g, "<")
+                .replace(/&gt;/g, ">")
+                .replace(/&quot;/g, '"')
+                .replace(/&apos;/g, "'"),
+          );
+          const idx = name.match(/slide(\d+)/i)?.[1] ?? "?";
+          parts.push(`--- Slide ${idx} ---\n${texts.join("\n")}`);
         }
-      : {
-          type: "image_url" as const,
-          image_url: {
-            url: `data:${data.mimeType};base64,${data.fileBase64}`,
-          },
+        pptxText = parts.join("\n\n").trim();
+        if (!pptxText) {
+          return {
+            clarity: 0,
+            market: 0,
+            team: 0,
+            risk: 0,
+            originality: 0,
+            overall: 0,
+            feedback:
+              "We couldn't read any text from this .pptx. If the slides are mostly images, please export the deck as a PDF and try again.",
+            improvement: "",
+            error: "empty_pptx",
+          };
+        }
+      } catch (e) {
+        console.error("scoreThesis pptx parse error", e);
+        return {
+          clarity: 0,
+          market: 0,
+          team: 0,
+          risk: 0,
+          originality: 0,
+          overall: 0,
+          feedback:
+            "We couldn't open that .pptx file. Please re-save it or export as PDF and try again.",
+          improvement: "",
+          error: "pptx_parse_error",
         };
+      }
+    }
+
+    const userContent: Array<Record<string, unknown>> = [
+      { type: "text", text: userPromptText },
+    ];
+    if (isPdf) {
+      userContent.push({
+        type: "file",
+        file: {
+          filename: data.fileName || "thesis.pdf",
+          file_data: `data:application/pdf;base64,${data.fileBase64}`,
+        },
+      });
+    } else if (isImage) {
+      userContent.push({
+        type: "image_url",
+        image_url: { url: `data:${data.mimeType};base64,${data.fileBase64}` },
+      });
+    } else if (isPptx) {
+      userContent.push({
+        type: "text",
+        text: `Extracted text from the uploaded .pptx deck "${data.fileName}" (slide by slide):\n\n${pptxText}`,
+      });
+    }
 
     try {
       const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -127,10 +218,7 @@ Please evaluate the attached investment thesis document strictly using the rubri
             { role: "system", content: systemPrompt },
             {
               role: "user",
-              content: [
-                { type: "text", text: userPromptText },
-                attachment,
-              ],
+              content: userContent,
             },
           ],
           tools: [

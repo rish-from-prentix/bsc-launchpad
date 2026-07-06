@@ -15,6 +15,7 @@ import { THEMES, type ThemeId } from "@/components/aic-isb/startups-data";
 import { INVESTIGATIONS } from "@/components/aic-isb/rca-investigation-data";
 import { PrexChatbot, type PrexContext } from "@/components/prex/prex-chatbot";
 import animeshAvatar from "@/assets/animesh.png.asset.json";
+import { invokePhasePrev } from "@/components/aic-isb/phase-prev-handler";
 
 export const Route = createFileRoute("/simulations/aic-isb")({
   head: () => ({
@@ -186,6 +187,13 @@ function AicIsbPage() {
 
   const canGoPrevious = currentPhase > 1;
   const goPrevious = () => {
+    // Let the current task consume the Previous action for internal
+    // page navigation (e.g. thesis builder step -1) before falling
+    // back to the previous phase.
+    if (invokePhasePrev()) {
+      if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
     if (canGoPrevious) {
       setCurrentPhase((p) => Math.max(1, p - 1));
       if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });

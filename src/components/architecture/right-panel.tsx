@@ -38,14 +38,6 @@ export function ArchRightPanel() {
           )}
         </Section>
 
-        <Section label="Deadlines">
-          <Dl k="W1" title="Brief + Site Analysis" body="Decode brief, 5-layer site board" />
-          <Dl k="W2" title="Design" body="Programme + concept direction" />
-          <Dl k="W3" title="Develop" body="Floor plan + cost + sustainability" />
-          <Dl k="W4" title="Coordinate + Audit" body="MEP · RFI · Pre-construction check" />
-          <Dl k="+12" title="Planning Submission" body="Hard deadline · PMC" danger />
-        </Section>
-
       </aside>
     </>
   );

@@ -1,4 +1,4 @@
-import { ArrowLeft, Check, Lock } from "lucide-react";
+import { ArrowLeft, Check, Lock, RotateCcw } from "lucide-react";
 import { cn, getFirstName } from "@/lib/utils";
 
 export type TaskState = "active" | "locked" | "done";
@@ -15,12 +15,14 @@ export function AicIsbProgressBar({
   onPrevious,
   onPhaseSelect,
   canGoPrevious = false,
+  onRedo,
 }: {
   candidateName: string;
   tasks: ProgressTask[];
   onPrevious?: () => void;
   onPhaseSelect?: (phase: number) => void;
   canGoPrevious?: boolean;
+  onRedo?: () => void;
 }) {
   const completed = tasks.filter((t) => t.state === "done").length;
   const pct = Math.round((completed / tasks.length) * 100);
@@ -49,6 +51,18 @@ export function AicIsbProgressBar({
               <ArrowLeft className="h-3.5 w-3.5" />
               Previous
             </button>
+            {onRedo && (
+              <button
+                type="button"
+                onClick={onRedo}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground/90 transition hover:bg-secondary hover:border-primary/40"
+                aria-label="Redo current phase"
+                title="Clear this phase and start over"
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                Redo
+              </button>
+            )}
             <div>
               <div className="text-[10px] uppercase tracking-[0.22em] text-primary font-semibold">
                 Internship Progress

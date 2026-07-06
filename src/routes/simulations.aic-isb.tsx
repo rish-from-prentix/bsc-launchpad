@@ -110,6 +110,8 @@ function AicIsbPage() {
   const [currentPhase, setCurrentPhase] = useState(1);
   const [sector, setSector] = useState<ThemeId | null>(null);
   const [shortlistedIds, setShortlistedIds] = useState<string[]>([]);
+  // Bumped when the student clicks Redo — combined into <main> key to remount.
+  const [redoTick, setRedoTick] = useState(0);
   // Free-navigation fallbacks so any phase is reachable even before earlier
   // phases have been completed.
   const effectiveSector: ThemeId = sector ?? "ai";
@@ -190,6 +192,34 @@ function AicIsbPage() {
     }
   };
 
+  const handleRedo = () => {
+    if (typeof window === "undefined") return;
+    const ok = window.confirm(
+      "Redo this task? Your saved answers for this phase will be cleared.",
+    );
+    if (!ok) return;
+    const s = sector ?? effectiveSector;
+    const ids = (shortlistedIds.length > 0 ? shortlistedIds : effectiveShortlist).join(",");
+    const keysByPhase: Record<number, string[]> = {
+      1: ["aic-isb:task1:v1"],
+      2: [`aic-isb:task2:${s}`],
+      3: [`aic-isb:task3:${s}:${ids}`],
+      4: [],
+      5: [`aic-isb:task5:${s}:${ids}`],
+    };
+    (keysByPhase[currentPhase] ?? []).forEach((k) => {
+      try {
+        window.localStorage.removeItem(k);
+      } catch {}
+    });
+    if (currentPhase === 1) {
+      setSector(null);
+      setShortlistedIds([]);
+    }
+    setRedoTick((t) => t + 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const advance = (next: number) => {
     setMaxReached((m) => Math.max(m, next));
     setCurrentPhase(next + 1 > TASK_TITLES.length ? TASK_TITLES.length : next + 1);
@@ -204,6 +234,7 @@ function AicIsbPage() {
         onPrevious={goPrevious}
         onPhaseSelect={(p) => setCurrentPhase(p)}
         canGoPrevious={canGoPrevious}
+        onRedo={handleRedo}
       />
       <div className="flex">
         <AicIsbTaskNavigator
@@ -212,7 +243,7 @@ function AicIsbPage() {
           onJump={(p) => setCurrentPhase(p)}
         />
         <main
-          key={currentPhase}
+          key={`${currentPhase}:${redoTick}`}
           className="flex-1 min-w-0 animate-[fadeSlide_0.35s_ease-out]"
         >
         {openEmail ? (

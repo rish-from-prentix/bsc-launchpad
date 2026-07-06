@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import { Check, Copy, Download, ExternalLink, Linkedin } from "lucide-react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+import { useState } from "react";
+import { Check, Copy, ExternalLink, Linkedin } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
+import { CertificateTemplate } from "@/components/certificate/certificate-template";
+import bscLogo from "@/assets/bsc-logo.png";
 import type { MonthData } from "@/lib/simulation";
 import { SKILLS, buildPost, buildResumeLine, ebitdaInCr, getPerformanceTier, selectPostVariant } from "./final-shared";
 
@@ -22,82 +22,11 @@ export function FinalProof({
   const postText = buildPost(variant, ebitdaCr);
   const resumeLine = buildResumeLine(ebitdaCr);
   const certName = name?.trim() || "Participant";
-
-  // --- Certificate (ported from previous final-results.tsx) ---------------
-  const certificateRef = useRef<HTMLDivElement>(null);
-  const [downloading, setDownloading] = useState(false);
-
-  useEffect(() => {
-    const id = "inter-bold-font-link";
-    if (document.getElementById(id)) return;
-    const link = document.createElement("link");
-    link.id = id;
-    link.rel = "stylesheet";
-    link.href = "https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap";
-    document.head.appendChild(link);
-  }, []);
-
-  const nameFontSize = certName.length > 18 ? Math.max(36, 64 - (certName.length - 18) * 2) : 64;
-
-  async function downloadCertificate() {
-    if (!certificateRef.current || downloading) return;
-    setDownloading(true);
-    try {
-      const canvas = await html2canvas(certificateRef.current, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: null,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "px",
-        format: [1200, 850],
-      });
-      pdf.addImage(imgData, "PNG", 0, 0, 1200, 850);
-      pdf.save(`BSC-Internship-Certificate-${certName}.pdf`);
-    } finally {
-      setDownloading(false);
-    }
-  }
-
-  function shareCertOnLinkedIn() {
-    window.open("https://www.linkedin.com/sharing/share-offsite/?url=https://prentix.ai", "_blank", "noopener,noreferrer");
-  }
-
-  const CertificateNode = ({ scale = 1 }: { scale?: number }) => (
-    <div
-      style={{
-        width: 1200,
-        height: 850,
-        position: "relative",
-        backgroundImage: "url(/assets/certificate-template.png)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        transform: scale !== 1 ? `scale(${scale})` : undefined,
-        transformOrigin: "top left",
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          left: 195,
-          top: 310,
-          fontFamily: "'Inter', sans-serif",
-          fontWeight: 700,
-          fontSize: `${nameFontSize}px`,
-          color: "#0A1628",
-          lineHeight: 1,
-          letterSpacing: "-0.01em",
-          whiteSpace: "nowrap",
-        }}
-      >
-        {certName}
-      </div>
-    </div>
-  );
+  const now = new Date();
+  const monthYearLabel = now.toLocaleString("en-US", { month: "long" }) + " " + now.getFullYear();
+  const bscDescription =
+    `During ${monthYearLabel}, the participant engaged with marketing, inventory, and channel strategy, demonstrating the ability to make data-informed decisions under uncertainty. ` +
+    `The experience involved navigating trade-offs across growth, marketing, and inventory in a dynamic business environment.`;
 
   // --- Skills copy state ---------------------------------------------------
   const [copiedSkill, setCopiedSkill] = useState<string | null>(null);
@@ -132,38 +61,14 @@ export function FinalProof({
     >
       {/* SECTION 1, Certificate */}
       <section>
-        <div className="flex justify-center">
-          <div
-            style={{
-              width: 600,
-              height: 425,
-              maxWidth: "100%",
-              overflow: "hidden",
-              borderRadius: 8,
-              boxShadow: "0 10px 40px rgba(0,0,0,0.4)",
-            }}
-            className="border border-primary/40"
-          >
-            <CertificateNode scale={0.5} />
-          </div>
-        </div>
-
-        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-          <button
-            onClick={downloadCertificate}
-            disabled={downloading}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 transition justify-center disabled:opacity-60"
-          >
-            <Download className="h-4 w-4" />
-            {downloading ? "Generating PDF…" : "Download Certificate (PDF) →"}
-          </button>
-          <button
-            onClick={shareCertOnLinkedIn}
-            className="inline-flex items-center gap-2 rounded-lg border border-border bg-transparent px-6 py-3 text-sm font-medium text-foreground hover:bg-card transition justify-center"
-          >
-            Share on LinkedIn →
-          </button>
-        </div>
+        <CertificateTemplate
+          recipientName={certName}
+          companyLogoUrl={bscLogo}
+          internshipName="Virtual Internship: Growth & Business Ops"
+          completionDate={now}
+          descriptionParagraph={bscDescription}
+          downloadFileName={`BSC-Internship-Certificate-${certName}`}
+        />
 
         <p className="mt-4 text-center text-[12px] text-muted-foreground">
           This certificate is verifiable. Each one carries a unique engagement code.
@@ -299,20 +204,6 @@ export function FinalProof({
       </section>
 
       {/* Hidden full-size certificate capture node */}
-      <div
-        style={{
-          position: "fixed",
-          left: -10000,
-          top: 0,
-          pointerEvents: "none",
-          opacity: 1,
-        }}
-        aria-hidden="true"
-      >
-        <div ref={certificateRef}>
-          <CertificateNode />
-        </div>
-      </div>
     </div>
   );
 }

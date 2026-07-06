@@ -65,7 +65,7 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
           type="button"
           onClick={() => setOpen(true)}
           aria-label="Ask Prex"
-          className="group fixed bottom-6 right-6 z-[60] flex items-center gap-2 rounded-full bg-gradient-to-br from-primary to-[#8b5cf6] pl-3 pr-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-[0_0_0_4px_rgba(139,92,246,0.18),0_0_28px_rgba(93,196,254,0.55)] hover:shadow-[0_0_0_6px_rgba(139,92,246,0.25),0_0_40px_rgba(93,196,254,0.75)] transition-shadow prex-pulse"
+          className="btn-primary-glow group fixed bottom-6 right-6 z-[60] flex items-center gap-2 rounded-full pl-2.5 pr-3.5 py-1.5 text-sm font-semibold text-white shadow-[0_0_0_3px_rgba(93,196,254,0.2),0_0_20px_rgba(93,196,254,0.4)] hover:shadow-[0_0_0_5px_rgba(93,196,254,0.3),0_0_32px_rgba(93,196,254,0.6)] transition-shadow prex-pulse"
         >
           <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-black/25 backdrop-blur">
             <Sparkles className="h-4 w-4" />

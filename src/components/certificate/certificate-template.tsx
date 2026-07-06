@@ -6,7 +6,10 @@ import prentixLogo from "@/assets/prentix-logo.png";
 
 export type CertificateTemplateProps = {
   recipientName: string;
-  companyLogoUrl: string;
+  /** Partner company logo URL. If omitted, `companyName` is rendered as a text mark. */
+  companyLogoUrl?: string;
+  /** Partner company name (used as image alt and as text fallback when no logo). */
+  companyName?: string;
   internshipName: string;
   /** ISO string, Date, or any parseable value. Defaults to today. */
   completionDate?: string | Date;
@@ -73,6 +76,7 @@ export function CertificateTemplate(props: CertificateTemplateProps) {
   const {
     recipientName,
     companyLogoUrl,
+    companyName,
     internshipName,
     completionDate,
     descriptionParagraph,
@@ -203,20 +207,39 @@ export function CertificateTemplate(props: CertificateTemplateProps) {
           boxSizing: "border-box",
         }}
       >
-        {/* Company logo top-left */}
-        <img
-          src={companyLogoUrl}
-          alt=""
-          crossOrigin="anonymous"
-          style={{
-            position: "absolute",
-            left: 80,
-            top: 60,
-            maxWidth: 260,
-            maxHeight: 130,
-            objectFit: "contain",
-          }}
-        />
+        {/* Company logo top-left (image or text fallback) */}
+        {companyLogoUrl ? (
+          <img
+            src={companyLogoUrl}
+            alt={companyName ?? ""}
+            crossOrigin="anonymous"
+            style={{
+              position: "absolute",
+              left: 80,
+              top: 60,
+              maxWidth: 260,
+              maxHeight: 130,
+              objectFit: "contain",
+            }}
+          />
+        ) : (
+          <div
+            style={{
+              position: "absolute",
+              left: 80,
+              top: 60,
+              maxWidth: 320,
+              fontWeight: 900,
+              fontSize: 32,
+              lineHeight: 1.05,
+              letterSpacing: "-0.01em",
+              color: "#0A1628",
+              textTransform: "uppercase",
+            }}
+          >
+            {companyName ?? ""}
+          </div>
+        )}
 
         {/* Body content */}
         <div style={{ position: "absolute", left: 80, top: 260, right: 80 }}>

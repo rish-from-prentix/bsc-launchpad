@@ -305,17 +305,6 @@ export function CertificateTemplate(props: CertificateTemplateProps) {
             textAlign: "right",
           }}
         >
-          <div
-            style={{
-              fontFamily: "'Great Vibes', 'Brush Script MT', cursive",
-              fontSize: 54,
-              lineHeight: 1,
-              color: "#1e3a8a",
-              marginBottom: 6,
-            }}
-          >
-            Rishik
-          </div>
           <div style={{ fontWeight: 800, fontSize: 18, color: "#0A1628" }}>Rishik Reddy</div>
           <div style={{ fontSize: 13, color: "#0A1628" }}>Founder, Prentix</div>
         </div>

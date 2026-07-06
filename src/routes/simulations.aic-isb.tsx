@@ -241,7 +241,7 @@ function AicIsbPage() {
         tasks={tasks}
         onPrevious={goPrevious}
         onPhaseSelect={(p) => setCurrentPhase(p)}
-        canGoPrevious={canGoPrevious}
+        canGoPrevious={true}
         onRedo={handleRedo}
       />
       <div className="flex">

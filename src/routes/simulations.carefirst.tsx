@@ -11,6 +11,7 @@ import { TaskFourRootCause } from "@/components/carefirst/task-04-root-cause";
 import { TaskFiveRecommendInterventions } from "@/components/carefirst/task-05-recommend-interventions";
 import { TaskLockedPlaceholder } from "@/components/carefirst/task-locked";
 import { CAREFIRST_TASKS, TOTAL_TASKS } from "@/components/carefirst/tasks-data";
+import { PrexChatbot, type PrexContext } from "@/components/prex/prex-chatbot";
 
 export const Route = createFileRoute("/simulations/carefirst")({
   head: () => ({
@@ -91,6 +92,30 @@ function CarefirstPage() {
         ]
       : undefined;
 
+  const prexCtx: PrexContext =
+    screen === "task" && meta
+      ? {
+          phaseLabel: `Task ${String(meta.id).padStart(2, "0")} · ${meta.title}`,
+          phaseDescription: `CareFirst × PulseTech healthcare business analyst internship. Current task: ${meta.title}.`,
+          suggestions: [
+            `How do I approach "${meta.title}"?`,
+            "What frameworks apply here?",
+            "What does a strong submission look like?",
+            "What common mistakes should I avoid?",
+          ],
+        }
+      : {
+          phaseLabel: "CareFirst · Program Overview",
+          phaseDescription:
+            "CareFirst × PulseTech Digitising Healthcare virtual internship — Business Analyst track overview.",
+          suggestions: [
+            "What will I learn in this internship?",
+            "How are the tasks structured?",
+            "What does a Business Analyst actually do here?",
+            "Any tips before I start Task 01?",
+          ],
+        };
+
   return (
     <AppShell
       contextLabel={contextLabel}
@@ -114,6 +139,7 @@ function CarefirstPage() {
           onBackToOverview={backToOverview}
         />
       )}
+      <PrexChatbot context={prexCtx} />
     </AppShell>
   );
 }

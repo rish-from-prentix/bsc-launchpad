@@ -18,6 +18,8 @@ import { ArchRightPanel } from "@/components/architecture/right-panel";
 import { ArchTaskNavigator } from "@/components/architecture/task-navigator";
 import { MessageCenterProvider } from "@/components/architecture/message-center";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { PrexChatbot, type PrexContext } from "@/components/prex/prex-chatbot";
+import { getPhaseName } from "@/components/architecture/arch-data";
 
 export const Route = createFileRoute("/simulations/architecture")({
   head: () => ({
@@ -121,8 +123,23 @@ function ArchitecturePage() {
         <ArchRightPanel />
       </div>
       </div>
+      <PrexChatbot context={buildArchPrex(currentPhase)} />
     </MessageCenterProvider>
   );
+}
+
+function buildArchPrex(phaseIndex: number): PrexContext {
+  const task = ARCH_TASKS[phaseIndex - 1] ?? ARCH_TASKS[0];
+  return {
+    phaseLabel: `Task ${task.index} · ${task.title}`,
+    phaseDescription: `Meridian Architecture Studio internship, phase "${getPhaseName(task.week)}". Deliverable: ${task.deliverable}.`,
+    suggestions: [
+      `How should I approach "${task.title}"?`,
+      `What makes a strong "${task.title}" deliverable?`,
+      "What common mistakes should I avoid here?",
+      "Can you walk me through an example?",
+    ],
+  };
 }
 
 function NavFooter({

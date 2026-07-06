@@ -13,6 +13,7 @@ import { EmailReader } from "@/components/aic-isb/email-reader";
 import { AIC_INBOX } from "@/components/aic-isb/phase-meta";
 import { THEMES, type ThemeId } from "@/components/aic-isb/startups-data";
 import { INVESTIGATIONS } from "@/components/aic-isb/rca-investigation-data";
+import { PrexChatbot, type PrexContext } from "@/components/prex/prex-chatbot";
 
 export const Route = createFileRoute("/simulations/aic-isb")({
   head: () => ({
@@ -35,6 +36,64 @@ const TASK_TITLES = [
   "Operational Review",
   "Investment Memo",
 ];
+
+const AIC_PREX: Record<number, PrexContext> = {
+  1: {
+    phaseLabel: "Phase 1 · Thesis: The Basics",
+    phaseDescription:
+      "The intern is building an early investment thesis and choosing a sector (AI, Climate, or Health) for the AIC × ISB accelerator cohort.",
+    suggestions: [
+      "What makes a strong Investment Thesis?",
+      "How do I pick the right sector?",
+      "Can you show me an example thesis structure?",
+      "What red flags weaken a thesis?",
+    ],
+  },
+  2: {
+    phaseLabel: "Phase 2 · Startup Evaluation",
+    phaseDescription:
+      "The intern is screening startups from the sector shortlist and choosing which ones to advance to the cohort.",
+    suggestions: [
+      "What criteria should I evaluate startups on?",
+      "How do I compare two competing startups?",
+      "How much weight should traction get vs team?",
+      "What signals suggest a startup is not ready?",
+    ],
+  },
+  3: {
+    phaseLabel: "Phase 3 · Mentor Matching",
+    phaseDescription:
+      "The intern is matching shortlisted founders with mentors based on stage, domain, and gaps.",
+    suggestions: [
+      "How do I match a founder to the right mentor?",
+      "What makes a mentor pairing succeed or fail?",
+      "How do I write a good matching rationale?",
+      "How many mentors should one startup have?",
+    ],
+  },
+  4: {
+    phaseLabel: "Phase 4 · Operational Review",
+    phaseDescription:
+      "The intern is running a root-cause investigation for a struggling cohort startup and proposing a fix.",
+    suggestions: [
+      "How do I run a root-cause analysis?",
+      "What are the 5 Whys and when do I use them?",
+      "How do I separate symptoms from causes?",
+      "How do I write a crisp recommendation?",
+    ],
+  },
+  5: {
+    phaseLabel: "Phase 5 · Investment Memo",
+    phaseDescription:
+      "The intern is writing the final investment memo — valuation, terms, risks, and recommendation.",
+    suggestions: [
+      "What sections belong in an investment memo?",
+      "How do I justify a valuation for an early-stage startup?",
+      "How do I frame risk without killing the deal?",
+      "What does a great recommendation look like?",
+    ],
+  },
+};
 
 function AicIsbPage() {
   const [name, setName] = useState<string | null>(null);
@@ -219,6 +278,7 @@ function AicIsbPage() {
           />
         </aside>
       </div>
+      <PrexChatbot context={AIC_PREX[currentPhase] ?? AIC_PREX[1]} />
     </div>
   );
 }

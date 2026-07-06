@@ -46,16 +46,6 @@ export function ArchRightPanel() {
           <Dl k="+12" title="Planning Submission" body="Hard deadline · PMC" danger />
         </Section>
 
-        <Section label="Project Data">
-          <div className={cn("text-[10.5px] leading-[2.1]", MONO, "text-[#94a3c4]")}>
-            <div>Site: <span className="text-[#e6ecff]">Survey 147, Aundh</span></div>
-            <div>GFA: <span className="text-[#e6ecff]">12–15,000 sq.ft.</span></div>
-            <div>Budget: <span className="text-[#e6ecff]">INR 8.1 crore</span></div>
-            <div>Soil: <span className="text-[#e0b752]">Black cotton, raft fdn</span></div>
-            <div>Trees: <span className="text-[#52c47a]">3× neem (TPO)</span></div>
-            <div>Noise: <span className="text-[#e05252]">DP Rd 68–72 dB</span></div>
-          </div>
-        </Section>
       </aside>
     </>
   );

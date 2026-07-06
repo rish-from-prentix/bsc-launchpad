@@ -82,6 +82,38 @@ Do not be generous. Be honest.`;
 
 Please evaluate the attached investment thesis document strictly using the rubric.`;
 
+    const isPdf = /pdf/i.test(data.mimeType) || /\.pdf$/i.test(data.fileName);
+    const isImage = /^image\//i.test(data.mimeType);
+    if (!isPdf && !isImage) {
+      return {
+        clarity: 0,
+        market: 0,
+        team: 0,
+        risk: 0,
+        originality: 0,
+        overall: 0,
+        feedback:
+          "Please upload your thesis as a PDF. PowerPoint files aren't supported directly — export your deck to PDF and try again.",
+        improvement: "",
+        error: "unsupported_type",
+      };
+    }
+
+    const attachment = isPdf
+      ? {
+          type: "file" as const,
+          file: {
+            filename: data.fileName || "thesis.pdf",
+            file_data: `data:application/pdf;base64,${data.fileBase64}`,
+          },
+        }
+      : {
+          type: "image_url" as const,
+          image_url: {
+            url: `data:${data.mimeType};base64,${data.fileBase64}`,
+          },
+        };
+
     try {
       const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
@@ -97,12 +129,7 @@ Please evaluate the attached investment thesis document strictly using the rubri
               role: "user",
               content: [
                 { type: "text", text: userPromptText },
-                {
-                  type: "image_url",
-                  image_url: {
-                    url: `data:${data.mimeType};base64,${data.fileBase64}`,
-                  },
-                },
+                attachment,
               ],
             },
           ],
@@ -152,6 +179,11 @@ Please evaluate the attached investment thesis document strictly using the rubri
       });
 
       if (!resp.ok) {
+        let detail = "";
+        try {
+          detail = await resp.text();
+        } catch {}
+        console.error("scoreThesis gateway error", resp.status, detail);
         const code =
           resp.status === 429
             ? "rate_limited"

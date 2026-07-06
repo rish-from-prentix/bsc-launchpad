@@ -48,7 +48,10 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
       const res = await ask({
         data: { phaseContext, messages: nextMsgs },
       });
-      setMessages((m) => [...m, { role: "assistant", content: res.content || "(no response)" }]);
+      const clean = (res.content || "(no response)")
+        .replace(/\*\*/g, "")
+        .replace(/^#{1,6}\s+/gm, "");
+      setMessages((m) => [...m, { role: "assistant", content: clean }]);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Something went wrong.";
       setError(msg);
@@ -103,22 +106,8 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
           {/* Messages */}
           <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
             {messages.length === 0 && (
-              <div className="space-y-3">
-                <div className="rounded-xl border border-border/60 bg-white/[0.03] px-3 py-3 text-[13px] leading-relaxed text-foreground/90">
-                  Hi! I'm Prex. I can help you think through <span className="text-primary">{context.phaseLabel}</span>. Pick a starter question or ask me anything.
-                </div>
-                <div className="space-y-2">
-                  {context.suggestions.map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => send(s)}
-                      className="w-full rounded-lg border border-border/60 bg-white/[0.02] px-3 py-2 text-left text-[12.5px] text-foreground/85 transition hover:border-primary/50 hover:bg-primary/5 hover:text-foreground"
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
+              <div className="rounded-xl border border-border/60 bg-white/[0.03] px-3 py-3 text-[13px] leading-relaxed text-foreground/90">
+                Hi! I'm Prex. I can help you think through <span className="text-primary">{context.phaseLabel}</span>. Pick a starter question below or ask me anything.
               </div>
             )}
 
@@ -164,6 +153,26 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
                 {error}
               </div>
             )}
+          </div>
+
+          {/* Persistent suggestion chips (shown above composer, on every phase) */}
+          <div className="border-t border-border/60 bg-black/20 px-3 py-2.5">
+            <div className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
+              Ask Prex about
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {context.suggestions.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => send(s)}
+                  disabled={loading}
+                  className="rounded-full border border-primary/40 bg-gradient-to-r from-primary/20 to-[#5dc4fe]/20 px-2.5 py-1 text-left text-[11.5px] font-medium text-foreground/90 shadow-[0_0_0_1px_rgba(93,196,254,0.12),0_0_10px_rgba(93,196,254,0.15)] transition hover:from-primary/35 hover:to-[#5dc4fe]/35 hover:border-primary/70 hover:text-white disabled:opacity-40"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Composer */}

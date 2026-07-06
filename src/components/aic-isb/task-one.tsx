@@ -30,6 +30,7 @@ import { AicIsbLogo } from "./aic-logo";
 import { cn, getFirstName } from "@/lib/utils";
 import { type ThesisScores, scoreThesis } from "@/lib/score-thesis.functions";
 import { ReferenceDeck } from "./reference-deck";
+import { registerPhasePrev } from "./phase-prev-handler";
 
 type Sector = "ai" | "climate" | "health";
 
@@ -141,7 +142,7 @@ const EMPTY_ANSWERS: Answers = {
   recommendation: "",
 };
 
-const STORAGE_KEY = "aic-isb:task1:v1";
+const STORAGE_KEY = "aic-isb:task1:v2";
 
 function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -159,6 +160,9 @@ function fileToBase64(file: File): Promise<string> {
 type Persisted = {
   sector: Sector | null;
   answers: Answers;
+  revealBuilder?: boolean;
+  stepIdx?: number;
+  submittedSteps?: SectionId[];
 };
 
 function loadPersisted(): Persisted {
@@ -170,6 +174,11 @@ function loadPersisted(): Persisted {
     return {
       sector: parsed.sector ?? null,
       answers: { ...EMPTY_ANSWERS, ...(parsed.answers ?? {}) },
+      revealBuilder: parsed.revealBuilder ?? false,
+      stepIdx: typeof parsed.stepIdx === "number" ? parsed.stepIdx : 0,
+      submittedSteps: Array.isArray(parsed.submittedSteps)
+        ? parsed.submittedSteps
+        : [],
     };
   } catch {
     return { sector: null, answers: EMPTY_ANSWERS };
@@ -220,11 +229,15 @@ export function AicIsbTaskOne({
     setSector(p.sector);
     setAnswers(p.answers);
     // Mark steps as submitted if they already have enough content
-    const done = new Set<SectionId>();
+    const done = new Set<SectionId>(p.submittedSteps ?? []);
     SECTIONS.forEach((s) => {
       if (wordCount(p.answers[s.id]) >= MIN_WORDS) done.add(s.id);
     });
     setSubmittedSteps(done);
+    if (p.revealBuilder && p.sector) setRevealBuilder(true);
+    if (typeof p.stepIdx === "number") {
+      setStepIdx(Math.max(0, Math.min(SECTIONS.length - 1, p.stepIdx)));
+    }
   }, []);
 
   // Autosave
@@ -236,7 +249,13 @@ export function AicIsbTaskOne({
       try {
         window.localStorage.setItem(
           STORAGE_KEY,
-          JSON.stringify({ sector, answers }),
+          JSON.stringify({
+            sector,
+            answers,
+            revealBuilder,
+            stepIdx,
+            submittedSteps: Array.from(submittedSteps),
+          }),
         );
         setSaveState("saved");
       } catch {
@@ -246,7 +265,28 @@ export function AicIsbTaskOne({
     return () => {
       if (saveTimer.current) window.clearTimeout(saveTimer.current);
     };
-  }, [sector, answers]);
+  }, [sector, answers, revealBuilder, stepIdx, submittedSteps]);
+
+  // Wire the top-bar Previous button to in-task navigation.
+  useEffect(() => {
+    return registerPhasePrev(() => {
+      if (evalState !== "idle") {
+        setEvalState("idle");
+        setScores(null);
+        return true;
+      }
+      if (revealBuilder && stepIdx > 0) {
+        setStepIdx((i) => Math.max(0, i - 1));
+        return true;
+      }
+      if (revealBuilder) {
+        // From the first builder step, go back to sector selection.
+        setRevealBuilder(false);
+        return true;
+      }
+      return false;
+    });
+  }, [revealBuilder, stepIdx, evalState]);
 
   const greetingName = getFirstName(candidateName) || "there";
   const todayLabel = useMemo(() => "Today · 9:30 AM", []);

@@ -83,9 +83,6 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
           {/* Header */}
           <div className="flex items-center justify-between border-b border-border/60 bg-gradient-to-r from-primary/15 to-[#8b5cf6]/15 px-4 py-3">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-[#8b5cf6] text-primary-foreground">
-                <Sparkles className="h-4 w-4" />
-              </span>
               <div className="leading-tight">
                 <div className="text-sm font-semibold text-foreground">Prex — Your AI Mentor</div>
                 <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">

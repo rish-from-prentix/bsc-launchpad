@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
 import { CarefirstSplash } from "@/components/carefirst/splash";
-import { CarefirstOverview } from "@/components/carefirst/overview";
+import { CarefirstShell } from "@/components/carefirst/carefirst-shell";
 import { TaskZeroOnboarding } from "@/components/carefirst/task-00-onboarding";
 import { TaskOneProblemFraming } from "@/components/carefirst/task-01-problem-framing";
 import { TaskTwoJourneyMap } from "@/components/carefirst/task-02-journey-map";
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/simulations/carefirst")({
   component: CarefirstPage,
 });
 
-type Screen = "splash" | "overview" | "task";
+type Screen = "splash" | "workspace";
 
 function CarefirstPage() {
   const [screen, setScreen] = useState<Screen>("splash");
@@ -46,12 +46,12 @@ function CarefirstPage() {
 
   function begin(n: string) {
     setName(n);
-    setScreen("overview");
+    setScreen("workspace");
   }
 
   function openTask(id: number) {
     setCurrentTask(id);
-    setScreen("task");
+    setScreen("workspace");
   }
 
   function submit(id: number) {
@@ -63,15 +63,10 @@ function CarefirstPage() {
   }
 
   function goNext(id: number) {
-    if (id + 1 >= TOTAL_TASKS) {
-      setScreen("overview");
-    } else {
+    if (id + 1 < TOTAL_TASKS) {
       setCurrentTask(id + 1);
-      setScreen("task");
     }
   }
-
-  const backToOverview = () => setScreen("overview");
 
   if (screen === "splash") {
     return <CarefirstSplash onBegin={begin} />;
@@ -79,66 +74,52 @@ function CarefirstPage() {
 
   const meta = CAREFIRST_TASKS.find((t) => t.id === currentTask);
   const contextLabel =
-    screen === "overview"
-      ? "Program Overview"
-      : meta
-        ? `Task ${String(meta.id).padStart(2, "0")} · ${meta.title}`
-        : undefined;
-  const crumbs =
-    screen === "task"
-      ? [
-          { label: "Tasks", onClick: backToOverview },
-          { label: meta ? meta.title : "" },
-        ]
-      : undefined;
+    meta
+      ? `Task ${String(meta.id).padStart(2, "0")} · ${meta.title}`
+      : "Program";
 
-  const prexCtx: PrexContext =
-    screen === "task" && meta
-      ? {
-          phaseLabel: `Task ${String(meta.id).padStart(2, "0")} · ${meta.title}`,
-          phaseDescription: `CareFirst × PulseTech healthcare business analyst internship. Current task: ${meta.title}.`,
-          suggestions: [
-            `How do I approach "${meta.title}"?`,
-            "What frameworks apply here?",
-            "What does a strong submission look like?",
-            "What common mistakes should I avoid?",
-          ],
-        }
-      : {
-          phaseLabel: "CareFirst · Program Overview",
-          phaseDescription:
-            "CareFirst × PulseTech Digitising Healthcare virtual internship — Business Analyst track overview.",
-          suggestions: [
-            "What will I learn in this internship?",
-            "How are the tasks structured?",
-            "What does a Business Analyst actually do here?",
-            "Any tips before I start Task 01?",
-          ],
-        };
+  const prexCtx: PrexContext = meta
+    ? {
+        phaseLabel: `Task ${String(meta.id).padStart(2, "0")} · ${meta.title}`,
+        phaseDescription: `CareFirst × PulseTech healthcare business analyst internship. Current task: ${meta.title}.`,
+        suggestions: [
+          `How do I approach "${meta.title}"?`,
+          "What frameworks apply here?",
+          "What does a strong submission look like?",
+          "What common mistakes should I avoid?",
+        ],
+      }
+    : {
+        phaseLabel: "CareFirst · Program",
+        phaseDescription:
+          "CareFirst × PulseTech Digitising Healthcare virtual internship, Business Analyst track.",
+        suggestions: [
+          "What will I learn in this internship?",
+          "How are the tasks structured?",
+          "What does a Business Analyst actually do here?",
+          "Any tips before I start Task 01?",
+        ],
+      };
 
   return (
     <AppShell
       contextLabel={contextLabel}
-      onBack={screen === "task" ? backToOverview : () => setScreen("splash")}
-      crumbs={crumbs}
+      onBack={() => setScreen("splash")}
     >
-      {screen === "overview" && (
-        <CarefirstOverview
-          name={name}
-          currentTask={currentTask}
-          submitted={submitted}
-          onOpen={openTask}
-        />
-      )}
-      {screen === "task" && (
+      <CarefirstShell
+        name={name}
+        currentTask={currentTask}
+        submitted={submitted}
+        onOpen={openTask}
+      >
         <TaskScreen
           taskId={currentTask}
           submitted={submitted.has(currentTask)}
           onSubmit={() => submit(currentTask)}
           onNext={() => goNext(currentTask)}
-          onBackToOverview={backToOverview}
+          onBackToOverview={() => setScreen("splash")}
         />
-      )}
+      </CarefirstShell>
       <PrexChatbot context={prexCtx} />
     </AppShell>
   );

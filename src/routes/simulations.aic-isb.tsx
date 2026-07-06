@@ -97,7 +97,7 @@ const AIC_PREX: Record<number, PrexContext> = {
 };
 
 const AIC_MENTOR = {
-  name: "Animesh",
+  name: "Animesh from AIC",
   avatarUrl: animeshAvatar.url,
   tagline: "AIC × ISB",
 };

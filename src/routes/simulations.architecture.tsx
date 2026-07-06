@@ -140,7 +140,7 @@ function buildArchPrex(phaseIndex: number): PrexContext {
       "Can you walk me through an example?",
     ],
     mentor: {
-      name: "Kiran",
+      name: "Kiran from Meridian",
       tagline: "Meridian",
     },
   };

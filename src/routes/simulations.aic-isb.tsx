@@ -14,6 +14,7 @@ import { AIC_INBOX } from "@/components/aic-isb/phase-meta";
 import { THEMES, type ThemeId } from "@/components/aic-isb/startups-data";
 import { INVESTIGATIONS } from "@/components/aic-isb/rca-investigation-data";
 import { PrexChatbot, type PrexContext } from "@/components/prex/prex-chatbot";
+import animeshAvatar from "@/assets/animesh.png.asset.json";
 
 export const Route = createFileRoute("/simulations/aic-isb")({
   head: () => ({
@@ -93,6 +94,12 @@ const AIC_PREX: Record<number, PrexContext> = {
       "What does a great recommendation look like?",
     ],
   },
+};
+
+const AIC_MENTOR = {
+  name: "Animesh",
+  avatarUrl: animeshAvatar.url,
+  tagline: "AIC × ISB",
 };
 
 function AicIsbPage() {
@@ -278,7 +285,9 @@ function AicIsbPage() {
           />
         </aside>
       </div>
-      <PrexChatbot context={AIC_PREX[currentPhase] ?? AIC_PREX[1]} />
+      <PrexChatbot
+        context={{ ...(AIC_PREX[currentPhase] ?? AIC_PREX[1]), mentor: AIC_MENTOR }}
+      />
     </div>
   );
 }

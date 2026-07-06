@@ -11,6 +11,14 @@ export type PrexContext = {
   phaseDescription: string;
   /** 3-4 suggested prompt questions tailored to this phase. */
   suggestions: string[];
+  /** Optional mentor override (name, avatar, tagline). Defaults to "Prex". */
+  mentor?: {
+    name: string;
+    /** Optional avatar image URL. If omitted, a sparkles icon is used. */
+    avatarUrl?: string;
+    /** Optional short tagline shown under the mentor name in the header. */
+    tagline?: string;
+  };
 };
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -24,6 +32,24 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
   const ask = useServerFn(askPrex);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const mentorName = context.mentor?.name ?? "Prex";
+  const mentorAvatar = context.mentor?.avatarUrl;
+  const MentorAvatar = ({ size = 24 }: { size?: number }) =>
+    mentorAvatar ? (
+      <img
+        src={mentorAvatar}
+        alt={mentorName}
+        style={{ width: size, height: size }}
+        className="rounded-full object-cover ring-1 ring-white/20"
+      />
+    ) : (
+      <span
+        style={{ width: size, height: size }}
+        className="flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-[#8b5cf6] text-primary-foreground"
+      >
+        <Sparkles className="h-3 w-3" />
+      </span>
+    );
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -67,15 +93,23 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          aria-label="Ask Prex"
+          aria-label={`Ask ${mentorName}`}
           className="btn-primary-glow group fixed bottom-6 right-6 z-[60] flex items-center gap-2 rounded-full pl-2.5 pr-3.5 py-1.5 text-sm font-semibold text-white shadow-[0_0_0_3px_rgba(93,196,254,0.2),0_0_20px_rgba(93,196,254,0.4)] hover:shadow-[0_0_0_5px_rgba(93,196,254,0.3),0_0_32px_rgba(93,196,254,0.6)] transition-shadow prex-pulse"
         >
-          <span className="relative flex h-6 w-6 items-center justify-center rounded-full bg-black/25 backdrop-blur">
-            <Sparkles className="h-4 w-4" />
-          </span>
-          <span className="tracking-wide">Prex</span>
+          {mentorAvatar ? (
+            <img
+              src={mentorAvatar}
+              alt={mentorName}
+              className="h-6 w-6 rounded-full object-cover ring-1 ring-white/30"
+            />
+          ) : (
+            <span className="relative flex h-6 w-6 items-center justify-center rounded-full bg-black/25 backdrop-blur">
+              <Sparkles className="h-4 w-4" />
+            </span>
+          )}
+          <span className="tracking-wide">{mentorName}</span>
           <span className="pointer-events-none absolute -top-9 right-0 whitespace-nowrap rounded-md border border-border bg-background/95 px-2 py-1 text-[11px] font-medium text-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-            Ask Prex
+            Ask {mentorName}
           </span>
         </button>
       )}
@@ -86,8 +120,16 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
           {/* Header */}
           <div className="flex items-center justify-between border-b border-border/60 bg-gradient-to-r from-primary/15 to-[#8b5cf6]/15 px-4 py-3">
             <div className="flex items-center gap-2.5">
+              <MentorAvatar size={32} />
               <div className="leading-tight">
-                <div className="text-sm font-semibold text-foreground">Prex — Your AI Mentor</div>
+                <div className="text-sm font-semibold text-foreground">
+                  {mentorName}
+                  {context.mentor?.tagline ? (
+                    <span className="text-muted-foreground font-normal"> — {context.mentor.tagline}</span>
+                  ) : (
+                    <span className="text-muted-foreground font-normal"> — Your AI Mentor</span>
+                  )}
+                </div>
                 <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                   {context.phaseLabel}
                 </div>
@@ -97,7 +139,7 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
               type="button"
               onClick={() => setOpen(false)}
               className="rounded-md p-1.5 text-muted-foreground hover:bg-white/5 hover:text-foreground"
-              aria-label="Close Prex"
+              aria-label={`Close ${mentorName}`}
             >
               <X className="h-4 w-4" />
             </button>
@@ -107,7 +149,7 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
           <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
             {messages.length === 0 && (
               <div className="rounded-xl border border-border/60 bg-white/[0.03] px-3 py-3 text-[13px] leading-relaxed text-foreground/90">
-                Hi! I'm Prex. I can help you think through <span className="text-primary">{context.phaseLabel}</span>. Pick a starter question below or ask me anything.
+                Hi! I'm {mentorName}. I can help you think through <span className="text-primary">{context.phaseLabel}</span>. Pick a starter question below or ask me anything.
               </div>
             )}
 
@@ -120,9 +162,7 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
                 )}
               >
                 {m.role === "assistant" && (
-                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-[#8b5cf6] text-primary-foreground">
-                    <Sparkles className="h-3 w-3" />
-                  </span>
+                  <MentorAvatar size={24} />
                 )}
                 <div
                   className={cn(
@@ -139,9 +179,7 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
 
             {loading && (
               <div className="flex items-start gap-2">
-                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-[#8b5cf6] text-primary-foreground">
-                  <Sparkles className="h-3 w-3" />
-                </span>
+                <MentorAvatar size={24} />
                 <div className="rounded-2xl rounded-bl-sm border border-border/50 bg-white/[0.04] px-3 py-2 text-[13px] text-muted-foreground inline-flex items-center gap-2">
                   <Loader2 className="h-3 w-3 animate-spin" /> Thinking…
                 </div>
@@ -158,7 +196,7 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
           {/* Persistent suggestion chips (shown above composer, on every phase) */}
           <div className="border-t border-border/60 bg-black/20 px-3 py-2.5">
             <div className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
-              Ask Prex about
+              Ask {mentorName} about
             </div>
             <div className="flex flex-wrap gap-1.5">
               {context.suggestions.map((s) => (
@@ -188,7 +226,7 @@ export function PrexChatbot({ context }: { context: PrexContext }) {
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask Prex anything about this phase..."
+                placeholder={`Ask ${mentorName} anything about this phase...`}
                 className="flex-1 bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none"
                 disabled={loading}
               />

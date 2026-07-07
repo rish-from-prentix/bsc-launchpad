@@ -1,77 +1,78 @@
-## Goal
+# CareFirst Visual Redesign — Glassmorphism + Progressive Disclosure + Von Restorff
 
-Add a new virtual internship module, **"Digitising Healthcare — Business Analyst"** (CareFirst × PulseTech), as a fully additive, isolated route alongside the existing BSC, AIC×ISB, and Meridian Architecture modules. UI/screens only — no scoring, no backend, no LLM, no persistence. React state only.
+Scope is strictly `src/components/carefirst/**`. No edits to `src/styles.css`, no changes to BSC / AIC×ISB / Architecture. New tokens live under a scoped `.carefirst-theme` wrapper so they cannot leak.
 
-## Isolation rules
+## 1. Local design system (new file)
 
-- Do not modify any file under `src/components/screens/**`, `src/components/aic-isb/**`, `src/components/architecture/**`, or their routes.
-- All new code lives under `src/components/carefirst/**` and `src/routes/simulations.carefirst.tsx`.
-- Reuse existing patterns by **re-implementing** their visual shell inside `carefirst/` (email card modelled on `inbox-email.tsx`, primer overview modelled on `primers-overview.tsx`, step-bar shell, locked/editable input styling, feedback card, results shell). Shared design tokens from `styles.css` are used as-is (no redefinition).
-- Only one shared file is edited: `src/components/landing/simulations-section.tsx`, to add a fourth carousel entry linking to `/simulations/carefirst`. This is additive (one array entry) and does not restyle existing cards.
+Create `src/components/carefirst/carefirst-theme.css` and import it once from `carefirst-shell.tsx`. All rules scoped under `.carefirst-theme` so they only apply inside this module's wrapper.
 
-## New route
+Tokens (scoped as CSS custom properties on `.carefirst-theme`):
 
-- `src/routes/simulations.carefirst.tsx` — `createFileRoute("/simulations/carefirst")`, head metadata ("CareFirst × PulseTech Virtual Internship, Powered by Prentix"), wraps content in `AppShell` (same shell BSC uses) with its own local screen state machine.
+- `--cf-bg: #080808`
+- `--cf-text: #F5F5F5`, `--cf-text-muted: #8A8A8A`
+- `--cf-accent: #C6FF3D` (electric chartreuse)
+- `--cf-success: #7EE787`, `--cf-warning: #FFD166`, `--cf-danger: #FF6B6B`
+- `--cf-glass-bg: rgba(255,255,255,0.04)`, `--cf-glass-border: rgba(255,255,255,0.08)`, `--cf-glass-blur: 20px`
+- `--cf-glass-elevated-bg: rgba(255,255,255,0.07)`, `--cf-glass-elevated-border: rgba(200,255,80,0.25)`, `--cf-glass-elevated-blur: 24px`
+- `--cf-radius-card: 16px`, `--cf-radius-ctrl: 10px`
+- `--cf-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05)`
 
-## Screen state machine (local `useState`)
+Utility classes (all `.carefirst-theme`-scoped): `.cf-glass`, `.cf-glass-elevated`, `.cf-btn-primary` (chartreuse text CTA), `.cf-btn-ghost`, `.cf-input`, plus keyframes `cf-blur-in` (opacity 0→1, backdrop-filter blur 0→20px, 300ms ease-out) and `cf-glow-pulse` (accent glow, 2s loop, low intensity) for the Share button.
 
-```
-splash → overview → task-0 → task-1 → task-2 → task-3…task-14 (locked scaffold)
-```
+Fonts loaded via `<link>` in `src/routes/__root.tsx` head (Space Grotesk + General Sans from Fontshare, plus existing JetBrains Mono). This is the only file touched outside the module and is limited to `<link>` tags — no token edits.
 
-- `name: string`
-- `currentTask: number` (0–14)
-- `submitted: Set<number>` — a task is "complete" once its Submit button is clicked; next task unlocks.
-- Task 3–14 render a placeholder "Coming next" locked card, matching BSC's staged approach.
+Because tokens are scoped, existing Tailwind utilities (`bg-card`, `text-foreground`) still work; we override them inside `.carefirst-theme` with CSS var mappings so shadcn primitives inherit the new look without prop changes.
 
-## Files to add
+## 2. Progressive disclosure — reusable primitive
 
-1. **`src/components/carefirst/splash.tsx`** — Screen 1. Gold "Powered by Prentix" pill, "CareFirst × PulseTech" wordmark, headline/subhead, body copy, video placeholder card ("Welcome message from Ritu Sharma, VP Operations — CareFirst Hospitals" — non-functional play button, same visual shell as BSC splash video card), name input, "Begin Internship →" CTA, "~2–3 hours across 15 tasks, self-paced" subtext.
+Create `src/components/carefirst/progressive-sections.tsx` exposing:
 
-2. **`src/components/carefirst/overview.tsx`** — Screen 2. Stat row "15 Tasks · 4 Shareable Deliverables · 1 Certificate". Numbered rows 00–14 with titles from the brief, status pill Locked / Start / Completed based on `submitted` set + `currentTask`. Bottom CTA "Start Task N →". Modelled on `primers-overview.tsx` layout but as a scrollable numbered list instead of 3 cards.
+- `<ProgressiveFlow>` — container tracking a reveal index in local state, persisted to `localStorage` under `carefirst.task-<id>.reveal` so returning to a task keeps its progress.
+- `<ProgressiveStep index revealLabel>` — renders its child once `revealIndex >= index`; renders a ghost chartreuse button (`Continue reading →`, `Show me how to think about this →`, `Begin your answer →`) at `revealIndex === index - 1`.
+- Applies `cf-blur-in` animation on mount of each newly revealed step.
 
-3. **`src/components/carefirst/task-shell.tsx`** — Shared layout for all task screens: breadcrumb "Tasks / [Task Name]", max-width 680px single column, back-to-overview link, Submit button + post-submit confirmation state ("Task Submitted" checkmark, "Nice work — Task N complete", "Continue to Task N+1 →"). Handles Shareable-Deliverable pill + "Share to LinkedIn" ghost button when `shareable` prop is true (tasks 2, 6, 8, 12).
+Rework tasks 00–05 to wrap their sender email / attached data / teaching block / deliverable inside `<ProgressiveStep>` slots in that order. No content changes — pure structural rewrap. Same pattern is the template for future 06–14.
 
-4. **`src/components/carefirst/email-card.tsx`** — Sender email card component. Circular initials avatar, sender name, subject line, body. Visual shell derived from BSC/AIC email pattern, re-implemented locally (does not import `inbox-email.tsx`). Supports optional "no subject" mode for Task 0 welcome message.
+## 3. Von Restorff — two distinct moment types
 
-5. **`src/components/carefirst/teaching-block.tsx`** — Dark card with gold left-border, gold small-caps title, body copy, optional nested worked-example card.
+**Shareable tasks (ids 2, 6, 8, 12):** `TaskShell` reads `meta.shareable` and applies `cf-glass-elevated` to the outer task container (accent-tinted border, brighter fill). The "Share to LinkedIn" button gets the `cf-glow-pulse` animation. Non-shareable tasks use plain `cf-glass`.
 
-6. **`src/components/carefirst/attached-data.tsx`** — Renders attached data blocks: monospace filename cards for CSVs, quoted transcript blocks, bulleted reference-doc cards, plain stat lists.
+**Completion moments:**
+- Routine submit (non-shareable tasks): small inline confirmation strip (current understated style, restyled to glass).
+- Flagged submit (shareable tasks) and module wrap-up: new `<CompletionMoment>` component — near-full-screen glass panel, animated chartreuse glow ring expanding around a large checkmark, then reveals continue CTA. Used by `TaskShell` when `meta.shareable`, and by a final wrap-up screen after task 5.
 
-7. **`src/components/carefirst/inputs.tsx`** — Deliverable input primitives, all with locked-vs-editable styling matching project tokens:
-   - `Textarea` (writeup)
-   - `EditableTable` (columns configurable — for Task 1 Stakeholder Map: Stakeholder / Influence / Interest)
-   - `StepBuilder` (Task 2 flowchart: ordered rows, add / reorder up-down / edit / delete, connected by a downward chevron/arrow between rows)
-   - `UploadPlaceholder` (Tasks 6, 12 — drag-and-drop styled card, non-functional)
-   All lock (muted `#888`, no border, no focus) once the task is submitted.
+## 4. Sidebar — collapsible overlay
 
-8. **`src/components/carefirst/tasks-data.ts`** — Static task metadata array (id 0–14, title, `shareable` flag for 2/6/8/12).
+Rework `carefirst-shell.tsx`:
 
-9. **`src/components/carefirst/task-00-onboarding.tsx`** — Sender Ritu Sharma, no subject. Body per brief. Teaching block defining OPD / IPD / TAT. Pull-quote card ("A Business Analyst looks at how things currently work…"). No deliverable. CTA "Continue →" (marks task submitted).
+- Remove the always-visible desktop sidebar column. Main content takes full width up to `max-w-3xl` centered.
+- Persistent left-edge tab: fixed-position glass pill with chartreuse list icon + task-count badge, visible on all viewports while in a task.
+- Clicking the tab opens the sidebar as an overlay (slides in from left, glass-styled, dark scrim behind). Not a push layout — content underneath does not shift.
+- Row click navigates and auto-closes overlay.
+- Escape / scrim click closes.
+- Special case: when `currentTask === 0` AND task 0 not yet submitted (Program Overview moment), render the sidebar inline expanded instead of overlay — focus isn't yet needed.
+- Existing mobile drawer logic merges into this single overlay behavior (one code path for all viewports).
 
-10. **`src/components/carefirst/task-01-problem-framing.tsx`** — Sender Ritu Sharma, subject "Need your help, patient wait times are becoming a real issue." Body per brief. Attached data: current 51 min, six months ago 28 min, wait-time definition, org-chart snippet (Reception, Nurses, Doctors, Lab techs, IT/App team, Hospital Administrator, Patients). Teaching block with 4-line problem-statement formula + stakeholder-map definition + nested cafeteria-queue worked example. Deliverables: Problem Statement textarea, Success Metrics textarea, Stakeholder Map editable table.
+## 5. Component-level restyle pass
 
-11. **`src/components/carefirst/task-02-journey-map.tsx`** — Sender Ritu Sharma, subject "Good start, now let's actually see the journey." Attached data: Scenario A fully worked (booking → … → report sent) as reference; Scenario B raw paragraph (ambulance → triage → ER → X-ray → fracture → 40-min housekeeping wait → ward → 3 days rounds/nursing/day-2 physio → discharge cleared → 90-min billing → summary printed → leaves with follow-up). Deliverable: StepBuilder for Scenario B. Shareable pill + LinkedIn caption ("Mapped a real ER patient journey end-to-end…").
+Restyle without changing structure or copy:
 
-12. **`src/components/carefirst/task-locked.tsx`** — Placeholder screen for tasks 3–14 rendered when `currentTask >= n` but body not built: "This task will be built in the next prompt." + back-to-overview.
+- `email-card.tsx` → `cf-glass`, 16px radius, glow shadow, Space Grotesk on sender name.
+- `attached-data.tsx` (`AttachedSection`, `BulletCard`) → `cf-glass` nested panels.
+- `teaching-block.tsx` → `cf-glass` with subtle accent left border.
+- `inputs.tsx` (`DeliverableLabel` + shared inputs) + `task-05` FixCard inputs → `.cf-input`, chartreuse focus ring.
+- `TaskShell` submit CTA → `.cf-btn-primary` (chartreuse text on translucent fill), next-task CTA same.
+- `splash.tsx`, `task-00-onboarding.tsx` through `task-05-recommend-interventions.tsx`, `task-locked.tsx`, `org-chart.tsx`, `overview.tsx` → wrap outer root in `<div className="carefirst-theme">` (done at shell level so pages get it automatically), swap any hardcoded borders/backgrounds to the new glass utilities.
 
-## Shared file edit (only one)
-
-- **`src/components/landing/simulations-section.tsx`** — append a fourth entry to the `SIMS` array:
-  - `key: "carefirst"`, logo: local `CarefirstLogo` mark (small "C+" mark or gold-bordered "CF"), `company: "CareFirst × PulseTech"`, `role: "Healthcare Business Analyst Intern"`, `to: "/simulations/carefirst"`. No changes to layout or existing entries.
-
-## Explicit non-goals (this prompt)
-
-- No scoring, rubric comparison, or AI grading.
-- No backend, database, or persistence — state resets on refresh.
-- No certificate / final results screen (follow-up prompt).
-- No Product Manager or Digital Transformation Consultant tracks.
-- Tasks 3–14 are locked list entries + placeholder screen only.
-- Zero edits to BSC, AIC×ISB, or Architecture code/state.
+No copy changes, no logic changes, no scoring/backend touched. AIC/BSC/Architecture files not opened.
 
 ## Technical notes
 
-- Route follows TanStack file-based routing (`simulations.carefirst.tsx` → `/simulations/carefirst`).
-- Uses `AppShell` for the outer chrome (same as BSC/AIC), passing a `contextLabel` per screen.
-- All colors, fonts, radius, and transitions inherited from `src/styles.css` tokens — no new tokens introduced.
-- Sequential unlock enforced in the overview + task shell (clicking a locked row is a no-op; clicking Submit adds `currentTask` to `submitted` and advances).
+- Tailwind v4: extend via `@utility` inside the new css file if needed, but keep every selector prefixed with `.carefirst-theme` so no global utility is added.
+- Backdrop-filter: write the standard property only; the build handles vendor prefixes (per project rules).
+- All reveal state and sidebar-open state persisted to `localStorage` so refreshes and Previous navigation preserve position.
+- Typecheck with `tsgo` after the rewrite.
+
+## Out of scope
+
+BSC, AIC×ISB, Architecture components/routes. Shared `src/styles.css` tokens. Scoring, backend, LLM, certificates.

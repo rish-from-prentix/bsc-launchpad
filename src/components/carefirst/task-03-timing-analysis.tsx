@@ -4,6 +4,7 @@ import { AttachedSection, CsvCard } from "./attached-data";
 import { TeachingBlock, WorkedExample } from "./teaching-block";
 import { TaskShell } from "./task-shell";
 import { DeliverableLabel, TextArea } from "./inputs";
+import { ProgressiveFlow, ProgressiveStep } from "./progressive-sections";
 
 // NOTE: The rows below are placeholder / sample data, a slim illustrative
 // slice (18 rows) meant to show what the CSV looks like. Timestamps are
@@ -75,7 +76,9 @@ export function TaskThreeTimingAnalysis({
       onNext={onNext}
       canSubmit={canSubmit}
     >
-      <CarefirstEmail
+      <ProgressiveFlow taskId={3} totalSteps={4} forceRevealAll={submitted}>
+        <ProgressiveStep index={0}>
+          <CarefirstEmail
         senderName="Sanjay Kulkarni"
         senderRole="Ops Analyst"
         initials="SK"
@@ -86,9 +89,11 @@ export function TaskThreeTimingAnalysis({
 I've also run the numbers step by step so you don't have to redo the arithmetic. Focus on which steps are out of line vs the benchmark, and why they matter.
 
 Sanjay`}
-      </CarefirstEmail>
+          </CarefirstEmail>
+        </ProgressiveStep>
 
-      <AttachedSection>
+        <ProgressiveStep index={1} label="Continue reading">
+          <AttachedSection>
         <CsvCard
           filename="er_patient_timestamps.csv"
           note="Columns: patient_id, arrival_time, triage_time, doctor_exam_time, xray_bloodwork_time, admission_decision_time, bed_allotted_time, ward_shift_time, discharge_clear_time, billing_complete_time, discharge_summary_time, patient_exit_time"
@@ -127,9 +132,11 @@ Sanjay`}
             </table>
           </div>
         </div>
-      </AttachedSection>
+          </AttachedSection>
+        </ProgressiveStep>
 
-      <TeachingBlock title="How to read the summary">
+        <ProgressiveStep index={2} label="Show me how to think about this">
+          <TeachingBlock title="How to read the summary">
         <div>
           For each step, compare median (typical patient experience) and average against the
           internal benchmark. If a step is meaningfully over benchmark, flag it. Small overages
@@ -142,9 +149,11 @@ Sanjay`}
             <span>Tests → Admission decision</span><span className="text-foreground/90">10 min</span>
           </div>
         </WorkedExample>
-      </TeachingBlock>
+          </TeachingBlock>
+        </ProgressiveStep>
 
-      <div className="space-y-6">
+        <ProgressiveStep index={3} label="Begin your answer">
+          <div className="space-y-6">
         <div>
           <DeliverableLabel>Step-by-step timing summary (precomputed)</DeliverableLabel>
           <div className="rounded-lg border border-border overflow-hidden">
@@ -228,7 +237,9 @@ Sanjay`}
             placeholder="Name the top 2 problem areas and explain why they matter (2 to 3 sentences)."
           />
         </div>
-      </div>
+          </div>
+        </ProgressiveStep>
+      </ProgressiveFlow>
     </TaskShell>
   );
 }

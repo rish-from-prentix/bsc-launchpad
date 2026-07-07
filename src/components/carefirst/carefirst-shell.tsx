@@ -1,6 +1,7 @@
-import { ReactNode, useState } from "react";
-import { ArrowRight, Check, Lock, Menu, Sparkles, X } from "lucide-react";
+import { ReactNode, useEffect, useState } from "react";
+import { ArrowRight, Check, List, Lock, Sparkles, X } from "lucide-react";
 import { CAREFIRST_TASKS, TOTAL_TASKS, SHAREABLE_COUNT } from "./tasks-data";
+import "./carefirst-theme.css";
 
 export function CarefirstShell({
   name,
@@ -15,7 +16,7 @@ export function CarefirstShell({
   onOpen: (id: number) => void;
   children: ReactNode;
 }) {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [overlayOpen, setOverlayOpen] = useState(false);
 
   const nextId =
     CAREFIRST_TASKS.find((t) => !submitted.has(t.id))?.id ?? currentTask;
@@ -24,44 +25,77 @@ export function CarefirstShell({
 
   const openAndClose = (id: number) => {
     onOpen(id);
-    setMobileOpen(false);
+    setOverlayOpen(false);
   };
 
+  // Program Overview moment: currentTask is 0 and task 0 is not yet submitted.
+  // Render sidebar inline (two-column) instead of an overlay — focus isn't yet needed.
+  const inlineSidebar = currentTask === 0 && !submitted.has(0);
+
+  // Escape closes the overlay.
+  useEffect(() => {
+    if (!overlayOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOverlayOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [overlayOpen]);
+
   return (
-    <div className="mx-auto max-w-7xl w-full flex">
-      {/* Sidebar — desktop */}
-      <aside className="hidden md:block w-[300px] shrink-0 border-r border-border min-h-[calc(100vh-4rem)]">
-        <SidebarBody
-          name={name}
-          submitted={submitted}
-          currentTask={currentTask}
-          onOpen={openAndClose}
-          isUnlocked={isUnlocked}
-        />
-      </aside>
+    <div className="carefirst-theme min-h-[calc(100vh-4rem)] w-full">
+      {inlineSidebar ? (
+        <div className="mx-auto max-w-7xl w-full flex">
+          <aside className="hidden lg:block w-[320px] shrink-0 border-r border-white/5 min-h-[calc(100vh-4rem)]">
+            <SidebarBody
+              name={name}
+              submitted={submitted}
+              currentTask={currentTask}
+              onOpen={openAndClose}
+              isUnlocked={isUnlocked}
+            />
+          </aside>
+          <main className="flex-1 min-w-0">{children}</main>
+        </div>
+      ) : (
+        <main className="w-full min-w-0">{children}</main>
+      )}
 
-      {/* Mobile trigger */}
-      <div className="md:hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-40">
+      {/* Persistent edge tab — visible whenever the sidebar is not inline */}
+      {!inlineSidebar && (
         <button
-          onClick={() => setMobileOpen(true)}
-          className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold shadow-lg"
+          type="button"
+          onClick={() => setOverlayOpen(true)}
+          className="cf-edge-tab"
+          aria-label="Open task list"
         >
-          <Menu className="h-4 w-4" /> Tasks ({submitted.size}/{TOTAL_TASKS})
+          <List className="h-3.5 w-3.5" />
+          <span>
+            {submitted.size}/{TOTAL_TASKS}
+          </span>
         </button>
-      </div>
+      )}
 
-      {/* Mobile drawer */}
-      {mobileOpen && (
-        <div className="md:hidden fixed inset-0 z-50 flex">
+      {/* Overlay sidebar */}
+      {overlayOpen && (
+        <div className="fixed inset-0 z-50 flex">
           <div
-            className="absolute inset-0 bg-black/60"
-            onClick={() => setMobileOpen(false)}
+            className="absolute inset-0 cf-fade-in"
+            style={{ background: "rgba(0,0,0,0.65)", backdropFilter: "blur(4px)" }}
+            onClick={() => setOverlayOpen(false)}
           />
-          <div className="relative w-[85%] max-w-[320px] h-full bg-background border-r border-border overflow-y-auto">
+          <div
+            className="relative w-[86%] max-w-[340px] h-full overflow-y-auto cf-slide-in-left"
+            style={{
+              background: "rgba(12,12,12,0.85)",
+              backdropFilter: "blur(24px)",
+              borderRight: "1px solid rgba(255,255,255,0.08)",
+            }}
+          >
             <button
-              onClick={() => setMobileOpen(false)}
+              onClick={() => setOverlayOpen(false)}
               aria-label="Close"
-              className="absolute top-3 right-3 p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary/60"
+              className="absolute top-3 right-3 p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-white/5"
             >
               <X className="h-4 w-4" />
             </button>
@@ -75,9 +109,6 @@ export function CarefirstShell({
           </div>
         </div>
       )}
-
-      {/* Main content */}
-      <main className="flex-1 min-w-0">{children}</main>
     </div>
   );
 }

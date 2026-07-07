@@ -4,6 +4,7 @@ import { AttachedSection, TranscriptBlock } from "./attached-data";
 import { TeachingBlock, WorkedExample } from "./teaching-block";
 import { TaskShell } from "./task-shell";
 import { DeliverableLabel, TextArea } from "./inputs";
+import { ProgressiveFlow, ProgressiveStep } from "./progressive-sections";
 
 export function TaskFourRootCause({
   onBackToOverview,
@@ -29,7 +30,9 @@ export function TaskFourRootCause({
       onNext={onNext}
       canSubmit={canSubmit}
     >
-      <CarefirstEmail
+      <ProgressiveFlow taskId={4} totalSteps={4} forceRevealAll={submitted}>
+        <ProgressiveStep index={0}>
+          <CarefirstEmail
         senderName="Ritu Sharma"
         senderRole="VP Operations"
         initials="RS"
@@ -38,9 +41,11 @@ export function TaskFourRootCause({
         {`I sat down with Dr. Verma and Nurse Fatima this week. Sharing the transcripts. See if you can figure out WHY bed allotment and billing are taking so long, not just that they are.
 
 Ritu`}
-      </CarefirstEmail>
+          </CarefirstEmail>
+        </ProgressiveStep>
 
-      <AttachedSection title="Floor interviews">
+        <ProgressiveStep index={1} label="Continue reading">
+          <AttachedSection title="Floor interviews">
         <TranscriptBlock>
           <div className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground not-italic font-semibold mb-1.5">
             Dr. Verma (ER Consultant)
@@ -57,9 +62,11 @@ Ritu`}
           diagnostics, insurance desk) before the final bill can be generated, and these teams
           are not co-located, so requests are carried physically or by phone.
         </TranscriptBlock>
-      </AttachedSection>
+          </AttachedSection>
+        </ProgressiveStep>
 
-      <TeachingBlock title="Root cause vs symptom">
+        <ProgressiveStep index={2} label="Show me how to think about this">
+          <TeachingBlock title="Root cause vs symptom">
         <div>
           A <span className="text-foreground font-semibold">symptom</span> is what you see. A{" "}
           <span className="text-foreground font-semibold">root cause</span> is what is producing it.
@@ -83,9 +90,11 @@ Ritu`}
             which cascades into a late roster, a late driver, and a late bus.
           </div>
         </WorkedExample>
-      </TeachingBlock>
+          </TeachingBlock>
+        </ProgressiveStep>
 
-      <div className="space-y-6">
+        <ProgressiveStep index={3} label="Begin your answer">
+          <div className="space-y-6">
         <div>
           <DeliverableLabel>Bed allotment delay, root cause</DeliverableLabel>
           <TextArea
@@ -107,7 +116,9 @@ Ritu`}
             placeholder="2 to 4 whys, ending in one clear root-cause sentence."
           />
         </div>
-      </div>
+          </div>
+        </ProgressiveStep>
+      </ProgressiveFlow>
     </TaskShell>
   );
 }

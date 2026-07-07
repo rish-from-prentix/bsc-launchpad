@@ -3,6 +3,7 @@ import { CarefirstEmail } from "./email-card";
 import { AttachedSection, BulletCard } from "./attached-data";
 import { TaskShell } from "./task-shell";
 import { DeliverableLabel, StepBuilder } from "./inputs";
+import { ProgressiveFlow, ProgressiveStep } from "./progressive-sections";
 
 const SCENARIO_A: string[] = [
   "Patient books appointment via app",
@@ -42,7 +43,10 @@ export function TaskTwoJourneyMap({
       canSubmit={canSubmit}
       shareableCaption="Mapped a real ER patient journey end-to-end, from ambulance call to discharge, as part of a healthcare ops case simulation."
     >
-      <CarefirstEmail
+      <ProgressiveFlow taskId={2} totalSteps={4} forceRevealAll={submitted}>
+        <ProgressiveStep index={0}>
+          <div className="space-y-6">
+            <CarefirstEmail
         senderName="Ritu Sharma"
         senderRole="VP Operations"
         initials="RS"
@@ -55,29 +59,38 @@ Before we can find where time is being lost, we need to actually lay out, step b
 Map each one out as a clear sequence. We'll use this as the backbone for everything else.
 
 Ritu`}
-      </CarefirstEmail>
+            </CarefirstEmail>
 
-      <CarefirstEmail
+            <CarefirstEmail
         senderName="Sanjay Iyer"
         senderRole="Ops Analyst"
         initials="SI"
         subject="Two patient scenarios (A worked, B raw)"
       >
         {`Passing along the two cases Ritu mentioned. Scenario A is already laid out clean so you can see the shape we're after. Scenario B is a raw shift handover note from the ward nurse. It's not in order, and it's written the way people actually write these things. Pull the events out of it and sequence them yourself, like Scenario A.`}
-      </CarefirstEmail>
+            </CarefirstEmail>
+          </div>
+        </ProgressiveStep>
 
-      <AttachedSection title="Scenario A (reference, already mapped)">
+        <ProgressiveStep index={1} label="Continue reading">
+          <AttachedSection title="Scenario A (reference, already mapped)">
         <BulletCard title="OPD consultation with overnight lab" items={SCENARIO_A} />
-      </AttachedSection>
+          </AttachedSection>
+        </ProgressiveStep>
 
-      <AttachedSection title="Scenario B (your task, raw handover note)">
+        <ProgressiveStep index={2} label="Show me the handover note">
+          <AttachedSection title="Scenario B (your task, raw handover note)">
         <HandoverNote />
-      </AttachedSection>
+          </AttachedSection>
+        </ProgressiveStep>
 
-      <div>
+        <ProgressiveStep index={3} label="Begin your answer">
+          <div>
         <DeliverableLabel>Scenario B, patient journey (step by step)</DeliverableLabel>
         <StepBuilder steps={steps} onChange={setSteps} locked={submitted} />
-      </div>
+          </div>
+        </ProgressiveStep>
+      </ProgressiveFlow>
     </TaskShell>
   );
 }

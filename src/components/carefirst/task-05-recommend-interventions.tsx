@@ -3,6 +3,7 @@ import { CarefirstEmail } from "./email-card";
 import { AttachedSection, BulletCard } from "./attached-data";
 import { TaskShell } from "./task-shell";
 import { DeliverableLabel } from "./inputs";
+import { ProgressiveFlow, ProgressiveStep } from "./progressive-sections";
 
 type Fix = { intervention: string; rootCause: string; minutesSaved: string };
 const blank: Fix = { intervention: "", rootCause: "", minutesSaved: "" };
@@ -109,7 +110,9 @@ export function TaskFiveRecommendInterventions({
       onNext={onNext}
       canSubmit={canSubmit}
     >
-      <CarefirstEmail
+      <ProgressiveFlow taskId={5} totalSteps={3} forceRevealAll={submitted}>
+        <ProgressiveStep index={0}>
+          <CarefirstEmail
         senderName="Ritu Sharma"
         senderRole="VP Operations"
         initials="RS"
@@ -118,9 +121,11 @@ export function TaskFiveRecommendInterventions({
         {`This is the part leadership cares about most. I've attached a short reference doc on how different types of operational changes tend to play out at hospitals like ours. Use it to ground your recommendations in something realistic, not just guesses.
 
 Ritu`}
-      </CarefirstEmail>
+          </CarefirstEmail>
+        </ProgressiveStep>
 
-      <AttachedSection title="Reference (how ops changes usually play out)">
+        <ProgressiveStep index={1} label="Continue reading">
+          <AttachedSection title="Reference (how ops changes usually play out)">
         <BulletCard
           title="Rules of thumb (illustrative, not guarantees)"
           items={[
@@ -130,9 +135,11 @@ Ritu`}
             "Centralising or co-locating a multi-department approval process: typically cuts delay by 40 to 60%, higher effort and cost, slower to implement.",
           ]}
         />
-      </AttachedSection>
+          </AttachedSection>
+        </ProgressiveStep>
 
-      <div>
+        <ProgressiveStep index={2} label="Begin your answer">
+          <div>
         <DeliverableLabel>Recommended interventions</DeliverableLabel>
         <div className="space-y-4">
           <FixCard
@@ -160,7 +167,9 @@ Ritu`}
             outcomeLabel="Estimated outcome"
           />
         </div>
-      </div>
+          </div>
+        </ProgressiveStep>
+      </ProgressiveFlow>
     </TaskShell>
   );
 }

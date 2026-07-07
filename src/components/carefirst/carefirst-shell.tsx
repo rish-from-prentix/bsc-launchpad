@@ -43,7 +43,7 @@ export function CarefirstShell({
   }, [overlayOpen]);
 
   return (
-    <div className="carefirst-theme min-h-[calc(100vh-4rem)] w-full">
+    <div className="carefirst-theme min-h-screen w-full">
       {inlineSidebar ? (
         <div className="mx-auto max-w-7xl w-full flex">
           <aside className="hidden lg:block w-[320px] shrink-0 border-r border-white/5 min-h-[calc(100vh-4rem)]">

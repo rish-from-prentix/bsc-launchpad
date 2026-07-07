@@ -5,6 +5,7 @@ import { TeachingBlock, WorkedExample } from "./teaching-block";
 import { OrgChart } from "./org-chart";
 import { TaskShell } from "./task-shell";
 import { DeliverableLabel, EditableTable, TableRow, TextArea } from "./inputs";
+import { ProgressiveFlow, ProgressiveStep } from "./progressive-sections";
 
 export function TaskOneProblemFraming({
   onBackToOverview,
@@ -39,7 +40,9 @@ export function TaskOneProblemFraming({
       onNext={onNext}
       canSubmit={canSubmit}
     >
-      <CarefirstEmail
+      <ProgressiveFlow taskId={1} totalSteps={4} forceRevealAll={submitted}>
+        <ProgressiveStep index={0}>
+          <CarefirstEmail
         senderName="Ritu Sharma"
         senderRole="VP Operations"
         initials="RS"
@@ -52,9 +55,11 @@ Leadership has asked me to bring it down by 30% by next quarter. Before we jump 
 Keep it to one page. I'll review it before we go further.
 
 Ritu`}
-      </CarefirstEmail>
+          </CarefirstEmail>
+        </ProgressiveStep>
 
-      <AttachedSection>
+        <ProgressiveStep index={1} label="Continue reading">
+          <AttachedSection>
         <StatList
           items={[
             { label: "Current avg OPD wait time", value: "51 min" },
@@ -67,9 +72,11 @@ Ritu`}
           ]}
         />
         <OrgChart />
-      </AttachedSection>
+          </AttachedSection>
+        </ProgressiveStep>
 
-      <TeachingBlock title="How to frame a problem">
+        <ProgressiveStep index={2} label="Show me how to think about this">
+          <TeachingBlock title="How to frame a problem">
         <div>Use this 4-line formula:</div>
         <div className="font-mono text-[13.5px] rounded-md bg-background/40 border border-border p-3 text-foreground/90">
           {"1. Who is affected\n2. What is happening\n3. Why it matters\n4. By when it must change"}
@@ -116,9 +123,11 @@ Ritu`}
             but the average makes it sound like everyone waits closer to 45.
           </div>
         </WorkedExample>
-      </TeachingBlock>
+          </TeachingBlock>
+        </ProgressiveStep>
 
-      <div className="space-y-6">
+        <ProgressiveStep index={3} label="Begin your answer">
+          <div className="space-y-6">
         <div>
           <DeliverableLabel>Problem statement</DeliverableLabel>
           <TextArea
@@ -154,7 +163,9 @@ Ritu`}
             ]}
           />
         </div>
-      </div>
+          </div>
+        </ProgressiveStep>
+      </ProgressiveFlow>
     </TaskShell>
   );
 }

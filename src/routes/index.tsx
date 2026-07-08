@@ -9,17 +9,17 @@ import { TrustedCompanies } from "@/components/landing/trusted-companies";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Prentix, Virtual Internships" },
+      { title: "Prentix Virtual Internships" },
       {
         name: "description",
         content:
           "Develop employer-ready skills through immersive virtual internships from Prentix.",
       },
-      { property: "og:title", content: "Prentix, Virtual Internships" },
+      { property: "og:title", content: "Prentix Virtual Internships" },
       {
         property: "og:description",
         content:
-          "Gain hands-on experience, build confidence, and prepare for real-world roles through Prentix.",
+          "Develop employer-ready skills through immersive virtual internships from Prentix.",
       },
     ],
   }),
